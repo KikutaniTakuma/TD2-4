@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Src\main.cpp" />
+    <ClCompile Include="Src\GlobalVariables\GlobalVariables.cpp">
+      <Filter>GlobalVariables</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\CollisionManager\CollisionManager.cpp">
+      <Filter>Game\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\CollisionManager\Collider\Collider.cpp">
+      <Filter>Game\CollisionManager\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\CollisionManager\Obb\Obb.cpp">
+      <Filter>Game\CollisionManager\Obb</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\CollisionManager\Plane\Plane.cpp">
+      <Filter>Game\CollisionManager\Plane</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\World\World.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenes\Manager\SceneManager.cpp">
+      <Filter>Scenes\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenes\Manager\SceneFactory\SceneFactory.cpp">
+      <Filter>Scenes\Manager\SceneFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenes\Manager\Fade\Fade.cpp">
+      <Filter>Scenes\Manager\Fade</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenes\Manager\BaseScene\BaseScene.cpp">
+      <Filter>Scenes\Manager\BaseScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenes\GameScene\GameScene.cpp">
+      <Filter>Scenes\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenes\SubMenu\SubMenu.cpp">
+      <Filter>Scenes\SubMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Editor\ParticleEditor\ParticleEditor.cpp">
+      <Filter>Editor\ParticleEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\Water\Water.cpp">
+      <Filter>Game\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenes\Manager\SceneLoad\SceneLoad.cpp">
+      <Filter>Scenes\Manager\ScceneLoad</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenes\TitleScene\TitleScene.cpp">
+      <Filter>Scenes\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\Cloud\Cloud.cpp">
+      <Filter>Game\Cloud</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\SkyDome\SkyDome.cpp">
+      <Filter>Game\Skydome</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Camera\Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\CollisionManager\Sphere\Sphere.cpp">
+      <Filter>Game\CollisionManager\Sphere</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="GlobalVariables">
+      <UniqueIdentifier>{dff28833-6a2e-4902-9a4c-e0a7cb10934b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{e16d5b6d-612f-4477-b4d3-85f9d99b2ab8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CollisionManager">
+      <UniqueIdentifier>{1451ec42-a15b-4d2f-8a7d-7edbc8a26e9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CollisionManager\Collider">
+      <UniqueIdentifier>{9e6dd177-5172-4dfe-bf41-1cfaa76118cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CollisionManager\Obb">
+      <UniqueIdentifier>{f1b87284-7f48-48e0-946d-317f4c3da22f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{b8981fb7-5ba2-4533-897e-e706c7dc3049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes">
+      <UniqueIdentifier>{fad8cc50-c290-488f-b4fb-cdbad1bbd763}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\GameScene">
+      <UniqueIdentifier>{d4d1cb10-a26f-4866-b520-1d5be8c63924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\SubMenu">
+      <UniqueIdentifier>{06de54b1-47bd-4884-994f-f76486248bca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\Manager">
+      <UniqueIdentifier>{3920a90e-0f61-4c3e-a578-f7f4a2d79fd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\Manager\BaseScene">
+      <UniqueIdentifier>{09c8f465-3aff-4334-9c04-c77e3f818100}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\Manager\SceneFactory">
+      <UniqueIdentifier>{e3cb3459-6828-4847-8a7d-6269ce3a1eba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\Manager\Fade">
+      <UniqueIdentifier>{fc86e848-5d67-4732-9a7d-9ea0a4889d0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor">
+      <UniqueIdentifier>{38830fbd-b2f4-43bb-85ce-ccfa08c65319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\ParticleEditor">
+      <UniqueIdentifier>{4b7de689-4b28-45f6-bb48-00506bfb839d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CollisionManager\Plane">
+      <UniqueIdentifier>{268eefac-748b-4452-b6c2-10e06349215c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Water">
+      <UniqueIdentifier>{db170fba-cd99-4b05-a820-35cea969012a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\Manager\ScceneLoad">
+      <UniqueIdentifier>{a02d4342-6cbd-4359-83a6-e378d8c3ef88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\TitleScene">
+      <UniqueIdentifier>{33349c28-9ac6-4102-a517-2aca4afde131}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Cloud">
+      <UniqueIdentifier>{b9dbfc0b-e0eb-4bb3-b034-5e2f0dd99092}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Skydome">
+      <UniqueIdentifier>{3a7d72dd-98b1-426d-8ded-365ff6fff89b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{31e5ecf8-6bc1-4f5a-97ce-394f3988c342}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CollisionManager\Sphere">
+      <UniqueIdentifier>{03d14d68-3998-48a1-950b-d7aa4dec5fed}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\GlobalVariables\GlobalVariables.h">
+      <Filter>GlobalVariables</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\CollisionManager\CollisionManager.h">
+      <Filter>Game\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\CollisionManager\Collider\Collider.h">
+      <Filter>Game\CollisionManager\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\CollisionManager\Obb\Obb.h">
+      <Filter>Game\CollisionManager\Obb</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\CollisionManager\Plane\Plane.h">
+      <Filter>Game\CollisionManager\Plane</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\World\World.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\Manager\SceneManager.h">
+      <Filter>Scenes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\Manager\SceneFactory\SceneFactory.h">
+      <Filter>Scenes\Manager\SceneFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\Manager\Fade\Fade.h">
+      <Filter>Scenes\Manager\Fade</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\Manager\BaseScene\BaseScene.h">
+      <Filter>Scenes\Manager\BaseScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\GameScene\GameScene.h">
+      <Filter>Scenes\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\SubMenu\SubMenu.h">
+      <Filter>Scenes\SubMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Editor\ParticleEditor\ParticleEditor.h">
+      <Filter>Editor\ParticleEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Water\Water.h">
+      <Filter>Game\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\Manager\SceneLoad\SceneLoad.h">
+      <Filter>Scenes\Manager\ScceneLoad</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\TitleScene\TitleScene.h">
+      <Filter>Scenes\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Cloud\Cloud.h">
+      <Filter>Game\Cloud</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\SkyDome\SkyDome.h">
+      <Filter>Game\Skydome</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Camera\Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\CollisionManager\Sphere\Sphere.h">
+      <Filter>Game\CollisionManager\Sphere</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

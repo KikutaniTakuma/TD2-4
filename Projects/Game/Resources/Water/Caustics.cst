@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CausticsGenerator xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Caustics>
+    <FrameCount>1</FrameCount>
+    <Resolution>128</Resolution>
+    <Depth>8.738056</Depth>
+    <Intensity>0.0475288332</Intensity>
+    <AmplitudeFilter>52.40527</AmplitudeFilter>
+    <FrequencyFilter>1.49176264</FrequencyFilter>
+    <TimeFilter>16.2734776</TimeFilter>
+    <BackgroundColor>
+      <R>0</R>
+      <G>0</G>
+      <B>0</B>
+      <A>255</A>
+    </BackgroundColor>
+    <BackgroundIntensity>1</BackgroundIntensity>
+    <SpectralSamples>1</SpectralSamples>
+    <RefractionSpread>0.08</RefractionSpread>
+    <LightAngle>0</LightAngle>
+  </Caustics>
+  <Output>
+    <Size>512</Size>
+    <SaveAsBmp>true</SaveAsBmp>
+    <SaveAsTga>false</SaveAsTga>
+    <SaveAsHdr>false</SaveAsHdr>
+    <SaveHeightMap>false</SaveHeightMap>
+    <SaveNormalMap>false</SaveNormalMap>
+    <OutputFileName>C:\Users\taku1\source\School\23B\GE\LambEngine\Solution\Projects\Game\Resources\Water\caustics_%03d</OutputFileName>
+    <Antialiasing>1</Antialiasing>
+    <MotionBlur>1</MotionBlur>
+  </Output>
+  <Preview>
+    <ShowAsTiled>false</ShowAsTiled>
+    <AutoRender>false</AutoRender>
+    <FramesPerSecond>25</FramesPerSecond>
+  </Preview>
+</CausticsGenerator>

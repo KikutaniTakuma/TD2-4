@@ -1,0 +1,4 @@
+0
+./Resources\enemy_popEffect.png
+0
+1

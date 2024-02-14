@@ -1,0 +1,107 @@
+{
+    "setting0": {
+        "Emitter_CircleSize": 5.0,
+        "Emitter_ParticleMaxNum": 1024,
+        "Emitter_Pos": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Emitter_RotateFirst": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Emitter_RotateSecond": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Emitter_Size": [
+            3.0,
+            0.0,
+            3.0
+        ],
+        "Emitter_Type": 0,
+        "Emitter_vaildTime": 10000,
+        "Particle_colorEase": 0,
+        "Particle_colorFirst": 570557183,
+        "Particle_colorSecond": 570556928,
+        "Particle_deathFirst": 1000,
+        "Particle_deathSecond": 2000,
+        "Particle_ease": 0,
+        "Particle_freqFirst": 100,
+        "Particle_freqSecond": 200,
+        "Particle_isSameHW": 1,
+        "Particle_moveRotateFirst": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Particle_moveRotateSecond": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Particle_particleNumFirst": 2,
+        "Particle_particleNumSecond": 3,
+        "Particle_rotate1": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Particle_rotate2": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Particle_rotateEase": 0,
+        "Particle_rotateSecond1": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Particle_rotateSecond2": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "Particle_size1": [
+            2.0,
+            0.0
+        ],
+        "Particle_size2": [
+            5.0,
+            0.0
+        ],
+        "Particle_sizeEase": 0,
+        "Particle_sizeSecond1": [
+            10.0,
+            0.0
+        ],
+        "Particle_sizeSecond2": [
+            15.0,
+            0.0
+        ],
+        "Particle_velocity1": [
+            -4.0,
+            6.0,
+            0.0
+        ],
+        "Particle_velocity2": [
+            4.0,
+            12.0,
+            0.0
+        ],
+        "Particle_velocitySecond1": [
+            3.0,
+            4.0,
+            0.0
+        ],
+        "Particle_velocitySecond2": [
+            5.0,
+            5.0,
+            0.0
+        ]
+    }
+}
