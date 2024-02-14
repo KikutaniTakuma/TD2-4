@@ -123,7 +123,7 @@ void GlobalVariables::SaveFile(const std::string& groupName) {
 		}
 	}
 
-	const std::filesystem::path kDirectoryPath = "./Datas/" + dataFileNmae;
+	const std::filesystem::path kDirectoryPath = "./Resources/Datas/" + dataFileNmae;
 
 	if (!std::filesystem::exists(kDirectoryPath)) {
 		std::filesystem::create_directories(kDirectoryPath);
@@ -151,7 +151,7 @@ void GlobalVariables::SaveFile(const std::string& groupName) {
 }
 
 void GlobalVariables::LoadFile() {
-	const std::filesystem::path kDirectoryPath = "./Datas/" + dataFileNmae;
+	const std::filesystem::path kDirectoryPath = "./Resources/Datas/" + dataFileNmae;
 
 	if (!std::filesystem::exists(kDirectoryPath)) {
 		return;
@@ -172,7 +172,7 @@ void GlobalVariables::LoadFile() {
 }
 
 void GlobalVariables::LoadFile(const std::string& groupName) {
-	const std::filesystem::path kDirectoryPath = "./Datas/" + dataFileNmae;
+	const std::filesystem::path kDirectoryPath = "./Resources/Datas/" + dataFileNmae;
 	std::string filePath = kDirectoryPath.string() + groupName + std::string(".json");
 
 	std::ifstream file(filePath);
