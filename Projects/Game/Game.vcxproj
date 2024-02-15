@@ -177,6 +177,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ProjectReference Include="..\LambEngine\Lamb.vcxproj">
       <Project>{f7469051-9a30-4717-84e1-aa15cd13a9a9}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\SoLib\SoLib.vcxproj">
+      <Project>{a8894460-09b9-4d75-b42c-0527ce6c5710}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
