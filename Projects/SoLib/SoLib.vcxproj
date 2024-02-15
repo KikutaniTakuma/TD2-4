@@ -15,6 +15,15 @@
       <Project>{f7469051-9a30-4717-84e1-aa15cd13a9a9}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Containers\Array2D.h" />
+    <ClInclude Include="Containers\ConstVector.h" />
+    <ClInclude Include="Containers\Singleton.h" />
+    <ClInclude Include="Graphics\Color.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Graphics\Color.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

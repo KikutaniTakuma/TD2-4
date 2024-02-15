@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{c7fc4674-684d-4bf6-9476-5ba299c4db65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{9603a25d-5fcc-46c6-9466-af6c19075a8a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Containers\Array2D.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\ConstVector.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\Singleton.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Color.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Graphics\Color.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
