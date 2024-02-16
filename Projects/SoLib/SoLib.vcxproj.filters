@@ -13,6 +13,12 @@
     <Filter Include="IO">
       <UniqueIdentifier>{608ceee0-b39c-4ef0-acf9-380758ae84c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SoLib">
+      <UniqueIdentifier>{e045ac23-5cfd-4c16-a81e-4184107dab0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Text">
+      <UniqueIdentifier>{6e01b4fc-0b9a-464a-b499-d4fd08ec6c37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Containers\Array2D.h">
@@ -24,13 +30,6 @@
     <ClInclude Include="Containers\Singleton.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="SoLib\SoLib.h" />
-    <ClInclude Include="SoLib\SoLib_Easing.h" />
-    <ClInclude Include="SoLib\SoLib_ImGui.h" />
-    <ClInclude Include="SoLib\SoLib_Json.h" />
-    <ClInclude Include="SoLib\SoLib_Lerp.h" />
-    <ClInclude Include="SoLib\SoLib_Timer.h" />
-    <ClInclude Include="SoLib\SoLib_Traits.h" />
     <ClInclude Include="Math\Angle.h">
       <Filter>Math</Filter>
     </ClInclude>
@@ -46,20 +45,38 @@
     <ClInclude Include="Math\ValueRange.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Text\ConstString.h" />
     <ClInclude Include="IO\File.h">
       <Filter>IO</Filter>
     </ClInclude>
     <ClInclude Include="IO\CSV.h">
       <Filter>IO</Filter>
     </ClInclude>
+    <ClInclude Include="SoLib\SoLib_Traits.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib_Easing.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib_ImGui.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib_Json.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib_Lerp.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib_Timer.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Text\ConstString.h">
+      <Filter>Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SoLib\SoLib_Easing.cpp" />
-    <ClCompile Include="SoLib\SoLib_ImGui.cpp" />
-    <ClCompile Include="SoLib\SoLib_Json.cpp" />
-    <ClCompile Include="SoLib\SoLib_Lerp.cpp" />
-    <ClCompile Include="SoLib\SoLib_Timer.cpp" />
     <ClCompile Include="Math\Angle.cpp">
       <Filter>Math</Filter>
     </ClCompile>
@@ -74,6 +91,21 @@
     </ClCompile>
     <ClCompile Include="IO\CSV.cpp">
       <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="SoLib\SoLib_Easing.cpp">
+      <Filter>SoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="SoLib\SoLib_ImGui.cpp">
+      <Filter>SoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="SoLib\SoLib_Json.cpp">
+      <Filter>SoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="SoLib\SoLib_Lerp.cpp">
+      <Filter>SoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="SoLib\SoLib_Timer.cpp">
+      <Filter>SoLib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
