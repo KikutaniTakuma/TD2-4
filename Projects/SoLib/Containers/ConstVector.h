@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include <algorithm>
+#include "json.hpp"
 
 namespace SoLib {
 

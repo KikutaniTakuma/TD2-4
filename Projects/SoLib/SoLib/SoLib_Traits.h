@@ -3,77 +3,75 @@
 #include <stdint.h>
 #include <utility>
 
-#include "../Math/Matrix2x2.h"
-#include "../Math/Matrix3x3.h"
-#include "../Math/Matrix4x4.h"
-#include "../Math/Quaternion.h"
-#include "../Math/Vector2.h"
-#include "../Math/Vector3.h"
-#include "../Math/Vector4.h"
+#include "Math/Mat4x4.h"
+#include "Math/Quaternion.h"
+#include "Math/Vector2.h"
+#include "Math/Vector3.h"
+#include "Math/Vector4.h"
 #include <string>
 
 namespace SoLib {
 
 	/// @brief 非ポインタ型
 	template<typename T>
-	concept IsNotPointer = !std::is_pointer_v<T>;
+	concept IsNotPointer = not ::std::is_pointer_v<T>;
 
 
 	template<typename T>
 	concept IsContainer = requires(T a) {
-		{ a.size() } -> std::convertible_to<std::size_t>;
-		{ a.begin() } -> std::input_or_output_iterator;
-		{ a.end() } -> std::input_or_output_iterator;
+		{ a.size() } -> ::std::convertible_to<::std::size_t>;
+		{ a.begin() } -> ::std::input_or_output_iterator;
+		{ a.end() } -> ::std::input_or_output_iterator;
 	};
 
 	template <typename T, typename U>
 	concept IsContainsType = requires(T a) {
 
 		requires IsContainer<T>; // Tがコンテナであることを確認
-		requires std::same_as<typename T::value_type, U>; // Tの要素の型がUであることを確認
+		requires ::std::same_as<typename T::value_type, U>; // Tの要素の型がUであることを確認
 	};
 
 	/// @brief TがUを継承しているか
 	template <typename T, typename U>
-	concept IsBased = std::is_base_of_v<U, T>;
+	concept IsBased = ::std::is_base_of_v<U, T>;
 
 	template <typename T>
-	concept IsConst = std::is_const_v<T>;
+	concept IsConst = ::std::is_const_v<T>;
 
 	/// @brief 浮動小数点型である
 	template <typename T>
-	concept IsFloatPoint = std::is_floating_point_v<T>;
+	concept IsFloatPoint = ::std::is_floating_point_v<T>;
 
 	/// @brief 整数型である
 	template <typename T>
-	concept IsIntegral = std::is_integral_v<T>;
+	concept IsIntegral = ::std::is_integral_v<T>;
 
 	/// @brief 数値型である
 	template <typename T>
-	concept IsNumber = std::is_floating_point_v<T> || std::is_integral_v<T>;
+	concept IsNumber = ::std::is_floating_point_v<T> || ::std::is_integral_v<T>;
 
 	template <typename Itr>
 	concept IsIterator = requires(Itr iter) {
 		// イテレータのデリファレンス可能性を確認
-		{ *iter } -> std::same_as<typename std::iterator_traits<Itr>::value_type &>;
+		{ *iter } -> ::std::same_as<typename ::std::iterator_traits<Itr>::value_type &>;
 
 		// インクリメント可能性を確認
-		{ ++iter } -> std::same_as<Itr &>;
+		{ ++iter } -> ::std::same_as<Itr &>;
 
 		// インクリメント後のイテレータを作成できることを確認
-		{ iter++ } -> std::same_as<Itr>;
+		{ iter++ } -> ::std::same_as<Itr>;
 
 		// 2つのイテレータを比較できることを確認
-		{ iter == iter } -> std::same_as<bool>;
+		{ iter == iter } -> ::std::same_as<bool>;
 
 		// 2つのイテレータを比較できることを確認
-		{ iter != iter } -> std::same_as<bool>;
+		{ iter != iter } -> ::std::same_as<bool>;
 	};
 
 	template <typename Func, typename ReturnType, typename... Args>
 	concept IsFunction = requires(Func func, Args... args) {
 		// 関数の戻り値の型を確認
-		{ func(args...) } -> std::same_as<ReturnType>;
+		{ func(args...) } -> ::std::same_as<ReturnType>;
 	};
 
 	template <typename R, typename T/*, T R:: *Ptr = nullptr*/>
@@ -91,7 +89,7 @@ namespace SoLib {
 		Wrapping &operator=(Wrapping &&) = default;
 
 		R &operator=(const T &other) { static_cast<R *>(this)->Get() = other; return *static_cast<R *>(this); }
-		R &operator=(T &&other) { static_cast<R *>(this)->Get() = std::move(other); return *static_cast<R *>(this); }
+		R &operator=(T &&other) { static_cast<R *>(this)->Get() = ::std::move(other); return *static_cast<R *>(this); }
 
 		bool operator ==(const T &other) { return static_cast<R *>(this)->Get() == other; }
 
@@ -193,8 +191,10 @@ namespace SoLib {
 		static constexpr uint32_t Size = Rows * Columns;
 		using ElementType = float;
 
-		static const ElementType *CBegin(const Type &data) { return data.cbegin(); }
-		static const ElementType *End(const Type &data) { return CBegin(data) + Size; }
+		static ElementType *Begin(Type &data) { return &data.x; }
+		static ElementType *CEnd(Type &data) { return Begin(data) + Size; }
+		static const ElementType *CBegin(const Type &data) { return &data.x; }
+		static const ElementType *CEnd(const Type &data) { return CBegin(data) + Size; }
 	};
 
 	template<>
@@ -206,8 +206,10 @@ namespace SoLib {
 		static constexpr uint32_t Size = Rows * Columns;
 		using ElementType = float;
 
-		static const ElementType *CBegin(const Type &data) { return data.cbegin(); }
-		static const ElementType *End(const Type &data) { return CBegin(data) + Size; }
+		static ElementType *Begin(Type &data) { return &data.x; }
+		static ElementType *CEnd(Type &data) { return Begin(data) + Size; }
+		static const ElementType *CBegin(const Type &data) { return &data.x; }
+		static const ElementType *CEnd(const Type &data) { return CBegin(data) + Size; }
 	};
 
 	template<>
@@ -219,8 +221,10 @@ namespace SoLib {
 		static constexpr uint32_t Size = Rows * Columns;
 		using ElementType = float;
 
-		static const ElementType *CBegin(const Type &data) { return data.cbegin(); }
-		static const ElementType *End(const Type &data) { return CBegin(data) + Size; }
+		static ElementType *Begin(Type &data) { return data.m.data(); }
+		static ElementType *End(Type &data) { return Begin(data) + Size; }
+		static const ElementType *CBegin(const Type &data) { return data.m.data(); }
+		static const ElementType *CEnd(const Type &data) { return CBegin(data) + Size; }
 	};
 
 	template<>
@@ -232,60 +236,41 @@ namespace SoLib {
 		static constexpr uint32_t Size = Rows * Columns;
 		using ElementType = float;
 
-		static const ElementType *CBegin(const Type &data) { return &data.x; }
-		static const ElementType *End(const Type &data) { return CBegin(data) + Size; }
+		static ElementType *Begin(Type &data) { return data.m.data(); }
+		static ElementType *End(Type &data) { return Begin(data) + Size; }
+		static const ElementType *CBegin(const Type &data) { return data.m.data(); }
+		static const ElementType *CEnd(const Type &data) { return CBegin(data) + Size; }
 	};
-
-	template<>
-	struct Traits<Matrix2x2> {
-		using Type = Matrix2x2;
-		static constexpr auto Name = "Matrix2x2";
-		static constexpr uint32_t Rows = 2u;
-		static constexpr uint32_t Columns = 2u;
-		static constexpr uint32_t Size = Rows * Columns;
-		using ElementType = float;
-
-		static const ElementType *CBegin(const Type &data) { return data.cbegin(); }
-		static const ElementType *End(const Type &data) { return CBegin(data) + Size; }
-	};
-
-	template<>
-	struct Traits<Matrix3x3> {
-		using Type = Matrix3x3;
-		static constexpr auto Name = "Matrix3x3";
-		static constexpr uint32_t Rows = 3u;
-		static constexpr uint32_t Columns = 3u;
-		static constexpr uint32_t Size = Rows * Columns;
-		using ElementType = float;
-
-		static const ElementType *CBegin(const Type &data) { return data.cbegin(); }
-		static const ElementType *End(const Type &data) { return CBegin(data) + Size; }
-	};
-
-	template<>
-	struct Traits<Matrix4x4> {
-		using Type = Matrix4x4;
-		static constexpr auto Name = "Matrix4x4";
+	/*template<>
+	struct Traits<Mat4x4> {
+		using Type = Mat4x4;
+		static constexpr auto Name = "Mat4x4";
 		static constexpr uint32_t Rows = 4u;
 		static constexpr uint32_t Columns = 4u;
 		static constexpr uint32_t Size = Rows * Columns;
 		using ElementType = float;
 
-		static const ElementType *CBegin(const Type &data) { return data.cbegin(); }
+		static const ElementType *CBegin(const Type &data) { return data.; }
 		static const ElementType *End(const Type &data) { return CBegin(data) + Size; }
-	};
+	};*/
 
+	template <::SoLib::IsNotPointer T>
+		requires (not IsConst<T>)
+	auto begin(T &data) { return Traits<T>::Begin(data); };
+
+	template <::SoLib::IsNotPointer T>
+	auto begin(const T &data) { return Traits<T>::CBegin(data); };
 
 	template <typename T, typename = void>
-	struct has_to_string : std::false_type {};
+	struct has_to_string : ::std::false_type {};
 
 	template <typename T>
-	struct has_to_string<T, std::void_t<decltype(std::to_string(std::declval<T>()))>> : std::true_type {};
+	struct has_to_string<T, ::std::void_t<decltype(::std::to_string(::std::declval<T>()))>> : ::std::true_type {};
 
 	template <typename T>
 	std::string to_string(const T &data) {
 		if constexpr (has_to_string<T>::value) {
-			return std::to_string(data);
+			return ::std::to_string(data);
 		}
 		else if constexpr (Traits<T>::Size == 0u) {
 			return "";
@@ -327,11 +312,11 @@ namespace SoLib {
 	}
 
 	template<>
-	inline std::string to_string<Quaternion>(const Quaternion &data) {
+	inline ::std::string to_string<Quaternion>(const Quaternion &data) {
 		return
 			"{\n"
-			"\tv : " + std::to_string(data.x) + ", " + std::to_string(data.y) + ", " + std::to_string(data.z) + ",\n"
-			"\tw : " + std::to_string(data.w) + "\n"
+			"\tv : " + ::std::to_string(data.m[0]) + ", " + ::std::to_string(data.m[1]) + ", " + ::std::to_string(data.m[2]) + ",\n"
+			"\tw : " + ::std::to_string(data.m[3]) + "\n"
 			"}";
 	}
 

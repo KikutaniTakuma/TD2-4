@@ -4,41 +4,38 @@
 
 #include "../../externals/nlohmann/json.hpp"
 
-#include "../Math/Matrix2x2.h"
-#include "../Math/Matrix3x3.h"
-#include "../Math/Matrix4x4.h"
-#include "../Math/Quaternion.h"
-#include "../Math/Vector2.h"
-#include "../Math/Vector3.h"
-#include "../Math/Vector4.h"
-#include "../Math/SimdCalc.h"
+#include "Math/Mat4x4.h"
+#include "Math/Quaternion.h"
+#include "Math/Vector2.h"
+#include "Math/Vector3.h"
+#include "Math/Vector4.h"
+#include <string>
 
 namespace SoLib {
 
-	template<SoLib::IsNotPointer T>
+	template<::SoLib::IsNotPointer T>
 	using JsonItemPtr = std::variant<bool T:: *, int32_t T:: *, float T:: *, std::string T:: *, Vector2 T:: *, Vector3 T:: *, Vector4 T:: *, Quaternion T:: *>;
 
-	template<SoLib::IsNotPointer T>
+	template<::SoLib::IsNotPointer T>
 	using JsonPair = std::pair<std::string, std::list<JsonItemPtr<T>>>;
 
-	template<SoLib::IsNotPointer T>
+	template<::SoLib::IsNotPointer T>
 	using JsonPairList = std::list<std::variant<JsonItemPtr<T>, JsonPair<T>>>;
 
-	template<SoLib::IsNotPointer T>
-	inline JsonPairList<T> GetJsonPairList();
-
-	template<>
-	inline JsonPairList<Quaternion> GetJsonPairList<Quaternion>() {
+	template<::SoLib::IsNotPointer T>
+	inline JsonPairList<T> GetJsonPairList() { return JsonPairList<T>{}; }
+	/*template<>
+		inline JsonPairList<Quaternion> GetJsonPairList<Quaternion>() {
 		return {
-			JsonPair<Quaternion>{ "vec", { reinterpret_cast<Vector3 Quaternion:: *>(&Quaternion::x) }},
-			JsonPair<Quaternion>{ "w", { &Quaternion::w } }
+			JsonPair<Quaternion>{ "vec", { reinterpret_cast<Vector3 Quaternion:: *>(&Quaternion::m)}},
+			JsonPair<Quaternion>{ "w", { reinterpret_cast<float Quaternion:: *>(& Quaternion::quaternion::w) }}
 		};
-	}
+	}*/
 
-	template<SoLib::IsNotPointer T>
+	template<::SoLib::IsNotPointer T>
 	inline void ToJson(nlohmann::json &json, const T &data);
 
-	template<SoLib::IsNotPointer T>
+	template<::SoLib::IsNotPointer T>
 	inline void FromJson(const nlohmann::json &json, T &data);
 }
 
@@ -53,9 +50,10 @@ void from_json(const nlohmann::json &json, Quaternion &data);
 
 namespace SoLib {
 
-	template<SoLib::IsNotPointer T>
+	template<::SoLib::IsNotPointer T>
 	inline void ToJson(nlohmann::json &json, const T &data) {
-		static const auto &jsonPair = GetJsonPairList<T>();
+		json; data;
+		/*static const auto &jsonPair = GetJsonPairList<T>();
 
 
 		for (const auto &jsonData : jsonPair) {
@@ -98,12 +96,13 @@ namespace SoLib {
 				}
 			}
 
-		}
+		}*/
 	}
 
-	template<SoLib::IsNotPointer T>
+	template<::SoLib::IsNotPointer T>
 	inline void FromJson(const nlohmann::json &json, T &data) {
-		static const auto &jsonPair = GetJsonPairList<T>();
+		json; data;
+		/*static const auto &jsonPair = GetJsonPairList<T>();
 
 		uint32_t jsonDataItr = 0u;
 		for (const auto &jsonData : jsonPair) {
@@ -148,7 +147,7 @@ namespace SoLib {
 			}
 			jsonDataItr++;
 
-		}
+		}*/
 	}
 
 }

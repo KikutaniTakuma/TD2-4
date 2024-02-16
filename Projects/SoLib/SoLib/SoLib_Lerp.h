@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
+#include "Math/Vector3.h"
 
-struct Vector3;
 namespace SoLib {
 
 	/// @brief 線形補間

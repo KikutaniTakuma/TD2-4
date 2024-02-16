@@ -7,6 +7,12 @@
     <Filter Include="Graphics">
       <UniqueIdentifier>{9603a25d-5fcc-46c6-9466-af6c19075a8a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{2c94bf86-abba-4201-ba44-791e636b9a54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IO">
+      <UniqueIdentifier>{608ceee0-b39c-4ef0-acf9-380758ae84c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Containers\Array2D.h">
@@ -18,13 +24,56 @@
     <ClInclude Include="Containers\Singleton.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Color.h">
-      <Filter>Graphics</Filter>
+    <ClInclude Include="SoLib\SoLib.h" />
+    <ClInclude Include="SoLib\SoLib_Easing.h" />
+    <ClInclude Include="SoLib\SoLib_ImGui.h" />
+    <ClInclude Include="SoLib\SoLib_Json.h" />
+    <ClInclude Include="SoLib\SoLib_Lerp.h" />
+    <ClInclude Include="SoLib\SoLib_Timer.h" />
+    <ClInclude Include="SoLib\SoLib_Traits.h" />
+    <ClInclude Include="Math\Angle.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Euler.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\FloatArray.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Math.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\ValueRange.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Text\ConstString.h" />
+    <ClInclude Include="IO\File.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\CSV.h">
+      <Filter>IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Graphics\Color.cpp">
-      <Filter>Graphics</Filter>
+    <ClCompile Include="SoLib\SoLib_Easing.cpp" />
+    <ClCompile Include="SoLib\SoLib_ImGui.cpp" />
+    <ClCompile Include="SoLib\SoLib_Json.cpp" />
+    <ClCompile Include="SoLib\SoLib_Lerp.cpp" />
+    <ClCompile Include="SoLib\SoLib_Timer.cpp" />
+    <ClCompile Include="Math\Angle.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Math.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\ValueRange.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\File.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\CSV.cpp">
+      <Filter>IO</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -6,8 +6,6 @@
 
 
 namespace SoLib {
-
-
 	namespace Time {
 
 
@@ -40,7 +38,7 @@ namespace SoLib {
 			T time_;
 		};
 
-		using SecondF = Second<float>;
+		using SecondF = SoLib::Time::Second<float>;
 
 		/// @brief タイマークラス
 		class FlameTimer {
@@ -144,7 +142,7 @@ namespace SoLib {
 				}
 			}
 
-			bool ImGuiWidget(const char *const label);
+			//bool ImGuiWidget(const char *const label);
 
 			/// @brief 更新処理 ( 基本的に各フレームの先頭で行うこと )
 			/// @return bool 実行中である場合true
@@ -193,33 +191,32 @@ namespace SoLib {
 		};
 	}
 
-	using namespace Time;
 }
-
-inline bool SoLib::DeltaTimer::ImGuiWidget(const char *const label) {
-
-#ifdef USE_IMGUI
-	bool isChanged = false;
-
-	isChanged |= ImGui::DragFloat(label, &this->goalFlame_, 0.1f, 0.f, 100.f, "%.3fsec");
-
-	if (ImGui::Button("Stop")) {
-		this->Clear();
-		isChanged = true;
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Start")) {
-		this->Start();
-		isChanged = true;
-	}
-
-	return isChanged;
-
-#else
-
-	label;
-	return false;
-
-#endif // USE_IMGUI
-
-	}
+//
+//inline bool SoLib::DeltaTimer::ImGuiWidget(const char *const label) {
+//
+//#ifdef _DEBUG
+//	bool isChanged = false;
+//
+//	isChanged |= ImGui::DragFloat(label, &this->goalFlame_, 0.1f, 0.f, 100.f, "%.3fsec");
+//
+//	if (ImGui::Button("Stop")) {
+//		this->Clear();
+//		isChanged = true;
+//	}
+//	ImGui::SameLine();
+//	if (ImGui::Button("Start")) {
+//		this->Start();
+//		isChanged = true;
+//	}
+//
+//	return isChanged;
+//
+//#else
+//
+//	label;
+//	return false;
+//
+//#endif // _DEBUG
+//
+//};

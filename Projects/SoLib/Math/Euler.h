@@ -1,11 +1,12 @@
 #pragma once
-#include "Vector3.h"
-#include "Matrix4x4.h"
+#include "Math/Vector3.h"
+#include "Math/Mat4x4.h"
 #include "../SoLib/SoLib_Json.h"
 #include "../SoLib/SoLib_ImGui.h"
 #include <initializer_list>
 
 namespace SoLib {
+
 	namespace Math {
 
 		struct Euler {
@@ -46,7 +47,7 @@ namespace SoLib {
 		};
 
 		inline void to_json(nlohmann::json &json, const Euler &value) {
-			json = static_cast<const Vector3 &>(value);
+			json = value;
 		}
 
 		inline void from_json(const nlohmann::json &json, Euler &value) {
@@ -58,11 +59,11 @@ namespace SoLib {
 
 
 template<>
-inline bool SoLib::ImGuiWidget<SoLib::Math::Euler>(const char *const label, SoLib::Math::Euler *const value) {
-#ifdef USE_IMGUI
-	return SoLib::ImGuiDragEuler(label, &value->x);
+inline bool SoLib::ImGuiDebug::ImGuiWidget<SoLib::Math::Euler>(const char *const label, SoLib::Math::Euler *const value) {
+#ifdef _DEBUG
+	return ::SoLib::ImGuiDebug::ImGuiDragEuler(label, &value->x);
 #else
 	label; value;
 	return false;
-#endif // USE_IMGUI
+#endif // _DEBUG
 }
