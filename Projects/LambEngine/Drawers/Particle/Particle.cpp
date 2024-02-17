@@ -564,7 +564,7 @@ void Particle::LopadSettingFile(const std::string& jsonName) {
 	setting.sizeSecond_.first = std::get<Vector2>(datas_[groupName.string()]["Particle_sizeSecond1"]);
 	setting.sizeSecond_.second = std::get<Vector2>(datas_[groupName.string()]["Particle_sizeSecond2"]);
 	setting.sizeEaseType_ = static_cast<int32_t>(std::get<uint32_t>(datas_[groupName.string()]["Particle_sizeEase"]));
-	setting.sizeEase_ = Easing::GetFunction(setting.sizeEaseType_);
+	setting.sizeEase_ = Easeing::GetFunction(setting.sizeEaseType_);
 
 	setting.velocity_.first = std::get<Vector3>(datas_[groupName.string()]["Particle_velocity1"]);
 	setting.velocity_.second = std::get<Vector3>(datas_[groupName.string()]["Particle_velocity2"]);
@@ -578,7 +578,7 @@ void Particle::LopadSettingFile(const std::string& jsonName) {
 	setting.rotateSecond_.first = std::get<Vector3>(datas_[groupName.string()]["Particle_rotateSecond1"]);
 	setting.rotateSecond_.second = std::get<Vector3>(datas_[groupName.string()]["Particle_rotateSecond2"]);
 	setting.rotateEaseType_ = static_cast<int32_t>(std::get<uint32_t>(datas_[groupName.string()]["Particle_rotateEase"]));
-	setting.rotateEase_ = Easing::GetFunction(setting.rotateEaseType_);
+	setting.rotateEase_ = Easeing::GetFunction(setting.rotateEaseType_);
 
 	setting.particleNum_.first = std::get<uint32_t>(datas_[groupName.string()]["Particle_particleNumFirst"]);
 	setting.particleNum_.second = std::get<uint32_t>(datas_[groupName.string()]["Particle_particleNumSecond"]);
@@ -589,10 +589,10 @@ void Particle::LopadSettingFile(const std::string& jsonName) {
 	setting.color_.first = std::get<uint32_t>(datas_[groupName.string()]["Particle_colorFirst"]);
 	setting.color_.second = std::get<uint32_t>(datas_[groupName.string()]["Particle_colorSecond"]);
 	setting.colorEaseType_ = static_cast<int32_t>(std::get<uint32_t>(datas_[groupName.string()]["Particle_colorEase"]));
-	setting.colorEase_ = Easing::GetFunction(setting.colorEaseType_);
+	setting.colorEase_ = Easeing::GetFunction(setting.colorEaseType_);
 
 	setting.moveEaseType = static_cast<int32_t>(std::get<uint32_t>(datas_[groupName.string()]["Particle_ease"]));
-	setting.moveEase_ = Easing::GetFunction(setting.moveEaseType);
+	setting.moveEase_ = Easeing::GetFunction(setting.moveEaseType);
 }
 
 void Particle::SaveSettingFile(const std::string& groupName) {
@@ -1061,7 +1061,7 @@ void Particle::Debug(const std::string& guiName) {
 					ImGui::DragFloat2("sizeSecond max", &settings_[i].sizeSecond_.second.x, 0.01f);
 				}
 				ImGui::SliderInt("easeType", &settings_[i].sizeEaseType_, 0, 30);
-				settings_[i].sizeEase_ = Easing::GetFunction(settings_[i].sizeEaseType_);
+				settings_[i].sizeEase_ = Easeing::GetFunction(settings_[i].sizeEaseType_);
 
 				ImGui::TreePop();
 			}
@@ -1072,7 +1072,7 @@ void Particle::Debug(const std::string& guiName) {
 				ImGui::DragFloat3("velocitySecond max", &settings_[i].velocitySecond_.second.x, 0.01f);
 
 				ImGui::SliderInt("easeType", &settings_[i].moveEaseType, 0, 30);
-				settings_[i].moveEase_ = Easing::GetFunction(settings_[i].moveEaseType);
+				settings_[i].moveEase_ = Easeing::GetFunction(settings_[i].moveEaseType);
 
 				ImGui::DragFloat3("rotate min", &settings_[i].moveRotate_.first.x, 0.01f);
 				ImGui::DragFloat3("rotate max", &settings_[i].moveRotate_.second.x, 0.01f);
@@ -1084,7 +1084,7 @@ void Particle::Debug(const std::string& guiName) {
 				ImGui::DragFloat3("rotateSecond min", &settings_[i].rotateSecond_.first.x, 0.01f);
 				ImGui::DragFloat3("rotateSecond max", &settings_[i].rotateSecond_.second.x, 0.01f);
 				ImGui::SliderInt("easeType", &settings_[i].rotateEaseType_, 0, 30);
-				settings_[i].moveEase_ = Easing::GetFunction(settings_[i].rotateEaseType_);
+				settings_[i].moveEase_ = Easeing::GetFunction(settings_[i].rotateEaseType_);
 				ImGui::TreePop();
 			}
 
@@ -1114,7 +1114,7 @@ void Particle::Debug(const std::string& guiName) {
 
 			if (ImGui::TreeNode("Color")) {
 				ImGui::SliderInt("easeType", &settings_[i].colorEaseType_, 0, 30);
-				settings_[i].colorEase_ = Easing::GetFunction(settings_[i].colorEaseType_);
+				settings_[i].colorEase_ = Easeing::GetFunction(settings_[i].colorEaseType_);
 
 				Vector4 colorFirst = UintToVector4(settings_[i].color_.first);
 				Vector4 colorSecond = UintToVector4(settings_[i].color_.second);

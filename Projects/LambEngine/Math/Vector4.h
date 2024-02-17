@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
 #include <immintrin.h>
-#include "Utils/Cocepts/Cocepts.h"
+#include "Utils/Concepts/Concepts.h"
 
 /// <summary>
 /// 4次元配列

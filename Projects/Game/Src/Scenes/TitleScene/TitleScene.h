@@ -7,7 +7,7 @@
 #include "Drawers/StringOut/StringOut.h"
 #include "GlobalVariables/GlobalVariables.h"
 #include "Game/CollisionManager/Collider/Collider.h"
-#include "Utils/Easing/Easing.h"
+#include "Utils/Easeing/Easeing.h"
 #include "Game/SkyDome/SkyDome.h"
 #include "Game/CollisionManager/Sphere/Sphere.h"
 

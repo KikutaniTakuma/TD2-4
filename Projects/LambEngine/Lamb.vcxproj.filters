@@ -112,9 +112,6 @@
     <ClCompile Include="Engine\Core\ImGuiManager\ImGuiManager.cpp">
       <Filter>Engine\Core\ImGuiManager</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\Easing\Easing.cpp">
-      <Filter>Utils\Easing</Filter>
-    </ClCompile>
     <ClCompile Include="Utils\EngineInfo\EngineInfo.cpp">
       <Filter>Utils\EngineInfo</Filter>
     </ClCompile>
@@ -174,6 +171,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Graphics\PipelineObject\CloudPipeline\CloudPipeline.cpp">
       <Filter>Engine\Graphics\PipelineObject\CloudPipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Easeing\Easeing.cpp">
+      <Filter>Utils\Easeing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -303,14 +303,8 @@
     <Filter Include="Utils\SafeDelete">
       <UniqueIdentifier>{94134e6e-da45-45f9-b920-bf5e3ae5f7af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\Cocepts">
-      <UniqueIdentifier>{d34d4eed-7ec5-4e6e-a6d6-e19ad5846855}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Core\ImGuiManager">
       <UniqueIdentifier>{d6d93ca6-1ebb-4ead-ad68-07b252c618a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utils\Easing">
-      <UniqueIdentifier>{1dc7052e-fce1-4542-b5fb-a5f223d204de}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utils\EngineInfo">
       <UniqueIdentifier>{43053c56-0360-4ba5-903a-08a26af29cde}</UniqueIdentifier>
@@ -365,6 +359,12 @@
     </Filter>
     <Filter Include="Engine\Graphics\PipelineObject\CloudPipeline">
       <UniqueIdentifier>{5a6f62f6-9b81-4403-a912-610eb20e5551}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Concepts">
+      <UniqueIdentifier>{d34d4eed-7ec5-4e6e-a6d6-e19ad5846855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Easeing">
+      <UniqueIdentifier>{1dc7052e-fce1-4542-b5fb-a5f223d204de}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -485,14 +485,8 @@
     <ClInclude Include="Utils\SafeDelete\SafeDelete.h">
       <Filter>Utils\SafeDelete</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\Cocepts\Cocepts.h">
-      <Filter>Utils\Cocepts</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Core\ImGuiManager\ImGuiManager.h">
       <Filter>Engine\Core\ImGuiManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\Easing\Easing.h">
-      <Filter>Utils\Easing</Filter>
     </ClInclude>
     <ClInclude Include="Utils\EngineInfo\EngineInfo.h">
       <Filter>Utils\EngineInfo</Filter>
@@ -568,6 +562,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Graphics\PipelineObject\CloudPipeline\CloudPipeline.h">
       <Filter>Engine\Graphics\PipelineObject\CloudPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Concepts\Concepts.h">
+      <Filter>Utils\Concepts</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Easeing\Easeing.h">
+      <Filter>Utils\Easeing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

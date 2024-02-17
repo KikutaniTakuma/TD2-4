@@ -169,7 +169,7 @@
     <ClCompile Include="Math\Vector4.cpp" />
     <ClCompile Include="Utils\ConvertString\ConvertString.cpp" />
     <ClCompile Include="Utils\CsvLoad\CsvLoad.cpp" />
-    <ClCompile Include="Utils\Easing\Easing.cpp" />
+    <ClCompile Include="Utils\Easeing\Easeing.cpp" />
     <ClCompile Include="Utils\EngineInfo\EngineInfo.cpp" />
     <ClCompile Include="Utils\ExecutionLog\ExecutionLog.cpp" />
     <ClCompile Include="Utils\Flg\Flg.cpp" />
@@ -234,10 +234,10 @@
     <ClInclude Include="Math\Vector2.h" />
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />
-    <ClInclude Include="Utils\Cocepts\Cocepts.h" />
+    <ClInclude Include="Utils\Concepts\Concepts.h" />
     <ClInclude Include="Utils\ConvertString\ConvertString.h" />
     <ClInclude Include="Utils\CsvLoad\CsvLoad.h" />
-    <ClInclude Include="Utils\Easing\Easing.h" />
+    <ClInclude Include="Utils\Easeing\Easeing.h" />
     <ClInclude Include="Utils\EngineInfo\EngineInfo.h" />
     <ClInclude Include="Utils\ExecutionLog\ExecutionLog.h" />
     <ClInclude Include="Utils\Flg\Flg.h" />
