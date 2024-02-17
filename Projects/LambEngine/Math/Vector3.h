@@ -66,6 +66,7 @@ public:
 	float Dot(const Vector3& right) const noexcept;
 	Vector3 Cross(const Vector3& right) const noexcept;
 	float Length() const noexcept;
+	float LengthSQ() const noexcept;
 	Vector3 Normalize() const noexcept;
 
 /// <summary>

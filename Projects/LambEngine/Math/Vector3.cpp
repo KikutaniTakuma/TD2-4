@@ -194,6 +194,11 @@ float Vector3::Length() const noexcept {
 	return std::sqrt(x*x + y*y + z*z);
 }
 
+float Vector3::LengthSQ() const noexcept
+{
+	return x * x + y * y + z * z;
+}
+
 float Vector3::Dot(const Vector3& right) const noexcept {
 	return x * right.x + y * right.y + z * right.z;
 }

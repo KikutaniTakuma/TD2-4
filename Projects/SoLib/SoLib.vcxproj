@@ -15,6 +15,38 @@
       <Project>{f7469051-9a30-4717-84e1-aa15cd13a9a9}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Containers\Array2D.h" />
+    <ClInclude Include="Containers\ConstVector.h" />
+    <ClInclude Include="Containers\Singleton.h" />
+    <ClInclude Include="IO\CSV.h" />
+    <ClInclude Include="IO\File.h" />
+    <ClInclude Include="Math\Angle.h" />
+    <ClInclude Include="Math\Euler.h" />
+    <ClInclude Include="Math\FloatArray.h" />
+    <ClInclude Include="Math\Math.hpp" />
+    <ClInclude Include="Math\ValueRange.h" />
+    <ClInclude Include="SoLib\SoLib.h" />
+    <ClInclude Include="SoLib\SoLib_Easing.h" />
+    <ClInclude Include="SoLib\SoLib_ImGui.h" />
+    <ClInclude Include="SoLib\SoLib_Json.h" />
+    <ClInclude Include="SoLib\SoLib_Lerp.h" />
+    <ClInclude Include="SoLib\SoLib_Timer.h" />
+    <ClInclude Include="SoLib\SoLib_Traits.h" />
+    <ClInclude Include="Text\ConstString.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="IO\CSV.cpp" />
+    <ClCompile Include="IO\File.cpp" />
+    <ClCompile Include="Math\Angle.cpp" />
+    <ClCompile Include="Math\Math.cpp" />
+    <ClCompile Include="Math\ValueRange.cpp" />
+    <ClCompile Include="SoLib\SoLib_Easing.cpp" />
+    <ClCompile Include="SoLib\SoLib_ImGui.cpp" />
+    <ClCompile Include="SoLib\SoLib_Json.cpp" />
+    <ClCompile Include="SoLib\SoLib_Lerp.cpp" />
+    <ClCompile Include="SoLib\SoLib_Timer.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -63,7 +95,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Projects\ImGui\;$(SolutionDir)Projects\externals\;$(SolutionDir)Projects\externals\assimp\include\;$(SolutionDir)Projects\Lamb\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)Projects\ImGui\;$(SolutionDir)Projects\externals\;$(SolutionDir)Projects\externals\assimp\include\;$(SolutionDir)Projects\LambEngine\;$(SolutionDir)Projects\externals\nlohmann\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>

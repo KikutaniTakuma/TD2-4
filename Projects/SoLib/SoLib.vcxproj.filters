@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{c7fc4674-684d-4bf6-9476-5ba299c4db65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{9603a25d-5fcc-46c6-9466-af6c19075a8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{2c94bf86-abba-4201-ba44-791e636b9a54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IO">
+      <UniqueIdentifier>{608ceee0-b39c-4ef0-acf9-380758ae84c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SoLib">
+      <UniqueIdentifier>{e045ac23-5cfd-4c16-a81e-4184107dab0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Text">
+      <UniqueIdentifier>{6e01b4fc-0b9a-464a-b499-d4fd08ec6c37}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Containers\Array2D.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\ConstVector.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Containers\Singleton.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Angle.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Euler.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\FloatArray.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Math.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\ValueRange.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\File.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="IO\CSV.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib_Traits.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib_Easing.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib_ImGui.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib_Json.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib_Lerp.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib_Timer.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SoLib\SoLib.h">
+      <Filter>SoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Text\ConstString.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Math\Angle.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Math.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\ValueRange.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\File.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="IO\CSV.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="SoLib\SoLib_Easing.cpp">
+      <Filter>SoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="SoLib\SoLib_ImGui.cpp">
+      <Filter>SoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="SoLib\SoLib_Json.cpp">
+      <Filter>SoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="SoLib\SoLib_Lerp.cpp">
+      <Filter>SoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="SoLib\SoLib_Timer.cpp">
+      <Filter>SoLib</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
