@@ -19,6 +19,7 @@
     <ClInclude Include="Containers\Array2D.h" />
     <ClInclude Include="Containers\ConstVector.h" />
     <ClInclude Include="Containers\Singleton.h" />
+    <ClInclude Include="Containers\Vector2D.h" />
     <ClInclude Include="IO\CSV.h" />
     <ClInclude Include="IO\File.h" />
     <ClInclude Include="Math\Angle.h" />

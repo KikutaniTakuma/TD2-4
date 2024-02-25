@@ -75,6 +75,9 @@
     <ClInclude Include="Text\ConstString.h">
       <Filter>Text</Filter>
     </ClInclude>
+    <ClInclude Include="Containers\Vector2D.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Angle.cpp">

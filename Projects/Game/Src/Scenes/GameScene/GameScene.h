@@ -9,16 +9,19 @@
 #include "Game/CollisionManager/Collider/Collider.h"
 #include "Utils/Easeing/Easeing.h"
 #include "Game/SkyDome/SkyDome.h"
+#include "../../../../SoLib/IO/File.h"
+#include "../../../../SoLib/IO/CSV.h"
+#include "../../../../SoLib/Containers/Array2D.h"
 
 class GameScene : public BaseScene {
 public:
 	GameScene();
-	GameScene(const GameScene&) = delete;
-	GameScene(GameScene&&) = delete;
+	GameScene(const GameScene &) = delete;
+	GameScene(GameScene &&) = delete;
 	~GameScene() = default;
 
-	GameScene& operator=(const GameScene&) = delete;
-	GameScene& operator=(GameScene&&) = delete;
+	GameScene &operator=(const GameScene &) = delete;
+	GameScene &operator=(GameScene &&) = delete;
 
 public:
 	void Initialize() override;
@@ -30,8 +33,12 @@ public:
 	void Draw() override;
 
 public:
-	class Water* water_;
+	class Water *water_;
+
+	SoLib::IO::File file_;
+	SoLib::IO::CSV csv_;
+	SoLib::Containers::Array2D<uint32_t> array2d_;
 
 	std::unique_ptr<SkyDome> skydome_;
-	class Cloud* cloud_;
+	class Cloud *cloud_;
 };

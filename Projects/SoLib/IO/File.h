@@ -6,6 +6,7 @@
 #include <variant>
 #include <optional>
 #include "../Text/ConstString.h"
+#include "../LambEngine/Error/Error.h"
 
 namespace SoLib {
 
@@ -42,9 +43,11 @@ namespace SoLib {
 			}
 
 			bool Load(const std::string &filePath) {
+				if (!std::filesystem::exists(filePath)) {
+					throw Lamb::Error::Code<File>("this file is not exist -> " + filePath, __func__);
+				}
 				std::ifstream file(filePath);
-				if (not file) {
-					// std::cerr << "ファイルが開けません。" << std::endl;
+				if (not file) {					
 					return false;
 				}
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <string>
 
 /// 参考サイト
 /// https://easings.net/ja

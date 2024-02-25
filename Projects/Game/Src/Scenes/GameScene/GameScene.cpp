@@ -32,10 +32,15 @@ void GameScene::Initialize() {
 	skydome_.reset(new SkyDome);
 	skydome_->Initialize();
 	skydome_->SetTexture(cloud_->GetTex());
+
+	file_.Load("Resources/TestResource/testcsv.csv");
+	file_ >> csv_;
+	array2d_.Resize(csv_.GetHeight(), csv_.GetWidth());
+	std::transform(csv_.view().begin(), csv_.view().end(), array2d_.view().begin(), [](const std::string &str)->uint32_t { return std::stoul(str); });
 }
 
 void GameScene::Finalize() {
-	
+
 }
 
 void GameScene::Update() {
@@ -46,6 +51,13 @@ void GameScene::Update() {
 
 	cloud_->Update();
 	skydome_->Upadate();
+
+	std::string str;
+	for (const auto i : array2d_.view()) {
+		str += std::to_string(i) + ' ';
+	}
+
+	ImGui::Text("%s", str.c_str());
 
 	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
 		sceneManager_->SceneChange(BaseScene::ID::Title);
