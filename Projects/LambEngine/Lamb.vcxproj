@@ -164,6 +164,7 @@
     <ClCompile Include="Input\Mouse\Mouse.cpp" />
     <ClCompile Include="Math\Mat4x4.cpp" />
     <ClCompile Include="Math\Quaternion.cpp" />
+    <ClCompile Include="Math\Transform.cpp" />
     <ClCompile Include="Math\Vector2.cpp" />
     <ClCompile Include="Math\Vector3.cpp" />
     <ClCompile Include="Math\Vector4.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="Math\MathCommon.h" />
     <ClInclude Include="Math\Mat4x4.h" />
     <ClInclude Include="Math\Quaternion.h" />
+    <ClInclude Include="Math\Transform.h" />
     <ClInclude Include="Math\Vector2.h" />
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />

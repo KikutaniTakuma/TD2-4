@@ -131,6 +131,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\Editor\ParticleEditor\ParticleEditor.cpp" />
+    <ClCompile Include="Src\GameObject\Component\FollowCameraComp.cpp" />
+    <ClCompile Include="Src\GameObject\Component\HealthComp.cpp" />
+    <ClCompile Include="Src\GameObject\Component\ModelComp.cpp" />
+    <ClCompile Include="Src\GameObject\Component\Projectile.cpp" />
+    <ClCompile Include="Src\GameObject\Component\Rigidbody.cpp" />
+    <ClCompile Include="Src\GameObject\GameObject.cpp" />
     <ClCompile Include="Src\Game\Cloud\Cloud.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Collider\Collider.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\CollisionManager.cpp" />
@@ -154,6 +160,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Editor\ParticleEditor\ParticleEditor.h" />
+    <ClInclude Include="Src\GameObject\Component\Collider.h" />
+    <ClInclude Include="Src\GameObject\Component\ComponentManager.h" />
+    <ClInclude Include="Src\GameObject\Component\FollowCameraComp.h" />
+    <ClInclude Include="Src\GameObject\Component\HealthComp.h" />
+    <ClInclude Include="Src\GameObject\Component\ModelComp.h" />
+    <ClInclude Include="Src\GameObject\Component\Projectile.h" />
+    <ClInclude Include="Src\GameObject\Component\Rigidbody.h" />
+    <ClInclude Include="Src\GameObject\GameObject.h" />
     <ClInclude Include="Src\Game\Cloud\Cloud.h" />
     <ClInclude Include="Src\Game\CollisionManager\Collider\Collider.h" />
     <ClInclude Include="Src\Game\CollisionManager\CollisionManager.h" />
