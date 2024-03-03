@@ -1,13 +1,14 @@
 #pragma once
 #include <list>
+#include "../SoLib/Containers/Singleton.h"
 
 /// <summary>
 /// コリジョンマネージャー
 /// </summary>
-class CollisionManager {
+class CollisionManager : public SoLib::Singleton<CollisionManager> {
+	friend SoLib::Singleton<CollisionManager>;
 
-
-public:
+// public:
 	CollisionManager() = default;
 	CollisionManager(const CollisionManager&) = delete;
 	CollisionManager(CollisionManager&&) = delete;

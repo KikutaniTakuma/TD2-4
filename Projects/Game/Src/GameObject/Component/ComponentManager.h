@@ -16,17 +16,16 @@ class ComponentManager
 	~ComponentManager() = default;
 public:
 
-	template<typename T>
+	template <SoLib::IsBased<IComponent> T>
 	void Register();
 
 
 
 private:
-	std::unordered_map<std::string, IComponent *(*)(Entity *const object)> componentMap_;
+	std::unordered_map<std::string, IComponent *(*)(GameObject *const object)> componentMap_;
 };
 
-template<typename T>
+template <SoLib::IsBased<IComponent> T>
 inline void ComponentManager::Register() {
-	static_assert(std::is_base_of<IComponent, T>::value, "テンプレート型はIComponentクラスの派生クラスではありません");
-	componentMap_[typeid(T).name] = T(GameObject *const);
+	componentMap_[typeid(T).name()] = T(GameObject *const);
 }

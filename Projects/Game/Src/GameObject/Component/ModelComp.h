@@ -4,8 +4,8 @@
 #include <unordered_map>
 #include <memory>
 
-#include "../../../Engine/DirectBase/Model/Model.h"
-#include "../../../Utils/Math/Transform.h"
+#include "Math/Transform.h"
+#include "Drawers/Model/Model.h"
 
 class ModelComp : public IComponent {
 public:
@@ -17,15 +17,14 @@ public:
 		std::list<std::unique_ptr<ModelBone>> children_;
 
 		void Init(Model *const model = nullptr);
-		void SetTransform(const BaseTransform &srt);
+		void SetTransform(const Transform &srt);
 
 		ModelBone *const AddChild(Model *const model);
 		void AddChild(ModelBone *const child);
 		void SetParent(ModelBone *const parent);
 
 		void Update();
-		void Draw(const Camera<Render::CameraType::Projecction> &vp) const;
-		void Draw(const Camera<Render::CameraType::Projecction> &vp, const Material &material) const;
+		void Draw(const Camera &vp) const;
 
 		bool ImGuiWidget();
 	};
@@ -52,13 +51,12 @@ public:
 
 
 	void Update() override;
-	void Draw(const Camera<Render::CameraType::Projecction> &vp)const override;
-	void Draw(const Camera<Render::CameraType::Projecction> &vp, const Material &material) const;
+	void Draw(const Camera &vp)const override;
 
 	void ImGuiWidget() override;
 
-	ModelBone *const AddBone(const std::string &key, Model *const model, const BaseTransform &srt = {});
-	ModelBone *const AddBone(const std::string &key, Model *const model, ModelBone *const parent, const BaseTransform &srt);
+	ModelBone *const AddBone(const std::string &key, Model *const model, const Transform &srt = {});
+	ModelBone *const AddBone(const std::string &key, Model *const model, ModelBone *const parent, const Transform &srt);
 
 	ModelBone *const GetBone(const std::string &key) { return modelKey_.at(key); }
 

@@ -1,5 +1,6 @@
 #include "Rigidbody.h"
 #include "Collider.h"
+#include <Game/CollisionManager/CollisionManager.h>
 
 void Rigidbody::Init() {
 	velocity_ = {};
@@ -8,9 +9,9 @@ void Rigidbody::Init() {
 
 void Rigidbody::Update() {
 
-	static auto *const collisionManager = CollisionManager::GetInstance();
+	static CollisionManager *const collisionManager = CollisionManager::GetInstance();
 
-	beforePos_ = transform_->translate;
+	beforePos_ = transform_.translate;
 
 	velocity_ += acceleration_;
 	Vector3 fixVelocity = velocity_ * GetDeltaTime();
@@ -18,9 +19,9 @@ void Rigidbody::Update() {
 	const Vector3 maxSpeed = maxSpeed_ * GetDeltaTime();
 
 	// 最大速度のポインタ(配列として扱う)
-	const float *const maxSpeedPtr = maxSpeed.data();
+	const float *const maxSpeedPtr = &maxSpeed.x;
 	// 修正前の座標のポインタ
-	float *const fixVelocityPtr = fixVelocity.data();
+	float *const fixVelocityPtr = &fixVelocity.x;
 	// 各要素をclampする(最大速度が負数なら無効化)
 	for (uint32_t i = 0u; i < 3u; ++i) {
 		if (maxSpeedPtr[i] > 0.f) {
@@ -28,11 +29,7 @@ void Rigidbody::Update() {
 		}
 	}
 
-	transform_->translate += fixVelocity;
-
-	const auto &boxArray = collisionManager->GetBox();
-
-	boxArray;
+	transform_.translate += fixVelocity;
 
 	isGround_ = false;
 

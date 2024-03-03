@@ -7,7 +7,7 @@ void HealthComp::Reset() {
 
 void HealthComp::Update() {
 	if (nowHealth_ <= 0.f) {
-		object_->SetActive(false);
+		object_.SetActive(false);
 	}
 }
 

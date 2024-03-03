@@ -1,5 +1,5 @@
 #pragma once
-#include "../Entity.h"
+#include "../GameObject.h"
 
 class ProjectileComp :public IComponent {
 public:

@@ -1,10 +1,10 @@
 #pragma once
-#include "../Entity.h"
-#include "../../../Engine/DirectBase/Render/Camera.h"
-#include "../../../Utils/Math/Vector3.h"
-#include "../../../Utils/Math/Matrix4x4.h"
-#include "../../Collision/Collision.h"
-#include "../../../Engine/DirectBase/File/VariantItem.h"
+#include "../GameObject.h"
+#include "Camera/Camera.h"
+#include "Math/Vector3.h"
+#include "Math/Mat4x4.h"
+#include "Game/CollisionManager/Collider/Collider.h"
+#include "../SoLib/Containers/VItem.h"
 
 class FollowCameraComp : public IComponent {
 public:
@@ -19,24 +19,22 @@ public:
 
 	void AddRotate(const Vector3 &euler);
 
-	void SetTarget(BaseTransform *const target);
-	void SetLine(const LineBase &target);
+	void SetTarget(Transform *const target);
 
 	const auto &GetCamera() const { return camera_; }
 
-	VariantItem<float> vLerpValue{ "LerpValue", 0.85f };
+	SoLib::VItem<"LerpValue", float> vLerpValue = 0.85f;
 
 private:
 
-	LineBase line_;
 
-	BaseTransform *pTarget_ = nullptr;
+	Transform *pTarget_ = nullptr;
 
-	VariantItem<Vector3> offset_{ "Offset",{ 0.f,6.f,-30.f } };
-	VariantItem<Vector3> addOffset_{ "AddOffset",{ 0.f,6.f,0.f } };
+	SoLib::VItem<"Offset", Vector3> offset_{ { 0.f,6.f,-30.f } };
+	SoLib::VItem<"AddOffset", Vector3> addOffset_{ { 0.f,6.f,0.f } };
 
 	Vector3 rotate_;
 	Vector3 prePos_;
 
-	Camera3D *camera_;
+	Camera *camera_;
 };

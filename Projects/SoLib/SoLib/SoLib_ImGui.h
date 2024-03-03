@@ -12,6 +12,8 @@
 #include "../Math/Angle.h"
 #include "../Math/ValueRange.h"
 #include <functional>
+#include "../Text/StaticString.h"
+#include "../Containers/VItem.h"
 
 namespace SoLib {
 
@@ -62,8 +64,9 @@ namespace SoLib {
 
 		bool ImGuiWidgetAngle(const char *const label, float *const value, float min = -360.f, float max = +360.f);
 
-		/*template<typename T>
-		inline bool ImGuiWidget(VariantItem<T> *const value);*/
+		template <typename ITEM, SoLib::Text::ConstExprString V = ITEM::str_, SoLib::IsNotPointer T = decltype(ITEM::item)>
+			requires(std::same_as<ITEM, VItem<V, T>>)
+		inline bool ImGuiWidget(ITEM *const value) { return ImGuiWidget(value->c_str(), &value->item); }
 
 		template <typename T>
 		inline bool ImGuiWidget(const char *const label, ValueRange<T> *const value);

@@ -29,8 +29,7 @@ class ColliderComp : public IComponent {
 
 protected:
 
-	Vector3 centor_{};
-	float radius_ = 0.5f;
+	Collider collider_;
 
 public:
 	// 親のコンストラクタを使う
@@ -56,12 +55,8 @@ public:
 	/// @param newMask 衝突無効化フラグ
 	void SetCollisionCancel(const uint32_t newFlag) { collisionCancel_ = newFlag; }
 
-	const float &GetRadius() const { return radius_; }
-	void SetRadius(const float &rad) { radius_ = rad; }
-
-	const Vector3 &GetCentor() const { return centor_; }
-	Vector3 GetGlobalCentor() const;
-	void SetCentor(const Vector3 &centor) { centor_ = centor; }
+	/// @brief コライダの取得
+	Collider &GetCollider() { return collider_; }
 
 	/// @brief jsonからの読み込み
 	/// @param groupName グループ名
@@ -72,56 +67,3 @@ public:
 	void AddVariable(const char *const groupName) const override { groupName; }
 
 };
-
-class CollisionManager {
-	std::list<ColliderComp *> colliderList_;
-	std::list<AABB> constantBox_;
-
-	CollisionManager() = default;
-	CollisionManager(const CollisionManager &) = delete;
-	CollisionManager operator=(const CollisionManager &) = delete;
-	~CollisionManager() = default;
-
-public:
-	static CollisionManager *GetInstance() {
-		static CollisionManager collisionManager;
-		return &collisionManager;
-	}
-	void clear() {
-		colliderList_.clear();
-		constantBox_.clear();
-	}
-
-	void push_back(ColliderComp *collider) { colliderList_.push_back(collider); }
-
-	void push_back(GameObject *object) {
-		auto *const colliderComp = object->GetComponent<ColliderComp>();
-		if (colliderComp) {
-			colliderList_.push_back(colliderComp);
-		}
-	}
-	void push_back(const AABB &aabb) { constantBox_.push_back(aabb); }
-
-
-
-	template <SoLib::IsContainer T>
-	void push_back(const T &container);
-
-	template <typename T>
-	void push_back(const T &item);
-
-	const std::list<AABB> &GetBox() const { return constantBox_; }
-
-	void ChackAllCollision();
-	void CheckCollisionPair(ColliderComp *const A, ColliderComp *const B);
-};
-
-template<SoLib::IsContainer T>
-inline void CollisionManager::push_back(const T &container) {
-
-	for (auto &item : container) {
-		push_back(item);
-	}
-
-
-}

@@ -7,9 +7,8 @@
 #include <string>
 
 #include "Camera/Camera.h"
-#include ""
-#include "../../Engine/DirectBase/Render/Camera.h"
-#include "../../Utils/SoLib/SoLib.h"
+#include "Math/Transform.h"
+#include "../SoLib/SoLib/SoLib.h"
 //#include "../../Engine/DirectBase/Render/Camera.h"
 
 class GameObject;
@@ -54,7 +53,7 @@ public:
 	inline virtual void Update() {};
 	/// @brief 描画処理
 	/// @param vp Cameraクラス
-	inline virtual void Draw(const Camera<Render::CameraType::Projecction> &) const {};
+	inline virtual void Draw(const Camera &) const {};
 
 	/// @brief jsonからの読み込み
 	/// @param groupName グループ名
@@ -77,8 +76,8 @@ public:
 	float GetDeltaTime() const;
 
 	// 紐づけられた実体
-	GameObject *const object_ = nullptr;
-	BaseTransform *const transform_;
+	GameObject &object_;
+	Transform &transform_;
 
 	float monoTimeScale_ = 1.f;
 };
@@ -105,7 +104,7 @@ class GameObject {
 	float timeScale_ = 1.f;
 public:
 	// オブジェクトのSRT
-	BaseTransform transform_;
+	Transform transform_;
 
 	GameObject() = default;
 	//Object(const Object&) = default;
@@ -114,7 +113,7 @@ public:
 	virtual void Init();
 	virtual void Reset();
 	virtual void Update(float deltaTime);
-	virtual void Draw(const Camera<Render::CameraType::Projecction> &vp) const;
+	virtual void Draw(const Camera &vp) const;
 
 	/*template<typename T>
 	bool HasComponent();*/
@@ -128,7 +127,7 @@ public:
 	/// @brief コンポーネントの取得
 	/// @tparam T コンポーネント型
 	/// @return コンポーネントのポインタ (存在しない場合、nullptr)
-	template <typename T>
+	template <SoLib::IsBased<IComponent> T>
 	T *const GetComponent() const;
 
 	/// @brief 生存しているかを設定する
@@ -187,7 +186,7 @@ T *const GameObject::AddComponent() {
 }
 
 
-template <typename T>
+template <SoLib::IsBased<IComponent> T>
 T *const GameObject::GetComponent() const {
 	static_assert(std::is_base_of<IComponent, T>::value, "テンプレート型はIComponentクラスの派生クラスではありません");
 

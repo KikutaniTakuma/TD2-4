@@ -1,16 +1,13 @@
 #include "FollowCameraComp.h"
-#include "../../../Utils/SoLib/SoLib_Lerp.h"
-#include "../../../Utils/SoLib/SoLib_ImGui.h"
-#include "../../../Engine/DirectBase/Render/CameraAnimations/CameraManager.h"
 
 void FollowCameraComp::Init() {
-	camera_ = CameraManager::GetInstance()->AddCamera("FollowCamera");
-	camera_->CalcMatrix();
+
 }
 
 void FollowCameraComp::Update() {
 
-	Vector3 linePoint = SoLib::Lerp(line_.ClosestPoint(pTarget_->GetGrobalPos()), prePos_, vLerpValue);
+	Vector3 linePoint = prePos_;
+	//SoLib::Lerp<Vector3>(line_.ClosestPoint(pTarget_->GetGrobalPos()), prePos_, vLerpValue);
 
 
 	if (rotate_.x > 15._deg) {
@@ -22,16 +19,15 @@ void FollowCameraComp::Update() {
 
 	SoLib::ImGuiText("FollowCameraAngle", SoLib::to_string(rotate_));
 
-	const Vector3 cameraOffset = offset_.GetItem() * Matrix4x4::EulerRotate(rotate_);
+	const Vector3 cameraOffset = *offset_ * Mat4x4::MakeRotate(rotate_);
 
-	camera_->translation_ = cameraOffset + SoLib::Lerp(pTarget_->GetGrobalPos(), linePoint, vLerpValue);
-	camera_->translation_.y = cameraOffset.y + SoLib::Lerp(pTarget_->GetGrobalPos().y, linePoint.y, 0.25f) + addOffset_->y;
+	camera_->pos = cameraOffset + SoLib::Lerp(pTarget_->GetGrobalPos(), linePoint, vLerpValue);
 
-	Vector3 facing = linePoint - camera_->translation_;
+	Vector3 facing = linePoint - camera_->GetPos();
 
-	camera_->rotation_ = facing.Direction2Euler();
+	camera_->rotate = rotate_;
 
-	camera_->UpdateMatrix();
+	camera_->Update();
 
 	prePos_ = linePoint;
 }
@@ -44,19 +40,13 @@ void FollowCameraComp::ImGuiWidget() {
 
 void FollowCameraComp::AddRotate(const Vector3 &euler) {
 	if (euler.LengthSQ() != 0.f) {
-		if (CameraManager::GetInstance()->GetUseCamera() == camera_) {
-			rotate_ += euler;
+		rotate_ += euler;
 
-			camera_->rotation_ += euler;
-			camera_->CalcMatrix();
-		}
+		camera_->rotate += euler;
+		camera_->Update();
 	}
 }
 
-void FollowCameraComp::SetTarget(BaseTransform *const target) {
+void FollowCameraComp::SetTarget(Transform *const target) {
 	pTarget_ = target;
-}
-
-void FollowCameraComp::SetLine(const LineBase &target) {
-	line_ = target;
 }

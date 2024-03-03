@@ -27,13 +27,13 @@ void GameObject::Update(float deltaTime) {
 			component.second->Update();
 		}
 	}
-	transform_.UpdateMatrix();
+	transform_.CalcMatrix();
 	if (modelComp) {
 		modelComp->Update();
 	}
 }
 
-void GameObject::Draw(const Camera<Render::CameraType::Projecction> &vp) const {
+void GameObject::Draw(const Camera &vp) const {
 	auto *const modelComp = GetComponent<ModelComp>();
 
 	for (auto &component : componentMap_) {
@@ -48,8 +48,7 @@ void GameObject::Draw(const Camera<Render::CameraType::Projecction> &vp) const {
 
 
 const Vector3 &GameObject::GetWorldPos() {
-	transform_.CalcMatrix();
-	return *reinterpret_cast<Vector3 *>(transform_.matWorld_.m[3].data());
+	return transform_.GetGrobalPos();
 }
 
 void GameObject::OnCollision(GameObject *const other) {
@@ -65,9 +64,9 @@ void GameObject::ImGuiWidget() {
 	}
 }
 
-IComponent::IComponent(GameObject *const object) : object_(object), transform_(&static_cast<BaseTransform &>(object->transform_)) {
+IComponent::IComponent(GameObject *const object) : object_(*object), transform_(object->transform_) {
 }
 
 float IComponent::GetDeltaTime() const {
-	return monoTimeScale_ * object_->GetDeltaTime();
+	return monoTimeScale_ * object_.GetDeltaTime();
 }

@@ -6,24 +6,23 @@
 #include <wrl.h>
 
 /// @brief Transformクラス
-struct BaseTransform {
-	BaseTransform &operator=(const BaseTransform &other) = default;
+struct Transform {
+	Transform &operator=(const Transform &other) = default;
 
 	Vector3 scale = { 1.f,1.f,1.f };
 	Vector3 rotate{};
 	Vector3 translate{};
 
 	Mat4x4 matWorld_{};	// ローカル . ワールド変換
-	const BaseTransform *parent_ = nullptr;	// 親へのアドレス
+	const Transform *parent_ = nullptr;	// 親へのアドレス
 
 public:
 
-	const Vector3 &GetGrobalPos() const { return *reinterpret_cast<const Vector3 *const>(matWorld_.m[3].data()); }
+	const Vector3 &GetGrobalPos() const { return *reinterpret_cast<const Vector3 *const>(&matWorld_[3][0]); }
 
 	Mat4x4 MakeAffine() const;
 
 	void CalcMatrix();
-	void UpdateMatrix();
 
 	bool ImGuiWidget(const std::string &name = "");
 	bool ImGuiWidget2D();
@@ -32,19 +31,13 @@ public:
 
 	/// @brief 純粋な親子関係の構築
 /// @param parent 親のTransform
-	void SetParent(const BaseTransform &parent);
+	void SetParent(const Transform &parent);
 
 	/// @brief グローバル座標を維持した親子関係の構築
 	/// @param parent 親のTransform
-	void ConnectParent(const BaseTransform &parent);
+	void ConnectParent(const Transform &parent);
 
 	/// @brief グローバル座標を維持した親子関係の破棄
 	void DisConnectParent();
 private:
-};
-
-struct Transform :public BaseTransform {
-
-
-
 };
