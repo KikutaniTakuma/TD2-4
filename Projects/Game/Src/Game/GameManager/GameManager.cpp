@@ -29,7 +29,8 @@ void GameManager::InputFunc() {
 			// 末尾のツタ
 			auto ivy = ivys_.back().get();
 
-			auto ivyComp =ivy->GetComponent<IvyComponent>();
+			auto ivyComp = ivy->GetComponent<IvyComponent>();
+			ivyComp->SplitIvy(3);
 
 		}
 	}
