@@ -15,6 +15,7 @@
 #include "../../../../SoLib/Containers/Array2D.h"
 
 #include "GameObject/GameObject.h"
+#include "Game/GameManager/GameManager.h"
 
 class GameScene : public BaseScene {
 public:
@@ -38,11 +39,7 @@ public:
 public:
 	class Water *water_;
 
-	std::unique_ptr<SoLib::IO::File> file_;
-	std::unique_ptr<SoLib::IO::CSV> csv_;
-	std::unique_ptr<SoLib::Array2D<uint32_t>> array2d_;
-
-	std::unique_ptr<GameObject> ivy_;
+	GameManager *gameManager_ = nullptr;
 
 	std::unique_ptr<SkyDome> skydome_;
 	class Cloud *cloud_;

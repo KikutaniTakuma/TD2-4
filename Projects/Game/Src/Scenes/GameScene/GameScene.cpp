@@ -12,6 +12,7 @@
 #include "Game/Cloud/Cloud.h"
 #include "AudioManager/AudioManager.h"
 #include "Utils/ScreenOut/ScreenOut.h"
+#include <GameObject/Component/IvyComponent.h>
 
 GameScene::GameScene() :
 	BaseScene(BaseScene::ID::Game)
@@ -33,14 +34,8 @@ void GameScene::Initialize() {
 	skydome_->Initialize();
 	skydome_->SetTexture(cloud_->GetTex());
 
-	file_ = std::make_unique<SoLib::IO::File>();
-	csv_ = std::make_unique<SoLib::IO::CSV>();
-	array2d_ = std::make_unique<SoLib::Array2D<uint32_t>>(0, 0);
-
-	file_->Load("Resources/TestResource/testcsv.csv");
-	*file_ >> *csv_;
-	array2d_->Resize(csv_->GetHeight(), csv_->GetWidth());
-	std::transform(csv_->view().begin(), csv_->view().end(), array2d_->view().begin(), [](const std::string &str)->uint32_t { return std::stoul(str); });
+	gameManager_ = GameManager::GetInstance();
+	gameManager_->Init();
 }
 
 void GameScene::Finalize() {
@@ -48,6 +43,9 @@ void GameScene::Finalize() {
 }
 
 void GameScene::Update() {
+	// デルタタイム
+	const float deltaTime = Lamb::DeltaTime();
+
 	camera_->Debug("カメラ");
 	camera_->Update();
 
@@ -56,12 +54,8 @@ void GameScene::Update() {
 	cloud_->Update();
 	skydome_->Upadate();
 
-	std::string str;
-	for (const auto i : array2d_->view()) {
-		str += std::to_string(i) + ' ';
-	}
+	gameManager_->Update(deltaTime);
 
-	ImGui::Text("%s", str.c_str());
 
 	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
 		sceneManager_->SceneChange(BaseScene::ID::Title);
@@ -73,6 +67,8 @@ void GameScene::Draw() {
 	skydome_->Draw(*camera_);
 
 	water_->Draw(camera_->GetViewProjection());
+
+	gameManager_->Draw(*camera_);
 
 	Lamb::screenout << "Water and cloud scene" << Lamb::endline
 		<< "Press space to change ""Model scene""";

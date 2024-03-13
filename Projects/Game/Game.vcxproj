@@ -133,6 +133,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Editor\ParticleEditor\ParticleEditor.cpp" />
     <ClCompile Include="Src\GameObject\Component\FollowCameraComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\HealthComp.cpp" />
+    <ClCompile Include="Src\GameObject\Component\IvyComponent.cpp" />
     <ClCompile Include="Src\GameObject\Component\ModelComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\Projectile.cpp" />
     <ClCompile Include="Src\GameObject\Component\Rigidbody.cpp" />
@@ -143,6 +144,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Game\CollisionManager\Obb\Obb.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Plane\Plane.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Sphere\Sphere.cpp" />
+    <ClCompile Include="Src\Game\GameManager\GameManager.cpp" />
     <ClCompile Include="Src\Game\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Src\Game\Water\Water.cpp" />
     <ClCompile Include="Src\GlobalVariables\GlobalVariables.cpp" />
@@ -164,6 +166,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\GameObject\Component\ComponentManager.h" />
     <ClInclude Include="Src\GameObject\Component\FollowCameraComp.h" />
     <ClInclude Include="Src\GameObject\Component\HealthComp.h" />
+    <ClInclude Include="Src\GameObject\Component\IvyComponent.h" />
     <ClInclude Include="Src\GameObject\Component\ModelComp.h" />
     <ClInclude Include="Src\GameObject\Component\Projectile.h" />
     <ClInclude Include="Src\GameObject\Component\Rigidbody.h" />
@@ -174,6 +177,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\CollisionManager\Obb\Obb.h" />
     <ClInclude Include="Src\Game\CollisionManager\Plane\Plane.h" />
     <ClInclude Include="Src\Game\CollisionManager\Sphere\Sphere.h" />
+    <ClInclude Include="Src\Game\GameManager\GameManager.h" />
     <ClInclude Include="Src\Game\SkyDome\SkyDome.h" />
     <ClInclude Include="Src\Game\Water\Water.h" />
     <ClInclude Include="Src\GlobalVariables\GlobalVariables.h" />
