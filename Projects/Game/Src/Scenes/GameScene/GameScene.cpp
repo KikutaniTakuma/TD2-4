@@ -66,10 +66,10 @@ void GameScene::Update() {
 }
 
 void GameScene::Draw() {
-	cloud_->Draw();
+	/*cloud_->Draw();
 	skydome_->Draw(*camera_);
 
-	water_->Draw(camera_->GetViewProjection());
+	water_->Draw(camera_->GetViewProjection());*/
 
 	gameManager_->Draw(*camera_);
 

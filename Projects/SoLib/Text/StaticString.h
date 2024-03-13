@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <array>
 #include <ostream>
+#include <string_view>
 
 namespace SoLib {
 	namespace Text {
@@ -29,7 +30,9 @@ namespace SoLib {
 			static constexpr auto str_ = Str;
 		public:
 
-			constexpr const char *const c_str() const { return str_.buf_.data(); }
+			constexpr std::string_view view() const noexcept { return { str_.data(), str_.length_ + 1 }; }
+
+			constexpr const char *const c_str() const noexcept { return str_.buf_.data(); }
 			inline static constexpr friend std::ostream &operator<< (std::ostream &ost, const StaticString str) { return ost << str.c_str(); }
 		};
 	}

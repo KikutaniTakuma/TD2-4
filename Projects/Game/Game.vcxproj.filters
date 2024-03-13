@@ -86,6 +86,7 @@
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp">
       <Filter>Game\GameManager</Filter>
     </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\IvyModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -257,6 +258,9 @@
     </ClInclude>
     <ClInclude Include="Src\Game\GameManager\GameManager.h">
       <Filter>Game\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\IvyModel.h">
+      <Filter>GameObject\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

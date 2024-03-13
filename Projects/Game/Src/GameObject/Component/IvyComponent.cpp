@@ -1,13 +1,19 @@
 #include "IvyComponent.h"
+#include "IvyModel.h"
 
 void IvyComponent::Init() {
-
+	// モデルを紐づけ
+	ivyModel_ = object_.AddComponent<IvyModelComponent>();
+	movingTime_.Start();
 }
 
 void IvyComponent::Update() {
+	const float deltaTime = GetDeltaTime();
+
 	for (auto &child : childrenIvys_) {
-		child->Update(GetDeltaTime());
+		child->Update(deltaTime);
 	}
+	movingTime_.Update(deltaTime);
 }
 
 void IvyComponent::Draw([[maybe_unused]] const Camera &vp) const {
@@ -42,4 +48,13 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 	}
 
 	return result;
+}
+
+void IvyComponent::TransferData() {
+
+}
+
+bool IvyComponent::IsActive() const {
+
+	return movingTime_.IsActive();
 }

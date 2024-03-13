@@ -20,7 +20,7 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const {
 
 void GameManager::InputAction() {
 	// A を押したときに実行
-	if (input_->GetGamepad()->GetButton(Gamepad::Button::A)) {
+	if (input_->GetGamepad()->Pushed(Gamepad::Button::A)) {
 		// ツタが 1以上あれば
 		if (ivys_.size()) {
 			// 末尾のツタ
