@@ -33,10 +33,14 @@ void GameScene::Initialize() {
 	skydome_->Initialize();
 	skydome_->SetTexture(cloud_->GetTex());
 
-	file_.Load("Resources/TestResource/testcsv.csv");
-	file_ >> csv_;
-	array2d_.Resize(csv_.GetHeight(), csv_.GetWidth());
-	std::transform(csv_.view().begin(), csv_.view().end(), array2d_.view().begin(), [](const std::string &str)->uint32_t { return std::stoul(str); });
+	file_ = std::make_unique<SoLib::IO::File>();
+	csv_ = std::make_unique<SoLib::IO::CSV>();
+	array2d_ = std::make_unique<SoLib::Array2D<uint32_t>>(0, 0);
+
+	file_->Load("Resources/TestResource/testcsv.csv");
+	*file_ >> *csv_;
+	array2d_->Resize(csv_->GetHeight(), csv_->GetWidth());
+	std::transform(csv_->view().begin(), csv_->view().end(), array2d_->view().begin(), [](const std::string &str)->uint32_t { return std::stoul(str); });
 }
 
 void GameScene::Finalize() {
@@ -53,7 +57,7 @@ void GameScene::Update() {
 	skydome_->Upadate();
 
 	std::string str;
-	for (const auto i : array2d_.view()) {
+	for (const auto i : array2d_->view()) {
 		str += std::to_string(i) + ' ';
 	}
 

@@ -57,6 +57,8 @@ public:
 
 	/// @brief コライダの取得
 	Collider &GetCollider() { return collider_; }
+	/// @brief コライダの取得
+	const Collider &GetCollider() const { return collider_; }
 
 	/// @brief jsonからの読み込み
 	/// @param groupName グループ名
