@@ -30,9 +30,12 @@ void GameScene::Initialize() {
 
 	cloud_ = Cloud::GetInstance();
 
-	skydome_.reset(new SkyDome);
+	skydome_ = std::make_unique<SkyDome>();
 	skydome_->Initialize();
 	skydome_->SetTexture(cloud_->GetTex());
+
+	// 実体の破棄
+	GameManager::Finalize();
 
 	gameManager_ = GameManager::GetInstance();
 	gameManager_->Init();
@@ -55,7 +58,6 @@ void GameScene::Update() {
 	skydome_->Upadate();
 
 	gameManager_->Update(deltaTime);
-
 
 	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
 		sceneManager_->SceneChange(BaseScene::ID::Title);

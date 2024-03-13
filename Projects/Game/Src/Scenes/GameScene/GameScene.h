@@ -37,10 +37,10 @@ public:
 	void Draw() override;
 
 public:
-	class Water *water_;
+	class Water *water_ = nullptr;
 
 	GameManager *gameManager_ = nullptr;
 
-	std::unique_ptr<SkyDome> skydome_;
-	class Cloud *cloud_;
+	std::unique_ptr<SkyDome> skydome_ = nullptr;
+	class Cloud *cloud_ = nullptr;
 };

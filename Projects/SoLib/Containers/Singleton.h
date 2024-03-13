@@ -23,7 +23,7 @@ namespace SoLib {
 
 		static T *const GetInstance();
 
-		void Finalize();
+		static void Finalize();
 
 	private:
 

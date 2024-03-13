@@ -2,6 +2,9 @@
 #include "../SoLib/Containers/Singleton.h"
 
 #include <memory>
+#include <list>
+
+#include "../LambEngine/Input/Input.h"
 
 #include "GameObject/GameObject.h"
 
@@ -23,9 +26,12 @@ public:
 
 	void Draw(const Camera &camera) const;
 
+public:
+
+	void InputFunc();
+
 private:
-
-	std::unique_ptr<GameObject> mainIvy_ = nullptr;
-
+	Input *input_ = nullptr;
+	std::list<std::unique_ptr<GameObject>> ivys_;
 
 };
