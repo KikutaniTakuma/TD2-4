@@ -29,7 +29,6 @@ public:
 
 private:
 
-
 	std::list<std::unique_ptr<GameObject>> childrenIvys_;
 	GameObject *parentIvys_;
 

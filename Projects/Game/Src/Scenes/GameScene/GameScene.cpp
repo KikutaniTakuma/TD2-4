@@ -57,6 +57,7 @@ void GameScene::Update() {
 	cloud_->Update();
 	skydome_->Upadate();
 
+	gameManager_->InputAction();
 	gameManager_->Update(deltaTime);
 
 	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {

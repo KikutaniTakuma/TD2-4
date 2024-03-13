@@ -17,6 +17,9 @@ void IvyComponent::Draw([[maybe_unused]] const Camera &vp) const {
 }
 
 bool IvyComponent::SplitIvy(int32_t splitCount) {
+	// もし分裂数が残ってないならその場で終了
+	if (splitCount <= 0) { return false; }
+
 	// 分裂に成功したなら true
 	bool result = true;
 
@@ -24,8 +27,8 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 	if (childrenIvys_.size()) {
 		// 全ての子供に分裂処理を行う
 		for (auto &child : childrenIvys_) {
-			// 分裂に失敗したらfalse
-			result |= not child->GetComponent<IvyComponent>()->SplitIvy(splitCount - 1);
+			// 分裂に失敗したら false
+			result &= child->GetComponent<IvyComponent>()->SplitIvy(splitCount - 1);
 		}
 	}
 	// 持っていない場合は追加

@@ -28,7 +28,12 @@ public:
 
 public:
 
-	void InputFunc();
+	/// @brief 入力動作
+	void InputAction();
+
+private:
+
+	GameObject *AddIvy();
 
 private:
 	Input *input_ = nullptr;
