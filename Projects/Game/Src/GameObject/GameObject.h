@@ -174,13 +174,12 @@ T *const GameObject::AddComponent() {
 	if (findComp) { return findComp; }
 
 	// コンポーネントを生成
-	IComponent *const component = new T(this);
 	std::type_index key = std::type_index(typeid(T));
 
 	// 登録
-	componentMap_[key].reset(component);
+	componentMap_[key] = std::make_unique<T>(this);
 	// 初期化
-	component->Init();
+	componentMap_[key]->Init();
 
 	return GetComponent<T>();
 }
