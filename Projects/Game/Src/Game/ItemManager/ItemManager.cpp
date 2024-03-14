@@ -65,9 +65,9 @@ void ItemManager::Debug(){
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("アイテムリスト")) {
-			for (auto it = modelList_.begin(); it != modelList_.end(); ++it) {
+			for (auto it = modelList_.begin(); it != modelList_.end();) {
 				if (ImGui::TreeNode(("栄養[" + std::to_string(0 + i) + "]").c_str())) {
-
+					ImGui::PushID(&*it);
 					ImGui::DragFloat3("大きさ", &it->get()->scale.x, 0.01f);
 					if (ImGui::IsItemActive()) {
 						it->get()->color = 0xff0000ff;
@@ -86,8 +86,17 @@ void ItemManager::Debug(){
 							it->get()->color = 0xffffffff;
 						}
 					}
-
+					if (ImGui::Button("このオブジェを削除")) {
+						it = modelList_.erase(it);
+					}
+					else {
+						++it;
+					}
+					ImGui::PopID();
 					ImGui::TreePop();
+				}
+				else {
+					++it;
 				}
 				i++;
 			}			

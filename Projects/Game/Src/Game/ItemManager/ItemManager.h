@@ -59,6 +59,11 @@ private:
 
 	std::unique_ptr<Sphere> sphere_;
 
+	//元の色
+	const uint32_t baseColor_ = 0xffffffff;
+	//変更後の色
+	const uint32_t moveColor_ = 0xff0000ff;
+	//大きさをimguiで変更しているかどうか
 	bool changeSize_ = false;
 
 };
