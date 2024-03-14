@@ -18,18 +18,12 @@ void TitleScene::Initialize()
 	camera_->pos.z = -10.0f;
 	camera_->rotate.x = 0.21f;
 
-	model_.reset(new Model{ "./Resources/Ball.obj" });
-
-	model_->light.ptRange = 5.0f;
-	model_->light.ptPos = model_->pos;
-	model_->light.ptPos.y = 3.8f;
-	model_->light.ptColor = Vector3::kIdentity * 15.0f;
-
-	sphere_.reset(new Sphere);
+	itemManager_.reset(new ItemManager);
+	itemManager_->Initialize();
 }
 
-void TitleScene::Finalize()
-{
+void TitleScene::Finalize(){
+	itemManager_->Finalize();
 	
 }
 
@@ -38,11 +32,8 @@ void TitleScene::Update()
 	camera_->Debug("カメラ");
 	camera_->Update(Vector3::kZero);
 
-	model_->Debug("テスト用モデル");
-	model_->Update();
-
-	sphere_->Debug("Sphere");
-	sphere_->Update();
+	itemManager_->Update();
+	itemManager_->Debug();
 
 	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::A)) {
 		sceneManager_->SceneChange(BaseScene::ID::Game);
@@ -51,10 +42,13 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	model_->Draw(camera_->GetViewProjection(), camera_->GetPos());
-
-	sphere_->Draw(camera_->GetViewProjection(), std::numeric_limits<uint32_t>::max());
+	itemManager_->Draw(camera_.get());
 
 	Lamb::screenout << "Model scene" << Lamb::endline
 		<< "Press space to change ""Water and cloud scene""";
+}
+
+void TitleScene::Debug(){
+
+
 }

@@ -9,6 +9,7 @@
 #include "Game/CollisionManager/Collider/Collider.h"
 #include "Utils/Easeing/Easeing.h"
 #include "Game/SkyDome/SkyDome.h"
+#include "Game/ItemManager/ItemManager.h"
 #include "Game/CollisionManager/Sphere/Sphere.h"
 
 class TitleScene : public BaseScene {
@@ -30,7 +31,9 @@ public:
 
 	void Draw() override;
 
+	void Debug();
+
 public:
-	std::unique_ptr<Model> model_;
+	std::unique_ptr<ItemManager> itemManager_;
 	std::unique_ptr<Sphere> sphere_;
 };

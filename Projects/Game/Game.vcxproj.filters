@@ -80,6 +80,9 @@
     <ClCompile Include="Src\GameObject\GameObject.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\ItemManager\ItemManager.cpp">
+      <Filter>Game\ItemManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -156,6 +159,9 @@
     </Filter>
     <Filter Include="GameObject\Component">
       <UniqueIdentifier>{0323e700-4ffc-4e87-983b-59d2162784f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\ItemManager">
+      <UniqueIdentifier>{d77f51b9-22e2-4035-8c39-f80c267f0916}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -242,6 +248,9 @@
     </ClInclude>
     <ClInclude Include="Src\GameObject\GameObject.h">
       <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\ItemManager\ItemManager.h">
+      <Filter>Game\ItemManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
