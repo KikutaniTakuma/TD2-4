@@ -1,5 +1,7 @@
 #include "IvyComponent.h"
 #include "IvyModel.h"
+#include "../SoLib/Math/Euler.h"
+#include "../SoLib/Math/Math.hpp"
 
 void IvyComponent::Init() {
 	// モデルを紐づけ
@@ -21,7 +23,7 @@ void IvyComponent::Update() {
 	// かつ動作フラグが立っていて、&
 	// 子供が存在しない
 	// 場合は線を追加する
-	if (movingTime_.IsActive() and isActive_) {
+	if (movingTime_.IsActive() and isActive_ and not childrenIvys_.size()) {
 		// 線の追加
 		AddLine();
 		// 終了している(瞬間)に停止タイマーを動かす
@@ -73,6 +75,8 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 			childIvy->parentIvys_ = this;
 
 			child->transform_.translate = *lastPos;
+
+			childIvy->moveDirections_ = moveDirections_ * Mat4x4::MakeRotateZ(45._deg * (i * 2 - 1));
 
 			childrenIvys_.push_back(std::move(child));
 		}
