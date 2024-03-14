@@ -138,6 +138,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\GameObject\Component\Rigidbody.cpp" />
     <ClCompile Include="Src\GameObject\GameObject.cpp" />
     <ClCompile Include="Src\Game\Cloud\Cloud.cpp" />
+    <ClCompile Include="Src\Game\CollisionManager\Capsule\Capsule.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Collider\Collider.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Obb\Obb.cpp" />
@@ -169,6 +170,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\GameObject\Component\Rigidbody.h" />
     <ClInclude Include="Src\GameObject\GameObject.h" />
     <ClInclude Include="Src\Game\Cloud\Cloud.h" />
+    <ClInclude Include="Src\Game\CollisionManager\Capsule\Capsule.h" />
     <ClInclude Include="Src\Game\CollisionManager\Collider\Collider.h" />
     <ClInclude Include="Src\Game\CollisionManager\CollisionManager.h" />
     <ClInclude Include="Src\Game\CollisionManager\Obb\Obb.h" />
