@@ -6,6 +6,7 @@
 #include "Game/Cloud/Cloud.h"
 #include "AudioManager/AudioManager.h"
 #include "Utils/ScreenOut/ScreenOut.h"
+#include "Game/CollisionManager/Capsule/Capsule.h"
 
 TitleScene::TitleScene():
 	BaseScene{BaseScene::ID::Title}
@@ -14,18 +15,19 @@ TitleScene::TitleScene():
 
 void TitleScene::Initialize()
 {
-	camera_->pos.y = 2.85f;
-	camera_->pos.z = -10.0f;
-	camera_->rotate.x = 0.21f;
+	camera_->pos = Vector2{ 500.f, 300.f };
 
-	model_.reset(new Model{ "./Resources/Ball.obj" });
+	tex_.reset( new Texture2D( "./Resources/Ball.png" ) );
+	tex_->scale *= 30.0f;
+	tex_->pos = Vector2{ 500.0f, 0.0f };
 
-	model_->light.ptRange = 5.0f;
-	model_->light.ptPos = model_->pos;
-	model_->light.ptPos.y = 3.8f;
-	model_->light.ptColor = Vector3::kIdentity * 15.0f;
+	sphere_.reset(new Texture2D("./Resources/Ball.png"));
+	sphere_->scale *= 60.0f;
+	sphere_->pos = Vector2{ 100.0f, 100.0f };
+	sphere2_.reset(new Texture2D("./Resources/Ball.png"));
+	sphere2_->scale *= 60.0f;
+	sphere2_->pos = Vector2{ 1000.0f, 400.0f };
 
-	sphere_.reset(new Sphere);
 }
 
 void TitleScene::Finalize()
@@ -36,25 +38,59 @@ void TitleScene::Finalize()
 void TitleScene::Update()
 {
 	camera_->Debug("カメラ");
-	camera_->Update(Vector3::kZero);
+	camera_->Update();
 
-	model_->Debug("テスト用モデル");
-	model_->Update();
+	auto* const key = input_->GetKey();
+
+	Vector3 moveVec;
+
+	if (key->GetKey(DIK_W)) {
+		moveVec.y = 1.0f;
+	}
+	if (key->GetKey(DIK_S)) {
+		moveVec.y = -1.0f;
+	}
+	if (key->GetKey(DIK_D)) {
+		moveVec.x = 1.0f;
+	}
+	if (key->GetKey(DIK_A)) {
+		moveVec.x = -1.0f;
+	}
+	tex_->pos += moveVec.Normalize() * 100.0f * Lamb::DeltaTime();
+
+	auto* const mouse = input_->GetMouse();
+
+	if (mouse->LongPush(Mouse::Button::Left)) {
+		tex_->pos = Vector3(mouse->GetPos()) * Mat4x4::MakeInverse(camera_->GetViewOthographicsVp());
+	}
+
+
+	isCollision_ = Lamb::Collision::Capsule(
+		sphere_->pos, sphere2_->pos, sphere_->scale.x * 0.5f,
+		tex_->pos, tex_->scale.x * 0.5f
+	);
+
+	tex_->color = isCollision_ ? 0xff0000ff : 0xffffffff;
+
+	tex_->Debug("テスト用サークル");
+	tex_->Update();
 
 	sphere_->Debug("Sphere");
 	sphere_->Update();
+	sphere2_->Debug("Sphere2");
+	sphere2_->Update();
 
-	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::A)) {
-		sceneManager_->SceneChange(BaseScene::ID::Game);
-	}
 }
 
 void TitleScene::Draw()
 {
-	model_->Draw(camera_->GetViewProjection(), camera_->GetPos());
+	tex_->Draw(camera_->GetViewOthographics());
 
-	sphere_->Draw(camera_->GetViewProjection(), std::numeric_limits<uint32_t>::max());
+	sphere_->Draw(camera_->GetViewOthographics());
+	sphere2_->Draw(camera_->GetViewOthographics());
 
-	Lamb::screenout << "Model scene" << Lamb::endline
-		<< "Press space to change ""Water and cloud scene""";
+	Line::Draw(sphere_->pos, sphere2_->pos, camera_->GetViewOthographics(), 0xffffffff);
+
+	Lamb::screenout << "Capsule Test" << Lamb::endline
+		<< "Check : " << isCollision_;
 }
