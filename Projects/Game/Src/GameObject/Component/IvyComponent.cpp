@@ -65,6 +65,7 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 		const Vector3 *lastPos = ivyModel_->GetLastPos();
 		// もし開始地点が存在しない場合は原点から
 		if (not lastPos) {
+			// 自分自身の座標を渡す
 			lastPos = &transform_.translate;
 		}
 
@@ -74,10 +75,13 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 			// 自分自身を親として保存
 			childIvy->parentIvys_ = this;
 
+			// 終端の座標を子供に渡す
 			child->transform_.translate = *lastPos;
 
+			// 自分の角度から45度回して子供に渡す
 			childIvy->moveDirections_ = moveDirections_ * Mat4x4::MakeRotateZ(i ? -45._deg : 45._deg);
 
+			// 子供のコンテナに格納
 			childrenIvys_.push_back(std::move(child));
 		}
 	}
