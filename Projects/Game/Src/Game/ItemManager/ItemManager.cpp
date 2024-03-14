@@ -57,7 +57,10 @@ void ItemManager::Debug(){
 				ImGui::DragFloat3("座標", &sphere_->translation.x, 0.01f);
 
 				if (ImGui::Button("アイテム追加")) {
-					AddItem(sphere_->translation,Vector3(sphere_->radius,sphere_->radius, sphere_->radius));
+					if (OperationConfirmation()) {
+						AddItem(sphere_->translation, Vector3(sphere_->radius, sphere_->radius, sphere_->radius));
+					}			
+					
 				}
 				ImGui::TreePop();
 			}
@@ -87,7 +90,13 @@ void ItemManager::Debug(){
 						}
 					}
 					if (ImGui::Button("このオブジェを削除")) {
-						it = modelList_.erase(it);
+						if (OperationConfirmation()){
+							it = modelList_.erase(it);
+						}
+						else {
+							++it;
+						}
+						
 					}
 					else {
 						++it;
@@ -118,4 +127,18 @@ void ItemManager::AddItem(const Vector3& pos, const Vector3& scale){
 	auto& model = modelList_.emplace_back(std::make_unique<Model>("./Resources/Ball.obj"));
 	model->pos = pos;
 	model->scale = scale;
+}
+
+bool ItemManager::OperationConfirmation() {
+	int result = MessageBox(nullptr, L"この操作を続けますか?", L"Confirmation", MB_YESNO | MB_ICONQUESTION);
+	if (result == IDYES) {
+		return true;
+	}
+	else if (result == IDNO) {
+		return false;
+	}
+	else {
+		return false;
+	}
+
 }

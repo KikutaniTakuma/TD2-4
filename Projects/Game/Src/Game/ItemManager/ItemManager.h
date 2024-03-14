@@ -46,6 +46,9 @@ public:
 	/// <param name="scale">大きさ</param>
 	void AddItem(const Vector3& pos, const Vector3& scale);
 
+	//imguiの操作をそのまま続けるかどうかのメッセージボックスを表示
+	bool OperationConfirmation();
+
 private:
 	/*std::list<std::unique_ptr<GameObject>> itemList_;
 
