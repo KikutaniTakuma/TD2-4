@@ -79,7 +79,7 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 			child->transform_.translate = *lastPos;
 
 			// 自分の角度から45度回して子供に渡す
-			childIvy->moveDirections_ = moveDirections_ * Mat4x4::MakeRotateZ(i ? -45._deg : 45._deg);
+			childIvy->moveDirections_ = moveDirections_ * Mat4x4::MakeRotateZ(i ? -vDefaultAngle_ : *vDefaultAngle_);
 
 			// 子供のコンテナに格納
 			childrenIvys_.push_back(std::move(child));

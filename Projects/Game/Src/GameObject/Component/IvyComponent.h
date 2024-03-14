@@ -58,7 +58,9 @@ private:
 	SoLib::Time::DeltaTimer stopTime_{ };
 
 	// 伸びる距離の初期値
-	SoLib::VItem<"伸びる距離の初期値", float> vDefaultMaxLength_ = 5.f;
+	SoLib::VItem<"伸びる距離の初期値", float> vDefaultMaxLength_ = 150.f;
+
+	const SoLib::VItem<"初期発射角度", float> vDefaultAngle_ = 45_deg;
 
 	// 子供のツタ
 	std::list<std::unique_ptr<GameObject>> childrenIvys_;

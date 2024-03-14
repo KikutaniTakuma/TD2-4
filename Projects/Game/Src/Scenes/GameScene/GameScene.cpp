@@ -13,6 +13,7 @@
 #include "AudioManager/AudioManager.h"
 #include "Utils/ScreenOut/ScreenOut.h"
 #include <GameObject/Component/IvyComponent.h>
+#include <GameObject/Component/EnergyItem.h>
 
 GameScene::GameScene() :
 	BaseScene(BaseScene::ID::Game)
@@ -20,9 +21,8 @@ GameScene::GameScene() :
 
 void GameScene::Initialize() {
 	camera_->farClip = 3000.0f;
-	camera_->pos.y = 15.0f;
+	camera_->pos.y = 300.0f;
 	camera_->pos.z = -5.0f;
-	camera_->rotate.x = 0.25f;
 	camera_->offset.z = -60.0f;
 	camera_->offset.y = 8.0f;
 
@@ -39,6 +39,8 @@ void GameScene::Initialize() {
 
 	gameManager_ = GameManager::GetInstance();
 	gameManager_->Init();
+
+	energy_.AddComponent<EnergyItem>();
 }
 
 void GameScene::Finalize() {
@@ -60,6 +62,8 @@ void GameScene::Update() {
 	gameManager_->InputAction();
 	gameManager_->Update(deltaTime);
 
+	energy_.Update(deltaTime);
+
 	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
 		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}
@@ -72,6 +76,8 @@ void GameScene::Draw() {
 	water_->Draw(camera_->GetViewProjection());*/
 
 	gameManager_->Draw(*camera_);
+
+	energy_.Draw(*camera_);
 
 	Lamb::screenout << "Water and cloud scene" << Lamb::endline
 		<< "Press space to change ""Model scene""";

@@ -86,7 +86,12 @@
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp">
       <Filter>Game\GameManager</Filter>
     </ClCompile>
-    <ClCompile Include="Src\GameObject\Component\IvyModel.cpp" />
+    <ClCompile Include="Src\GameObject\Component\EnergyItem.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\IvyModel.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -260,6 +265,9 @@
       <Filter>Game\GameManager</Filter>
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\IvyModel.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\EnergyItem.h">
       <Filter>GameObject\Component</Filter>
     </ClInclude>
   </ItemGroup>

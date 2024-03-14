@@ -131,6 +131,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\Editor\ParticleEditor\ParticleEditor.cpp" />
+    <ClCompile Include="Src\GameObject\Component\EnergyItem.cpp" />
     <ClCompile Include="Src\GameObject\Component\FollowCameraComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\HealthComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\IvyComponent.cpp" />
@@ -165,6 +166,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Editor\ParticleEditor\ParticleEditor.h" />
     <ClInclude Include="Src\GameObject\Component\Collider.h" />
     <ClInclude Include="Src\GameObject\Component\ComponentManager.h" />
+    <ClInclude Include="Src\GameObject\Component\EnergyItem.h" />
     <ClInclude Include="Src\GameObject\Component\FollowCameraComp.h" />
     <ClInclude Include="Src\GameObject\Component\HealthComp.h" />
     <ClInclude Include="Src\GameObject\Component\IvyComponent.h" />

@@ -84,7 +84,7 @@ public:
 
 class GameObject {
 	// 生きているか
-	bool isActive_ = false;
+	bool isActive_ = true;
 	// コンポーネントの連想コンテナ
 	std::unordered_map<std::type_index, std::unique_ptr<IComponent>> componentMap_;
 
