@@ -81,24 +81,32 @@ void GameManager::RandomPopEnergys(const Vector2 &origin, const Vector2 &radius,
 	for (size_t i = 0; i < count; i++) {
 		// 乱数による栄養の座標の算出
 		Vector2 pos = origin + Lamb::Random(-radius, +radius);
-
-		// 追加する栄養アイテム
-		std::unique_ptr<GameObject> newEnergy = std::make_unique<GameObject>();
-		// 座標の指定
-		newEnergy->transform_.translate = pos;
-		// アイテムのコンポーネントを追加
-		newEnergy->AddComponent<EnergyItem>();
-
-		// コンテナに格納
-		energyItems_.push_back(std::move(newEnergy));
+		// 栄養アイテムを設置
+		AddEnergy(pos);
 	}
 }
 
-
-GameObject *GameManager::AddIvy() {
-	// 追加したツタのオブジェクト
+GameObject *GameManager::AddIvy(const Vector3 &pos)
+{
+	// コンテナに追加したツタのオブジェクト
 	GameObject *monoIvy = ivys_.emplace_back(std::make_unique<GameObject>()).get();
+	// 座標の変更
+	monoIvy->transform_.translate = pos;
 	// コンポーネントを追加
 	monoIvy->AddComponent<IvyComponent>();
+
 	return monoIvy;
 }
+
+GameObject *GameManager::AddEnergy(const Vector3 &pos)
+{
+	// コンテナに追加した栄養アイテム
+	GameObject *newEnergy = energyItems_.emplace_back(std::make_unique<GameObject>()).get();
+	// 座標の変更
+	newEnergy->transform_.translate = pos;
+	// アイテムのコンポーネントを追加
+	newEnergy->AddComponent<EnergyItem>();
+
+	return newEnergy;
+}
+

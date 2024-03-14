@@ -42,7 +42,11 @@ private:
 
 	/// @brief ツルの追加
 	/// @return 追加されたツルのオブジェクト
-	GameObject *AddIvy();
+	GameObject *AddIvy(const Vector3 &pos = {});
+
+	/// @brief ツルの追加
+	/// @return 追加されたツルのオブジェクト
+	GameObject *AddEnergy(const Vector3 &pos = {});
 
 private:
 
