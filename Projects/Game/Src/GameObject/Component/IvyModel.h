@@ -22,6 +22,8 @@ public:
 	/// @return 終端座標(もしnullptrなら存在しない)
 	const Vector3 *GetLastPos() const;
 
+	const auto &GetLines() const { return lines_; }
+
 private:
 
 	std::list<std::unique_ptr<Line>> lines_;

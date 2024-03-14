@@ -99,6 +99,12 @@ bool IvyComponent::IsActive() const {
 }
 
 void IvyComponent::AddLine() {
+	if (deltaStore_.first++ < 5) {
+		deltaStore_.second += GetDeltaTime();
+		return;
+	}
+	deltaStore_.first = 0;
+
 	// 線の開始地点の取得
 	const Vector3 *lastPos = ivyModel_->GetLastPos();
 	// もし開始地点が存在しない場合は原点から
@@ -106,7 +112,21 @@ void IvyComponent::AddLine() {
 		lastPos = &transform_.translate;
 	}
 	// 追加される線の長さ
-	float lineLength = static_cast<float>(GetDeltaTime() / *vDefaultMoveTime_) * vDefaultMaxLength_;
+	float lineLength = static_cast<float>(deltaStore_.second / *vDefaultMoveTime_) * vDefaultMaxLength_;
 	// 線の追加
 	ivyModel_->AddLine(*lastPos, *lastPos + moveDirections_ * lineLength);
+
+	deltaStore_.second = 0.f;
+}
+
+std::list<const std::list<std::unique_ptr<Line>> *> IvyComponent::GetAllLines()
+{
+	std::list<const std::list<std::unique_ptr<Line>> *> result{};
+	result.push_back(&GetLines());
+
+	for (const auto &child : childrenIvys_) {
+		result.splice(result.end(), std::move(child->GetComponent<IvyComponent>()->GetAllLines()));
+	}
+
+	return result;
 }

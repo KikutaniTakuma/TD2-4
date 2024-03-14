@@ -3,6 +3,7 @@
 #include "GameObject/Component/EnergyItem.h"
 #include "GameObject/Component/IvyComponent.h"
 #include "Utils/Random/Random.h"
+#include <Game/CollisionManager/Collider/Collider.h>
 
 void GameManager::Init() {
 
@@ -10,11 +11,36 @@ void GameManager::Init() {
 }
 
 void GameManager::Update([[maybe_unused]] const float deltaTime) {
+	struct InAABB {
+		Vector2 min;
+		Vector2 max;
+	};
+	std::erase_if(energyItems_, [](auto &itr)->bool { return not itr->GetActive(); });
+
 	for (auto &ivy : ivys_) {
 		ivy->Update(deltaTime);
 	}
 	for (auto &energy : energyItems_) {
 		energy->Update(deltaTime);
+	}
+
+	for (const auto &ivy : ivys_) {
+
+
+		const auto &ivyAllLines = ivy->GetComponent<IvyComponent>()->GetAllLines();
+		//InAABB aabb{ std::(ivyLines.front()->start.x), }
+		for(const auto& ivyLines: ivyAllLines){
+			for (const auto &line : *ivyLines) {
+				for (auto &energy : energyItems_) {
+					// 半径
+					float rad = energy->GetComponent<EnergyItem>()->GetRadius();
+					if ((line->start - energy->transform_.translate).Length() < rad or (line->end - energy->transform_.translate).Length() < rad) {
+						energy->SetActive(false);
+					}
+				}
+			}
+
+		}
 	}
 }
 

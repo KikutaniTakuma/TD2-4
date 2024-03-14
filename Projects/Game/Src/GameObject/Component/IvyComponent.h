@@ -35,11 +35,19 @@ public:
 	/// @brief ツタの線を追加
 	void AddLine();
 
+	const auto &GetLines() const { return ivyModel_->GetLines(); }
+
+	const auto &GetChildren() const { return childrenIvys_; }
+
+	std::list<const std::list<std::unique_ptr<Line>> *> GetAllLines();
+
 public:
 
 	using GroupName = SoLib::Text::StaticString<"IvyComponent">;
 
 private:
+
+	std::pair<uint32_t, float> deltaStore_{};
 
 	bool isActive_ = false;
 
