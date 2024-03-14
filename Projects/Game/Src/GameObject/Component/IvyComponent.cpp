@@ -5,20 +5,33 @@ void IvyComponent::Init() {
 	// モデルを紐づけ
 	ivyModel_ = object_.AddComponent<IvyModelComponent>();
 	movingTime_.Start(vDefaultMoveTime_);
+	isActive_ = true;
 }
 
 void IvyComponent::Update() {
 	const float deltaTime = GetDeltaTime();
 	movingTime_.Update(deltaTime);
+	stopTime_.Update(deltaTime);
 
 	for (auto &child : childrenIvys_) {
 		child->Update(deltaTime);
 	}
 
-	// タイマーが有効な間は線を追加する
-	if (movingTime_.IsActive()) {
+	// 動作中タイマーが有効で、&
+	// かつ動作フラグが立っていて、&
+	// 子供が存在しない
+	// 場合は線を追加する
+	if (movingTime_.IsActive() and isActive_) {
 		// 線の追加
 		AddLine();
+		// 終了している(瞬間)に停止タイマーを動かす
+		if (movingTime_.IsFinish()) {
+			stopTime_.Start(vDefaultStopTime_);
+		}
+	}
+
+	if (stopTime_.IsFinish()) {
+		isActive_ = false;
 	}
 }
 
@@ -45,11 +58,21 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 	}
 	// 持っていない場合は追加
 	else {
+
+		// 線の開始地点の取得
+		const Vector3 *lastPos = ivyModel_->GetLastPos();
+		// もし開始地点が存在しない場合は原点から
+		if (not lastPos) {
+			lastPos = &transform_.translate;
+		}
+
 		for (uint32_t i = 0; i < 2; i++) {
 			auto child = std::make_unique<GameObject>();
 			auto childIvy = child->AddComponent<IvyComponent>();
 			// 自分自身を親として保存
 			childIvy->parentIvys_ = this;
+
+			child->transform_.translate = *lastPos;
 
 			childrenIvys_.push_back(std::move(child));
 		}
@@ -64,7 +87,7 @@ void IvyComponent::TransferData() {
 
 bool IvyComponent::IsActive() const {
 
-	return movingTime_.IsActive();
+	return isActive_;
 }
 
 void IvyComponent::AddLine() {

@@ -40,10 +40,16 @@ public:
 	using GroupName = SoLib::Text::StaticString<"IvyComponent">;
 
 private:
+
+	bool isActive_ = false;
+
 	Vector3 moveDirections_ = { 0.f,1.f,0.f };
 
 	// 伸びる時間の初期値
 	SoLib::VItem<"伸びる時間の初期値", float> vDefaultMoveTime_ = 1.f;
+
+	// 止まる時間の初期値
+	SoLib::VItem<"止まる時間の初期値", float> vDefaultStopTime_ = 0.75f;
 
 	// 伸びる時に使うタイマー
 	SoLib::Time::DeltaTimer movingTime_{ };
