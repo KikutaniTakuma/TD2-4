@@ -29,10 +29,9 @@ void ItemManager::Finalize(){
 }
 
 void ItemManager::Update(){
-	int i = 0;
+	
 	for (auto it = modelList_.begin(); it != modelList_.end(); ++it) {
 		it->get()->Update();
-		i++;
 	}
 
 	sphere_->Debug("Sphere");
@@ -51,8 +50,8 @@ void ItemManager::Debug(){
 	int i = 0;
 
 	if (ImGui::BeginMenuBar()){
-		if (ImGui::BeginMenu("make Item")) {
-			if (ImGui::TreeNode("make model")) {
+		if (ImGui::BeginMenu("オブジェクト追加")) {
+			if (ImGui::TreeNode("アイテム追加")) {
 				ImGui::DragFloat("大きさ", &sphere_->radius, 0.01f);
 				//ImGui::DragFloat3("回転", &sphere_->worldRoate.x, 0.01f);
 				ImGui::DragFloat3("座標", &sphere_->translation.x, 0.01f);
@@ -67,10 +66,27 @@ void ItemManager::Debug(){
 		}
 		if (ImGui::BeginMenu("アイテムリスト")) {
 			for (auto it = modelList_.begin(); it != modelList_.end(); ++it) {
-				if (ImGui::TreeNode(("栄養[" + std::to_string(1 + i) + "]").c_str())) {
+				if (ImGui::TreeNode(("栄養[" + std::to_string(0 + i) + "]").c_str())) {
+
 					ImGui::DragFloat3("大きさ", &it->get()->scale.x, 0.01f);
+					if (ImGui::IsItemActive()) {
+						it->get()->color = 0xff0000ff;
+						changeSize_ = true;
+					}
+					else {
+						changeSize_ = false;
+						it->get()->color = 0xffffffff;
+					}
 					ImGui::DragFloat3("座標", &it->get()->pos.x, 0.01f);
-					
+					if (changeSize_ == false) {
+						if (ImGui::IsItemActive()) {
+							it->get()->color = 0xff0000ff;
+						}
+						else {
+							it->get()->color = 0xffffffff;
+						}
+					}
+
 					ImGui::TreePop();
 				}
 				i++;

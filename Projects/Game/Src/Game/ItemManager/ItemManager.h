@@ -59,5 +59,7 @@ private:
 
 	std::unique_ptr<Sphere> sphere_;
 
+	bool changeSize_ = false;
+
 };
 
