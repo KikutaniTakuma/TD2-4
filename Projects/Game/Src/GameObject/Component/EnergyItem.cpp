@@ -3,7 +3,7 @@
 void EnergyItem::Init() {
 	itemTexture_ = std::make_unique<Texture2D>();
 	itemTexture_->ThreadLoadTexture("Resources/circle.png");
-	itemTexture_->scale = { 100,100 };
+	itemTexture_->scale = { 50,50 };
 }
 
 void EnergyItem::Update() {
@@ -12,5 +12,5 @@ void EnergyItem::Update() {
 }
 
 void EnergyItem::Draw([[maybe_unused]] const Camera &camera) const {
-	itemTexture_->Draw(camera.GetViewOthographics());
+	itemTexture_->Draw(camera.GetViewOthographics(), Pipeline::Add);
 }

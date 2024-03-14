@@ -12,8 +12,6 @@
 #include "Game/Cloud/Cloud.h"
 #include "AudioManager/AudioManager.h"
 #include "Utils/ScreenOut/ScreenOut.h"
-#include <GameObject/Component/IvyComponent.h>
-#include <GameObject/Component/EnergyItem.h>
 
 GameScene::GameScene() :
 	BaseScene(BaseScene::ID::Game)
@@ -34,17 +32,15 @@ void GameScene::Initialize() {
 	skydome_->Initialize();
 	skydome_->SetTexture(cloud_->GetTex());
 
-	// 実体の破棄
-	GameManager::Finalize();
 
 	gameManager_ = GameManager::GetInstance();
 	gameManager_->Init();
-
-	energy_.AddComponent<EnergyItem>();
 }
 
 void GameScene::Finalize() {
 
+	// 実体の破棄
+	GameManager::Finalize();
 }
 
 void GameScene::Update() {
@@ -62,7 +58,7 @@ void GameScene::Update() {
 	gameManager_->InputAction();
 	gameManager_->Update(deltaTime);
 
-	energy_.Update(deltaTime);
+	gameManager_->Debug("GameManager");
 
 	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
 		sceneManager_->SceneChange(BaseScene::ID::Title);
@@ -76,8 +72,6 @@ void GameScene::Draw() {
 	water_->Draw(camera_->GetViewProjection());*/
 
 	gameManager_->Draw(*camera_);
-
-	energy_.Draw(*camera_);
 
 	Lamb::screenout << "Water and cloud scene" << Lamb::endline
 		<< "Press space to change ""Model scene""";
