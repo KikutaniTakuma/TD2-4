@@ -9,6 +9,7 @@
 #include "GlobalVariables/GlobalVariables.h"
 #include "Game/CollisionManager/Collider/Collider.h"
 #include "Game/CollisionManager/Sphere/Sphere.h"
+#include <json.hpp>
 
 
 class ItemManager{
@@ -69,5 +70,48 @@ private:
 	//大きさをimguiで変更しているかどうか
 	bool changeSize_ = false;
 
+	/*ファイル制御関連*/
+private:
+	//メンバ関数
+	using json = nlohmann::json;
+	//ファイルに保存する
+	void SaveFile(const std::string& stageNumber);
+	//ファイルに書いてあるものに上書きする
+	void FileOverWrite();
+	//ファイルが存在するか確認する
+	void ChackFiles();
+	//ファイルを読み込む(走査)
+	void LoadFiles(const std::string& stageNumber);
+	//ファイルを読み込む
+	void LoadFile(const std::string& groupName);
+	//ファイルが存在するか確認する(指定)
+	bool LoadChackItem(const std::string& stageNumber);
+
+private:
+
+
+	void from_json(const json& j, Vector3& v);
+
+private:
+	//ファイル保存関連
+	int chackOnlyNumber = 0;
+
+	std::vector<std::string> stages_;
+
+	std::string stageName_;
+
+	int stageSelectNum_;
+
+	const std::string kDirectoryPath = "Resources/Datas/Items/";
+
+	const std::string kDirectoryName = "Resources/Datas/Items";
+
+	const std::string kItemName_ = "nutrition";
+
+	std::string Name_ = "\0";
+
+	char ItemName_[256]{};
+
+	std::vector<std::string> fileName;
 };
 
