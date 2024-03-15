@@ -92,6 +92,9 @@
     <ClCompile Include="Src\GameObject\Component\IvyModel.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\CollisionManager\Capsule\Capsule.cpp">
+      <Filter>Game\CollisionManager\Capsule</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -171,6 +174,9 @@
     </Filter>
     <Filter Include="Game\GameManager">
       <UniqueIdentifier>{ea8534b9-646f-4ddf-aaed-06c92f5f42b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CollisionManager\Capsule">
+      <UniqueIdentifier>{decf7b45-ff6d-42a2-85f0-8d30b56bb527}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -269,6 +275,9 @@
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\EnergyItem.h">
       <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\CollisionManager\Capsule\Capsule.h">
+      <Filter>Game\CollisionManager\Capsule</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
