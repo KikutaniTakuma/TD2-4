@@ -20,10 +20,9 @@ void IvyComponent::Update() {
 	}
 
 	// 動作中タイマーが有効で、&
-	// かつ動作フラグが立っていて、&
 	// 子供が存在しない
 	// 場合は線を追加する
-	if (movingTime_.IsActive() and isActive_ and not childrenIvys_.size()) {
+	if (movingTime_.IsActive() and not childrenIvys_.size()) {
 		// 線の追加
 		AddLine();
 		// 終了している(瞬間)に停止タイマーを動かす
@@ -61,6 +60,9 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 	// 持っていない場合は追加
 	else {
 
+		// 動作中をフラグを無効化
+		isActive_ = false;
+
 		// 線の開始地点の取得
 		const Vector3 *lastPos = ivyModel_->GetLastPos();
 		// もし開始地点が存在しない場合は原点から
@@ -79,7 +81,7 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 			child->transform_.translate = *lastPos;
 
 			// 自分の角度から45度回して子供に渡す
-			childIvy->moveDirections_ = moveDirections_ * Mat4x4::MakeRotateZ(i ? -vDefaultAngle_ : *vDefaultAngle_);
+			childIvy->moveDirections_ = moveDirections_ * Quaternion::MakeRotateZAxis(i ? -vDefaultAngle_ : *vDefaultAngle_);
 
 			// 子供のコンテナに格納
 			childrenIvys_.push_back(std::move(child));
@@ -94,8 +96,18 @@ void IvyComponent::TransferData() {
 }
 
 bool IvyComponent::IsActive() const {
-
-	return isActive_;
+	// 自分自身か、子供のどちらかがtrueであればtrueを返す
+	return isActive_ or [this]()->bool
+		{
+			for (const auto &child : GetChildren()) {
+				// どれか一つでもtrueであった場合はtrueを返す
+				if (child->GetComponent<IvyComponent>()->IsActive()) {
+					return true;
+				}
+			}
+			// 全てがtrueであればtrueを返す
+			return false;
+		}();
 }
 
 void IvyComponent::AddLine() {

@@ -69,6 +69,8 @@ bool GameManager::Debug([[maybe_unused]] const char *const str) {
 		RandomPopEnergys(centor_, radius_, count_);
 	}
 
+	SoLib::ImGuiWidget("Ivys", &ivys_, ivys_.begin(), [](const decltype(ivys_.begin()) &itr)->std::string { return SoLib::to_string((*itr)->GetComponent<IvyComponent>()->IsActive()); });
+
 	ImGui::End();
 
 #endif // _DEBUG
@@ -98,8 +100,6 @@ void GameManager::InputAction() {
 		}
 		//ツタが無い場合
 		else {
-
-
 			// ツタの追加
 			RandomAddIvy();
 		}
