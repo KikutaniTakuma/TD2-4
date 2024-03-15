@@ -16,6 +16,8 @@
 
 #include "GameObject/GameObject.h"
 
+#include "Camera/DebugCamera/DebugCamera.h"
+
 class GameScene : public BaseScene {
 public:
 	GameScene();
@@ -46,4 +48,7 @@ public:
 
 	std::unique_ptr<SkyDome> skydome_;
 	class Cloud *cloud_;
+
+	std::unique_ptr<DebugCamera> debugCamera_;
+	bool isDebug_;
 };

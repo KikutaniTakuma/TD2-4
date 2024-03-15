@@ -18,12 +18,21 @@ GameScene::GameScene() :
 {}
 
 void GameScene::Initialize() {
-	camera_->farClip = 3000.0f;
-	camera_->pos.y = 15.0f;
-	camera_->pos.z = -5.0f;
-	camera_->rotate.x = 0.25f;
-	camera_->offset.z = -60.0f;
-	camera_->offset.y = 8.0f;
+	debugCamera_ = std::make_unique<DebugCamera>();
+
+	currentCamera_->farClip = 3000.0f;
+	currentCamera_->pos.y = 15.0f;
+	currentCamera_->pos.z = -5.0f;
+	currentCamera_->rotate.x = 0.25f;
+	currentCamera_->offset.z = -60.0f;
+	currentCamera_->offset.y = 8.0f;
+
+	debugCamera_->farClip = 3000.0f;
+	debugCamera_->pos.y = 15.0f;
+	debugCamera_->pos.z = -5.0f;
+	debugCamera_->rotate.x = 0.25f;
+	debugCamera_->offset.z = -60.0f;
+	debugCamera_->offset.y = 8.0f;
 
 	water_ = Water::GetInstance();
 
@@ -48,10 +57,15 @@ void GameScene::Finalize() {
 }
 
 void GameScene::Update() {
-	camera_->Debug("カメラ");
-	camera_->Update();
+	if (input_->GetKey()->Pushed(DIK_RETURN)) {
+		isDebug_ = not isDebug_;
+		currentCamera_ = isDebug_ ? debugCamera_.get() : camera_.get();
+	}
 
-	water_->Update(camera_->GetPos());
+	currentCamera_->Debug("カメラ");
+	currentCamera_->Update();
+
+	water_->Update(currentCamera_->GetPos());
 
 	cloud_->Update();
 	skydome_->Upadate();
@@ -70,9 +84,9 @@ void GameScene::Update() {
 
 void GameScene::Draw() {
 	cloud_->Draw();
-	skydome_->Draw(*camera_);
+	skydome_->Draw(*currentCamera_);
 
-	water_->Draw(camera_->GetViewProjection());
+	water_->Draw(currentCamera_->GetViewProjection());
 
 	Lamb::screenout << "Water and cloud scene" << Lamb::endline
 		<< "Press space to change ""Model scene""";
