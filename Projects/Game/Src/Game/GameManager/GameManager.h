@@ -2,6 +2,7 @@
 #include "../SoLib/Containers/Singleton.h"
 
 #include <memory>
+#include <bitset>
 #include <list>
 
 #include "../LambEngine/Input/Input.h"
@@ -42,6 +43,10 @@ private:
 
 	/// @brief ツルの追加
 	/// @return 追加されたツルのオブジェクト
+	GameObject *AddIvy(uint32_t index);
+
+	/// @brief ツルの追加
+	/// @return 追加されたツルのオブジェクト
 	GameObject *AddIvy(const Vector3 &pos = {});
 
 	/// @brief ツルの追加
@@ -50,13 +55,20 @@ private:
 
 private:
 
-	SoLib::VItem<"Centor", Vector2> centor_{ { 0, 300 } };
-	SoLib::VItem<"Radius", Vector2> radius_{ { 150, 150 } };
-	SoLib::VItem<"Count", int32_t> count_{ 1 };
+	SoLib::VItem<"中心地", Vector2> centor_{ { 0, 300 } };
+	SoLib::VItem<"半径", Vector2> radius_{ { 150, 150 } };
+	SoLib::VItem<"生成数", int32_t> count_{ 1 };
+
+private:
+
+	SoLib::VItem<"ツタの間隔", float> vIvyDistance_ = 100.f;
 
 private:
 	// 入力マネージャ
 	Input *input_ = nullptr;
+
+	// ツタの生える位置
+	std::bitset<6u> ivyPos_;
 
 	// ツタ
 	std::list<std::unique_ptr<GameObject>> ivys_;

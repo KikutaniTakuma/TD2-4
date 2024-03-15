@@ -4,6 +4,7 @@
 #include "GameObject/Component/IvyComponent.h"
 #include "Utils/Random/Random.h"
 #include <Game/CollisionManager/Collider/Collider.h>
+#include <Game/CollisionManager/Capsule/Capsule.h>
 
 void GameManager::Init() {
 
@@ -29,12 +30,12 @@ void GameManager::Update([[maybe_unused]] const float deltaTime) {
 
 		const auto &ivyAllLines = ivy->GetComponent<IvyComponent>()->GetAllLines();
 		//InAABB aabb{ std::(ivyLines.front()->start.x), }
-		for(const auto& ivyLines: ivyAllLines){
+		for (const auto &ivyLines : ivyAllLines) {
 			for (const auto &line : *ivyLines) {
 				for (auto &energy : energyItems_) {
 					// 半径
 					float rad = energy->GetComponent<EnergyItem>()->GetRadius();
-					if ((line->start - energy->transform_.translate).Length() < rad or (line->end - energy->transform_.translate).Length() < rad) {
+					if (Lamb::Collision::Capsule(line->start, line->end, rad, energy->transform_.translate, 0)) {
 						energy->SetActive(false);
 					}
 				}
@@ -97,6 +98,8 @@ void GameManager::InputAction() {
 		}
 		//ツタが無い場合
 		else {
+
+
 			// ツタの追加
 			AddIvy();
 		}
@@ -110,6 +113,18 @@ void GameManager::RandomPopEnergys(const Vector2 &origin, const Vector2 &radius,
 		// 栄養アイテムを設置
 		AddEnergy(pos);
 	}
+}
+
+GameObject *GameManager::AddIvy(uint32_t index) {
+	GameObject *result = nullptr;
+
+	// もしその値の場所にツタが存在しない場合は追加
+	if (not ivyPos_[index]) {
+		// 左から右にツタを追加していく
+		result = AddIvy(Vector3{ (index - (ivyPos_.size() * 0.5f) - 0.5f) * vIvyDistance_ , 0, 0 });
+	}
+
+	return result;
 }
 
 GameObject *GameManager::AddIvy(const Vector3 &pos)
