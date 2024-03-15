@@ -56,4 +56,6 @@ protected:
 
 protected:
 	std::unique_ptr<Camera> camera_;
+
+	Camera* currentCamera_;
 };
