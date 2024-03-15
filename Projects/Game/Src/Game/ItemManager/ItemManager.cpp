@@ -3,7 +3,8 @@
 #include"Engine/Core/WindowFactory/WindowFactory.h"
 
 void ItemManager::Initialize(){
-	model_.reset(new Model{ "./Resources/Ball.obj" });
+	model_ = std::make_unique<Model>("./Resources/Ball.obj");
+	model_->pos = { 1.5f,0.0f,0.0f };
 	model_->scale = { 0.3f,0.3f,0.3f };
 
 	model_->light.ptRange = 5.0f;
@@ -11,14 +12,17 @@ void ItemManager::Initialize(){
 	model_->light.ptPos.y = 3.8f;
 	model_->light.ptColor = Vector3::kIdentity * 15.0f;
 
-	model2_.reset(new Model{ "./Resources/Ball.obj" });
+	model2_ = std::make_unique<Model>("./Resources/Ball.obj");
 
-	model2_->pos = { 0.0f,-5.0f,0.0f };
-	model2_->scale = { 0.3f,0.3f,0.3f };
+	model2_->pos = { -1.5f,0.0f,0.0f };
+	model2_->scale = { 1.0f,1.0f,1.0f };
 	model2_->light.ptRange = 5.0f;
 	model2_->light.ptPos = model2_->pos;
 	model2_->light.ptPos.y = 3.8f;
 	model2_->light.ptColor = Vector3::kIdentity * 15.0f;
+	model2_->SetParent(model_.get());
+
+	
 
 	modelList_.push_back(std::move(model_));
 	modelList_.push_back(std::move(model2_));
@@ -283,7 +287,7 @@ void ItemManager::FileOverWrite(){
 }
 
 void ItemManager::ChackFiles(){
-	if (!std::filesystem::exists(kDirectoryPath)) {
+	if (!std::filesystem::exists(kDirectoryName)) {
 		std::string message = "Failed open data file for write.";
 		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
 		assert(0);
@@ -327,7 +331,7 @@ void ItemManager::ChackFiles(){
 }
 
 void ItemManager::LoadFiles(const std::string& stageNumber){
-	if (!std::filesystem::exists(kDirectoryPath)) {
+	if (!std::filesystem::exists(kDirectoryName)) {
 		std::string message = "This file path does not exist.";
 		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
 		assert(0);

@@ -54,13 +54,13 @@ private:
 	/*std::list<std::unique_ptr<GameObject>> itemList_;
 
 	std::unique_ptr<GameObject> testObject_;*/
-
+	//モデルのコンテナ
 	std::list<std::unique_ptr<Model>> modelList_;
 
 	std::unique_ptr<Model> model_;
 
 	std::unique_ptr<Model> model2_;
-
+	//設置するするとき用のプリミティブスフィア
 	std::unique_ptr<Sphere> sphere_;
 
 	//元の色
@@ -88,29 +88,27 @@ private:
 	bool LoadChackItem(const std::string& stageNumber);
 
 private:
-
-
+	//jsonの数値をVector3に変換する関数
 	void from_json(const json& j, Vector3& v);
 
 private:
 	//ファイル保存関連
-	int chackOnlyNumber = 0;
-
+	//ファイルがちゃんと読み込めたかどうか
+	bool chackOnlyNumber = 0;
+	//ステージ名をいれるコンテナ
 	std::vector<std::string> stages_;
-
+	//選んでいるステージ名
 	std::string stageName_;
-
+	//imguiで選択しているステージナンバー
 	int stageSelectNum_;
-
+	//アイテムのファイルパス
 	const std::string kDirectoryPath = "Resources/Datas/Items/";
-
+	//アイテムのファイルパス
 	const std::string kDirectoryName = "Resources/Datas/Items";
-
+	//名前
 	const std::string kItemName_ = "nutrition";
 
 	std::string Name_ = "\0";
-
-	char ItemName_[256]{};
 
 	std::vector<std::string> fileName;
 };
