@@ -22,9 +22,15 @@ void GameManager::Update([[maybe_unused]] const float deltaTime) {
 
 	for (auto &ivy : ivys_) {
 		ivy->Update(deltaTime);
-		// 停止していた場合は削除
-		DeleteIvy(ivy.get());
 	}
+	if (ivys_.size() >= maxIvyCount_) {
+		// 最後のツタが停止した場合は破棄
+		if (not ivys_.back()->GetComponent<IvyComponent>()->IsActive()) {
+
+			DeleteIvy(ivys_.front().get());
+		}
+	}
+
 	for (auto &energy : energyItems_) {
 		energy->Update(deltaTime);
 	}
@@ -122,13 +128,11 @@ void GameManager::RandomPopEnergys(const Vector2 &origin, const Vector2 &radius,
 void GameManager::DeleteIvy(GameObject *ivy)
 {
 	IvyComponent *const ivyComp = ivy->GetComponent<IvyComponent>();
-	// もしツタが伸びてなかったら
-	if (not ivyComp->IsActive()) {
-		// 生存フラグを消す
-		ivy->SetActive(false);
-		// 紐づいた座標を消す
-		ivyPos_[ivyComp->GetPosIndex()] = false;
-	}
+
+	// 生存フラグを消す
+	ivy->SetActive(false);
+	// 紐づいた座標を消す
+	ivyPos_[ivyComp->GetPosIndex()] = false;
 }
 
 GameObject *GameManager::RandomAddIvy() {
@@ -163,13 +167,17 @@ GameObject *GameManager::AddIvy(uint32_t index) {
 
 GameObject *GameManager::AddIvy(const Vector3 &pos, uint32_t index)
 {
-	// コンテナに追加したツタのオブジェクト
-	GameObject *monoIvy = ivys_.emplace_back(std::make_unique<GameObject>()).get();
-	// 座標の変更
-	monoIvy->transform_.translate = pos;
-	// コンポーネントを追加
-	monoIvy->AddComponent<IvyComponent>()->SetPosIndex(index);	// indexを渡す
-
+	// ツタのオブジェクト
+	GameObject *monoIvy = nullptr;
+	// ツタの数が最大値を超えない場合は追加
+	if (ivys_.size() < maxIvyCount_) {
+		// コンテナに追加して、それを返す
+		monoIvy = ivys_.emplace_back(std::make_unique<GameObject>()).get();
+		// 座標の変更
+		monoIvy->transform_.translate = pos;
+		// コンポーネントを追加
+		monoIvy->AddComponent<IvyComponent>()->SetPosIndex(index);	// indexを渡す
+	}
 	return monoIvy;
 }
 

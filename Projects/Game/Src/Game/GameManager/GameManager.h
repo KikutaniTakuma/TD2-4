@@ -40,8 +40,9 @@ public:
 	void RandomPopEnergys(const Vector2 &origin, const Vector2 &radius, size_t count);
 
 private:
-
-	void DeleteIvy(GameObject* ivy);
+	/// @brief ツタを破棄する
+	/// @param ivy ツタのアドレス
+	void DeleteIvy(GameObject *ivy);
 
 	/// @brief ツルの追加
 	/// @return 追加されたツルのオブジェクト
@@ -68,6 +69,7 @@ private:
 private:
 
 	SoLib::VItem<"ツタの間隔", float> vIvyDistance_ = 100.f;
+	inline static constexpr uint32_t maxIvyCount_ = 3u;
 
 private:
 	// 入力マネージャ
