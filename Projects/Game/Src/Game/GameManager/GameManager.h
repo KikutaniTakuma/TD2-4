@@ -43,11 +43,15 @@ private:
 
 	/// @brief ツルの追加
 	/// @return 追加されたツルのオブジェクト
+	GameObject *RandomAddIvy();
+
+	/// @brief ツルの追加
+	/// @return 追加されたツルのオブジェクト
 	GameObject *AddIvy(uint32_t index);
 
 	/// @brief ツルの追加
 	/// @return 追加されたツルのオブジェクト
-	GameObject *AddIvy(const Vector3 &pos = {});
+	GameObject *AddIvy(const Vector3 &pos, uint32_t index);
 
 	/// @brief ツルの追加
 	/// @return 追加されたツルのオブジェクト

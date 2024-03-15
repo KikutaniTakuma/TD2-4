@@ -41,6 +41,9 @@ public:
 
 	std::list<const std::list<std::unique_ptr<Line>> *> GetAllLines();
 
+	void SetPosIndex(uint32_t index) { posIndex = index; }
+	uint32_t GetPosIndex() const { return posIndex; }
+
 public:
 
 	using GroupName = SoLib::Text::StaticString<"IvyComponent">;
@@ -77,5 +80,7 @@ private:
 
 	// ツタのモデル
 	IvyModelComponent *ivyModel_ = nullptr;
+
+	uint32_t posIndex;
 
 };

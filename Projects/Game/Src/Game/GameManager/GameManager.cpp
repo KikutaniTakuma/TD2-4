@@ -92,7 +92,7 @@ void GameManager::InputAction() {
 			// 分裂に失敗していたら
 			if (not successSplit) {
 				// ツタを追加する
-				AddIvy();
+				RandomAddIvy();
 			}
 
 		}
@@ -101,7 +101,7 @@ void GameManager::InputAction() {
 
 
 			// ツタの追加
-			AddIvy();
+			RandomAddIvy();
 		}
 	}
 }
@@ -115,26 +115,44 @@ void GameManager::RandomPopEnergys(const Vector2 &origin, const Vector2 &radius,
 	}
 }
 
+GameObject *GameManager::RandomAddIvy() {
+	// ツタの場所から、選択されていない場所を選ぶ
+	uint32_t unuseIndex = 0;
+	for (uint32_t i = 0; i < static_cast<uint32_t>(ivyPos_.size()); i++) {
+		// その場所が使われていたら飛ばす
+		if (not ivyPos_[i]) {
+			// 使われていない所であれば、それを返す
+			unuseIndex = i;
+			break;
+		}
+	}
+
+	// ツタの追加
+	return AddIvy(unuseIndex);
+}
+
 GameObject *GameManager::AddIvy(uint32_t index) {
 	GameObject *result = nullptr;
 
 	// もしその値の場所にツタが存在しない場合は追加
 	if (not ivyPos_[index]) {
 		// 左から右にツタを追加していく
-		result = AddIvy(Vector3{ (index - (ivyPos_.size() * 0.5f) - 0.5f) * vIvyDistance_ , 0, 0 });
+		result = AddIvy(Vector3{ (index - (ivyPos_.size() * 0.5f) + 0.5f) * vIvyDistance_ , 0, 0 }, index);
+		// フラグを立てる
+		ivyPos_[index] = true;
 	}
 
 	return result;
 }
 
-GameObject *GameManager::AddIvy(const Vector3 &pos)
+GameObject *GameManager::AddIvy(const Vector3 &pos, uint32_t index)
 {
 	// コンテナに追加したツタのオブジェクト
 	GameObject *monoIvy = ivys_.emplace_back(std::make_unique<GameObject>()).get();
 	// 座標の変更
 	monoIvy->transform_.translate = pos;
 	// コンポーネントを追加
-	monoIvy->AddComponent<IvyComponent>();
+	monoIvy->AddComponent<IvyComponent>()->SetPosIndex(index);	// indexを渡す
 
 	return monoIvy;
 }
