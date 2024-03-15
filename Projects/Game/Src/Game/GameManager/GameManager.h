@@ -41,6 +41,8 @@ public:
 
 private:
 
+	void DeleteIvy(GameObject* ivy);
+
 	/// @brief ツルの追加
 	/// @return 追加されたツルのオブジェクト
 	GameObject *RandomAddIvy();

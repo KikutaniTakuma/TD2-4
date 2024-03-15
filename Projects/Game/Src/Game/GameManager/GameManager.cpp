@@ -16,10 +16,14 @@ void GameManager::Update([[maybe_unused]] const float deltaTime) {
 		Vector2 min;
 		Vector2 max;
 	};
+
+	std::erase_if(ivys_, [](auto &itr)->bool { return not itr->GetActive(); });
 	std::erase_if(energyItems_, [](auto &itr)->bool { return not itr->GetActive(); });
 
 	for (auto &ivy : ivys_) {
 		ivy->Update(deltaTime);
+		// 停止していた場合は削除
+		DeleteIvy(ivy.get());
 	}
 	for (auto &energy : energyItems_) {
 		energy->Update(deltaTime);
@@ -69,7 +73,7 @@ bool GameManager::Debug([[maybe_unused]] const char *const str) {
 		RandomPopEnergys(centor_, radius_, count_);
 	}
 
-	SoLib::ImGuiWidget("Ivys", &ivys_, ivys_.begin(), [](const decltype(ivys_.begin()) &itr)->std::string { return SoLib::to_string((*itr)->GetComponent<IvyComponent>()->IsActive()); });
+	// SoLib::ImGuiWidget("Ivys", &ivys_, ivys_.begin(), [](const decltype(ivys_.begin()) &itr)->std::string { return SoLib::to_string((*itr)->GetComponent<IvyComponent>()->IsActive()); });
 
 	ImGui::End();
 
@@ -112,6 +116,18 @@ void GameManager::RandomPopEnergys(const Vector2 &origin, const Vector2 &radius,
 		Vector2 pos = origin + Lamb::Random(-radius, +radius);
 		// 栄養アイテムを設置
 		AddEnergy(pos);
+	}
+}
+
+void GameManager::DeleteIvy(GameObject *ivy)
+{
+	IvyComponent *const ivyComp = ivy->GetComponent<IvyComponent>();
+	// もしツタが伸びてなかったら
+	if (not ivyComp->IsActive()) {
+		// 生存フラグを消す
+		ivy->SetActive(false);
+		// 紐づいた座標を消す
+		ivyPos_[ivyComp->GetPosIndex()] = false;
 	}
 }
 
