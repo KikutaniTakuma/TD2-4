@@ -83,6 +83,9 @@
     <ClCompile Include="Src\Game\CollisionManager\Capsule\Capsule.cpp">
       <Filter>Game\CollisionManager\Capsule</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Camera\DebugCamera\DebugCamera.cpp">
+      <Filter>Camera\DebugCamera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -162,6 +165,9 @@
     </Filter>
     <Filter Include="Game\CollisionManager\Capsule">
       <UniqueIdentifier>{decf7b45-ff6d-42a2-85f0-8d30b56bb527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera\DebugCamera">
+      <UniqueIdentifier>{d27f2ca5-b12d-42ad-aae0-6af7e63f3c9e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -251,6 +257,9 @@
     </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\Capsule\Capsule.h">
       <Filter>Game\CollisionManager\Capsule</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Camera\DebugCamera\DebugCamera.h">
+      <Filter>Camera\DebugCamera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
