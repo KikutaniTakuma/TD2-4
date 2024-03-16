@@ -175,8 +175,10 @@ uint32_t IvyComponent::GetChildGeneration() const
 	uint32_t result = 0u;
 	// 子供がいたら世代を増やす
 	if (childrenIvys_.size()) {
+		// 子供の中で最も大きい値
+		uint32_t value = std::max(childrenIvys_.front()->GetComponent<IvyComponent>()->GetChildGeneration(), childrenIvys_.back()->GetComponent<IvyComponent>()->GetChildGeneration());
 		// 子供がいたら世代を増やす
-		result += childrenIvys_.front()->GetComponent<IvyComponent>()->GetChildGeneration() + 1u;
+		result += value + 1u;
 	}
 	return result;
 }
