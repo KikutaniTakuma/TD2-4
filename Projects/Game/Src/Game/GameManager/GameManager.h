@@ -39,6 +39,13 @@ public:
 	/// @param count 生成数
 	void RandomPopEnergys(const Vector2 &origin, const Vector2 &radius, size_t count);
 
+	/// @brief ツタの分裂
+	/// @return 分裂に成功したか
+	bool IvySprit();
+
+	/// @brief ツタが最大値を超えたら破棄
+	void DeleteIvyMaximum();
+
 private:
 	/// @brief ツタを破棄する
 	/// @param ivy ツタのアドレス
@@ -60,6 +67,8 @@ private:
 	/// @return 追加されたツルのオブジェクト
 	GameObject *AddEnergy(const Vector3 &pos);
 
+	void CollectEnergy(GameObject *energy);
+
 private:
 
 	SoLib::VItem<"中心地", Vector2> centor_{ { 0, 300 } };
@@ -69,6 +78,9 @@ private:
 private:
 
 	SoLib::VItem<"ツタの間隔", float> vIvyDistance_ = 100.f;
+	SoLib::VItem<"ツタの初期分裂数", uint32_t> vDefaultIvySplit_ = 3u;
+
+	// 一度に生やせるツタの最大値
 	inline static constexpr uint32_t maxIvyCount_ = 3u;
 
 private:
@@ -78,6 +90,8 @@ private:
 	// ツタの生える位置
 	std::bitset<6u> ivyPos_;
 
+	// ツタの分裂数
+	uint32_t ivySplit_ = 3u;
 	// ツタ
 	std::list<std::unique_ptr<GameObject>> ivys_;
 	// 栄養アイテム

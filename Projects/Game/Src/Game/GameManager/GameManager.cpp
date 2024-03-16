@@ -25,29 +25,25 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	for (auto &ivy : ivys_) {
 		ivy->Update(deltaTime);
 	}
-	if (ivys_.size() >= maxIvyCount_) {
-		// 最後のツタが停止した場合は破棄
-		if (not ivys_.back()->GetComponent<IvyComponent>()->IsActive()) {
-
-			DeleteIvy(ivys_.front().get());
-		}
-	}
+	// ツタが最大値に達した場合破棄
+	DeleteIvyMaximum();
 
 	for (auto &energy : energyItems_) {
 		energy->Update(deltaTime);
 	}
 
 	for (const auto &ivy : ivys_) {
-
+		// そのツタが持っている全ての線
 		const auto &ivyAllLines = ivy->GetComponent<IvyComponent>()->GetAllLines();
-		// InAABB aabb{ std::(ivyLines.front()->start.x), }
+
 		for (const auto &ivyLines : ivyAllLines) {
 			for (const auto &line : *ivyLines) {
 				for (auto &energy : energyItems_) {
 					// 半径
 					float rad = energy->GetComponent<EnergyItem>()->GetRadius();
 					if (Lamb::Collision::Capsule(line->start, line->end, rad, energy->transform_.translate, 0)) {
-						energy->SetActive(false);
+						// エネルギーの回収
+						CollectEnergy(energy.get());
 					}
 				}
 			}
@@ -100,13 +96,9 @@ void GameManager::InputAction()
 	if (input_->GetGamepad()->Pushed(Gamepad::Button::A)) {
 		// ツタが 1以上あれば
 		if (ivys_.size()) {
-			// 末尾のツタ
-			auto ivy = ivys_.back().get();
-			// ツタのコンポーネントを取得
-			auto ivyComp = ivy->GetComponent<IvyComponent>();
-			// 分裂に成功したか
-			bool successSplit = ivyComp->SplitIvy(3, 0u); // 最大分岐数 3 で分岐
 
+			// 分裂の実行
+			bool successSplit = IvySprit();
 			// 分裂に失敗していたら
 			if (not successSplit) {
 				// ツタを追加する
@@ -131,6 +123,27 @@ void GameManager::RandomPopEnergys(const Vector2 &origin, const Vector2 &radius,
 	}
 }
 
+bool GameManager::IvySprit() {
+	// 末尾のツタ
+	auto ivy = ivys_.back().get();
+	// ツタのコンポーネントを取得
+	auto ivyComp = ivy->GetComponent<IvyComponent>();
+	// 分裂に成功したか
+	return ivyComp->SplitIvy(ivySplit_, 0u); // 最大分岐数で分岐
+}
+
+void GameManager::DeleteIvyMaximum()
+{
+	// ツタが最大値を超えていた場合
+	if (ivys_.size() >= maxIvyCount_) {
+		// 最後のツタが停止した場合は破棄
+		if (not ivys_.back()->GetComponent<IvyComponent>()->IsActive()) {
+
+			DeleteIvy(ivys_.front().get());
+		}
+	}
+}
+
 void GameManager::DeleteIvy(GameObject *ivy)
 {
 	IvyComponent *const ivyComp = ivy->GetComponent<IvyComponent>();
@@ -139,6 +152,8 @@ void GameManager::DeleteIvy(GameObject *ivy)
 	ivy->SetActive(false);
 	// 紐づいた座標を消す
 	ivyPos_[ivyComp->GetPosIndex()] = false;
+
+
 }
 
 GameObject *GameManager::RandomAddIvy()
@@ -175,6 +190,9 @@ GameObject *GameManager::AddIvy(uint32_t index)
 
 GameObject *GameManager::AddIvy(const Vector3 &pos, uint32_t index)
 {
+	// 基礎分裂数を代入する
+	ivySplit_ = vDefaultIvySplit_;
+
 	// ツタのオブジェクト
 	GameObject *monoIvy = nullptr;
 	// ツタの数が最大値を超えない場合は追加
@@ -199,4 +217,9 @@ GameObject *GameManager::AddEnergy(const Vector3 &pos)
 	newEnergy->AddComponent<EnergyItem>();
 
 	return newEnergy;
+}
+
+void GameManager::CollectEnergy(GameObject *energy)
+{
+	energy->SetActive(false);
 }
