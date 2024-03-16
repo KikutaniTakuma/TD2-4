@@ -17,7 +17,14 @@ public:
 
 	float GetRadius() const { return vRadius_; }
 
+	void SetIsCollected(bool val) { isCollected_ = val; }
+
+	bool GetIsCollected() const { return isCollected_; }
+
 private:
+
+	// 回収されたか
+	bool isCollected_ = false;
 
 	std::unique_ptr<Texture2D> itemTexture_;
 

@@ -19,8 +19,15 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		Vector2 max;
 	};
 
-	std::erase_if(ivys_, [](auto &itr) -> bool { return not itr->GetActive(); });
-	std::erase_if(energyItems_, [](auto &itr) -> bool { return not itr->GetActive(); });
+	for (auto &energy : energyItems_) {
+		if (energy->GetComponent<EnergyItem>()->GetIsCollected()) {
+			collectedEnergyItems_.push_back(std::move(energy));
+		}
+	}
+
+	std::erase_if(ivys_, [](auto &itr) -> bool { return not itr or not itr->GetActive(); });
+	std::erase_if(energyItems_, [](auto &itr) -> bool { return not itr or not itr->GetActive(); });
+	std::erase_if(collectedEnergyItems_, [](auto &itr) -> bool { return not itr or not itr->GetActive(); });
 
 	for (auto &ivy : ivys_) {
 		ivy->Update(deltaTime);
@@ -46,8 +53,10 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		for (const auto &ivyLines : ivyAllLines) {
 			for (const auto &line : *ivyLines) {
 				for (auto &energy : energyItems_) {
+					auto energyComp = energy->GetComponent<EnergyItem>();
+
 					// 半径
-					float rad = energy->GetComponent<EnergyItem>()->GetRadius();
+					float rad = energyComp->GetRadius();
 					if (Lamb::Collision::Capsule(line->start, line->end, rad, energy->transform_.translate, 0)) {
 						// エネルギーの回収
 						CollectEnergy(energy.get(), ivyComp);
@@ -230,8 +239,8 @@ GameObject *GameManager::AddEnergy(const Vector3 &pos)
 
 void GameManager::CollectEnergy(GameObject *energy, IvyComponent *ivy)
 {
-	// 当たったエネルギーを破棄
-	energy->SetActive(false);
+	// 当たったエネルギーを回収する
+	energy->GetComponent<EnergyItem>()->SetIsCollected(true);
 
 	// ツタの世代数
 	uint32_t ivyGen = ivy->GetChildGeneration();
