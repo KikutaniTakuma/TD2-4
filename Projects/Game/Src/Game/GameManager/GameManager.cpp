@@ -25,16 +25,23 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	for (auto &ivy : ivys_) {
 		ivy->Update(deltaTime);
 	}
-	// ツタが最大値に達した場合破棄
-	DeleteIvyMaximum();
+	// ツタが停止した場合
+	if (not CurrentIvyIsActive()) {
+		// ツタが最大値に達した場合破棄
+		DeleteIvyMaximum();
+	}
 
 	for (auto &energy : energyItems_) {
 		energy->Update(deltaTime);
 	}
 
 	for (const auto &ivy : ivys_) {
+
+		// ツタのコンポーネント
+		IvyComponent *ivyComp = ivy->GetComponent<IvyComponent>();
+
 		// そのツタが持っている全ての線
-		const auto &ivyAllLines = ivy->GetComponent<IvyComponent>()->GetAllLines();
+		const auto &ivyAllLines = ivyComp->GetAllLines();
 
 		for (const auto &ivyLines : ivyAllLines) {
 			for (const auto &line : *ivyLines) {
@@ -43,7 +50,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 					float rad = energy->GetComponent<EnergyItem>()->GetRadius();
 					if (Lamb::Collision::Capsule(line->start, line->end, rad, energy->transform_.translate, 0)) {
 						// エネルギーの回収
-						CollectEnergy(energy.get());
+						CollectEnergy(energy.get(), ivyComp);
 					}
 				}
 			}
@@ -136,12 +143,14 @@ void GameManager::DeleteIvyMaximum()
 {
 	// ツタが最大値を超えていた場合
 	if (ivys_.size() >= maxIvyCount_) {
-		// 最後のツタが停止した場合は破棄
-		if (not ivys_.back()->GetComponent<IvyComponent>()->IsActive()) {
-
-			DeleteIvy(ivys_.front().get());
-		}
+		// 最初のツタを破棄する
+		DeleteIvy(ivys_.front().get());
 	}
+}
+
+bool GameManager::CurrentIvyIsActive() const {
+	// ツタがある && 最後のツタが動いていた場合は true
+	return not ivys_.empty() and ivys_.back()->GetComponent<IvyComponent>()->IsActive();
 }
 
 void GameManager::DeleteIvy(GameObject *ivy)
@@ -219,7 +228,18 @@ GameObject *GameManager::AddEnergy(const Vector3 &pos)
 	return newEnergy;
 }
 
-void GameManager::CollectEnergy(GameObject *energy)
+void GameManager::CollectEnergy(GameObject *energy, IvyComponent *ivy)
 {
+	// 当たったエネルギーを破棄
 	energy->SetActive(false);
+
+	// ツタの世代数
+	uint32_t ivyGen = ivy->GetChildGeneration();
+
+	// ツタの数が0個以上なら
+	if (ivyGen) {
+		//collectedEnergyItems_.push_back()
+	}
+
+
 }

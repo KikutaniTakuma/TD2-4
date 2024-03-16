@@ -9,6 +9,8 @@
 
 #include "GameObject/GameObject.h"
 
+class IvyComponent;
+
 class GameManager : public SoLib::Singleton<GameManager> {
 private:
 
@@ -46,6 +48,10 @@ public:
 	/// @brief ツタが最大値を超えたら破棄
 	void DeleteIvyMaximum();
 
+	/// @brief 動作中のツタが動いているか
+	/// @return 動いている場合true
+	bool CurrentIvyIsActive() const;
+
 private:
 	/// @brief ツタを破棄する
 	/// @param ivy ツタのアドレス
@@ -67,7 +73,9 @@ private:
 	/// @return 追加されたツルのオブジェクト
 	GameObject *AddEnergy(const Vector3 &pos);
 
-	void CollectEnergy(GameObject *energy);
+	/// @brief 栄養を回収する
+	/// @param energy 回収する栄養
+	void CollectEnergy(GameObject *energy, IvyComponent *ivy);
 
 private:
 
@@ -89,6 +97,11 @@ private:
 
 	// ツタの生える位置
 	std::bitset<6u> ivyPos_;
+
+	// 現在の分裂が持っているツタの数
+	std::list<GameObject *> currentCollectedEnergyItems_;
+	// ツタ全体が持っているツタの数
+	std::list<std::unique_ptr<GameObject>> collectedEnergyItems_;
 
 	// ツタの分裂数
 	uint32_t ivySplit_ = 3u;
