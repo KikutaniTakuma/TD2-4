@@ -75,6 +75,9 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	for (const auto &energy : energyItems_) {
 		energy->Draw(camera);
 	}
+	for (const auto &correctEnergy : collectedEnergyItems_) {
+		correctEnergy->Draw(camera);
+	}
 }
 
 bool GameManager::Debug([[maybe_unused]] const char *const str)
