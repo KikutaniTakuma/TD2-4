@@ -23,7 +23,7 @@ public:
 
 	/// @brief ツタの分解を行う
 	/// @return 分裂に成功したなら [true]
-	bool SplitIvy(int32_t splitCount);
+	bool SplitIvy(int32_t splitCount, uint32_t spritNumber);
 
 	/// @brief モデルにデータを転送する
 	void TransferData();
@@ -43,6 +43,17 @@ public:
 
 	void SetPosIndex(uint32_t index) { posIndex = index; }
 	uint32_t GetPosIndex() const { return posIndex; }
+
+	void SetSplitNumber(uint32_t num) { splitNumber_ = num; }
+	uint32_t GetSpritNumber() const { return splitNumber_; }
+
+	GameObject *GetAllParent();
+
+	IvyComponent *GetParent() { return parentIvys_; }
+
+	/// @brief 子供が何世代いるか
+	/// @return 子供の世代
+	uint32_t GetChildGeneration() const;
 
 public:
 
@@ -71,7 +82,7 @@ private:
 	// 伸びる距離の初期値
 	SoLib::VItem<"伸びる距離の初期値", float> vDefaultMaxLength_ = 150.f;
 
-	const SoLib::VItem<"初期発射角度", float> vDefaultAngle_ = 45_deg;
+	SoLib::VItem<"初期発射角度", float> vDefaultAngle_ = 45_deg;
 
 	// 子供のツタ
 	std::list<std::unique_ptr<GameObject>> childrenIvys_;
@@ -81,6 +92,10 @@ private:
 	// ツタのモデル
 	IvyModelComponent *ivyModel_ = nullptr;
 
+	// 存在してる座標
 	uint32_t posIndex;
+
+	// 分裂の番号
+	uint32_t splitNumber_;
 
 };

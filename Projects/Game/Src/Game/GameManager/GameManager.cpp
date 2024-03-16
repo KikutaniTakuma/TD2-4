@@ -3,22 +3,24 @@
 #include "GameObject/Component/EnergyItem.h"
 #include "GameObject/Component/IvyComponent.h"
 #include "Utils/Random/Random.h"
-#include <Game/CollisionManager/Collider/Collider.h>
 #include <Game/CollisionManager/Capsule/Capsule.h>
+#include <Game/CollisionManager/Collider/Collider.h>
 
-void GameManager::Init() {
+void GameManager::Init()
+{
 
 	input_ = Input::GetInstance();
 }
 
-void GameManager::Update([[maybe_unused]] const float deltaTime) {
+void GameManager::Update([[maybe_unused]] const float deltaTime)
+{
 	struct InAABB {
 		Vector2 min;
 		Vector2 max;
 	};
 
-	std::erase_if(ivys_, [](auto &itr)->bool { return not itr->GetActive(); });
-	std::erase_if(energyItems_, [](auto &itr)->bool { return not itr->GetActive(); });
+	std::erase_if(ivys_, [](auto &itr) -> bool { return not itr->GetActive(); });
+	std::erase_if(energyItems_, [](auto &itr) -> bool { return not itr->GetActive(); });
 
 	for (auto &ivy : ivys_) {
 		ivy->Update(deltaTime);
@@ -37,9 +39,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime) {
 
 	for (const auto &ivy : ivys_) {
 
-
 		const auto &ivyAllLines = ivy->GetComponent<IvyComponent>()->GetAllLines();
-		//InAABB aabb{ std::(ivyLines.front()->start.x), }
+		// InAABB aabb{ std::(ivyLines.front()->start.x), }
 		for (const auto &ivyLines : ivyAllLines) {
 			for (const auto &line : *ivyLines) {
 				for (auto &energy : energyItems_) {
@@ -50,12 +51,12 @@ void GameManager::Update([[maybe_unused]] const float deltaTime) {
 					}
 				}
 			}
-
 		}
 	}
 }
 
-void GameManager::Draw([[maybe_unused]] const Camera &camera) const {
+void GameManager::Draw([[maybe_unused]] const Camera &camera) const
+{
 	for (const auto &ivy : ivys_) {
 		ivy->Draw(camera);
 	}
@@ -64,7 +65,8 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const {
 	}
 }
 
-bool GameManager::Debug([[maybe_unused]] const char *const str) {
+bool GameManager::Debug([[maybe_unused]] const char *const str)
+{
 
 	bool isChange = false;
 
@@ -79,6 +81,10 @@ bool GameManager::Debug([[maybe_unused]] const char *const str) {
 		RandomPopEnergys(centor_, radius_, count_);
 	}
 
+	for (auto &ivy : ivys_) {
+		SoLib::ImGuiText("Generation", ivy->GetComponent<IvyComponent>()->GetChildGeneration());
+	}
+
 	// SoLib::ImGuiWidget("Ivys", &ivys_, ivys_.begin(), [](const decltype(ivys_.begin()) &itr)->std::string { return SoLib::to_string((*itr)->GetComponent<IvyComponent>()->IsActive()); });
 
 	ImGui::End();
@@ -86,10 +92,10 @@ bool GameManager::Debug([[maybe_unused]] const char *const str) {
 #endif // _DEBUG
 
 	return isChange;
-
 }
 
-void GameManager::InputAction() {
+void GameManager::InputAction()
+{
 	// A を押したときに実行
 	if (input_->GetGamepad()->Pushed(Gamepad::Button::A)) {
 		// ツタが 1以上あれば
@@ -99,16 +105,15 @@ void GameManager::InputAction() {
 			// ツタのコンポーネントを取得
 			auto ivyComp = ivy->GetComponent<IvyComponent>();
 			// 分裂に成功したか
-			bool successSplit = ivyComp->SplitIvy(3);	// 最大分岐数 3 で分岐
+			bool successSplit = ivyComp->SplitIvy(3, 0u); // 最大分岐数 3 で分岐
 
 			// 分裂に失敗していたら
 			if (not successSplit) {
 				// ツタを追加する
 				RandomAddIvy();
 			}
-
 		}
-		//ツタが無い場合
+		// ツタが無い場合
 		else {
 			// ツタの追加
 			RandomAddIvy();
@@ -116,7 +121,8 @@ void GameManager::InputAction() {
 	}
 }
 
-void GameManager::RandomPopEnergys(const Vector2 &origin, const Vector2 &radius, size_t count) {
+void GameManager::RandomPopEnergys(const Vector2 &origin, const Vector2 &radius, size_t count)
+{
 	for (size_t i = 0; i < count; i++) {
 		// 乱数による栄養の座標の算出
 		Vector2 pos = origin + Lamb::Random(-radius, +radius);
@@ -135,7 +141,8 @@ void GameManager::DeleteIvy(GameObject *ivy)
 	ivyPos_[ivyComp->GetPosIndex()] = false;
 }
 
-GameObject *GameManager::RandomAddIvy() {
+GameObject *GameManager::RandomAddIvy()
+{
 	// ツタの場所から、選択されていない場所を選ぶ
 	uint32_t unuseIndex = 0;
 	for (uint32_t i = 0; i < static_cast<uint32_t>(ivyPos_.size()); i++) {
@@ -151,13 +158,14 @@ GameObject *GameManager::RandomAddIvy() {
 	return AddIvy(unuseIndex);
 }
 
-GameObject *GameManager::AddIvy(uint32_t index) {
+GameObject *GameManager::AddIvy(uint32_t index)
+{
 	GameObject *result = nullptr;
 
 	// もしその値の場所にツタが存在しない場合は追加
 	if (not ivyPos_[index]) {
 		// 左から右にツタを追加していく
-		result = AddIvy(Vector3{ (index - (ivyPos_.size() * 0.5f) + 0.5f) * vIvyDistance_ , 0, 0 }, index);
+		result = AddIvy(Vector3{ (index - (ivyPos_.size() * 0.5f) + 0.5f) * vIvyDistance_, 0, 0 }, index);
 		// フラグを立てる
 		ivyPos_[index] = true;
 	}
@@ -176,7 +184,7 @@ GameObject *GameManager::AddIvy(const Vector3 &pos, uint32_t index)
 		// 座標の変更
 		monoIvy->transform_.translate = pos;
 		// コンポーネントを追加
-		monoIvy->AddComponent<IvyComponent>()->SetPosIndex(index);	// indexを渡す
+		monoIvy->AddComponent<IvyComponent>()->SetPosIndex(index); // indexを渡す
 	}
 	return monoIvy;
 }
@@ -192,4 +200,3 @@ GameObject *GameManager::AddEnergy(const Vector3 &pos)
 
 	return newEnergy;
 }
-

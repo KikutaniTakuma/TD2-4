@@ -1,16 +1,18 @@
 #include "IvyComponent.h"
-#include "IvyModel.h"
 #include "../SoLib/Math/Euler.h"
 #include "../SoLib/Math/Math.hpp"
+#include "IvyModel.h"
 
-void IvyComponent::Init() {
+void IvyComponent::Init()
+{
 	// モデルを紐づけ
 	ivyModel_ = object_.AddComponent<IvyModelComponent>();
 	movingTime_.Start(vDefaultMoveTime_);
 	isActive_ = true;
 }
 
-void IvyComponent::Update() {
+void IvyComponent::Update()
+{
 	const float deltaTime = GetDeltaTime();
 	movingTime_.Update(deltaTime);
 	stopTime_.Update(deltaTime);
@@ -36,15 +38,19 @@ void IvyComponent::Update() {
 	}
 }
 
-void IvyComponent::Draw([[maybe_unused]] const Camera &vp) const {
+void IvyComponent::Draw([[maybe_unused]] const Camera &vp) const
+{
 	for (const auto &child : childrenIvys_) {
 		child->Draw(vp);
 	}
 }
 
-bool IvyComponent::SplitIvy(int32_t splitCount) {
-	// もし分裂数が残ってないならその場で終了
-	if (splitCount <= 0) { return false; }
+bool IvyComponent::SplitIvy(int32_t splitCount, uint32_t spritNumber)
+{
+	// もし分裂数が残ってないか、死んでいる場合はその場で終了
+	if (splitCount <= 0 or not IsActive()) {
+		return false;
+	}
 
 	// 分裂に成功したなら true
 	bool result = true;
@@ -54,7 +60,7 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 		// 全ての子供に分裂処理を行う
 		for (auto &child : childrenIvys_) {
 			// 分裂に失敗したら false
-			result &= child->GetComponent<IvyComponent>()->SplitIvy(splitCount - 1);
+			result &= child->GetComponent<IvyComponent>()->SplitIvy(splitCount - 1, spritNumber + 1u);
 		}
 	}
 	// 持っていない場合は追加
@@ -83,6 +89,8 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 			// 自分の角度から45度回して子供に渡す
 			childIvy->moveDirections_ = moveDirections_ * Quaternion::MakeRotateZAxis(i ? -vDefaultAngle_ : *vDefaultAngle_);
 
+			childIvy->SetSplitNumber(spritNumber);
+
 			// 子供のコンテナに格納
 			childrenIvys_.push_back(std::move(child));
 		}
@@ -91,11 +99,12 @@ bool IvyComponent::SplitIvy(int32_t splitCount) {
 	return result;
 }
 
-void IvyComponent::TransferData() {
-
+void IvyComponent::TransferData()
+{
 }
 
-bool IvyComponent::IsActive() const {
+bool IvyComponent::IsActive() const
+{
 	// 自分自身か、子供のどちらかがtrueであればtrueを返す
 	return isActive_ or [this]()->bool
 		{
@@ -107,10 +116,12 @@ bool IvyComponent::IsActive() const {
 			}
 			// 全てがtrueであればtrueを返す
 			return false;
-		}();
+		}
+	();
 }
 
-void IvyComponent::AddLine() {
+void IvyComponent::AddLine()
+{
 	if (deltaStore_.first++ < 5) {
 		deltaStore_.second += GetDeltaTime();
 		return;
@@ -140,5 +151,32 @@ std::list<const std::list<std::unique_ptr<Line>> *> IvyComponent::GetAllLines()
 		result.splice(result.end(), std::move(child->GetComponent<IvyComponent>()->GetAllLines()));
 	}
 
+	return result;
+}
+
+GameObject *IvyComponent::GetAllParent()
+{
+	// 自分自身の親を返す
+	IvyComponent *parent = GetParent();
+	// もし空だったら終わり。自分自身を返す。
+	if (not parent) {
+		return &object_;
+	}
+	// 親がいた場合
+	// その親の更に子供のデータを取得する
+	auto result = parent->GetAllParent();
+
+	return result;
+}
+
+uint32_t IvyComponent::GetChildGeneration() const
+{
+	// 世代
+	uint32_t result = 0u;
+	// 子供がいたら世代を増やす
+	if (childrenIvys_.size()) {
+		// 子供がいたら世代を増やす
+		result += childrenIvys_.front()->GetComponent<IvyComponent>()->GetChildGeneration() + 1u;
+	}
 	return result;
 }

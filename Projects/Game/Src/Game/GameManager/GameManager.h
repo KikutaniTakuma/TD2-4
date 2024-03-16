@@ -58,7 +58,7 @@ private:
 
 	/// @brief ツルの追加
 	/// @return 追加されたツルのオブジェクト
-	GameObject *AddEnergy(const Vector3 &pos = {});
+	GameObject *AddEnergy(const Vector3 &pos);
 
 private:
 
