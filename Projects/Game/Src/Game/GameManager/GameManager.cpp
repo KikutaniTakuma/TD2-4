@@ -39,8 +39,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 		// メインのツタが存在する場合
 		if (ivys_.size()) {
-			// そのツタの分裂数で
-			AddIvySplitCount(ivys_.back()->GetComponent<IvyComponent>());
+			// そのツタのに対してエネルギーを吸収
+			AbsorbEnergy(ivys_.back()->GetComponent<IvyComponent>());
 		}
 	}
 
@@ -162,7 +162,7 @@ bool GameManager::IvySprit()
 	auto ivyComp = ivy->GetComponent<IvyComponent>();
 
 	// 分裂前の処理
-	AddIvySplitCount(ivyComp); // 分裂数が増える条件を満たしていた場合に分裂数を追加
+	AbsorbEnergy(ivyComp); // エネルギーを吸収
 
 	// 分裂に成功したか
 	return ivyComp->SplitIvy(ivySplit_, 0u); // 最大分岐数で分岐
@@ -278,6 +278,10 @@ void GameManager::AddIvySplitCount(IvyComponent *ivy)
 		size_t addSplitCount = currentCollectedEnergyItems_.size() / static_cast<size_t>(ivyGen * 3u);
 		ivySplit_ += static_cast<uint32_t>(addSplitCount);
 	}
+}
 
+void GameManager::AbsorbEnergy(IvyComponent *ivy) {
+
+	AddIvySplitCount(ivy);
 	currentCollectedEnergyItems_.clear(); // 前の分岐で獲得した栄養をリセット
 }

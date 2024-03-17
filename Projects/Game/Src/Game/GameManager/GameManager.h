@@ -81,6 +81,10 @@ private:
 	/// @brief ツタの分裂数が増えるかを計算
 	void AddIvySplitCount(IvyComponent *ivy);
 
+	/// @brief エネルギーを吸収する
+	/// @param ivy ツタコンポーネント
+	void AbsorbEnergy(IvyComponent *ivy);
+
 private:
 
 	SoLib::VItem<"中心地", Vector2> centor_{ { 0, 300 } };
