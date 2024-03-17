@@ -21,6 +21,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	for (auto &energy : energyItems_) {
 		if (energy->GetComponent<EnergyItem>()->GetIsCollected()) {
+			// 現在のツタが吸収した
+			currentCollectedEnergyItems_.push_back(energy.get());
+			// ツタの管理権を渡す
 			collectedEnergyItems_.push_back(std::move(energy));
 		}
 	}
@@ -29,13 +32,20 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	std::erase_if(energyItems_, [](auto &itr) -> bool { return not itr or not itr->GetActive(); });
 	std::erase_if(collectedEnergyItems_, [](auto &itr) -> bool { return not itr or not itr->GetActive(); });
 
-	for (auto &ivy : ivys_) {
-		ivy->Update(deltaTime);
-	}
 	// ツタが停止した場合
 	if (not CurrentIvyIsActive()) {
 		// ツタが最大値に達した場合破棄
 		DeleteIvyMaximum();
+
+		// メインのツタが存在する場合
+		if (ivys_.size()) {
+			// そのツタの分裂数で
+			AddIvySplitCount(ivys_.back()->GetComponent<IvyComponent>());
+		}
+	}
+
+	for (auto &ivy : ivys_) {
+		ivy->Update(deltaTime);
 	}
 
 	for (auto &energy : energyItems_) {
@@ -100,6 +110,8 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 		SoLib::ImGuiText("Generation", ivy->GetComponent<IvyComponent>()->GetChildGeneration());
 	}
 
+	SoLib::ImGuiText("IvySplit", ivySplit_);
+
 	// SoLib::ImGuiWidget("Ivys", &ivys_, ivys_.begin(), [](const decltype(ivys_.begin()) &itr)->std::string { return SoLib::to_string((*itr)->GetComponent<IvyComponent>()->IsActive()); });
 
 	ImGui::End();
@@ -142,11 +154,16 @@ void GameManager::RandomPopEnergys(const Vector2 &origin, const Vector2 &radius,
 	}
 }
 
-bool GameManager::IvySprit() {
+bool GameManager::IvySprit()
+{
 	// 末尾のツタ
 	auto ivy = ivys_.back().get();
 	// ツタのコンポーネントを取得
 	auto ivyComp = ivy->GetComponent<IvyComponent>();
+
+	// 分裂前の処理
+	AddIvySplitCount(ivyComp); // 分裂数が増える条件を満たしていた場合に分裂数を追加
+
 	// 分裂に成功したか
 	return ivyComp->SplitIvy(ivySplit_, 0u); // 最大分岐数で分岐
 }
@@ -160,7 +177,8 @@ void GameManager::DeleteIvyMaximum()
 	}
 }
 
-bool GameManager::CurrentIvyIsActive() const {
+bool GameManager::CurrentIvyIsActive() const
+{
 	// ツタがある && 最後のツタが動いていた場合は true
 	return not ivys_.empty() and ivys_.back()->GetComponent<IvyComponent>()->IsActive();
 }
@@ -173,8 +191,6 @@ void GameManager::DeleteIvy(GameObject *ivy)
 	ivy->SetActive(false);
 	// 紐づいた座標を消す
 	ivyPos_[ivyComp->GetPosIndex()] = false;
-
-
 }
 
 GameObject *GameManager::RandomAddIvy()
@@ -240,18 +256,25 @@ GameObject *GameManager::AddEnergy(const Vector3 &pos)
 	return newEnergy;
 }
 
-void GameManager::CollectEnergy(GameObject *energy, IvyComponent *ivy)
+void GameManager::CollectEnergy(GameObject *energy, [[maybe_unused]] IvyComponent *ivy)
 {
 	// 当たったエネルギーを回収する
 	energy->GetComponent<EnergyItem>()->SetIsCollected(true);
+}
+
+void GameManager::AddIvySplitCount(IvyComponent *ivy)
+{
 
 	// ツタの世代数
 	uint32_t ivyGen = ivy->GetChildGeneration();
 
-	// ツタの数が0個以上なら
-	if (ivyGen) {
-		//collectedEnergyItems_.push_back()
+	// ツタの世代数が0以外の場合
+	if (ivyGen != 0u) {
+
+		// ツタの世代数の3倍の栄養を吸収していた場合、その分の分裂数を加算する
+		size_t addSplitCount = currentCollectedEnergyItems_.size() / static_cast<size_t>(ivyGen * 3u);
+		ivySplit_ += static_cast<uint32_t>(addSplitCount);
 	}
 
-
+	currentCollectedEnergyItems_.clear(); // 前の分岐で獲得した栄養をリセット
 }

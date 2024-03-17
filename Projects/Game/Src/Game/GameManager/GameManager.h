@@ -77,6 +77,9 @@ private:
 	/// @param energy 回収する栄養
 	void CollectEnergy(GameObject *energy, IvyComponent *ivy);
 
+	/// @brief ツタの分裂数が増えるかを計算
+	void AddIvySplitCount(IvyComponent *ivy);
+
 private:
 
 	SoLib::VItem<"中心地", Vector2> centor_{ { 0, 300 } };
