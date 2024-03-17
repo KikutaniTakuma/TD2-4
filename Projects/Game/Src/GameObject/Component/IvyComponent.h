@@ -21,9 +21,12 @@ public:
 
 public:
 
+	void SetIvyLength(float length) { ivyLength_ = length; }
+	float GetIvyLength() const { return ivyLength_; }
+
 	/// @brief ツタの分解を行う
 	/// @return 分裂に成功したなら [true]
-	bool SplitIvy(int32_t splitCount, uint32_t spritNumber);
+	bool SplitIvy(int32_t splitCount, float ivyLength);
 
 	/// @brief モデルにデータを転送する
 	void TransferData();
@@ -43,9 +46,6 @@ public:
 
 	void SetPosIndex(uint32_t index) { posIndex = index; }
 	uint32_t GetPosIndex() const { return posIndex; }
-
-	void SetSplitNumber(uint32_t num) { splitNumber_ = num; }
-	uint32_t GetSpritNumber() const { return splitNumber_; }
 
 	GameObject *GetAllParent();
 
@@ -79,9 +79,6 @@ private:
 	// 止まった後のタイマー
 	SoLib::Time::DeltaTimer stopTime_{ };
 
-	// 伸びる距離の初期値
-	SoLib::VItem<"伸びる距離の初期値", float> vDefaultMaxLength_ = 150.f;
-
 	SoLib::VItem<"初期発射角度", float> vDefaultAngle_ = 45_deg;
 
 	// 子供のツタ
@@ -95,7 +92,7 @@ private:
 	// 存在してる座標
 	uint32_t posIndex;
 
-	// 分裂の番号
-	uint32_t splitNumber_;
+	// ツタの長さ
+	float ivyLength_;
 
 };

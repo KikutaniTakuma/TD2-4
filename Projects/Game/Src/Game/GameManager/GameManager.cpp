@@ -110,7 +110,8 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 		SoLib::ImGuiText("Generation", ivy->GetComponent<IvyComponent>()->GetChildGeneration());
 	}
 
-	SoLib::ImGuiText("IvySplit", ivySplit_);
+	SoLib::ImGuiText("分裂数", ivySplit_);
+	SoLib::ImGuiText("ツタの長さ", ivyLength_);
 
 	// SoLib::ImGuiWidget("Ivys", &ivys_, ivys_.begin(), [](const decltype(ivys_.begin()) &itr)->std::string { return SoLib::to_string((*itr)->GetComponent<IvyComponent>()->IsActive()); });
 
@@ -165,7 +166,7 @@ bool GameManager::IvySprit()
 	AbsorbEnergy(ivyComp); // エネルギーを吸収
 
 	// 分裂に成功したか
-	return ivyComp->SplitIvy(ivySplit_, 0u); // 最大分岐数で分岐
+	return ivyComp->SplitIvy(ivySplit_, ivyLength_); // 最大分岐数で分岐
 }
 
 void GameManager::DeleteIvyMaximum()
@@ -229,6 +230,8 @@ GameObject *GameManager::AddIvy(const Vector3 &pos, uint32_t index)
 {
 	// 基礎分裂数を代入する
 	ivySplit_ = vDefaultIvySplit_;
+	// 基礎のツタの長さを代入
+	ivyLength_ = vDefaultIvyLength_;
 
 	// ツタのオブジェクト
 	GameObject *monoIvy = nullptr;
@@ -239,7 +242,9 @@ GameObject *GameManager::AddIvy(const Vector3 &pos, uint32_t index)
 		// 座標の変更
 		monoIvy->transform_.translate = pos;
 		// コンポーネントを追加
-		monoIvy->AddComponent<IvyComponent>()->SetPosIndex(index); // indexを渡す
+		IvyComponent *ivyComp = monoIvy->AddComponent<IvyComponent>();
+		ivyComp->SetPosIndex(index); // indexを渡す
+		ivyComp->SetIvyLength(ivyLength_);	// ツタの長さ
 	}
 	return monoIvy;
 }
@@ -280,8 +285,17 @@ void GameManager::AddIvySplitCount(IvyComponent *ivy)
 	}
 }
 
+void GameManager::ExtendIvyLength()
+{
+
+	// 一旦等倍で増えていく
+	ivyLength_ += currentCollectedEnergyItems_.size() * 0.2f;
+
+}
+
 void GameManager::AbsorbEnergy(IvyComponent *ivy) {
 
+	ExtendIvyLength();
 	AddIvySplitCount(ivy);
 	currentCollectedEnergyItems_.clear(); // 前の分岐で獲得した栄養をリセット
 }

@@ -45,7 +45,7 @@ void IvyComponent::Draw([[maybe_unused]] const Camera &vp) const
 	}
 }
 
-bool IvyComponent::SplitIvy(int32_t splitCount, uint32_t spritNumber)
+bool IvyComponent::SplitIvy(int32_t splitCount, float ivyLength)
 {
 	// もし分裂数が残ってないか、死んでいる場合はその場で終了
 	if (splitCount <= 0 or not IsActive()) {
@@ -60,7 +60,7 @@ bool IvyComponent::SplitIvy(int32_t splitCount, uint32_t spritNumber)
 		// 全ての子供に分裂処理を行う
 		for (auto &child : childrenIvys_) {
 			// 分裂に失敗したら false
-			result &= child->GetComponent<IvyComponent>()->SplitIvy(splitCount - 1, spritNumber + 1u);
+			result &= child->GetComponent<IvyComponent>()->SplitIvy(splitCount - 1, ivyLength);
 		}
 	}
 	// 持っていない場合は追加
@@ -89,7 +89,7 @@ bool IvyComponent::SplitIvy(int32_t splitCount, uint32_t spritNumber)
 			// 自分の角度から45度回して子供に渡す
 			childIvy->moveDirections_ = moveDirections_ * Quaternion::MakeRotateZAxis(i ? -vDefaultAngle_ : *vDefaultAngle_);
 
-			childIvy->SetSplitNumber(spritNumber);
+			childIvy->SetIvyLength(ivyLength);
 
 			// 子供のコンテナに格納
 			childrenIvys_.push_back(std::move(child));
@@ -135,7 +135,7 @@ void IvyComponent::AddLine()
 		lastPos = &transform_.translate;
 	}
 	// 追加される線の長さ
-	float lineLength = static_cast<float>(deltaStore_.second / *vDefaultMoveTime_) * vDefaultMaxLength_;
+	float lineLength = static_cast<float>(deltaStore_.second / *vDefaultMoveTime_) * ivyLength_;
 	// 線の追加
 	ivyModel_->AddLine(*lastPos, *lastPos + moveDirections_ * lineLength);
 

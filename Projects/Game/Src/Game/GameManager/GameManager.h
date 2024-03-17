@@ -81,6 +81,10 @@ private:
 	/// @brief ツタの分裂数が増えるかを計算
 	void AddIvySplitCount(IvyComponent *ivy);
 
+	/// @brief ツタの長さを伸ばす計算
+	/// @param ivy ツタ
+	void ExtendIvyLength();
+
 	/// @brief エネルギーを吸収する
 	/// @param ivy ツタコンポーネント
 	void AbsorbEnergy(IvyComponent *ivy);
@@ -95,6 +99,9 @@ private:
 
 	SoLib::VItem<"ツタの間隔", float> vIvyDistance_ = 100.f;
 	SoLib::VItem<"ツタの初期分裂数", uint32_t> vDefaultIvySplit_ = 3u;
+
+	// 伸びる距離の初期値
+	SoLib::VItem<"伸びる距離の初期値", float> vDefaultIvyLength_ = 150.f;
 
 	// 一度に生やせるツタの最大値
 	inline static constexpr uint32_t maxIvyCount_ = 3u;
@@ -117,5 +124,7 @@ private:
 	std::list<std::unique_ptr<GameObject>> ivys_;
 	// 栄養アイテム
 	std::list<std::unique_ptr<GameObject>> energyItems_;
+
+	float ivyLength_;
 
 };
