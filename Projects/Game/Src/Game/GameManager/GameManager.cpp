@@ -289,7 +289,7 @@ void GameManager::ExtendIvyLength()
 {
 
 	// 一旦等倍で増えていく
-	ivyLength_ += currentCollectedEnergyItems_.size() * 0.2f;
+	ivyLength_ += currentCollectedEnergyItems_.size() * *vExtendLength_;
 
 }
 
