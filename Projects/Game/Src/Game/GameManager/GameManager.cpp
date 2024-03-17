@@ -256,10 +256,13 @@ GameObject *GameManager::AddEnergy(const Vector3 &pos)
 	return newEnergy;
 }
 
-void GameManager::CollectEnergy(GameObject *energy, [[maybe_unused]] IvyComponent *ivy)
+void GameManager::CollectEnergy(GameObject *energy, IvyComponent *ivy)
 {
+
+	auto *const energyComp = energy->GetComponent<EnergyItem>();
 	// 当たったエネルギーを回収する
-	energy->GetComponent<EnergyItem>()->SetIsCollected(true);
+	energyComp->SetIsCollected(true);
+	energyComp->SetTargetIndex(ivy->GetPosIndex());
 }
 
 void GameManager::AddIvySplitCount(IvyComponent *ivy)

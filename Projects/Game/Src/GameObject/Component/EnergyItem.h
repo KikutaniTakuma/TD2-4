@@ -21,10 +21,16 @@ public:
 
 	bool GetIsCollected() const { return isCollected_; }
 
+	void SetTargetIndex(const uint32_t index) { targetIndex_ = index; }
+
+	uint32_t GetTargetIndex() const { return targetIndex_; }
+
 private:
 
 	// 回収されたか
 	bool isCollected_ = false;
+
+	uint32_t targetIndex_ = 0u;
 
 	std::unique_ptr<Texture2D> itemTexture_;
 

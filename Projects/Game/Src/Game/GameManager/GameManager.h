@@ -4,6 +4,7 @@
 #include <memory>
 #include <bitset>
 #include <list>
+#include <cstdint>
 
 #include "../LambEngine/Input/Input.h"
 
