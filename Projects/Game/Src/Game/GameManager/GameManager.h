@@ -53,6 +53,9 @@ public:
 	/// @return 動いている場合true
 	bool CurrentIvyIsActive() const;
 
+	/// @brief 存在するすべての栄養を破棄する
+	void DeleteAllEnergy();
+
 private:
 	/// @brief ツタを破棄する
 	/// @param ivy ツタのアドレス

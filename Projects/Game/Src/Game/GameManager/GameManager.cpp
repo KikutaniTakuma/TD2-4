@@ -1,5 +1,7 @@
 #include "GameManager.h"
 
+#include <fstream>
+
 #include "GameObject/Component/EnergyItem.h"
 #include "GameObject/Component/IvyComponent.h"
 #include "Utils/Random/Random.h"
@@ -85,9 +87,10 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	for (const auto &energy : energyItems_) {
 		energy->Draw(camera);
 	}
-	for (const auto &correctEnergy : collectedEnergyItems_) {
+	// 掴んだやつを一旦表示しないように
+	/*for (const auto &correctEnergy : collectedEnergyItems_) {
 		correctEnergy->Draw(camera);
-	}
+	}*/
 }
 
 bool GameManager::Debug([[maybe_unused]] const char *const str)
@@ -102,16 +105,40 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 	SoLib::ImGuiWidget(&centor_);
 	SoLib::ImGuiWidget(&radius_);
 	SoLib::ImGuiWidget(&count_);
-	if (ImGui::Button("PopEnemy")) {
+	if (ImGui::Button("エネルギーをランダム生成")) {
 		RandomPopEnergys(centor_, radius_, count_);
 	}
+	if (ImGui::Button("すべてのエネルギーを破棄")) {
+		DeleteAllEnergy();
+	}
 
-	for (auto &ivy : ivys_) {
-		SoLib::ImGuiText("Generation", ivy->GetComponent<IvyComponent>()->GetChildGeneration());
+	if (ImGui::Button("エネルギーのデータを取得")) {
+
+		std::ifstream file{ "./Resources/TestResource/energyPos.jsonc" };
+
+		if (not file.fail()) {
+
+			nlohmann::json root;
+
+			file >> root;
+
+			file.close();
+
+			for (const auto &item : root["EnergyPos"]) {
+				const Vector2 &pos = item;
+				AddEnergy(pos);
+			}
+
+		}
 	}
 
 	SoLib::ImGuiText("分裂数", ivySplit_);
 	SoLib::ImGuiText("ツタの長さ", ivyLength_);
+
+	for (auto &ivy : ivys_) {
+		SoLib::ImGuiText("ツタの世代数", ivy->GetComponent<IvyComponent>()->GetChildGeneration());
+	}
+
 
 	// SoLib::ImGuiWidget("Ivys", &ivys_, ivys_.begin(), [](const decltype(ivys_.begin()) &itr)->std::string { return SoLib::to_string((*itr)->GetComponent<IvyComponent>()->IsActive()); });
 
@@ -182,6 +209,11 @@ bool GameManager::CurrentIvyIsActive() const
 {
 	// ツタがある && 最後のツタが動いていた場合は true
 	return not ivys_.empty() and ivys_.back()->GetComponent<IvyComponent>()->IsActive();
+}
+
+void GameManager::DeleteAllEnergy()
+{
+	energyItems_.clear();
 }
 
 void GameManager::DeleteIvy(GameObject *ivy)
