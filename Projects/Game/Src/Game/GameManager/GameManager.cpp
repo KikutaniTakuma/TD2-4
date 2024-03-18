@@ -7,6 +7,7 @@
 #include "Utils/Random/Random.h"
 #include <Game/CollisionManager/Capsule/Capsule.h>
 #include <Game/CollisionManager/Collider/Collider.h>
+#include <GlobalVariables/GlobalVariables.h>
 
 void GameManager::Init()
 {
@@ -20,6 +21,11 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		Vector2 min;
 		Vector2 max;
 	};
+
+	GlobalVariables::GetInstance()->Update();
+
+	IvyComponent::ApplyVariables("IvyComponent");
+	IvyComponent::AddVariable("IvyComponent");
 
 	for (auto &energy : energyItems_) {
 		if (energy->GetComponent<EnergyItem>()->GetIsCollected()) {

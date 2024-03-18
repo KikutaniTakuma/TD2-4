@@ -19,6 +19,14 @@ public:
 
 	void Draw(const Camera &vp) const override;
 
+	/// @brief jsonからの読み込み
+	/// @param groupName グループ名
+	static void ApplyVariables(const char *const groupName);
+
+	/// @brief jsonへの紐づけ
+	/// @param groupName グループ名
+	static void AddVariable(const char *const groupName);
+
 public:
 
 	void SetIvyLength(float length) { ivyLength_ = length; }
