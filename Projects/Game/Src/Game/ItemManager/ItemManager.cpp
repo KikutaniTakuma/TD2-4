@@ -1,6 +1,7 @@
 #include "ItemManager.h"
 #include"fstream"
 #include"Engine/Core/WindowFactory/WindowFactory.h"
+#include"../SoLib/SoLib/SoLib_Json.h"
 
 void ItemManager::Initialize(){
 	model_ = std::make_unique<Model>("./Resources/Ball.obj");
@@ -12,8 +13,8 @@ void ItemManager::Initialize(){
 	model2_->scale = { 1.0f,1.0f,1.0f };
 	//model2_->SetParent(model_.get());	
 
-	modelList_.push_back(std::move(model_));
-	modelList_.push_back(std::move(model2_));
+	modelList_.emplace(0,std::move(model_));
+	modelList_.emplace(1,std::move(model2_));
 
 	sphere_ = std::make_unique<Sphere>();
 	sphere_->radius = 0.3f;
@@ -42,13 +43,13 @@ void ItemManager::Finalize(){
 void ItemManager::Update(){
 	
 	for (auto it = modelList_.begin(); it != modelList_.end(); ++it) {
-		if (it->get()->GetParent()){
-			it->get()->scale = { 1.0f,1.0f,1.0f };
+		if (it->second->GetParent()) {
+			it->second->scale = { 1.0f,1.0f,1.0f };
 		}
 		else {
-			it->get()->scale = { 0.3f,0.3f,0.3f };
+			it->second->scale = { 0.3f,0.3f,0.3f };
 		}
-		it->get()->Update();
+		it->second->Update();
 	}
 	
 
@@ -58,7 +59,7 @@ void ItemManager::Update(){
 
 void ItemManager::Draw(const Camera* camera){
 	for (auto it = modelList_.begin(); it != modelList_.end(); ++it) {
-		it->get()->Draw(camera->GetViewProjection(), camera->GetPos());
+		it->second->Draw(camera->GetViewProjection(), camera->GetPos());
 	}
 	sphere_->Draw(camera->GetViewProjection(), std::numeric_limits<uint32_t>::max());
 }
@@ -91,22 +92,22 @@ void ItemManager::Debug(){
 			for (auto it = modelList_.begin(); it != modelList_.end();) {
 				if (ImGui::TreeNode(("栄養[" + std::to_string(0 + i) + "]").c_str())) {
 					ImGui::PushID(&*it);
-					ImGui::DragFloat3("大きさ", &it->get()->scale.x, 0.01f);
+					ImGui::DragFloat3("大きさ", &it->second->scale.x, 0.01f);
 					if (ImGui::IsItemActive()) {
-						it->get()->color = 0xff0000ff;
+						it->second->color = 0xff0000ff;
 						changeSize_ = true;
 					}
 					else {
 						changeSize_ = false;
-						it->get()->color = 0xffffffff;
+						it->second->color = 0xffffffff;
 					}
-					ImGui::DragFloat3("座標", &it->get()->pos.x, 0.01f);
+					ImGui::DragFloat3("座標", &it->second->pos.x, 0.01f);
 					if (changeSize_ == false) {
 						if (ImGui::IsItemActive()) {
-							it->get()->color = 0xff0000ff;
+							it->second->color = 0xff0000ff;
 						}
 						else {
-							it->get()->color = 0xffffffff;
+							it->second->color = 0xffffffff;
 						}
 					}
 					if (ImGui::Button("このオブジェを削除")) {
@@ -169,14 +170,14 @@ void ItemManager::Debug(){
 					k = 0;
 					for (auto element = modelList_.begin(); element != modelList_.end(); ++element) {
 						if (it == element ||
-							it->get()->GetParent() == element->get() ||
-							element->get()->GetParent() == it->get()) {
+							it->second->GetParent() == element->second.get() ||
+							element->second->GetParent() == it->second.get()) {
 							k++;
 							continue;
 						}
 
 						if (ImGui::Button(("栄養[" + std::to_string(0 + k) + "]を親にする").c_str())) {
-							it->get()->SetParent(element->get());
+							it->second->SetParent(element->second.get());
 						}
 
 
@@ -198,30 +199,30 @@ void ItemManager::Debug(){
 				k = 0;
 				for (auto element = modelList_.begin(); element != modelList_.end(); ++element) {
 					
-					if (element->get()->GetParent() == it->get()) {
+					if (element->second->GetParent() == it->second.get()) {
 						if (ImGui::MenuItem(("栄養[" + std::to_string(0 + i) + "]　＜＝　栄養[" + std::to_string(0 + k) + "]").c_str(), "この関係を解消する", isSelectImgui_)) {
 							isSelectImgui_ = true;
-							element->get()->ClearParent();
+							element->second->ClearParent();
 							
 
 						}
 						if (ImGui::IsItemHovered()) {
 							
-							it->get()->color = 0xff0000ff;
-							element->get()->color = 0x0000ffff;
-							colorModel = it->get();
-							colorModel2 = element->get();
+							it->second->color = 0xff0000ff;
+							element->second->color = 0x0000ffff;
+							colorModel = it->second.get();
+							colorModel2 = element->second.get();
 						}
 						else {
-							if (colorModel != it->get() && colorModel != element->get()) {
-								it->get()->color = 0xffffffff;
-								element->get()->color = 0xffffffff;
+							if (colorModel != it->second.get() && colorModel != element->second.get()) {
+								it->second->color = 0xffffffff;
+								element->second->color = 0xffffffff;
 							}
 													
 						}
 						if (isSelectImgui_ == true){
-							it->get()->color = 0xffffffff;
-							element->get()->color = 0xffffffff;
+							it->second->color = 0xffffffff;
+							element->second->color = 0xffffffff;
 							isSelectImgui_ = false;
 						}
 					}
@@ -242,9 +243,11 @@ void ItemManager::Debug(){
 
 
 void ItemManager::AddItem(const Vector3& pos, const Vector3& scale){
-	auto& model = modelList_.emplace_back(std::make_unique<Model>("./Resources/Ball.obj"));
-	model->pos = pos;
-	model->scale = scale;
+	model_ = std::make_unique<Model>("./Resources/Ball.obj");
+	model_->pos = pos;
+	model_->scale = scale;
+	int t = static_cast<int>(modelList_.size());
+	modelList_.emplace(t, std::move(model_));
 }
 
 bool ItemManager::OperationConfirmation() {
@@ -268,20 +271,22 @@ void ItemManager::SaveFile(const std::string& fileName){
 	int i = 0;
 
 	for (auto it = modelList_.begin(); it != modelList_.end(); ++it) {
-		root[kItemName_][i]["Scale"] = json::array({
-				it->get()->scale.x,
-				it->get()->scale.y,
-				it->get()->scale.z
+		//　保存する先のコンテナ
+		auto& item = root[kItemName_][i];
+		item["Scale"] = json::array({
+				it->second->scale.x,
+				it->second->scale.y,
+				it->second->scale.z
 			});
-		root[kItemName_][i]["Rotate"] = json::array({
-				it->get()->rotate.x,
-				it->get()->rotate.y,
-				it->get()->rotate.z
+		item["Rotate"] = json::array({
+				it->second->rotate.x,
+				it->second->rotate.y,
+				it->second->rotate.z
 			});
-		root[kItemName_][i]["Pos"] = json::array({
-				it->get()->pos.x,
-				it->get()->pos.y,
-				it->get()->pos.z
+		item["Pos"] = json::array({
+				it->second->pos.x,
+				it->second->pos.y,
+				it->second->pos.z
 			});
 
 		std::filesystem::path dir(kDirectoryPath_);
@@ -310,62 +315,6 @@ void ItemManager::SaveFile(const std::string& fileName){
 
 	std::string message = "File save completed.";
 	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
-}
-
-void ItemManager::FileOverWrite(){
-	////読み込むjsonファイルのフルパスを合成する
-	//std::string filePath = kDirectoryPath + kItemName_ + ".json";
-	////読み込み用のファイルストリーム
-	//std::ifstream ifs;
-	////ファイルを読み込み用に開く
-	//ifs.open(filePath);
-
-	////上書き用に読み取り
-	//json root;
-	//ifs >> root;
-	//ifs.close();
-
-	//json overWrite;
-
-	//int i = 0;
-	//for (int i = 0; i < coralsWT_.size(); i++) {
-	//	overWrite[kItemName_][i][0] = json::array({
-	//			coralsWT_[i].scale_.x,
-	//			coralsWT_[i].scale_.y,
-	//			coralsWT_[i].scale_.z
-	//		});
-	//	overWrite[kItemName_][i][1] = json::array({
-	//			coralsWT_[i].rotation_.x,
-	//			coralsWT_[i].rotation_.y,
-	//			coralsWT_[i].rotation_.z
-	//		});
-	//	overWrite[kItemName_][i][2] = json::array({
-	//			coralsWT_[i].translation_.x,
-	//			coralsWT_[i].translation_.y,
-	//			coralsWT_[i].translation_.z
-	//		});
-	//}
-
-	//root[kItemName_] = overWrite;
-
-	//// 書き込み用ファイルストリーム
-	//std::ofstream ofs;
-	//// ファイルを書き込みように開く
-	//ofs.open(filePath);
-	////ファイルオープン失敗
-	//if (ofs.fail()) {
-	//	std::string message = "Failed open data file for write.";
-	//	MessageBoxA(nullptr, message.c_str(), "Element", 0);
-	//	assert(0);
-	//	return;
-	//}
-	////ファイルにjson文字列を書き込む(インデント幅4)
-	//ofs << std::setw(4) << root << std::endl;
-	////ファイルを閉じる
-	//ofs.close();
-
-	//std::string message = "File overwriting completed.";
-	//MessageBoxA(nullptr, message.c_str(), "Element", 0);
 }
 
 void ItemManager::ChackFiles(){
@@ -529,3 +478,54 @@ void ItemManager::from_json(const json& j, Vector3& v){
 	v.y = j.at(1).get<float>();
 	v.z = j.at(2).get<float>();
 }
+
+//void ItemManager::SaveFilePair(const std::string& fileName){
+//	//保存
+//	json root;
+//	root = json::object();
+//	int i = 0;
+//
+//	for (auto it = modelList_.begin(); it != modelList_.end(); ++it) {
+//		root[kItemName_][i]["Scale"] = json::array({
+//				it->second->scale.x,
+//				it->second->scale.y,
+//				it->second->scale.z
+//			});
+//		root[kItemName_][i]["Rotate"] = json::array({
+//				it->second->rotate.x,
+//				it->second->rotate.y,
+//				it->second->rotate.z
+//			});
+//		root[kItemName_][i]["Pos"] = json::array({
+//				it->second->pos.x,
+//				it->second->pos.y,
+//				it->second->pos.z
+//			});
+//
+//		std::filesystem::path dir(kDirectoryPath_);
+//		if (!std::filesystem::exists(kDirectoryName_)) {
+//			std::filesystem::create_directory(kDirectoryName_);
+//		}
+//		// 書き込むjsonファイルのフルパスを合成する
+//		std::string filePath = kDirectoryPath_ + fileName + ".json";
+//		// 書き込み用ファイルストリーム
+//		std::ofstream ofs;
+//		// ファイルを書き込みように開く
+//		ofs.open(filePath);
+//		//ファイルオープン失敗
+//		if (ofs.fail()) {
+//			std::string message = "Failed open data file for write.";
+//			MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
+//			assert(0);
+//			break;
+//		}
+//		//ファイルにjson文字列を書き込む(インデント幅4)
+//		ofs << std::setw(4) << root << std::endl;
+//		//ファイルを閉じる
+//		ofs.close();
+//		i++;
+//	}
+//
+//	std::string message = "File save completed.";
+//	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
+//}

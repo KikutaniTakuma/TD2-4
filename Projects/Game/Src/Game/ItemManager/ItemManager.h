@@ -55,7 +55,7 @@ private:
 
 	std::unique_ptr<GameObject> testObject_;*/
 	//モデルのコンテナ
-	std::list<std::unique_ptr<Model>> modelList_;
+	std::unordered_map<int, std::unique_ptr<Model>> modelList_;
 
 	std::unique_ptr<Model> model_;
 
@@ -72,8 +72,7 @@ private:
 
 	//そのimguiを選択しているかどうか
 	bool isSelectImgui_ = false;
-	//そのimguiにカーソル選択しているかどうか
-	//bool isHover_ = false;
+	
 
 	/*ファイル制御関連*/
 private:
@@ -81,8 +80,6 @@ private:
 	using json = nlohmann::json;
 	//ファイルに保存する
 	void SaveFile(const std::string& fileName);
-	//ファイルに書いてあるものに上書きする
-	void FileOverWrite();
 	//ファイルが存在するか確認する
 	void ChackFiles();
 	//ファイルを読み込む(走査)
@@ -113,6 +110,16 @@ private:
 	//名前
 	const std::string kItemName_ = "nutrition";
 
+	std::vector<std::string> fileName_;
+
+private:
+	//ステージ名をいれるコンテナ
+	std::vector<std::string> shapes_;
+	//選んでいるステージ名
+	std::string shapeName_;
+	//imguiで選択しているステージナンバー
+	int shapeSelectNum_;
+
 	//ペアのファイルパス
 	const std::string kDirectoryPairPath_ = "Resources/Datas/Pairs/";
 	//ペアのファイルパス
@@ -120,10 +127,12 @@ private:
 	//名前
 	const std::string kPairName_ = "shape";
 
-	std::string Name_ = "\0";
-
-	std::vector<std::string> fileName_;
-
 	std::vector<std::string> pairFileName_;
+
+private:
+	//ファイルに保存する
+	//void SaveFilePair(const std::string& fileName);
+	//ファイルを読み込む
+	//void LoadFilePair(const std::string& fileName);
 };
 
