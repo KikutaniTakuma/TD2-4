@@ -70,8 +70,12 @@ protected:
 
 	std::string dataFileNmae;
 };
+template<typename T, typename Variant>
+concept IsCanGetVariant = requires(Variant v) {
+	{ std::get<T>(v) } -> std::convertible_to<T &>;
+};
 
-template <typename ITEM, SoLib::Text::ConstExprString V = ITEM::str_, SoLib::IsNotPointer T = decltype(ITEM::item)>
+template <typename ITEM, SoLib::Text::ConstExprString V = ITEM::str_, IsCanGetVariant<GlobalVariables::Item> T = decltype(ITEM::item)>
 	requires(std::same_as<ITEM, SoLib::VItem<V, T>>)
 void operator>>(const GlobalVariables::Group &group, ITEM &item) {
 	// グループから名前を検索
@@ -84,7 +88,7 @@ void operator>>(const GlobalVariables::Group &group, ITEM &item) {
 	item = std::get<T>(itr->second);
 
 }
-template <typename ITEM, SoLib::Text::ConstExprString V = ITEM::str_, SoLib::IsNotPointer T = decltype(ITEM::item)>
+template <typename ITEM, SoLib::Text::ConstExprString V = ITEM::str_, IsCanGetVariant<GlobalVariables::Item> T = decltype(ITEM::item)>
 	requires(std::same_as<ITEM, SoLib::VItem<V, T>>)
 void operator<<(GlobalVariables::Group &group, const ITEM &item) {
 
