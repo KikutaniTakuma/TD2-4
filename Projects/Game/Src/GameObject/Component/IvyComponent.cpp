@@ -2,6 +2,7 @@
 #include "../SoLib/Math/Euler.h"
 #include "../SoLib/Math/Math.hpp"
 #include "IvyModel.h"
+#include <GlobalVariables/GlobalVariables.h>
 
 //SoLib::VItem<"伸びる時間の初期値", float> IvyComponent::vDefaultMoveTime_ = 0.8f;
 //SoLib::VItem<"止まる時間の初期値", float> IvyComponent::vDefaultStopTime_ = 0.75f;
@@ -47,6 +48,18 @@ void IvyComponent::Draw([[maybe_unused]] const Camera &vp) const
 	for (const auto &child : childrenIvys_) {
 		child->Draw(vp);
 	}
+}
+
+void IvyComponent::ApplyVariables(const char *const groupName)
+{
+	static const GlobalVariables *const gVals = GlobalVariables::GetInstance();
+	auto group = gVals->GetGroup(groupName);
+	if (not group) { return; }
+
+	*group >> vDefaultMoveTime_;
+	*group >> vDefaultStopTime_;
+	*group >> vDefaultAngle_;
+
 }
 
 bool IvyComponent::SplitIvy(int32_t splitCount, float ivyLength)
