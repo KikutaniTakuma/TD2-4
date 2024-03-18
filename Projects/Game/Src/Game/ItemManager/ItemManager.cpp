@@ -7,27 +7,15 @@ void ItemManager::Initialize(){
 	model_->pos = { 1.5f,0.0f,0.0f };
 	model_->scale = { 0.3f,0.3f,0.3f };
 
-	model_->light.ptRange = 5.0f;
-	model_->light.ptPos = model_->pos;
-	model_->light.ptPos.y = 3.8f;
-	model_->light.ptColor = Vector3::kIdentity * 15.0f;
-
 	model2_ = std::make_unique<Model>("./Resources/Ball.obj");
-
 	model2_->pos = { -1.5f,0.0f,0.0f };
 	model2_->scale = { 1.0f,1.0f,1.0f };
-	model2_->light.ptRange = 5.0f;
-	model2_->light.ptPos = model2_->pos;
-	model2_->light.ptPos.y = 3.8f;
-	model2_->light.ptColor = Vector3::kIdentity * 15.0f;
-	model2_->SetParent(model_.get());
-
-	
+	//model2_->SetParent(model_.get());	
 
 	modelList_.push_back(std::move(model_));
 	modelList_.push_back(std::move(model2_));
 
-	sphere_.reset(new Sphere);
+	sphere_ = std::make_unique<Sphere>();
 
 	stages_ = {
 		"Stage1",
@@ -53,8 +41,15 @@ void ItemManager::Finalize(){
 void ItemManager::Update(){
 	
 	for (auto it = modelList_.begin(); it != modelList_.end(); ++it) {
+		if (it->get()->GetParent()){
+			it->get()->scale = { 1.0f,1.0f,1.0f };
+		}
+		else {
+			it->get()->scale = { 0.3f,0.3f,0.3f };
+		}
 		it->get()->Update();
 	}
+	
 
 	sphere_->Debug("Sphere");
 	sphere_->Update();
@@ -69,7 +64,7 @@ void ItemManager::Draw(const Camera* camera){
 
 void ItemManager::Debug(){
 	ImGui::Begin("アイテムエディター", nullptr, ImGuiWindowFlags_MenuBar);
-	int i = 0;
+	int i = 0, k = 0;
 
 	if (ImGui::BeginMenuBar()){
 		if (ImGui::BeginMenu("オブジェクト追加")) {
@@ -153,10 +148,80 @@ void ItemManager::Debug(){
 					
 			ImGui::EndMenu();
 		}
+
+		ImGui::EndMenuBar();		
+	}
+
+	i = 0;
+	ImGui::End(); 
+	ImGui::Begin("親子関係エディター", nullptr, ImGuiWindowFlags_MenuBar);
+	if (ImGui::BeginMenuBar()) {
+		if (ImGui::BeginMenu("アイテムリスト")) {
+			for (auto it = modelList_.begin(); it != modelList_.end(); ++it) {
+				if (ImGui::TreeNode(("栄養[" + std::to_string(0 + i) + "]").c_str())) {
+					
+					if (ImGui::TreeNode("親子関係の構築")){
+						for (auto element = modelList_.begin(); element != modelList_.end(); ++element) {
+							if (it == element) {
+								k++;
+								continue;
+							}
+
+							if (ImGui::Button(("栄養[" + std::to_string(0 + k) + "]を親にする").c_str())) {
+								it->get()->SetParent(element->get());
+							}
+
+
+							k++;
+						}
+						ImGui::TreePop();
+					}
+					if (ImGui::Button("親子関係を解消する")){
+						it->get()->ClearParent();
+					}
+					
+					ImGui::TreePop();
+				}
+				i++;
+			}
+
+			ImGui::EndMenu();
+		}
+		/*if (ImGui::BeginMenu("親子関係の確認")) {
+			for (auto it = modelList_.begin(); it != mqodelList_.end(); ++it) {
+				if (ImGui::TreeNode(("栄養[" + std::to_string(0 + i) + "]").c_str())) {
+
+					if (ImGui::TreeNode("親子関係の構築")) {
+						for (auto element = modelList_.begin(); element != modelList_.end(); ++element) {
+							if (it == element) {
+								k++;
+								continue;
+							}
+
+							if (ImGui::Button(("栄養[" + std::to_string(0 + k) + "]を親にする").c_str())) {
+								it->get()->SetParent(element->get());
+							}
+
+
+							k++;
+						}
+						ImGui::TreePop();
+					}
+					if (ImGui::Button("親子関係を解消する")) {
+						it->get()->ClearParent();
+					}
+
+					ImGui::TreePop();
+				}
+				i++;
+			}
+
+			ImGui::EndMenu();
+		}*/
 		ImGui::EndMenuBar();
 	}
 
-	
+
 	ImGui::End();
 }
 
@@ -180,7 +245,7 @@ bool ItemManager::OperationConfirmation() {
 
 }
 
-void ItemManager::SaveFile(const std::string& stageNumber){
+void ItemManager::SaveFile(const std::string& fileName){
 	//保存
 	json root;
 	root = json::object();
@@ -202,12 +267,13 @@ void ItemManager::SaveFile(const std::string& stageNumber){
 				it->get()->pos.y,
 				it->get()->pos.z
 			});
-		std::filesystem::path dir(kDirectoryPath);
-		if (!std::filesystem::exists(kDirectoryName)) {
-			std::filesystem::create_directory(kDirectoryName);
+
+		std::filesystem::path dir(kDirectoryPath_);
+		if (!std::filesystem::exists(kDirectoryName_)) {
+			std::filesystem::create_directory(kDirectoryName_);
 		}
 		// 書き込むjsonファイルのフルパスを合成する
-		std::string filePath = kDirectoryPath + stageNumber + ".json";
+		std::string filePath = kDirectoryPath_ + fileName + ".json";
 		// 書き込み用ファイルストリーム
 		std::ofstream ofs;
 		// ファイルを書き込みように開く
@@ -287,14 +353,14 @@ void ItemManager::FileOverWrite(){
 }
 
 void ItemManager::ChackFiles(){
-	if (!std::filesystem::exists(kDirectoryName)) {
+	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "Failed open data file for write.";
 		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
 		assert(0);
 		return;
 	}
 
-	std::filesystem::directory_iterator dir_it(kDirectoryPath);
+	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
 
 	for (const std::filesystem::directory_entry& entry : dir_it) {
 		//ファイルパスを取得
@@ -308,37 +374,37 @@ void ItemManager::ChackFiles(){
 		}
 
 		if (LoadChackItem(filePath.stem().string())) {
-			chackOnlyNumber = 1;
+			chackOnlyNumber_ = 1;
 		}
 
-		if (fileName.size() != 0) {
+		if (fileName_.size() != 0) {
 			bool noneFail = true;
-			for (size_t i = 0; i < fileName.size(); i++) {
-				if (fileName[i].c_str() == filePath.stem().string()) {
+			for (size_t i = 0; i < fileName_.size(); i++) {
+				if (fileName_[i].c_str() == filePath.stem().string()) {
 					noneFail = false;
 				}
 			}
 			if (noneFail) {
-				fileName.push_back(filePath.stem().string());
+				fileName_.push_back(filePath.stem().string());
 			}
 
 		}
 		else {
 			//ファイルの名前を取得
-			fileName.push_back(filePath.stem().string());
+			fileName_.push_back(filePath.stem().string());
 		}
 	}
 }
 
-void ItemManager::LoadFiles(const std::string& stageNumber){
-	if (!std::filesystem::exists(kDirectoryName)) {
+void ItemManager::LoadFiles(const std::string& fileName){
+	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "This file path does not exist.";
 		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
 		assert(0);
 		return;
 	}
 
-	std::filesystem::directory_iterator dir_it(kDirectoryPath);
+	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
 
 	for (const std::filesystem::directory_entry& entry : dir_it) {
 		//ファイルパスを取得
@@ -351,7 +417,7 @@ void ItemManager::LoadFiles(const std::string& stageNumber){
 			continue;
 		}
 
-		if (filePath.stem().string() == stageNumber) {
+		if (filePath.stem().string() == fileName) {
 			//ファイル読み込み
 			LoadFile(filePath.stem().string());
 			return;
@@ -362,11 +428,11 @@ void ItemManager::LoadFiles(const std::string& stageNumber){
 	
 }
 
-void ItemManager::LoadFile(const std::string& groupName){
-	if (!LoadChackItem(groupName))
+void ItemManager::LoadFile(const std::string& fileName){
+	if (!LoadChackItem(fileName))
 		return;
 	//読み込むjsonファイルのフルパスを合成する
-	std::string filePath = kDirectoryPath + groupName + ".json";
+	std::string filePath = kDirectoryPath_ + fileName + ".json";
 	//読み込み用のファイルストリーム
 	std::ifstream ifs;
 	//ファイルを読み込み用に開く
@@ -411,9 +477,9 @@ void ItemManager::LoadFile(const std::string& groupName){
 #endif // _DEBUG
 }
 
-bool ItemManager::LoadChackItem(const std::string& stageNumber){
+bool ItemManager::LoadChackItem(const std::string& fileName){
 	// 書き込むjsonファイルのフルパスを合成する
-	std::string filePath = kDirectoryPath + stageNumber + ".json";
+	std::string filePath = kDirectoryPath_ + fileName + ".json";
 	//読み込み用のファイルストリーム
 	std::ifstream ifs;
 	//ファイルを読み込み用に開く

@@ -75,17 +75,17 @@ private:
 	//メンバ関数
 	using json = nlohmann::json;
 	//ファイルに保存する
-	void SaveFile(const std::string& stageNumber);
+	void SaveFile(const std::string& fileName);
 	//ファイルに書いてあるものに上書きする
 	void FileOverWrite();
 	//ファイルが存在するか確認する
 	void ChackFiles();
 	//ファイルを読み込む(走査)
-	void LoadFiles(const std::string& stageNumber);
+	void LoadFiles(const std::string& fileName);
 	//ファイルを読み込む
-	void LoadFile(const std::string& groupName);
+	void LoadFile(const std::string& fileName);
 	//ファイルが存在するか確認する(指定)
-	bool LoadChackItem(const std::string& stageNumber);
+	bool LoadChackItem(const std::string& fileName);
 
 private:
 	//jsonの数値をVector3に変換する関数
@@ -94,7 +94,7 @@ private:
 private:
 	//ファイル保存関連
 	//ファイルがちゃんと読み込めたかどうか
-	bool chackOnlyNumber = 0;
+	bool chackOnlyNumber_ = 0;
 	//ステージ名をいれるコンテナ
 	std::vector<std::string> stages_;
 	//選んでいるステージ名
@@ -102,14 +102,23 @@ private:
 	//imguiで選択しているステージナンバー
 	int stageSelectNum_;
 	//アイテムのファイルパス
-	const std::string kDirectoryPath = "Resources/Datas/Items/";
+	const std::string kDirectoryPath_ = "Resources/Datas/Items/";
 	//アイテムのファイルパス
-	const std::string kDirectoryName = "Resources/Datas/Items";
+	const std::string kDirectoryName_ = "Resources/Datas/Items";
 	//名前
 	const std::string kItemName_ = "nutrition";
 
+	//ペアのファイルパス
+	const std::string kDirectoryPairPath_ = "Resources/Datas/Pairs/";
+	//ペアのファイルパス
+	const std::string kDirectoryPairName_ = "Resources/Datas/Pairs";
+	//名前
+	const std::string kPairName_ = "shape";
+
 	std::string Name_ = "\0";
 
-	std::vector<std::string> fileName;
+	std::vector<std::string> fileName_;
+
+	std::vector<std::string> pairFileName_;
 };
 

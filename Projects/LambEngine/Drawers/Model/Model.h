@@ -67,6 +67,15 @@ public:
 
 	void Debug(const std::string& guiName);
 
+	//このモデルの親子関係の情報を取得する
+	const Model* GetParent() const {
+		return parent_;
+	}
+	//このモデルの親子関係を解消する
+	void ClearParent() {
+		parent_ = nullptr;
+	}
+
 	void SetParent(Model* parent) {
 		parent_ = parent;
 	}
