@@ -62,6 +62,17 @@ void IvyComponent::ApplyVariables(const char *const groupName)
 
 }
 
+void IvyComponent::AddVariable(const char *const groupName)
+{
+	static GlobalVariables *const gVals = GlobalVariables::GetInstance();
+	auto group = gVals->AddGroup(groupName);
+
+	*group << vDefaultMoveTime_;
+	*group << vDefaultStopTime_;
+	*group << vDefaultAngle_;
+
+}
+
 bool IvyComponent::SplitIvy(int32_t splitCount, float ivyLength)
 {
 	// もし分裂数が残ってないか、死んでいる場合はその場で終了

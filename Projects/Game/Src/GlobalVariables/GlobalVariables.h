@@ -46,13 +46,20 @@ public:
 	Vector3 GetVector3Value(const std::string &groupName, const std::string &key) const;
 	std::string GetStringValue(const std::string &groupName, const std::string &key) const;
 
+	Group *AddGroup(const std::string &group) {
+		auto itr = datas.find(group);
+		if (itr != datas.end()) { return &itr->second; }
+
+		auto &g = datas[group];
+		return &g;
+	}
 	Group *GetGroup(const std::string &group) {
-		auto g = datas.find(group);
-		return g != datas.end() ? &g->second : nullptr;
+		auto itr = datas.find(group);
+		return itr != datas.end() ? &itr->second : nullptr;
 	}
 	const Group *GetGroup(const std::string &group) const {
-		auto g = datas.find(group);
-		return g != datas.end() ? &g->second : nullptr;
+		auto itr = datas.find(group);
+		return itr != datas.end() ? &itr->second : nullptr;
 	}
 
 protected:
@@ -80,13 +87,8 @@ void operator>>(const GlobalVariables::Group &group, ITEM &item) {
 template <typename ITEM, SoLib::Text::ConstExprString V = ITEM::str_, SoLib::IsNotPointer T = decltype(ITEM::item)>
 	requires(std::same_as<ITEM, SoLib::VItem<V, T>>)
 void operator<<(GlobalVariables::Group &group, const ITEM &item) {
-	// グループから名前を検索
-	GlobalVariables::Group::iterator itr = group.find(item.c_str());
-
-	// データが存在しない場合は終了
-	if (itr == group.end()) { return; }
 
 	// データを保存する
-	itr->second = *item;
+	group[item.c_str()] = *item;
 
 }
