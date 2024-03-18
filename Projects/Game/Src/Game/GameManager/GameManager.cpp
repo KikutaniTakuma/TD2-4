@@ -225,6 +225,7 @@ void GameManager::DeleteAllEnergy()
 void GameManager::DeleteAllIvy()
 {
 	ivys_.clear();
+	ivyPos_ = 0b000000;
 }
 
 void GameManager::DeleteAll()
@@ -232,7 +233,7 @@ void GameManager::DeleteAll()
 	DeleteAllEnergy();
 	currentCollectedEnergyItems_.clear();
 	collectedEnergyItems_.clear();
-	ivys_.clear();
+	DeleteAllIvy();
 }
 
 void GameManager::DeleteIvy(GameObject *ivy)
