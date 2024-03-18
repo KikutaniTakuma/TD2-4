@@ -16,6 +16,7 @@ void ItemManager::Initialize(){
 	modelList_.push_back(std::move(model2_));
 
 	sphere_ = std::make_unique<Sphere>();
+	sphere_->radius = 0.3f;
 
 	stages_ = {
 		"Stage1",
@@ -74,9 +75,9 @@ void ItemManager::Debug(){
 				ImGui::DragFloat3("座標", &sphere_->translation.x, 0.01f);
 
 				if (ImGui::Button("アイテム追加")) {
-					if (OperationConfirmation()) {
+					/*if (OperationConfirmation()) {*/
 						AddItem(sphere_->translation, Vector3(sphere_->radius, sphere_->radius, sphere_->radius));
-					}			
+					//}			
 					
 				}
 				ImGui::TreePop();
@@ -162,7 +163,9 @@ void ItemManager::Debug(){
 					
 					if (ImGui::TreeNode("親子関係の構築")){
 						for (auto element = modelList_.begin(); element != modelList_.end(); ++element) {
-							if (it == element) {
+							if (it == element ||
+								it->get()->GetParent() == element->get() ||
+								element->get()->GetParent() == it->get()) {
 								k++;
 								continue;
 							}
