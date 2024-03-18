@@ -92,8 +92,8 @@ private:
 private:
 
 	SoLib::VItem<"中心地", Vector2> centor_{ { 0, 300 } };
-	SoLib::VItem<"半径", Vector2> radius_{ { 150, 150 } };
-	SoLib::VItem<"生成数", int32_t> count_{ 1 };
+	SoLib::VItem<"半径", Vector2> radius_{ { 500, 150 } };
+	SoLib::VItem<"生成数", int32_t> count_{ 10 };
 
 private:
 
@@ -103,7 +103,7 @@ private:
 	// 伸びる距離の初期値
 	SoLib::VItem<"伸びる距離の初期値", float> vDefaultIvyLength_ = 150.f;
 
-	SoLib::VItem<"ツタの延長距離", float> vExtendLength_ = 10.f;
+	SoLib::VItem<"ツタの延長距離", float> vExtendLength_ = 5.f;
 
 	// 一度に生やせるツタの最大値
 	inline static constexpr uint32_t maxIvyCount_ = 3u;
