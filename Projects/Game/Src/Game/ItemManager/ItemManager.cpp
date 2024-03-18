@@ -64,6 +64,8 @@ void ItemManager::Draw(const Camera* camera){
 }
 
 void ItemManager::Debug(){
+	Model* colorModel = nullptr;
+	Model* colorModel2 = nullptr;
 	ImGui::Begin("アイテムエディター", nullptr, ImGuiWindowFlags_MenuBar);
 	int i = 0, k = 0;
 
@@ -204,17 +206,18 @@ void ItemManager::Debug(){
 
 						}
 						if (ImGui::IsItemHovered()) {
-							isHover_ = true;
+							
 							it->get()->color = 0xff0000ff;
 							element->get()->color = 0x0000ffff;
-							
+							colorModel = it->get();
+							colorModel2 = element->get();
 						}
 						else {
-							if (!isHover_){
+							if (colorModel != it->get() && colorModel != element->get()) {
 								it->get()->color = 0xffffffff;
 								element->get()->color = 0xffffffff;
 							}
-							isHover_ = false;
+													
 						}
 						if (isSelectImgui_ == true){
 							it->get()->color = 0xffffffff;
@@ -234,7 +237,9 @@ void ItemManager::Debug(){
 
 
 	ImGui::End();
+
 }
+
 
 void ItemManager::AddItem(const Vector3& pos, const Vector3& scale){
 	auto& model = modelList_.emplace_back(std::make_unique<Model>("./Resources/Ball.obj"));

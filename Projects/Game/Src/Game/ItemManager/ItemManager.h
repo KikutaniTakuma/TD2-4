@@ -73,7 +73,7 @@ private:
 	//そのimguiを選択しているかどうか
 	bool isSelectImgui_ = false;
 	//そのimguiにカーソル選択しているかどうか
-	bool isHover_ = false;
+	//bool isHover_ = false;
 
 	/*ファイル制御関連*/
 private:
