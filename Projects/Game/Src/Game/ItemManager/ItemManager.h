@@ -70,6 +70,11 @@ private:
 	//大きさをimguiで変更しているかどうか
 	bool changeSize_ = false;
 
+	//そのimguiを選択しているかどうか
+	bool isSelectImgui_ = false;
+	//そのimguiにカーソル選択しているかどうか
+	bool isHover_ = false;
+
 	/*ファイル制御関連*/
 private:
 	//メンバ関数

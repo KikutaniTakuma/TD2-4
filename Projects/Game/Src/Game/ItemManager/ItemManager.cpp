@@ -153,36 +153,33 @@ void ItemManager::Debug(){
 		ImGui::EndMenuBar();		
 	}
 
-	i = 0;
+	
+	
 	ImGui::End(); 
 	ImGui::Begin("親子関係エディター", nullptr, ImGuiWindowFlags_MenuBar);
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("アイテムリスト")) {
+			i = 0;
 			for (auto it = modelList_.begin(); it != modelList_.end(); ++it) {
 				if (ImGui::TreeNode(("栄養[" + std::to_string(0 + i) + "]").c_str())) {
 					
-					if (ImGui::TreeNode("親子関係の構築")){
-						for (auto element = modelList_.begin(); element != modelList_.end(); ++element) {
-							if (it == element ||
-								it->get()->GetParent() == element->get() ||
-								element->get()->GetParent() == it->get()) {
-								k++;
-								continue;
-							}
-
-							if (ImGui::Button(("栄養[" + std::to_string(0 + k) + "]を親にする").c_str())) {
-								it->get()->SetParent(element->get());
-							}
-
-
-							k++;
-						}
-						ImGui::TreePop();
-					}
-					if (ImGui::Button("親子関係を解消する")){
-						it->get()->ClearParent();
-					}
 					
+					k = 0;
+					for (auto element = modelList_.begin(); element != modelList_.end(); ++element) {
+						if (it == element ||
+							it->get()->GetParent() == element->get() ||
+							element->get()->GetParent() == it->get()) {
+							k++;
+							continue;
+						}
+
+						if (ImGui::Button(("栄養[" + std::to_string(0 + k) + "]を親にする").c_str())) {
+							it->get()->SetParent(element->get());
+						}
+
+
+						k++;
+					}
 					ImGui::TreePop();
 				}
 				i++;
@@ -190,37 +187,48 @@ void ItemManager::Debug(){
 
 			ImGui::EndMenu();
 		}
-		/*if (ImGui::BeginMenu("親子関係の確認")) {
-			for (auto it = modelList_.begin(); it != mqodelList_.end(); ++it) {
-				if (ImGui::TreeNode(("栄養[" + std::to_string(0 + i) + "]").c_str())) {
+		
+		if (ImGui::BeginMenu("親子関係の確認")) {
 
-					if (ImGui::TreeNode("親子関係の構築")) {
-						for (auto element = modelList_.begin(); element != modelList_.end(); ++element) {
-							if (it == element) {
-								k++;
-								continue;
-							}
+			i = 0;
+			ImGui::Text("親(赤)　＜＝　子(青)");
+			for (auto it = modelList_.begin(); it != modelList_.end(); ++it) {
+				k = 0;
+				for (auto element = modelList_.begin(); element != modelList_.end(); ++element) {
+					
+					if (element->get()->GetParent() == it->get()) {
+						if (ImGui::MenuItem(("栄養[" + std::to_string(0 + i) + "]　＜＝　栄養[" + std::to_string(0 + k) + "]").c_str(), "この関係を解消する", isSelectImgui_)) {
+							isSelectImgui_ = true;
+							element->get()->ClearParent();
+							
 
-							if (ImGui::Button(("栄養[" + std::to_string(0 + k) + "]を親にする").c_str())) {
-								it->get()->SetParent(element->get());
-							}
-
-
-							k++;
 						}
-						ImGui::TreePop();
+						if (ImGui::IsItemHovered()) {
+							isHover_ = true;
+							it->get()->color = 0xff0000ff;
+							element->get()->color = 0x0000ffff;
+							
+						}
+						else {
+							if (!isHover_){
+								it->get()->color = 0xffffffff;
+								element->get()->color = 0xffffffff;
+							}
+							isHover_ = false;
+						}
+						if (isSelectImgui_ == true){
+							it->get()->color = 0xffffffff;
+							element->get()->color = 0xffffffff;
+							isSelectImgui_ = false;
+						}
 					}
-					if (ImGui::Button("親子関係を解消する")) {
-						it->get()->ClearParent();
-					}
-
-					ImGui::TreePop();
-				}
+					k++;
+				}	
 				i++;
 			}
 
 			ImGui::EndMenu();
-		}*/
+		}
 		ImGui::EndMenuBar();
 	}
 
