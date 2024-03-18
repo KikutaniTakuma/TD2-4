@@ -3,9 +3,9 @@
 #include "../SoLib/Math/Math.hpp"
 #include "IvyModel.h"
 
-SoLib::VItem<"伸びる時間の初期値", float> IvyComponent::vDefaultMoveTime_ = 0.8f;
-SoLib::VItem<"止まる時間の初期値", float> IvyComponent::vDefaultStopTime_ = 0.75f;
-SoLib::VItem<"初期発射角度", float> IvyComponent::vDefaultAngle_ = 45_deg;
+//SoLib::VItem<"伸びる時間の初期値", float> IvyComponent::vDefaultMoveTime_ = 0.8f;
+//SoLib::VItem<"止まる時間の初期値", float> IvyComponent::vDefaultStopTime_ = 0.75f;
+//SoLib::VItem<"初期発射角度", float> IvyComponent::vDefaultAngle_ = 45_deg;
 
 void IvyComponent::Init()
 {

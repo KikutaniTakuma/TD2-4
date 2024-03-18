@@ -56,6 +56,12 @@ public:
 	/// @brief 存在するすべての栄養を破棄する
 	void DeleteAllEnergy();
 
+	/// @brief ツタを破棄する
+	void DeleteAllIvy();
+
+	/// @brief ツタと栄養を破棄する
+	void DeleteAll();
+
 private:
 	/// @brief ツタを破棄する
 	/// @param ivy ツタのアドレス

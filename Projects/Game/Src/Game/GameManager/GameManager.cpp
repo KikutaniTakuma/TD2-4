@@ -111,6 +111,12 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 	if (ImGui::Button("すべてのエネルギーを破棄")) {
 		DeleteAllEnergy();
 	}
+	if (ImGui::Button("ツタを破棄")) {
+		DeleteAllIvy();
+	}
+	if (ImGui::Button("すべてを破棄")) {
+		DeleteAll();
+	}
 
 	if (ImGui::Button("エネルギーのデータを取得")) {
 
@@ -214,6 +220,19 @@ bool GameManager::CurrentIvyIsActive() const
 void GameManager::DeleteAllEnergy()
 {
 	energyItems_.clear();
+}
+
+void GameManager::DeleteAllIvy()
+{
+	ivys_.clear();
+}
+
+void GameManager::DeleteAll()
+{
+	DeleteAllEnergy();
+	currentCollectedEnergyItems_.clear();
+	collectedEnergyItems_.clear();
+	ivys_.clear();
 }
 
 void GameManager::DeleteIvy(GameObject *ivy)
