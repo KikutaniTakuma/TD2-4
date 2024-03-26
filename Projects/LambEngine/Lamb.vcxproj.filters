@@ -178,6 +178,9 @@
     <ClCompile Include="Math\Transform.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Graphics\PipelineObject\SlimePipeline\SlimePipeline.cpp">
+      <Filter>Engine\Graphics\PipelineObject\SlimePipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -368,6 +371,9 @@
     </Filter>
     <Filter Include="Utils\Easeing">
       <UniqueIdentifier>{1dc7052e-fce1-4542-b5fb-a5f223d204de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphics\PipelineObject\SlimePipeline">
+      <UniqueIdentifier>{0d641296-feb1-4fb1-9eee-bbc84cf7700c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -574,6 +580,9 @@
     </ClInclude>
     <ClInclude Include="Math\Transform.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\PipelineObject\SlimePipeline\SlimePipeline.h">
+      <Filter>Engine\Graphics\PipelineObject\SlimePipeline</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

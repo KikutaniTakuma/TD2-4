@@ -10,6 +10,7 @@
 #include "Utils/Easeing/Easeing.h"
 #include "Game/SkyDome/SkyDome.h"
 #include "Game/CollisionManager/Sphere/Sphere.h"
+#include "Game/Slime/Slime.h"
 
 class TitleScene : public BaseScene {
 public:
@@ -31,6 +32,5 @@ public:
 	void Draw() override;
 
 public:
-	std::unique_ptr<Model> model_;
-	std::unique_ptr<Sphere> sphere_;
+	std::unique_ptr<Slime> slime_;
 };

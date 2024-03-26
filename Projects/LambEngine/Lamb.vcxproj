@@ -149,6 +149,7 @@
     <ClCompile Include="Engine\Graphics\PipelineObject\CloudPipeline\CloudPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\PipelineObject\PeraPipeline\PeraPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\PipelineObject\PipelineObject.cpp" />
+    <ClCompile Include="Engine\Graphics\PipelineObject\SlimePipeline\SlimePipeline.cpp" />
     <ClCompile Include="Engine\Graphics\PipelineObject\WaterPipeline\WaterPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\RenderTarget\RenderTarget.cpp" />
     <ClCompile Include="Engine\Graphics\ResourceManager\ResourceManager.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="Engine\Graphics\PipelineObject\CloudPipeline\CloudPipeline.h" />
     <ClInclude Include="Engine\Graphics\PipelineObject\PeraPipeline\PeraPipeline.h" />
     <ClInclude Include="Engine\Graphics\PipelineObject\PipelineObject.h" />
+    <ClInclude Include="Engine\Graphics\PipelineObject\SlimePipeline\SlimePipeline.h" />
     <ClInclude Include="Engine\Graphics\PipelineObject\WaterPipeline\WaterPipeline.h" />
     <ClInclude Include="Engine\Graphics\RenderTarget\RenderTarget.h" />
     <ClInclude Include="Engine\Graphics\ResourceManager\ResourceManager.h" />
