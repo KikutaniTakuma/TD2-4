@@ -95,7 +95,7 @@
     <ClCompile Include="Src\Game\CollisionManager\Capsule\Capsule.cpp">
       <Filter>Game\CollisionManager\Capsule</Filter>
     </ClCompile>
-    <ClCompile Include="AABB.cpp">
+    <ClCompile Include="Src\Game\CollisionManager\AABB\AABB.cpp">
       <Filter>Game\CollisionManager\AABB</Filter>
     </ClCompile>
   </ItemGroup>
@@ -285,7 +285,7 @@
     <ClInclude Include="Src\Game\CollisionManager\Capsule\Capsule.h">
       <Filter>Game\CollisionManager\Capsule</Filter>
     </ClInclude>
-    <ClInclude Include="AABB.h">
+    <ClInclude Include="Src\Game\CollisionManager\AABB\AABB.h">
       <Filter>Game\CollisionManager\AABB</Filter>
     </ClInclude>
   </ItemGroup>

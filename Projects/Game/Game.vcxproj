@@ -129,7 +129,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\Editor\ParticleEditor\ParticleEditor.cpp" />
     <ClCompile Include="Src\GameObject\Component\EnergyItem.cpp" />
@@ -142,6 +141,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\GameObject\Component\Rigidbody.cpp" />
     <ClCompile Include="Src\GameObject\GameObject.cpp" />
     <ClCompile Include="Src\Game\Cloud\Cloud.cpp" />
+    <ClCompile Include="Src\Game\CollisionManager\AABB\AABB.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Capsule\Capsule.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Collider\Collider.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\CollisionManager.cpp" />
@@ -164,7 +164,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\World\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AABB.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Editor\ParticleEditor\ParticleEditor.h" />
     <ClInclude Include="Src\GameObject\Component\Collider.h" />
@@ -179,6 +178,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\GameObject\Component\Rigidbody.h" />
     <ClInclude Include="Src\GameObject\GameObject.h" />
     <ClInclude Include="Src\Game\Cloud\Cloud.h" />
+    <ClInclude Include="Src\Game\CollisionManager\AABB\AABB.h" />
     <ClInclude Include="Src\Game\CollisionManager\Capsule\Capsule.h" />
     <ClInclude Include="Src\Game\CollisionManager\Collider\Collider.h" />
     <ClInclude Include="Src\Game\CollisionManager\CollisionManager.h" />
