@@ -17,11 +17,6 @@ void GameManager::Init()
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
 {
-	struct InAABB {
-		Vector2 min;
-		Vector2 max;
-	};
-
 	GlobalVariables::GetInstance()->Update();
 }
 

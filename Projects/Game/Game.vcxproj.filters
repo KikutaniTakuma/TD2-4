@@ -95,6 +95,9 @@
     <ClCompile Include="Src\Game\CollisionManager\Capsule\Capsule.cpp">
       <Filter>Game\CollisionManager\Capsule</Filter>
     </ClCompile>
+    <ClCompile Include="AABB.cpp">
+      <Filter>Game\CollisionManager\AABB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -177,6 +180,9 @@
     </Filter>
     <Filter Include="Game\CollisionManager\Capsule">
       <UniqueIdentifier>{decf7b45-ff6d-42a2-85f0-8d30b56bb527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CollisionManager\AABB">
+      <UniqueIdentifier>{34a8b057-6542-48de-9165-028f1b9a3444}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -278,6 +284,9 @@
     </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\Capsule\Capsule.h">
       <Filter>Game\CollisionManager\Capsule</Filter>
+    </ClInclude>
+    <ClInclude Include="AABB.h">
+      <Filter>Game\CollisionManager\AABB</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
