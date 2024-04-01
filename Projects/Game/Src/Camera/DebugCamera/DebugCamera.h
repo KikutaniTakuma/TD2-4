@@ -19,8 +19,13 @@ public:
 private:
 	void Update() override;
 
+	void Debug(const std::string& guiName) override;
+
 private:
 	float scaleSpeed_;
 	float rotateSpeed_;
 	float translateSpeed_;
+
+	bool isRotateInverse_;
+	bool isTranslateInverse_;
 };
