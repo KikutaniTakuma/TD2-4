@@ -15,7 +15,7 @@ struct AABB {
 	Vector3 GetRadius() const;
 
 	/// @brief 法線を取得する
-	/// @param surfacePoint 接触している面の法線
+	/// @param surfacePoint 接触している面の座標
 	/// @return 法線情報
 	const Vector3& GetNormal(const Vector3 &surfacePoint) const;
 

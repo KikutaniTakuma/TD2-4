@@ -40,7 +40,8 @@ Vector3 AABB::GetRadius() const {
 }
 
 const Vector3 &AABB::GetNormal(const Vector3 &surfacePoint) const {
-	uint32_t resultIndex{};
+	float resultSQ = 0.f;
+	uint32_t resultIndex = 0u;
 	// 各法線の軸
 	static const std::array<const Vector3 *const, 3u> kNormalArray
 	{	// 判定順序
@@ -57,17 +58,19 @@ const Vector3 &AABB::GetNormal(const Vector3 &surfacePoint) const {
 	}
 
 	for (uint32_t i = 0; i < kNormalArray.size(); i++) {
-		const Vector3 &normal = *kNormalArray[i];
+		// 法線ベクトル
+		const Vector3 &normal = *kNormalArray.at(i);
 
-		// 法線情報との内積
+		// 法線ベクトルとの内積
 		const Vector3 &dot = normal * normal.Dot(scalingSurface);
 		// dotの絶対値が大きい要素を返す
-		if (kNormalArray[resultIndex]->LengthSQ() < dot.LengthSQ()) {
+		if (resultSQ < dot.LengthSQ()) {
+			resultSQ = dot.LengthSQ();
 			resultIndex = i;
 		}
 	}
 
-	return *kNormalArray[resultIndex];
+	return *kNormalArray.at(resultIndex);
 }
 
 Mat4x4 AABB::TransMat() const {
