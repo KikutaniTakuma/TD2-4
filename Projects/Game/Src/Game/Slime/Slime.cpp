@@ -7,7 +7,7 @@ void Slime::Init() {
 	body_->color = 0xD8D8D8A4;
 	core_ = std::make_unique<Texture2D>("./Resources/Ball.png");
 	core_->isSameTexSize = true;
-	core_->texScalar *= 0.5f;
+	core_->texScalar /= 4.0f;
 	core_->color = Vector4ToUint(Vector4{0.8f, 0.0f,0.0f,1.0f});
 
 	slimePipeline_ = new SlimePipeline();
@@ -26,7 +26,7 @@ void Slime::Update() {
 	core_->Update();
 
 	body_->pos = core_->pos;
-	body_->scale = core_->scale * 2.0f;
+	body_->scale = core_->scale * 4.0f;
 
 	body_->Debug("slime body");
 	body_->Update();

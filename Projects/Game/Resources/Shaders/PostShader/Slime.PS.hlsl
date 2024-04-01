@@ -19,8 +19,8 @@ float CreateNoiseNoDdy(float2 uv)
     uv.y *= -1.0f;
     float pn4 = FractalSumNnoise(density, uv + kRandomVec.vec);
     
-    float noise = lerp((pn * 0.1f), (pn2 * 0.08f), 3.0f);
-    float noise2 = lerp((pn3 * 0.1f), (pn4 * 0.08f), 3.0f);
+    float noise = lerp((pn * 0.1f), (pn2 * 0.08f), 5.0f);
+    float noise2 = lerp((pn3 * 0.1f), (pn4 * 0.08f), 5.0f);
     
     return lerp(noise, noise2, 0.5f);
 }
