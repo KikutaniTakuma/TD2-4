@@ -16,8 +16,6 @@
 
 #include "GameObject/GameObject.h"
 
-#include "Camera/DebugCamera/DebugCamera.h"
-
 class GameScene : public BaseScene {
 public:
 	GameScene();

@@ -21,4 +21,6 @@ private:
 
 private:
 	float scaleSpeed_;
+	float rotateSpeed_;
+	float translateSpeed_;
 };

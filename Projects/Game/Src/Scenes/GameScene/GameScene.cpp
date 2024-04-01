@@ -57,11 +57,6 @@ void GameScene::Finalize() {
 }
 
 void GameScene::Update() {
-	if (input_->GetKey()->Pushed(DIK_RETURN)) {
-		isDebug_ = not isDebug_;
-		currentCamera_ = isDebug_ ? debugCamera_.get() : camera_.get();
-	}
-
 	currentCamera_->Debug("カメラ");
 	currentCamera_->Update();
 

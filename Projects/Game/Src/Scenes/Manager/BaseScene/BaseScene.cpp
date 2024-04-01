@@ -6,7 +6,15 @@
 #include "Input/Input.h"
 #include "Engine/Core/StringOutPutManager/StringOutPutManager.h"
 
+#include "imgui.h"
+#include <typeinfo>
+
 BaseScene::BaseScene(BaseScene::ID sceneID) :
+#ifdef _DEBUG
+	debugCamera_(std::make_unique<DebugCamera>()),
+	isDebug_(false),
+#endif // _DEBUG
+
 	sceneManager_(nullptr),
 	meshManager_(nullptr),
 	audioManager_(nullptr),
@@ -15,7 +23,7 @@ BaseScene::BaseScene(BaseScene::ID sceneID) :
 	input_(nullptr),
 	stringOutPutManager_(nullptr),
 	sceneID_(sceneID),
-	camera_{ new Camera{} },
+	camera_(std::make_unique<Camera>()),
 	currentCamera_(camera_.get())
 {}
 
@@ -35,7 +43,23 @@ void BaseScene::SceneInitialize(SceneManager* sceneManager) {
 	input_ = Input::GetInstance();
 }
 
+void BaseScene::ChangeCamera()
+{
+#ifdef _DEBUG
+	ImGui::Begin("SceneCamera");
+	if (ImGui::Checkbox("debug", &isDebug_)) {
+		currentCamera_ = isDebug_ ? debugCamera_.get() : camera_.get();
+		if (isDebug_) {
+			debugCamera_->pos = camera_->pos;
+			debugCamera_->rotate = camera_->rotate;
+			debugCamera_->scale = camera_->scale;
+		}
+	}
+	ImGui::End();
+#endif // _DEBUG
+}
+
 const Camera& BaseScene::GetCamera() const
 {
-	return *camera_;
+	return *currentCamera_;
 }
