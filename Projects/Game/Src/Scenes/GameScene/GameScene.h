@@ -40,7 +40,6 @@ public:
 	class Water *water_ = nullptr;
 
 	GameManager *gameManager_ = nullptr;
-	GameObject energy_;
 
 	std::unique_ptr<SkyDome> skydome_ = nullptr;
 	class Cloud *cloud_ = nullptr;
