@@ -110,7 +110,7 @@ public:
 		return viewOthograohicsVp_;
 	}
 
-	void Debug(const std::string& guiName);
+	virtual void Debug(const std::string& guiName);
 
 
 /// <summary>
