@@ -16,8 +16,10 @@ public:
 		kNone,	// 虚空
 		kBox,	// 箱
 	};
+	inline static constexpr int32_t kMapX = 10u, kMapY = 3u, kMapZ = 10u;
+
 	// 箱の配列 [y][z][x]
-	using MapSize = std::array<std::array<std::array<BoxType, 10u>, 10>, 3u>;
+	using MapSize = std::array<std::array<std::array<BoxType, kMapX>, kMapZ>, kMapY>;
 
 public:
 	Map() = default;
@@ -46,12 +48,12 @@ public:
 
 	Vector3 GetGrobalPos(size_t x, size_t y, size_t z) const noexcept
 	{
-		return Vector3{ x * vBoxDistance_->x, y * vBoxDistance_->y, -(z * vBoxDistance_->x) };
+		return Vector3{ x * vBoxDistance_->x, y * vBoxDistance_->y, -(z * vBoxDistance_->x) } - Vector3{ vBoxDistance_->x * ((kMapX - 1) / 2.f), 0, -(vBoxDistance_->x * ((kMapZ - 1) / 2.f)) };
 	}
 
 	Vector3 LocalPos(const Vector3 &gPos) const noexcept
 	{
-		return Vector3{ gPos.x / vBoxDistance_->x, gPos.y / vBoxDistance_->y, -(gPos.z / vBoxDistance_->x) };
+		return Vector3{ gPos.x / vBoxDistance_->x, gPos.y / vBoxDistance_->y, -(gPos.z / vBoxDistance_->x) } + Vector3{ vBoxDistance_->x / ((kMapX - 1) / 2.f), 0, -(vBoxDistance_->x / ((kMapZ - 1) / 2.f)) };
 	}
 
 private:

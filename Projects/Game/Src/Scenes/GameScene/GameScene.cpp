@@ -19,10 +19,10 @@ GameScene::GameScene() :
 
 void GameScene::Initialize() {
 	currentCamera_->farClip = 3000.0f;
-	currentCamera_->pos.y = 30.0f;
-	currentCamera_->pos.z = -5.0f;
+	currentCamera_->pos.y = 75.0f;
 	currentCamera_->offset.z = -60.0f;
 	currentCamera_->offset.y = 8.0f;
+	currentCamera_->rotate.x = 90_deg;
 
 	water_ = Water::GetInstance();
 

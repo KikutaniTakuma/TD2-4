@@ -86,7 +86,7 @@ void Map::TransferBoxData()
 					// イテレータを加算する
 					++modelItr;
 
-					model.pos = Vector3{ x * vBoxDistance_->x, y * vBoxDistance_->y, -(z * vBoxDistance_->x) };
+					model.pos = GetGrobalPos(x, y, z);
 					model.scale = Vector3::kIdentity * *vBlockScale * 0.5f;
 					model.Update();
 
