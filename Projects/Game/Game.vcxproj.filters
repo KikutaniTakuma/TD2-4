@@ -194,6 +194,9 @@
     <Filter Include="Game\Map">
       <UniqueIdentifier>{53f24296-84ed-43ec-9de4-354c3461bf35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor\BlockEditor">
+      <UniqueIdentifier>{ac571e6b-65fa-4b08-b878-ab3e3cab9bed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\GlobalVariables\GlobalVariables.h">

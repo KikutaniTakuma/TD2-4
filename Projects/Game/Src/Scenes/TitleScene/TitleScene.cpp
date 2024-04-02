@@ -31,7 +31,6 @@ void TitleScene::Initialize()
 }
 
 void TitleScene::Finalize(){
-	itemManager_->Finalize();
 	
 }
 
