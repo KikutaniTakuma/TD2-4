@@ -15,7 +15,7 @@ TitleScene::TitleScene():
 
 void TitleScene::Initialize()
 {
-	camera_->pos = Vector2{ 500.f, 300.f };
+	currentCamera_->pos = Vector2{ 500.f, 300.f };
 
 	tex_.reset( new Texture2D( "./Resources/Ball.png" ) );
 	tex_->scale *= 30.0f;
@@ -37,8 +37,8 @@ void TitleScene::Finalize()
 
 void TitleScene::Update()
 {
-	camera_->Debug("カメラ");
-	camera_->Update();
+	currentCamera_->Debug("カメラ");
+	currentCamera_->Update();
 
 	auto* const key = input_->GetKey();
 
@@ -61,7 +61,7 @@ void TitleScene::Update()
 	auto* const mouse = input_->GetMouse();
 
 	if (mouse->LongPush(Mouse::Button::Left)) {
-		tex_->pos = Vector3(mouse->GetPos()) * Mat4x4::MakeInverse(camera_->GetViewOthographicsVp());
+		tex_->pos = Vector3(mouse->GetPos()) * Mat4x4::MakeInverse(currentCamera_->GetViewOthographicsVp());
 	}
 
 
@@ -84,12 +84,12 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	tex_->Draw(camera_->GetViewOthographics());
+	tex_->Draw(currentCamera_->GetViewOthographics());
 
-	sphere_->Draw(camera_->GetViewOthographics());
-	sphere2_->Draw(camera_->GetViewOthographics());
+	sphere_->Draw(currentCamera_->GetViewOthographics());
+	sphere2_->Draw(currentCamera_->GetViewOthographics());
 
-	Line::Draw(sphere_->pos, sphere2_->pos, camera_->GetViewOthographics(), 0xffffffff);
+	Line::Draw(sphere_->pos, sphere2_->pos, currentCamera_->GetViewOthographics(), 0xffffffff);
 
 	Lamb::screenout << "Capsule Test" << Lamb::endline
 		<< "Check : " << isCollision_;

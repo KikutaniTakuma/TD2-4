@@ -57,9 +57,10 @@ protected:
 
 	BaseScene::ID sceneID_;
 
-protected:
+private:
 	std::unique_ptr<Camera> camera_;
 
+protected:
 	Camera* currentCamera_;
 
 #ifdef _DEBUG

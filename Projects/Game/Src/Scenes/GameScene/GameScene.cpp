@@ -18,11 +18,11 @@ GameScene::GameScene() :
 {}
 
 void GameScene::Initialize() {
-	camera_->farClip = 3000.0f;
-	camera_->pos.y = 30.0f;
-	camera_->pos.z = -5.0f;
-	camera_->offset.z = -60.0f;
-	camera_->offset.y = 8.0f;
+	currentCamera_->farClip = 3000.0f;
+	currentCamera_->pos.y = 30.0f;
+	currentCamera_->pos.z = -5.0f;
+	currentCamera_->offset.z = -60.0f;
+	currentCamera_->offset.y = 8.0f;
 
 	water_ = Water::GetInstance();
 
@@ -53,10 +53,10 @@ void GameScene::Update() {
 	// デルタタイム
 	const float deltaTime = Lamb::DeltaTime();
 
-	camera_->Debug("カメラ");
-	camera_->Update();
+	currentCamera_->Debug("カメラ");
+	currentCamera_->Update();
 
-	water_->Update(camera_->GetPos());
+	water_->Update(currentCamera_->GetPos());
 
 	cloud_->Update();
 	skydome_->Upadate();
@@ -79,13 +79,13 @@ void GameScene::Update() {
 
 void GameScene::Draw() {
 	cloud_->Draw();
-	skydome_->Draw(*camera_);
+	skydome_->Draw(*currentCamera_);
 
-	water_->Draw(camera_->GetViewProjection());
+	water_->Draw(currentCamera_->GetViewProjection());
 
-	//boxModel_->Draw(camera_->GetViewProjection(), camera_->GetPos());
+	//boxModel_->Draw(currentCamera_->GetViewProjection(), currentCamera_->GetPos());
 
-	gameManager_->Draw(*camera_);
+	gameManager_->Draw(*currentCamera_);
 
 	Lamb::screenout << "Water and cloud scene" << Lamb::endline
 		<< "Press space to change ""Model scene""";
