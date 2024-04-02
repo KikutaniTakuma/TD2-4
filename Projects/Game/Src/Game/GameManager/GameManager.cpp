@@ -42,7 +42,7 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 		if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
 			for (size_t z = 0; z < 10u; z++) {
 				for (size_t x = 0; x < 10u; x++) {
-					ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &boxMap_[y][z][x]);
+					ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>(boxMap_[y][z][x]));
 					if (x != 9) {
 						ImGui::SameLine();
 					}

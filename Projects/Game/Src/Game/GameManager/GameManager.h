@@ -26,7 +26,7 @@ private:
 
 public:
 
-	enum class BoxType : bool {
+	enum class BoxType : uint32_t {
 		kNone,	// 虚空
 		kBox,	// 箱
 	};
@@ -61,7 +61,7 @@ private:
 	std::list<std::unique_ptr<Model>> models_;
 
 	// 箱の配列 [y][z][x]
-	std::array<std::array<std::array<bool, 10u>, 10>, 3u> boxMap_;
+	std::array<std::array<std::array<BoxType, 10u>, 10>, 3u> boxMap_;
 	// 箱の数
 	size_t boxCount_;
 
