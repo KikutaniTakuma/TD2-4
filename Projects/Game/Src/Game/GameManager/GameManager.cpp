@@ -37,6 +37,10 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 
 	ImGui::Begin(str);
 
+	for (uint32_t i = 0; auto & aabb : aabbCollisions_) {
+		aabb.ImGuiDebug(SoLib::to_string(i++).c_str());
+	}
+
 	ImGui::End();
 
 #endif // _DEBUG
@@ -48,7 +52,7 @@ void GameManager::AddBox(AABB &&aabb)
 {
 
 	aabbCollisions_.push_back(std::move(aabb));
-	
+
 }
 
 void GameManager::InputAction()
