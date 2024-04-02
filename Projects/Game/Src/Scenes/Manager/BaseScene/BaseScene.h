@@ -1,5 +1,6 @@
 #pragma once
 #include "Camera/Camera.h"
+#include "Camera/DebugCamera/DebugCamera.h"
 #include <memory>
 
 class BaseScene {
@@ -31,6 +32,8 @@ public:
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 
+	void ChangeCamera();
+
 	inline BaseScene::ID GetID() const {
 		return sceneID_;
 	}
@@ -54,6 +57,14 @@ protected:
 
 	BaseScene::ID sceneID_;
 
-protected:
+private:
 	std::unique_ptr<Camera> camera_;
+
+protected:
+	Camera* currentCamera_;
+
+#ifdef _DEBUG
+	std::unique_ptr<DebugCamera> debugCamera_;
+	bool isDebug_;
+#endif // _DEBUG
 };

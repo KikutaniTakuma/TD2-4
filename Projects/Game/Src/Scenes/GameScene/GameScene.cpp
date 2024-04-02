@@ -18,50 +18,59 @@ GameScene::GameScene() :
 {}
 
 void GameScene::Initialize() {
-	camera_->farClip = 3000.0f;
-	camera_->pos.y = 15.0f;
-	camera_->pos.z = -5.0f;
-	camera_->rotate.x = 0.25f;
-	camera_->offset.z = -60.0f;
-	camera_->offset.y = 8.0f;
+	currentCamera_->farClip = 3000.0f;
+	currentCamera_->pos.y = 75.0f;
+	currentCamera_->offset.z = -60.0f;
+	currentCamera_->offset.y = 8.0f;
+	currentCamera_->rotate.x = 90_deg;
 
 	water_ = Water::GetInstance();
 
 	cloud_ = Cloud::GetInstance();
 
-	skydome_.reset(new SkyDome);
+	skydome_ = std::make_unique<SkyDome>();
 	skydome_->Initialize();
 	skydome_->SetTexture(cloud_->GetTex());
 
-	file_ = std::make_unique<SoLib::IO::File>();
-	csv_ = std::make_unique<SoLib::IO::CSV>();
-	array2d_ = std::make_unique<SoLib::Array2D<uint32_t>>(0, 0);
+	gameManager_ = GameManager::GetInstance();
+	gameManager_->Init();
 
-	file_->Load("Resources/TestResource/testcsv.csv");
-	*file_ >> *csv_;
-	array2d_->Resize(csv_->GetHeight(), csv_->GetWidth());
-	std::transform(csv_->view().begin(), csv_->view().end(), array2d_->view().begin(), [](const std::string &str)->uint32_t { return std::stoul(str); });
+	aabb_ = AABB::Create(Vector3::kZero, Vector3::kIdentity);
+
+	boxModel_ = std::make_unique<Model>("Resources/Cube.obj");
+	boxModel_->pos = aabb_.GetCentor();
+	boxModel_->scale = aabb_.GetRadius();
+	boxModel_->Update();
 }
 
 void GameScene::Finalize() {
 
+	// 実体の破棄
+	GameManager::Finalize();
 }
 
 void GameScene::Update() {
-	camera_->Debug("カメラ");
-	camera_->Update();
+	// デルタタイム
+	const float deltaTime = Lamb::DeltaTime();
 
-	water_->Update(camera_->GetPos());
+	currentCamera_->Debug("カメラ");
+	currentCamera_->Update();
+
+	water_->Update(currentCamera_->GetPos());
 
 	cloud_->Update();
 	skydome_->Upadate();
 
-	std::string str;
-	for (const auto i : array2d_->view()) {
-		str += std::to_string(i) + ' ';
-	}
+	gameManager_->InputAction();
+	gameManager_->Update(deltaTime);
 
-	ImGui::Text("%s", str.c_str());
+	gameManager_->Debug("GameManager");
+
+	if (aabb_.ImGuiDebug("AABB")) {
+		boxModel_->pos = aabb_.GetCentor();
+		boxModel_->scale = aabb_.GetRadius();
+		boxModel_->Update();
+	}
 
 	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
 		sceneManager_->SceneChange(BaseScene::ID::Title);
@@ -70,9 +79,13 @@ void GameScene::Update() {
 
 void GameScene::Draw() {
 	cloud_->Draw();
-	skydome_->Draw(*camera_);
+	skydome_->Draw(*currentCamera_);
 
-	water_->Draw(camera_->GetViewProjection());
+	water_->Draw(currentCamera_->GetViewProjection());
+
+	//boxModel_->Draw(currentCamera_->GetViewProjection(), currentCamera_->GetPos());
+
+	gameManager_->Draw(*currentCamera_);
 
 	Lamb::screenout << "Water and cloud scene" << Lamb::endline
 		<< "Press space to change ""Model scene""";

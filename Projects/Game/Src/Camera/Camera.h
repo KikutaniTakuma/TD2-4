@@ -16,7 +16,7 @@ public:
 	Camera() noexcept;
 	Camera(const Camera& right) noexcept;
 	Camera(Camera&& right) noexcept;
-	~Camera() noexcept = default;
+	virtual ~Camera() noexcept = default;
 
 
 /// <summary>
@@ -34,7 +34,7 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	virtual void Update();
 
 	/// <summary>
 	/// 行列更新
@@ -110,7 +110,7 @@ public:
 		return viewOthograohicsVp_;
 	}
 
-	void Debug(const std::string& guiName);
+	virtual void Debug(const std::string& guiName);
 
 
 /// <summary>
@@ -129,7 +129,7 @@ protected:
 	Vector3 worldPos_;
 
 protected:
-	static constexpr float kNearClip_ = 0.01f;
+	static constexpr float kNearClip_ = 0.1f;
 
 public:
 	float farClip;

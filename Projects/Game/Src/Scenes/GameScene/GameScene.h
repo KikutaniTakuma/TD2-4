@@ -15,6 +15,9 @@
 #include "../../../../SoLib/Containers/Array2D.h"
 
 #include "GameObject/GameObject.h"
+#include "Game/GameManager/GameManager.h"
+
+#include "Game/CollisionManager/AABB/AABB.h"
 
 class GameScene : public BaseScene {
 public:
@@ -36,14 +39,14 @@ public:
 	void Draw() override;
 
 public:
-	class Water *water_;
+	class Water *water_ = nullptr;
 
-	std::unique_ptr<SoLib::IO::File> file_;
-	std::unique_ptr<SoLib::IO::CSV> csv_;
-	std::unique_ptr<SoLib::Array2D<uint32_t>> array2d_;
+	GameManager *gameManager_ = nullptr;
 
-	std::unique_ptr<GameObject> ivy_;
+	AABB aabb_;
 
-	std::unique_ptr<SkyDome> skydome_;
-	class Cloud *cloud_;
+	std::unique_ptr<Model> boxModel_;
+
+	std::unique_ptr<SkyDome> skydome_ = nullptr;
+	class Cloud *cloud_ = nullptr;
 };

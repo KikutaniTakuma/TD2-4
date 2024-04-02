@@ -34,6 +34,8 @@ public:
 	void Debug();
 
 public:
-	std::unique_ptr<ItemManager> itemManager_;
-	std::unique_ptr<Sphere> sphere_;
+	std::unique_ptr<Texture2D> tex_;
+	std::unique_ptr<Texture2D> sphere_;
+	std::unique_ptr<Texture2D> sphere2_;
+	bool isCollision_;
 };

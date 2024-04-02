@@ -73,6 +73,10 @@ void SceneManager::Update() {
 
 
 	if (scene_ && !next_) {
+#ifdef _DEBUG
+		scene_->ChangeCamera();
+#endif // _DEBUG
+
 		scene_->Update();
 		Debug();
 	}
