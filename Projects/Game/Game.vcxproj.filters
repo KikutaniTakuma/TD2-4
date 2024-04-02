@@ -98,6 +98,9 @@
     <ClCompile Include="Src\Camera\DebugCamera\DebugCamera.cpp">
       <Filter>Camera\DebugCamera</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\CollisionManager\AABB\AABB.cpp">
+      <Filter>Game\CollisionManager\AABB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -183,6 +186,9 @@
     </Filter>
     <Filter Include="Camera\DebugCamera">
       <UniqueIdentifier>{d27f2ca5-b12d-42ad-aae0-6af7e63f3c9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CollisionManager\AABB">
+      <UniqueIdentifier>{34a8b057-6542-48de-9165-028f1b9a3444}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -287,6 +293,9 @@
     </ClInclude>
     <ClInclude Include="Src\Camera\DebugCamera\DebugCamera.h">
       <Filter>Camera\DebugCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\CollisionManager\AABB\AABB.h">
+      <Filter>Game\CollisionManager\AABB</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

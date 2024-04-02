@@ -6,6 +6,8 @@
 #include <numbers>
 #include <cmath>
 
+#include "../SoLib/SoLib/SoLib_ImGui.h"
+
 Camera::Camera() noexcept :
 	pos(),
 	scale(Vector3::kIdentity),
@@ -19,12 +21,12 @@ Camera::Camera() noexcept :
 	offset{ Vector3::kZIdentity * -10.0f }
 {}
 
-Camera::Camera(const Camera& right) noexcept
+Camera::Camera(const Camera &right) noexcept
 {
 	*this = right;
 }
 
-Camera::Camera(Camera&& right) noexcept
+Camera::Camera(Camera &&right) noexcept
 {
 	*this = std::move(right);
 }
@@ -56,13 +58,13 @@ void Camera::Update() {
 	viewOthograohicsVp_ = viewOthograohics_ * Mat4x4::MakeViewPort(0.0f, 0.0f, clientSize.x, clientSize.y, 0.0f, 1.0f);
 }
 
-void Camera::Update(const Vector3& gazePoint) {
+void Camera::Update(const Vector3 &gazePoint) {
 	pos = gazePoint + (offset * Mat4x4::MakeRotate(rotate));
 
 	Update();
 }
 
-void Camera::Update(const Mat4x4& worldMat) {
+void Camera::Update(const Mat4x4 &worldMat) {
 	view_.Affin(scale, rotate, pos);
 	view_ = worldMat * view_;
 	worldPos_ = { view_[0][3],view_[1][3], view_[2][3] };
@@ -89,12 +91,12 @@ void Camera::Update(const Mat4x4& worldMat) {
 	viewOthograohicsVp_ = viewOthograohics_ * Mat4x4::MakeViewPort(0.0f, 0.0f, clientSize.x, clientSize.y, 0.0f, 1.0f);
 }
 
-void Camera::Debug([[maybe_unused]] const std::string& guiName) {
+void Camera::Debug([[maybe_unused]] const std::string &guiName) {
 #ifdef _DEBUG
 	ImGui::Begin(guiName.c_str());
 	ImGui::DragFloat3("pos", &pos.x, 0.01f);
 	ImGui::DragFloat3("scale", &scale.x, 0.01f);
-	ImGui::DragFloat3("rotate", &rotate.x, 0.01f);
+	SoLib::ImGuiDragEuler("rotate", &rotate.x);
 	ImGui::DragFloat3("offset", &offset.x);
 	ImGui::End();
 #endif // _DEBUG
