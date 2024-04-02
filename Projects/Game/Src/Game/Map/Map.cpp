@@ -87,7 +87,7 @@ void Map::TransferBoxData()
 					++modelItr;
 
 					model.pos = Vector3{ x * vBoxDistance_->x, y * vBoxDistance_->y, -(z * vBoxDistance_->x) };
-					model.scale = Vector3::kIdentity * 0.5f;
+					model.scale = Vector3::kIdentity * *vBlockScale * 0.5f;
 					model.Update();
 
 					boxCount_++;

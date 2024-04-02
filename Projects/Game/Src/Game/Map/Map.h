@@ -62,6 +62,7 @@ private:
 	size_t boxCount_;
 
 	inline static SoLib::VItem<"ブロックの間隔", Vector2> vBoxDistance_{ {1, 3} };
+	inline static SoLib::VItem<"ブロックのサイズ", float> vBlockScale{ 1.f };
 
 	std::list<std::unique_ptr<Model>> models_;
 
