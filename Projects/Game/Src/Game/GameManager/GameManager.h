@@ -1,5 +1,6 @@
 #pragma once
 #include "../SoLib/Containers/Singleton.h"
+#include "../SoLib/Containers/Array2D.h"
 
 #include <memory>
 #include <bitset>
@@ -25,6 +26,13 @@ private:
 
 public:
 
+	enum class BoxType : bool {
+		kNone,	// 虚空
+		kBox,	// 箱
+	};
+
+public:
+
 	void Init();
 
 	void Update(const float deltaTime);
@@ -35,8 +43,6 @@ public:
 
 	bool Debug(const char *const str);
 
-	void AddBox(AABB &&aabb);
-
 public:
 
 	/// @brief 入力動作
@@ -46,14 +52,20 @@ private:
 
 	void BoxDraw(const Camera &camera) const;
 
-	/// @brief AABBのデータをモデルに転送
+	/// @brief 箱のデータをモデルに転送
 	void TransferBoxData();
 
 private:
 	// 入力マネージャ
 	Input *input_ = nullptr;
 	std::list<std::unique_ptr<Model>> models_;
-	std::list<AABB> aabbCollisions_;
+
+	// 箱の配列 [y][z][x]
+	std::array<std::array<std::array<bool, 10u>, 10>, 3u> boxMap_;
+	// 箱の数
+	size_t boxCount_;
+
+	SoLib::VItem<"ブロックの間隔", Vector2> vBoxDistance_{ {1, 3} };
 
 	Vector3 playerPos_;
 

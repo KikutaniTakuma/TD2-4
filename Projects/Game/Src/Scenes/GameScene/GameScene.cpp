@@ -34,7 +34,6 @@ void GameScene::Initialize() {
 
 	gameManager_ = GameManager::GetInstance();
 	gameManager_->Init();
-	gameManager_->AddBox(AABB::Create(Vector3::kZero, Vector3::kIdentity));
 
 	aabb_ = AABB::Create(Vector3::kZero, Vector3::kIdentity);
 
