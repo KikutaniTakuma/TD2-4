@@ -17,6 +17,8 @@
 #include "GameObject/GameObject.h"
 #include "Game/GameManager/GameManager.h"
 
+#include "Game/CollisionManager/AABB/AABB.h"
+
 class GameScene : public BaseScene {
 public:
 	GameScene();
@@ -40,6 +42,10 @@ public:
 	class Water *water_ = nullptr;
 
 	GameManager *gameManager_ = nullptr;
+
+	AABB aabb_;
+
+	std::unique_ptr<Model> boxModel_;
 
 	std::unique_ptr<SkyDome> skydome_ = nullptr;
 	class Cloud *cloud_ = nullptr;

@@ -73,7 +73,7 @@ const Vector3 &AABB::GetNormal(const Vector3 &surfacePoint) const {
 	return *kNormalArray.at(resultIndex);
 }
 
-Mat4x4 AABB::TransMat() const {
+Mat4x4 AABB::MakeTransMat() const {
 	return SoLib::Math::Affine(this->GetRadius(), Vector3::kZero, this->GetCentor());
 }
 

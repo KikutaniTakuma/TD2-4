@@ -9,6 +9,8 @@
 #include "../LambEngine/Input/Input.h"
 
 #include "GameObject/GameObject.h"
+#include <Drawers/Model/Model.h>
+#include <Game/CollisionManager/AABB/AABB.h>
 
 class IvyComponent;
 
@@ -33,13 +35,26 @@ public:
 
 	bool Debug(const char *const str);
 
+	void AddBox(AABB &&aabb);
+
 public:
 
 	/// @brief 入力動作
 	void InputAction();
 
 private:
+
+	void BoxDraw(const Camera &camera) const;
+
+	/// @brief AABBのデータをモデルに転送
+	void TransferBoxData();
+
 private:
 	// 入力マネージャ
 	Input *input_ = nullptr;
+	std::list<std::unique_ptr<Model>> models_;
+	std::list<AABB> aabbCollisions_;
+
+	Vector3 playerPos_;
+
 };
