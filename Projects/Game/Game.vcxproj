@@ -150,6 +150,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Game\CollisionManager\Plane\Plane.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Sphere\Sphere.cpp" />
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp" />
+    <ClCompile Include="Src\Game\Map\Map.cpp" />
     <ClCompile Include="Src\Game\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Src\Game\Water\Water.cpp" />
     <ClCompile Include="Src\GlobalVariables\GlobalVariables.cpp" />
@@ -188,6 +189,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\CollisionManager\Plane\Plane.h" />
     <ClInclude Include="Src\Game\CollisionManager\Sphere\Sphere.h" />
     <ClInclude Include="Src\Game\GameManager\GameManager.h" />
+    <ClInclude Include="Src\Game\Map\Map.h" />
     <ClInclude Include="Src\Game\SkyDome\SkyDome.h" />
     <ClInclude Include="Src\Game\Water\Water.h" />
     <ClInclude Include="Src\GlobalVariables\GlobalVariables.h" />
