@@ -91,6 +91,10 @@ public:
 		}
 	}
 
+	void SetWorldMatrix(const Mat4x4 &mat) {
+		wvpData_->worldMat = mat;
+	}
+
 	const Mat4x4& GetWorldMatrix() const {
 		return wvpData_->worldMat;
 	}

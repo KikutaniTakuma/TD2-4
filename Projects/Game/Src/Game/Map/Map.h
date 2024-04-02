@@ -42,7 +42,7 @@ public:
 public:
 	/// @brief 3次元配列の取得
 	/// @return 三次元配列
-	MapSize *GetBlockMap() { return &boxMap_; }
+	MapSize *GetBlockMap() { return boxMap_.get(); }
 
 	Vector3 GetGrobalPos(size_t x, size_t y, size_t z) const noexcept
 	{
@@ -57,7 +57,7 @@ public:
 private:
 
 	// 箱の配列 [y][z][x]
-	MapSize boxMap_;
+	std::unique_ptr<MapSize> boxMap_;
 	// 箱の数
 	size_t boxCount_;
 

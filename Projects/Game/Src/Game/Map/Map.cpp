@@ -5,6 +5,7 @@
 
 void Map::Init()
 {
+	boxMap_ = std::make_unique<MapSize>();
 }
 
 void Map::Update([[maybe_unused]] const float deltaTime)
@@ -37,7 +38,7 @@ bool Map::Debug(const char *const str)
 			if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
 				for (size_t z = 0; z < 10u; z++) {
 					for (size_t x = 0; x < 10u; x++) {
-						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>(boxMap_[y][z][x]));
+						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*boxMap_)[y][z][x]));
 						if (x != 9) {
 							ImGui::SameLine();
 						}
@@ -69,7 +70,7 @@ void Map::TransferBoxData()
 		for (size_t z = 0; z < 10u; z++) {
 			for (size_t x = 0; x < 10u; x++) {
 				// 箱の状態
-				BoxType boxType = static_cast<BoxType>(boxMap_[y][z][x]);
+				BoxType boxType = static_cast<BoxType>((*boxMap_)[y][z][x]);
 
 				// 箱が存在するか
 				if (boxType != BoxType::kNone) {

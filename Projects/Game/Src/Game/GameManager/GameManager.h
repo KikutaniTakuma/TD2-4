@@ -51,7 +51,7 @@ private:
 	// 入力マネージャ
 	Input *input_ = nullptr;
 
-	Vector3 playerPos_;
+	std::unique_ptr<GameObject> player_;
 
 	std::unique_ptr<Map> blockMap_;
 
