@@ -1,5 +1,6 @@
 #pragma once
 #include "../SoLib/Containers/Singleton.h"
+#include "../SoLib/Containers/Array2D.h"
 
 #include <memory>
 #include <bitset>
@@ -9,6 +10,8 @@
 #include "../LambEngine/Input/Input.h"
 
 #include "GameObject/GameObject.h"
+#include <Drawers/Model/Model.h>
+#include <Game/CollisionManager/AABB/AABB.h>
 
 class IvyComponent;
 
@@ -20,6 +23,13 @@ private:
 	GameManager(const GameManager &) = delete;
 	GameManager &operator=(const GameManager &) = delete;
 	~GameManager() = default;
+
+public:
+
+	enum class BoxType : bool {
+		kNone,	// 虚空
+		kBox,	// 箱
+	};
 
 public:
 
@@ -38,104 +48,25 @@ public:
 	/// @brief 入力動作
 	void InputAction();
 
-	/// @brief 栄養の生成
-	/// @param count 生成数
-	void RandomPopEnergys(const Vector2 &origin, const Vector2 &radius, size_t count);
-
-	/// @brief ツタの分裂
-	/// @return 分裂に成功したか
-	bool IvySprit();
-
-	/// @brief ツタが最大値を超えたら破棄
-	void DeleteIvyMaximum();
-
-	/// @brief 動作中のツタが動いているか
-	/// @return 動いている場合true
-	bool CurrentIvyIsActive() const;
-
-	/// @brief 存在するすべての栄養を破棄する
-	void DeleteAllEnergy();
-
-	/// @brief ツタを破棄する
-	void DeleteAllIvy();
-
-	/// @brief ツタと栄養を破棄する
-	void DeleteAll();
-
-private:
-	/// @brief ツタを破棄する
-	/// @param ivy ツタのアドレス
-	void DeleteIvy(GameObject *ivy);
-
-	/// @brief ツルの追加
-	/// @return 追加されたツルのオブジェクト
-	GameObject *RandomAddIvy();
-
-	/// @brief ツルの追加
-	/// @return 追加されたツルのオブジェクト
-	GameObject *AddIvy(uint32_t index);
-
-	/// @brief ツルの追加
-	/// @return 追加されたツルのオブジェクト
-	GameObject *AddIvy(const Vector3 &pos, uint32_t index);
-
-	/// @brief ツルの追加
-	/// @return 追加されたツルのオブジェクト
-	GameObject *AddEnergy(const Vector3 &pos);
-
-	/// @brief 栄養を回収する
-	/// @param energy 回収する栄養
-	void CollectEnergy(GameObject *energy, IvyComponent *ivy);
-
-	/// @brief ツタの分裂数が増えるかを計算
-	void AddIvySplitCount(IvyComponent *ivy);
-
-	/// @brief ツタの長さを伸ばす計算
-	/// @param ivy ツタ
-	void ExtendIvyLength();
-
-	/// @brief エネルギーを吸収する
-	/// @param ivy ツタコンポーネント
-	void AbsorbEnergy(IvyComponent *ivy);
-
 private:
 
-	SoLib::VItem<"中心地", Vector2> centor_{ { 0, 300 } };
-	SoLib::VItem<"半径", Vector2> radius_{ { 500, 150 } };
-	SoLib::VItem<"生成数", int32_t> count_{ 10 };
+	void BoxDraw(const Camera &camera) const;
 
-private:
-
-	SoLib::VItem<"ツタの間隔", float> vIvyDistance_ = 100.f;
-	SoLib::VItem<"ツタの初期分裂数", uint32_t> vDefaultIvySplit_ = 3u;
-
-	// 伸びる距離の初期値
-	SoLib::VItem<"伸びる距離の初期値", float> vDefaultIvyLength_ = 150.f;
-
-	SoLib::VItem<"ツタの延長距離", float> vExtendLength_ = 5.f;
-
-	// 一度に生やせるツタの最大値
-	inline static constexpr uint32_t maxIvyCount_ = 3u;
+	/// @brief 箱のデータをモデルに転送
+	void TransferBoxData();
 
 private:
 	// 入力マネージャ
 	Input *input_ = nullptr;
+	std::list<std::unique_ptr<Model>> models_;
 
-	// ツタの生える位置
-	std::bitset<6u> ivyPos_;
+	// 箱の配列 [y][z][x]
+	std::array<std::array<std::array<bool, 10u>, 10>, 3u> boxMap_;
+	// 箱の数
+	size_t boxCount_;
 
-	// 現在の分裂が持っているツタの数
-	std::list<GameObject *> currentCollectedEnergyItems_;
-	// ツタ全体が持っているツタの数
-	std::list<std::unique_ptr<GameObject>> collectedEnergyItems_;
+	SoLib::VItem<"ブロックの間隔", Vector2> vBoxDistance_{ {1, 3} };
 
-	// ツタの分裂数
-	uint32_t ivySplit_ = 3u;
-	// ツタ
-	std::list<std::unique_ptr<GameObject>> ivys_;
-	// 栄養アイテム
-	std::list<std::unique_ptr<GameObject>> energyItems_;
-
-	float ivyLength_;
+	Vector3 playerPos_;
 
 };
