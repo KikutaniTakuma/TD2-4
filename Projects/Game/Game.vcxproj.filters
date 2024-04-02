@@ -101,6 +101,7 @@
     <ClCompile Include="Src\Game\CollisionManager\AABB\AABB.cpp">
       <Filter>Game\CollisionManager\AABB</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\Map\Map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -189,6 +190,9 @@
     </Filter>
     <Filter Include="Game\CollisionManager\AABB">
       <UniqueIdentifier>{34a8b057-6542-48de-9165-028f1b9a3444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Map">
+      <UniqueIdentifier>{53f24296-84ed-43ec-9de4-354c3461bf35}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -296,6 +300,9 @@
     </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\AABB\AABB.h">
       <Filter>Game\CollisionManager\AABB</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Map\Map.h">
+      <Filter>Game\Map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
