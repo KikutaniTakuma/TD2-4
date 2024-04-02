@@ -131,6 +131,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\Camera\DebugCamera\DebugCamera.cpp" />
+    <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp" />
     <ClCompile Include="Src\Editor\ParticleEditor\ParticleEditor.cpp" />
     <ClCompile Include="Src\GameObject\Component\EnergyItem.cpp" />
     <ClCompile Include="Src\GameObject\Component\FollowCameraComp.cpp" />
@@ -150,6 +151,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Game\CollisionManager\Plane\Plane.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Sphere\Sphere.cpp" />
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp" />
+    <ClCompile Include="Src\Game\ItemManager\ItemManager.cpp" />
     <ClCompile Include="Src\Game\Map\Map.cpp" />
     <ClCompile Include="Src\Game\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Src\Game\Water\Water.cpp" />
@@ -168,6 +170,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Camera\DebugCamera\DebugCamera.h" />
+    <ClInclude Include="Src\Editor\BlockEditor\BlockEditor.h" />
     <ClInclude Include="Src\Editor\ParticleEditor\ParticleEditor.h" />
     <ClInclude Include="Src\GameObject\Component\Collider.h" />
     <ClInclude Include="Src\GameObject\Component\ComponentManager.h" />
@@ -189,6 +192,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\CollisionManager\Plane\Plane.h" />
     <ClInclude Include="Src\Game\CollisionManager\Sphere\Sphere.h" />
     <ClInclude Include="Src\Game\GameManager\GameManager.h" />
+    <ClInclude Include="Src\Game\ItemManager\ItemManager.h" />
     <ClInclude Include="Src\Game\Map\Map.h" />
     <ClInclude Include="Src\Game\SkyDome\SkyDome.h" />
     <ClInclude Include="Src\Game\Water\Water.h" />

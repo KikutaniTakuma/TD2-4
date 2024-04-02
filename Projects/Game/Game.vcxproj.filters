@@ -102,6 +102,12 @@
       <Filter>Game\CollisionManager\AABB</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\Map\Map.cpp" />
+    <ClCompile Include="Src\Game\ItemManager\ItemManager.cpp">
+      <Filter>Game\ItemManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp">
+      <Filter>Editor\BlockEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -196,6 +202,9 @@
     </Filter>
     <Filter Include="Editor\BlockEditor">
       <UniqueIdentifier>{ac571e6b-65fa-4b08-b878-ab3e3cab9bed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\ItemManager">
+      <UniqueIdentifier>{dc3095a5-ba68-4784-908e-1eb2a0323e86}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -306,6 +315,12 @@
     </ClInclude>
     <ClInclude Include="Src\Game\Map\Map.h">
       <Filter>Game\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\ItemManager\ItemManager.h">
+      <Filter>Game\ItemManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Editor\BlockEditor\BlockEditor.h">
+      <Filter>Editor\BlockEditor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
