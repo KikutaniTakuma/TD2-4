@@ -40,6 +40,9 @@ void BlockEditor::Update(){
 		selectFloor_ = 4;
 	}
 
+	if (isAllDraw_)
+		isFloorDrawing_ = { 0b11111 };
+
 	map_->SetDraingFlag(isFloorDrawing_);
 
 	obb_->Debug("OBB");
@@ -58,7 +61,10 @@ void BlockEditor::Debug(){
 
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("ブロック整理")) {
+			ImGui::Checkbox("全階層表示", &isAllDraw_);
+
 			ImGui::Text("選択階層");
+
 			for (size_t i = 0; i < 5u; i++){
 				ImGui::RadioButton(("階層" + std::to_string(i)).c_str(), &selectFloor_, static_cast<int>(i));
 				if (i == selectFloor_) {
