@@ -9,6 +9,7 @@
 #include <Game/CollisionManager/Collider/Collider.h>
 #include <GlobalVariables/GlobalVariables.h>
 #include <GameObject/Component/ModelComp.h>
+#include <GameObject/Component/OnBlockMoveComp.h>
 
 void GameManager::Init()
 {
@@ -21,8 +22,10 @@ void GameManager::Init()
 	player_ = std::make_unique<GameObject>();
 	{
 		auto *const modelComp = player_->AddComponent<ModelComp>();
-		modelComp->AddBone("Body", std::make_unique<Model>("Resources/Cube.obj"));
+		modelComp->AddBone("Body", std::make_unique<Model>("Resources/Cube.obj"), { { 0.4f,0.5f,0.4f} });
 	}
+
+	player_->AddComponent<OnBlockMoveComp>();
 }
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
@@ -68,12 +71,14 @@ void GameManager::InputAction()
 	}
 
 	Vector3 inputPlayer{};
-	inputPlayer.z += input_->GetKey()->GetKey(DIK_W);
-	inputPlayer.z -= input_->GetKey()->GetKey(DIK_S);
+	inputPlayer.z += input_->GetKey()->Pushed(DIK_W);
+	inputPlayer.z -= input_->GetKey()->Pushed(DIK_S);
 
-	inputPlayer.x -= input_->GetKey()->GetKey(DIK_A);
-	inputPlayer.x += input_->GetKey()->GetKey(DIK_D);
+	inputPlayer.x -= input_->GetKey()->Pushed(DIK_A);
+	inputPlayer.x += input_->GetKey()->Pushed(DIK_D);
 
-	player_->transform_.translate += inputPlayer;
+	player_->GetComponent<OnBlockMoveComp>()->InputMoveDirection(inputPlayer);
+
+	//player_->transform_.translate += inputPlayer;
 
 }

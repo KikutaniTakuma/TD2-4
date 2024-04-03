@@ -96,3 +96,10 @@ void Map::TransferBoxData()
 		}
 	}
 }
+
+const Map::BoxType &Map::GetBoxType(const Vector3 &localPos) const
+{
+
+	return (*boxMap_)[static_cast<uint32_t>(localPos.y)][static_cast<uint32_t>(localPos.z)][static_cast<uint32_t>(localPos.x)];
+
+}
