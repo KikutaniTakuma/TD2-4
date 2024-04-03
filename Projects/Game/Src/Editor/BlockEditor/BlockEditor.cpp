@@ -4,30 +4,97 @@
 #include"../SoLib/SoLib/SoLib_Json.h"
 
 void BlockEditor::Initialize(){
+
 	map_ = GameManager::GetInstance()->GetMap();
 
 	mapSize_ = map_->GetBlockMap();
 
+	input_ = Input::GetInstance();
+
+	obb_ = std::make_unique<Obb>();
+
+	obb_->scale_ = { 1.f,1.f,1.f };
+	
 }
 
 void BlockEditor::Finalize(){
+
 }
 
 void BlockEditor::Update(){
+
+	if (input_->GetKey()->LongPush(DIK_LSHIFT)&& input_->GetKey()->Pushed(DIK_0)){
+		selectFloor_ = 0;
+	}
+	else if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_1)) {
+		selectFloor_ = 1;
+	}
+	else if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_2)) {
+		selectFloor_ = 2;
+	}
+	else if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_3)) {
+		selectFloor_ = 3;
+	}
+	else if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_4)) {
+		selectFloor_ = 4;
+	}
+
+
+	obb_->Debug("OBB");
+	obb_->Update();
 }
 
-void BlockEditor::Draw(const Camera* camera){
-	camera->fov;
-
+void BlockEditor::Draw(const Camera& camera){
+	obb_->Draw(camera.GetViewProjection());
 }
 
 void BlockEditor::Debug(){
-}
+	bool isChange = false;
 
-void BlockEditor::AddItem(const Vector3& pos, const Vector3& scale){
-	pos;
-	scale;
+#ifdef _DEBUG
+	ImGui::Begin("ブロックエディター", nullptr, ImGuiWindowFlags_MenuBar);
 
+	if (ImGui::BeginMenuBar()) {
+		if (ImGui::BeginMenu("ブロック整理")) {
+			ImGui::Text("選択階層");
+			for (size_t i = 0; i < 5u; i++){
+				ImGui::RadioButton(("階層" + std::to_string(i)).c_str(), &selectFloor_, static_cast<int>(i));
+				if (i == 4u)
+					continue;
+				ImGui::SameLine();
+			}
+
+			for (size_t y = 0; y < 5u; y++) {
+				if (selectFloor_ != y)
+					continue;
+				
+				for (size_t z = 0; z < 10u; z++) {
+					for (size_t x = 0; x < 10u; x++) {
+						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*mapSize_)[y][z][x]));
+						if (ImGui::IsItemHovered()) {
+							obb_->center_ = map_->GetGrobalPos(x, y, z);
+							obb_->color_ = 0xff0000ff;
+						}
+						else {
+								
+						}
+						if (x != 9) {
+							ImGui::SameLine();
+						}
+					}
+				}
+					
+			}
+
+
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
+	ImGui::End();
+
+#endif // _DEBUG
 }
 
 bool BlockEditor::OperationConfirmation(){
@@ -211,7 +278,7 @@ void BlockEditor::LoadFile(const std::string& fileName){
 		from_json(i["Rotate"], newRotate);
 		from_json(i["Pos"], newPos);
 
-		AddItem(newPos, newScale);
+		
 	}
 #ifdef _DEBUG
 	std::string message = "File loading completed";

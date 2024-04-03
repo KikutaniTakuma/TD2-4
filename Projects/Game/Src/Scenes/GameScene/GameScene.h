@@ -19,6 +19,8 @@
 
 #include "Game/CollisionManager/AABB/AABB.h"
 
+#include "Editor/BlockEditor/BlockEditor.h"
+
 class GameScene : public BaseScene {
 public:
 	GameScene();
@@ -49,4 +51,6 @@ public:
 
 	std::unique_ptr<SkyDome> skydome_ = nullptr;
 	class Cloud *cloud_ = nullptr;
+
+	std::unique_ptr<BlockEditor> blockEditor_;
 };

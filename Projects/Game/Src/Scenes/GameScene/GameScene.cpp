@@ -41,6 +41,9 @@ void GameScene::Initialize() {
 	boxModel_->pos = aabb_.GetCentor();
 	boxModel_->scale = aabb_.GetRadius();
 	boxModel_->Update();
+
+	blockEditor_ = std::make_unique<BlockEditor>();
+	blockEditor_->Initialize();
 }
 
 void GameScene::Finalize() {
@@ -64,7 +67,9 @@ void GameScene::Update() {
 	gameManager_->InputAction();
 	gameManager_->Update(deltaTime);
 
-	gameManager_->Debug("GameManager");
+	/*gameManager_->Debug("GameManager");*/
+	blockEditor_->Update();
+	blockEditor_->Debug();
 
 	if (aabb_.ImGuiDebug("AABB")) {
 		boxModel_->pos = aabb_.GetCentor();
@@ -84,6 +89,8 @@ void GameScene::Draw() {
 	water_->Draw(currentCamera_->GetViewProjection());
 
 	//boxModel_->Draw(currentCamera_->GetViewProjection(), currentCamera_->GetPos());
+
+	blockEditor_->Draw(*currentCamera_);
 
 	gameManager_->Draw(*currentCamera_);
 

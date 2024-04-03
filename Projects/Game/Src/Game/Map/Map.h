@@ -16,7 +16,7 @@ public:
 		kNone,	// 虚空
 		kBox,	// 箱
 	};
-	inline static constexpr int32_t kMapX = 10u, kMapY = 3u, kMapZ = 10u;
+	inline static constexpr int32_t kMapX = 10u, kMapY = 5u, kMapZ = 10u;
 
 	// 箱の配列 [y][z][x]
 	using MapSize = std::array<std::array<std::array<BoxType, kMapX>, kMapZ>, kMapY>;

@@ -22,19 +22,12 @@ public:
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	void Draw(const Camera* camera);
+	void Draw(const Camera& camera);
 
 	/// <summary>
 	/// Imguiの情報
 	/// </summary>
 	void Debug();
-
-	/// <summary>
-	///	リストの終端に追加する
-	/// </summary>
-	/// <param name="pos">座標</param>
-	/// <param name="scale">大きさ</param>
-	void AddItem(const Vector3& pos, const Vector3& scale);
 
 	//imguiの操作をそのまま続けるかどうかのメッセージボックスを表示
 	bool OperationConfirmation();
@@ -45,6 +38,10 @@ private:
 
 	Map::MapSize* mapSize_ = nullptr;
 
+	int selectFloor_ = 0;
+
+	Input* input_ = nullptr;
+
 	//設置するするとき用のプリミティブ
 	std::unique_ptr<Obb> obb_;
 
@@ -52,12 +49,6 @@ private:
 	const uint32_t baseColor_ = 0xffffffff;
 	//変更後の色
 	const uint32_t moveColor_ = 0xff0000ff;
-	//大きさをimguiで変更しているかどうか
-	bool changeSize_ = false;
-
-	//そのimguiを選択しているかどうか
-	bool isSelectImgui_ = false;
-
 
 	/*ファイル制御関連*/
 private:

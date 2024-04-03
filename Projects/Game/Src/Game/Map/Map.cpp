@@ -33,7 +33,7 @@ bool Map::Debug(const char *const str)
 
 	if (ImGui::TreeNode(str)) {
 
-		for (size_t y = 0; y < 3u; y++) {
+		for (size_t y = 0; y < 5u; y++) {
 			// 
 			if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
 				for (size_t z = 0; z < 10u; z++) {
@@ -66,7 +66,7 @@ void Map::TransferBoxData()
 	// モデルのイテレータ
 	std::list<std::unique_ptr<Model>>::iterator modelItr = models_.begin();
 
-	for (size_t y = 0; y < 3u; y++) {
+	for (size_t y = 0; y < 5u; y++) {
 		for (size_t z = 0; z < 10u; z++) {
 			for (size_t x = 0; x < 10u; x++) {
 				// 箱の状態
