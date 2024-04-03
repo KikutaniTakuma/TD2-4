@@ -5,6 +5,10 @@
 class OnBlockMoveComp : public IComponent
 {
 public:
+
+	inline static constexpr uint32_t kJumpLength = 2u;
+
+public:
 	using IComponent::IComponent;
 
 	~OnBlockMoveComp() override = default;

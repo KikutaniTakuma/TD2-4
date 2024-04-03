@@ -23,6 +23,7 @@ void GameManager::Init()
 	{
 		auto *const modelComp = player_->AddComponent<ModelComp>();
 		modelComp->AddBone("Body", std::make_unique<Model>("Resources/Cube.obj"), { { 0.4f,0.5f,0.4f} });
+		modelComp->GetBone("Body")->model_->color = 0xFF0000FF;
 	}
 
 	player_->AddComponent<OnBlockMoveComp>();
@@ -70,15 +71,19 @@ void GameManager::InputAction()
 
 	}
 
+	// プレイヤに付与する移動方向
 	Vector3 inputPlayer{};
+	// 縦方向の移動
 	inputPlayer.z += input_->GetKey()->Pushed(DIK_W);
 	inputPlayer.z -= input_->GetKey()->Pushed(DIK_S);
 
-	inputPlayer.x -= input_->GetKey()->Pushed(DIK_A);
-	inputPlayer.x += input_->GetKey()->Pushed(DIK_D);
-
+	// 縦方向が無かったら
+	if (not inputPlayer.z) {
+		// 横方向の移動
+		inputPlayer.x -= input_->GetKey()->Pushed(DIK_A);
+		inputPlayer.x += input_->GetKey()->Pushed(DIK_D);
+	}
+	// ベクトルの付与
 	player_->GetComponent<OnBlockMoveComp>()->InputMoveDirection(inputPlayer);
-
-	//player_->transform_.translate += inputPlayer;
 
 }

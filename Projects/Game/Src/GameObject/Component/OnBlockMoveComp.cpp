@@ -19,6 +19,14 @@ void OnBlockMoveComp::Update()
 			moveDir_ = {};
 
 		}
+		else if (CheckJumpSideMove()) {
+
+			// 移動
+			onStagePos_ += moveDir_ * kJumpLength;
+			// 移動量を0に
+			moveDir_ = {};
+
+		}
 	}
 
 	transform_.translate = Map::GetGrobalPos(static_cast<size_t>(onStagePos_.x), static_cast<size_t>(onStagePos_.y), static_cast<size_t>(onStagePos_.z)) + Vector3::kYIdentity;
@@ -40,6 +48,11 @@ bool OnBlockMoveComp::CheckNormalMove() const
 
 bool OnBlockMoveComp::CheckJumpSideMove() const
 {
-	return false;
+
+	// もし移動量が1以外だったらfalse
+	if (moveDir_.Length() != 1.f) { return false; }
+
+	// 移動先が足場ならtrue
+	return pMap_->GetBoxType(onStagePos_ + moveDir_ * kJumpLength) == Map::BoxType::kBox;
 }
 
