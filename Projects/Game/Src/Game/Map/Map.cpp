@@ -12,7 +12,7 @@ void Map::Update([[maybe_unused]] const float deltaTime)
 {
 }
 
-void Map::Draw(const Camera &camera) const
+void Map::Draw(const Camera& camera) const
 {
 	// モデルのイテレータ
 	std::list<std::unique_ptr<Model>>::const_iterator modelItr = models_.begin();
@@ -25,7 +25,7 @@ void Map::Draw(const Camera &camera) const
 
 }
 
-bool Map::Debug(const char *const str)
+bool Map::Debug(const char* const str)
 {
 	bool isChange = false;
 
@@ -38,7 +38,7 @@ bool Map::Debug(const char *const str)
 			if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
 				for (size_t z = 0; z < 10u; z++) {
 					for (size_t x = 0; x < 10u; x++) {
-						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*boxMap_)[y][z][x]));
+						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*boxMap_)[y][z][x]));
 						if (x != 9) {
 							ImGui::SameLine();
 						}
@@ -67,32 +67,37 @@ void Map::TransferBoxData()
 	std::list<std::unique_ptr<Model>>::iterator modelItr = models_.begin();
 
 	for (size_t y = 0; y < 5u; y++) {
-		for (size_t z = 0; z < 10u; z++) {
-			for (size_t x = 0; x < 10u; x++) {
-				// 箱の状態
-				BoxType boxType = static_cast<BoxType>((*boxMap_)[y][z][x]);
+		// 描画フラグが有効であった場合は描画
+		if (isFloorDrawing_[y]) {
 
-				// 箱が存在するか
-				if (boxType != BoxType::kNone) {
-					// モデルのイテレータが末尾に到達しているか
-					if (modelItr == models_.end()) {
-						// 1つ追加する
-						models_.push_back(std::make_unique<Model>("Resources/Cube.obj"));
-						modelItr = (--models_.end());
+			for (size_t z = 0; z < 10u; z++) {
+				for (size_t x = 0; x < 10u; x++) {
+					// 箱の状態
+					BoxType boxType = static_cast<BoxType>((*boxMap_)[y][z][x]);
+
+					// 箱が存在するか
+					if (boxType != BoxType::kNone) {
+						// モデルのイテレータが末尾に到達しているか
+						if (modelItr == models_.end()) {
+							// 1つ追加する
+							models_.push_back(std::make_unique<Model>("Resources/Cube.obj"));
+							modelItr = (--models_.end());
+						}
+						// 現在のモデル
+						Model& model = **modelItr;
+
+						// イテレータを加算する
+						++modelItr;
+
+						model.pos = GetGrobalPos(x, y, z);
+						model.scale = Vector3::kIdentity * *vBlockScale * 0.5f;
+						model.Update();
+
+						boxCount_++;
 					}
-					// 現在のモデル
-					Model &model = **modelItr;
-
-					// イテレータを加算する
-					++modelItr;
-
-					model.pos = GetGrobalPos(x, y, z);
-					model.scale = Vector3::kIdentity * *vBlockScale * 0.5f;
-					model.Update();
-
-					boxCount_++;
 				}
 			}
+
 		}
 	}
 }

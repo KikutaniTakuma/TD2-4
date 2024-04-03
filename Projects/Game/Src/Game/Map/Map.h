@@ -7,6 +7,7 @@
 #include <list>
 #include <Drawers/Model/Model.h>
 #include <Camera/Camera.h>
+#include <bitset>
 
 class Map
 {
@@ -41,6 +42,9 @@ public:
 	/// @brief 箱のデータをモデルに転送
 	void TransferBoxData();
 
+	inline void SetDraingFlag(const std::bitset<kMapY>& flag) noexcept { isFloorDrawing_ = flag; }
+	inline const std::bitset<kMapY>& GetDraingFlag() const noexcept { return isFloorDrawing_; }
+
 public:
 	/// @brief 3次元配列の取得
 	/// @return 三次元配列
@@ -62,6 +66,8 @@ private:
 	std::unique_ptr<MapSize> boxMap_;
 	// 箱の数
 	size_t boxCount_;
+
+	std::bitset<kMapY> isFloorDrawing_{ 0b11111 };
 
 	inline static SoLib::VItem<"ブロックの間隔", Vector2> vBoxDistance_{ {1, 3} };
 	inline static SoLib::VItem<"ブロックのサイズ", float> vBlockScale{ 1.f };

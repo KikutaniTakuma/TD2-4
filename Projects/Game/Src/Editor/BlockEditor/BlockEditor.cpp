@@ -25,6 +25,7 @@ void BlockEditor::Update(){
 
 	if (input_->GetKey()->LongPush(DIK_LSHIFT)&& input_->GetKey()->Pushed(DIK_0)){
 		selectFloor_ = 0;
+
 	}
 	else if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_1)) {
 		selectFloor_ = 1;
@@ -39,6 +40,7 @@ void BlockEditor::Update(){
 		selectFloor_ = 4;
 	}
 
+	map_->SetDraingFlag(isFloorDrawing_);
 
 	obb_->Debug("OBB");
 	obb_->Update();
@@ -59,6 +61,13 @@ void BlockEditor::Debug(){
 			ImGui::Text("選択階層");
 			for (size_t i = 0; i < 5u; i++){
 				ImGui::RadioButton(("階層" + std::to_string(i)).c_str(), &selectFloor_, static_cast<int>(i));
+				if (i == selectFloor_) {
+					isFloorDrawing_[i] = true;
+				}
+				else {
+					isFloorDrawing_[i] = false;
+				}
+
 				if (i == 4u)
 					continue;
 				ImGui::SameLine();

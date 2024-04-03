@@ -38,17 +38,16 @@ private:
 
 	Map::MapSize* mapSize_ = nullptr;
 
+	std::bitset<Map::kMapY> isFloorDrawing_{ 0b00000 };
+
 	int selectFloor_ = 0;
+
+	bool isAllDraw_ = false;
 
 	Input* input_ = nullptr;
 
 	//設置するするとき用のプリミティブ
 	std::unique_ptr<Obb> obb_;
-
-	//元の色
-	const uint32_t baseColor_ = 0xffffffff;
-	//変更後の色
-	const uint32_t moveColor_ = 0xff0000ff;
 
 	/*ファイル制御関連*/
 private:
@@ -80,11 +79,11 @@ private:
 	//imguiで選択しているステージナンバー
 	int stageSelectNum_;
 	//アイテムのファイルパス
-	const std::string kDirectoryPath_ = "Resources/Datas/Boxes/";
+	inline static const std::string kDirectoryPath_ = "Resources/Datas/Boxes/";
 	//アイテムのファイルパス
-	const std::string kDirectoryName_ = "Resources/Datas/Boxes";
+	inline static const std::string kDirectoryName_ = "Resources/Datas/Boxes";
 	//名前
-	const std::string kItemName_ = "box";
+	inline static const std::string kItemName_ = "box";
 
 	std::vector<std::string> fileName_;
 

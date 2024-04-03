@@ -68,8 +68,12 @@ void GameScene::Update() {
 	gameManager_->Update(deltaTime);
 
 	/*gameManager_->Debug("GameManager");*/
+
+#ifdef _DEBUG
 	blockEditor_->Update();
 	blockEditor_->Debug();
+
+#endif // _DEBUG
 
 	if (aabb_.ImGuiDebug("AABB")) {
 		boxModel_->pos = aabb_.GetCentor();
@@ -90,7 +94,10 @@ void GameScene::Draw() {
 
 	//boxModel_->Draw(currentCamera_->GetViewProjection(), currentCamera_->GetPos());
 
+#ifdef _DEBUG
 	blockEditor_->Draw(*currentCamera_);
+
+#endif // _DEBUG
 
 	gameManager_->Draw(*currentCamera_);
 
