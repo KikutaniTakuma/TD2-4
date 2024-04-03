@@ -41,7 +41,7 @@ public:
 	/// @brief 箱のデータをモデルに転送
 	void TransferBoxData();
 
-	const BoxType &GetBoxType(const Vector3 &localPos) const;
+	const BoxType GetBoxType(const Vector3 &localPos) const;
 
 public:
 	/// @brief 3次元配列の取得

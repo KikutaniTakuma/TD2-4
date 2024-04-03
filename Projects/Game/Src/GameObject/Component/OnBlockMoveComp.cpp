@@ -34,13 +34,6 @@ bool OnBlockMoveComp::CheckNormalMove() const
 	// もし移動量が1以外だったらfalse
 	if (moveDir_.Length() != 1.f) { return false; }
 
-	const Vector3 afterPos = onStagePos_ + moveDir_;
-
-	// もしマップ外に行っていた場合false
-	if (afterPos.x < 0.f or afterPos.y < 0.f or afterPos.z < 0.f or afterPos.x >= Map::kMapX or afterPos.y >= Map::kMapY or afterPos.z >= Map::kMapZ) {
-		return false;
-	}
-
 	// 移動先が足場ならtrue
 	return pMap_->GetBoxType(onStagePos_ + moveDir_) == Map::BoxType::kBox;
 }
