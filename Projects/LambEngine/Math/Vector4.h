@@ -68,8 +68,8 @@ public:
 
 	float Dot(const Vector4& right) const noexcept;
 
-	class Vector3 GetVector3() const noexcept;
-	class Vector2 GetVector2() const noexcept;
+	const class Vector3& GetVector3() const noexcept;
+	const class Vector2& GetVector2() const noexcept;
 
 
 	uint32_t GetColorRGBA() const;

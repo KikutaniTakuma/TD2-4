@@ -15,11 +15,10 @@ Mat4x4 SoLib::Math::Affine(const Vector3 &scale, const Quaternion &quaternion, c
 
 	result = quaternion.GetMatrix();
 
-	Vector4 *const matItr = reinterpret_cast<Vector4 *>(&result);
 	for (uint8_t i = 0u; i < 3u; i++) {
-		matItr[i] *= SoLib::begin(scale)[i];
+		result[i] *= SoLib::begin(scale)[i];
 	}
-	*reinterpret_cast<Vector3 *>(&matItr[3]) = transform;
+	result[3] = transform;
 
 	return result;
 }
