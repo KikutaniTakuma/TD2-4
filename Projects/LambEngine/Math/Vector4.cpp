@@ -192,6 +192,9 @@ float Vector4::Dot(const Vector4& right) const noexcept {
 	return _mm_cvtss_f32(_mm_dp_ps(m128, right.m128, 0xff));
 }
 
+Vector3& Vector4::GetVector3() noexcept {
+	return reinterpret_cast<Vector3&>(vec);
+}
 const Vector3& Vector4::GetVector3() const noexcept {
 	return reinterpret_cast<const Vector3&>(vec);
 }
