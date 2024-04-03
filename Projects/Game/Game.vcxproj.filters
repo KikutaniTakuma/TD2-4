@@ -108,6 +108,12 @@
     <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp">
       <Filter>Editor\BlockEditor</Filter>
     </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\OnBlockMoveComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\Map\Map.cpp">
+      <Filter>Game\Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -321,6 +327,9 @@
     </ClInclude>
     <ClInclude Include="Src\Editor\BlockEditor\BlockEditor.h">
       <Filter>Editor\BlockEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\OnBlockMoveComp.h">
+      <Filter>GameObject\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
