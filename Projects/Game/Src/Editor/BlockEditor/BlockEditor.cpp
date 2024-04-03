@@ -9,7 +9,7 @@ void BlockEditor::Initialize(){
 
 	mapSize_ = map_->GetBlockMap();
 
-	beforeMapSize_ = mapSize_;
+	beforeMapSize_ = *mapSize_;
 
 	input_ = Input::GetInstance();
 
@@ -42,6 +42,15 @@ void BlockEditor::Update(){
 		selectFloor_ = 4;
 	}
 
+	for (size_t i = 0; i < 5u; i++){
+		if (isDraw_[i]) {
+			isFloorDrawing_[i] = true;
+		}
+		else {
+			isFloorDrawing_[i] = false;
+		}
+	}
+
 	if (isAllDraw_)
 		isFloorDrawing_ = { 0b11111 };
 
@@ -64,21 +73,39 @@ void BlockEditor::Debug(){
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("ブロック整理")) {
 			ImGui::Checkbox("全階層表示", &isAllDraw_);
+			
+			ImGui::Text("表示階層");
+			for (size_t i = 0; i < 5u; i++){
+				ImGui::Checkbox(std::to_string(i).c_str(), &isDraw_[i]);
+				if (i == 4u)
+					continue;
+				ImGui::SameLine();
+			}
 
 			ImGui::Text("選択階層");
 
 			for (size_t i = 0; i < 5u; i++){
 				ImGui::RadioButton(("階層" + std::to_string(i)).c_str(), &selectFloor_, static_cast<int>(i));
-				if (i == selectFloor_) {
+				if (ImGui::IsItemActive()) {
 					isFloorDrawing_[i] = true;
-				}
-				else {
-					isFloorDrawing_[i] = false;
-				}
+					isDraw_ = { 0,0,0,0,0 };
+					isDraw_[i] = true;
+				}				
 
 				if (i == 4u)
 					continue;
 				ImGui::SameLine();
+			}
+			if (ImGui::Button("今の階層を前回のロード時までリセット")) {
+				FloorReset();
+			}
+			if (ImGui::Button("前回のロード時までリセット")){
+				DataReset();
+			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("全部リセット")) {
+				AllDataReset();
 			}
 
 			for (size_t y = 0; y < 5u; y++) {
@@ -113,7 +140,7 @@ void BlockEditor::Debug(){
 			strcpy_s(buffer, sizeof(buffer), stageName_.c_str()); // std::stringをcharバッファにコピー
 
 			// テキストボックスの作成
-			ImGui::InputText("Enter Text", buffer, sizeof(buffer));
+			ImGui::InputText("出力するファイル名", buffer, sizeof(buffer));
 
 			stageName_ = buffer;
 
@@ -145,6 +172,28 @@ void BlockEditor::Debug(){
 	ImGui::End();
 
 #endif // _DEBUG
+}
+
+void BlockEditor::DataReset(){
+	if (OperationConfirmation()){
+		*mapSize_ = beforeMapSize_;
+	}
+}
+
+void BlockEditor::FloorReset(){
+	if (OperationConfirmation()) {		
+		for (size_t z = 0; z < Map::kMapZ; ++z) {
+			for (size_t x = 0; x < Map::kMapX; ++x) {
+				((*mapSize_)[selectFloor_][z][x]) = beforeMapSize_[selectFloor_][z][x];
+			}
+		}		
+	}
+}
+
+void BlockEditor::AllDataReset(){
+	if (OperationConfirmation()) {
+		(*mapSize_).fill({ {Map::BoxType::kNone} });
+	}
 }
 
 bool BlockEditor::OperationConfirmation(){
@@ -299,14 +348,12 @@ void BlockEditor::LoadFile(const std::string& fileName){
 	//ファイルを閉じる
 	ifs.close();
 
-	
-
 	//グループを検索
 	nlohmann::json::iterator itGroup = root.find(kItemName_);
 	//未登録チェック
 	assert(itGroup != root.end());
 
-	beforeMapSize_ = mapSize_;
+	
 
 	//各アイテムについて
 	for (size_t y = 0; y < Map::kMapY; ++y) {
@@ -316,6 +363,9 @@ void BlockEditor::LoadFile(const std::string& fileName){
 			}
 		}
 	}
+
+	beforeMapSize_ = *mapSize_;
+
 #ifdef _DEBUG
 	std::string message = "File loading completed";
 	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);

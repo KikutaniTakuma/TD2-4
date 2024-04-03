@@ -29,6 +29,21 @@ public:
 	/// </summary>
 	void Debug();
 
+	/// <summary>
+	/// 前回ロード時の状態に戻す
+	/// </summary>
+	void DataReset();
+
+	/// <summary>
+	/// 一層だけ前回ロード時の状態に戻す
+	/// </summary>
+	void FloorReset();
+
+	/// <summary>
+	/// 完全に白紙の状態に戻す
+	/// </summary>
+	void AllDataReset();
+
 	//imguiの操作をそのまま続けるかどうかのメッセージボックスを表示
 	bool OperationConfirmation();
 
@@ -38,9 +53,11 @@ private:
 
 	Map::MapSize* mapSize_ = nullptr;
 
-	Map::MapSize* beforeMapSize_ = nullptr;
+	Map::MapSize beforeMapSize_;
 
 	std::bitset<Map::kMapY> isFloorDrawing_{ 0b00000 };
+
+	std::array<bool, Map::kMapY> isDraw_;
 
 	int selectFloor_ = 0;
 
