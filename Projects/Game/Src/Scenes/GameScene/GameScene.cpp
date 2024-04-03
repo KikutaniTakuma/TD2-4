@@ -64,16 +64,16 @@ void GameScene::Update() {
 	cloud_->Update();
 	skydome_->Upadate();
 
-	gameManager_->InputAction();
-	gameManager_->Update(deltaTime);
-
-	/*gameManager_->Debug("GameManager");*/
-
 #ifdef _DEBUG
 	blockEditor_->Update();
 	blockEditor_->Debug();
 
 #endif // _DEBUG
+	gameManager_->InputAction();
+	gameManager_->Update(deltaTime);
+
+	/*gameManager_->Debug("GameManager");*/
+
 
 	if (aabb_.ImGuiDebug("AABB")) {
 		boxModel_->pos = aabb_.GetCentor();

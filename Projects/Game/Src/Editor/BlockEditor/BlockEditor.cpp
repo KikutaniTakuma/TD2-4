@@ -9,6 +9,8 @@ void BlockEditor::Initialize(){
 
 	mapSize_ = map_->GetBlockMap();
 
+	beforeMapSize_ = mapSize_;
+
 	input_ = Input::GetInstance();
 
 	obb_ = std::make_unique<Obb>();
@@ -104,6 +106,39 @@ void BlockEditor::Debug(){
 
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::BeginMenu("ファイル関連")) {
+			// char型のバッファを用意して、std::stringを変換
+			static char buffer[256]; // 適切なサイズに調整してください
+			strcpy_s(buffer, sizeof(buffer), stageName_.c_str()); // std::stringをcharバッファにコピー
+
+			// テキストボックスの作成
+			ImGui::InputText("Enter Text", buffer, sizeof(buffer));
+
+			stageName_ = buffer;
+
+			if (ImGui::Button("選択したファイルに保存")) {
+				if (OperationConfirmation()) {
+					SaveFile(stageName_);
+				}
+			}
+			if (ImGui::TreeNode("ファイル読み込み")) {				
+				auto file = Lamb::GetFilePathFormDir(kDirectoryPath_, ".json");
+
+				for (auto& i : file) {
+					if (ImGui::Button(i.string().c_str())) {
+						if (OperationConfirmation()) {
+							LoadFiles(i.string());
+						}
+						break;
+					}
+				}
+				
+				ImGui::TreePop();
+			}
+
+			ImGui::EndMenu();
+		}
 		ImGui::EndMenuBar();
 	}
 
@@ -129,50 +164,37 @@ void BlockEditor::SaveFile(const std::string& fileName){
 	//保存
 	json root;
 	root = json::object();
-	int i = 0;
-
-	for (auto it = mapSize_[0].begin(); it != mapSize_[0].end(); ++it) {
-		//　保存する先のコンテナ
-		auto& item = root[kItemName_][i];
-		item["Scale"] = json::array({
-				it[0][0],
-				it[0][0],
-				it[0][0]
-			});
-		item["Rotate"] = json::array({
-				it[0][0],
-				it[0][0],
-				it[0][0]
-			});
-		item["Pos"] = json::array({
-				it[0][0],
-				it[0][0],
-				it[0][0]
-			});
-
-		std::filesystem::path dir(kDirectoryPath_);
-		if (!std::filesystem::exists(kDirectoryName_)) {
-			std::filesystem::create_directory(kDirectoryName_);
+	
+	// 3次元配列をJSONオブジェクトに変換
+	for (size_t y = 0; y < Map::kMapY; ++y) {
+		for (size_t z = 0; z < Map::kMapZ; ++z) {
+			for (size_t x = 0; x < Map::kMapX; ++x) {
+				root["boxes"][y][z][x] = static_cast<int>((*mapSize_)[y][z][x]);
+			}
 		}
-		// 書き込むjsonファイルのフルパスを合成する
-		std::string filePath = kDirectoryPath_ + fileName + ".json";
-		// 書き込み用ファイルストリーム
-		std::ofstream ofs;
-		// ファイルを書き込みように開く
-		ofs.open(filePath);
-		//ファイルオープン失敗
-		if (ofs.fail()) {
-			std::string message = "Failed open data file for write.";
-			MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
-			assert(0);
-			break;
-		}
-		//ファイルにjson文字列を書き込む(インデント幅4)
-		ofs << std::setw(4) << item << std::endl;
-		//ファイルを閉じる
-		ofs.close();
-		i++;
 	}
+
+	std::filesystem::path dir(kDirectoryPath_);
+	if (!std::filesystem::exists(kDirectoryName_)) {
+		std::filesystem::create_directory(kDirectoryName_);
+	}
+	// 書き込むjsonファイルのフルパスを合成する
+	std::string filePath = kDirectoryPath_ + fileName + ".json";
+	// 書き込み用ファイルストリーム
+	std::ofstream ofs;
+	// ファイルを書き込みように開く
+	ofs.open(filePath);
+	//ファイルオープン失敗
+	if (ofs.fail()) {
+		std::string message = "Failed open data file for write.";
+		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
+		assert(0);
+		return;
+	}
+	//ファイルにjson文字列を書き込む(インデント幅4)
+	ofs << std::setw(4) << root << std::endl;
+	//ファイルを閉じる
+	ofs.close();
 
 	std::string message = "File save completed.";
 	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
@@ -243,9 +265,9 @@ void BlockEditor::LoadFiles(const std::string& fileName){
 			continue;
 		}
 
-		if (filePath.stem().string() == fileName) {
+		if (filePath == fileName) {
 			//ファイル読み込み
-			LoadFile(filePath.stem().string());
+			LoadFile(fileName);
 			return;
 		}
 	}
@@ -257,7 +279,7 @@ void BlockEditor::LoadFile(const std::string& fileName){
 	if (!LoadChackItem(fileName))
 		return;
 	//読み込むjsonファイルのフルパスを合成する
-	std::string filePath = kDirectoryPath_ + fileName + ".json";
+	std::string filePath = fileName;
 	//読み込み用のファイルストリーム
 	std::ifstream ifs;
 	//ファイルを読み込み用に開く
@@ -283,17 +305,16 @@ void BlockEditor::LoadFile(const std::string& fileName){
 	nlohmann::json::iterator itGroup = root.find(kItemName_);
 	//未登録チェック
 	assert(itGroup != root.end());
+
+	beforeMapSize_ = mapSize_;
+
 	//各アイテムについて
-	for (const auto& i : root[kItemName_]) {
-		Vector3 newScale{};
-		Vector3 newRotate{};
-		Vector3 newPos{};
-
-		from_json(i["Scale"], newScale);
-		from_json(i["Rotate"], newRotate);
-		from_json(i["Pos"], newPos);
-
-		
+	for (size_t y = 0; y < Map::kMapY; ++y) {
+		for (size_t z = 0; z < Map::kMapZ; ++z) {
+			for (size_t x = 0; x < Map::kMapX; ++x) {
+				((*mapSize_)[y][z][x]) = root["boxes"][y][z][x];
+			}
+		}
 	}
 #ifdef _DEBUG
 	std::string message = "File loading completed";
@@ -304,7 +325,7 @@ void BlockEditor::LoadFile(const std::string& fileName){
 
 bool BlockEditor::LoadChackItem(const std::string& fileName){
 	// 書き込むjsonファイルのフルパスを合成する
-	std::string filePath = kDirectoryPath_ + fileName + ".json";
+	std::string filePath = fileName;
 	//読み込み用のファイルストリーム
 	std::ifstream ifs;
 	//ファイルを読み込み用に開く

@@ -38,6 +38,8 @@ private:
 
 	Map::MapSize* mapSize_ = nullptr;
 
+	Map::MapSize* beforeMapSize_ = nullptr;
+
 	std::bitset<Map::kMapY> isFloorDrawing_{ 0b00000 };
 
 	int selectFloor_ = 0;
@@ -83,7 +85,7 @@ private:
 	//アイテムのファイルパス
 	inline static const std::string kDirectoryName_ = "Resources/Datas/Boxes";
 	//名前
-	inline static const std::string kItemName_ = "box";
+	inline static const std::string kItemName_ = "boxes";
 
 	std::vector<std::string> fileName_;
 
