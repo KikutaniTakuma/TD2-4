@@ -27,6 +27,14 @@ public:
 
 	bool IsCollision(Vector3 pos, float radius);
 
+
+	/// <summary>
+	/// obbの中に点があるかどうかの判定
+	/// </summary>
+	/// <param name="point">点の座標</param>
+	/// <returns></returns>
+	bool OBBinPoint(const Vector3& point);
+
 public:
 	Vector3 center_;
 	Vector3 scale_;

@@ -62,6 +62,10 @@ public:
 		return Vector3{ gPos.x / vBoxDistance_->x, gPos.y / vBoxDistance_->y, -(gPos.z / vBoxDistance_->x) } + Vector3{ vBoxDistance_->x / ((kMapX - 1) / 2.f), 0, -(vBoxDistance_->x / ((kMapZ - 1) / 2.f)) };
 	}
 
+	static float GetMapDistance() {
+		return vBoxDistance_->y;
+	}
+
 private:
 
 	// 箱の配列 [y][z][x]

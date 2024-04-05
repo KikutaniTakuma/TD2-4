@@ -71,6 +71,29 @@ bool Obb::IsCollision(Vector3 pos, float radius) {
 	}
 }
 
+bool Obb::OBBinPoint(const Vector3& point){
+	// OBBのローカル座標系で点を表す
+	Vector3 localPoint = (point - center_) * 2.0f;
+	// 各軸に沿った境界条件を確認する
+	for (int i = 0; i < 3; ++i) {
+		float projection = localPoint.Dot(orientations_[i]);
+		if ((projection > scale_.x || projection < -scale_.x) && i == 0) {
+			isCollision_ = false;
+			return false; // 点がOBBの範囲外にある場合
+		}
+		if ((projection > scale_.y || projection < -scale_.y) && i == 1) {
+			isCollision_ = false;
+			return false; // 点がOBBの範囲外にある場合
+		}
+		if ((projection > scale_.z || projection < -scale_.z) && i == 2) {
+			isCollision_ = false;
+			return false; // 点がOBBの範囲外にある場合
+		}
+	}
+	isCollision_ = true;
+	return true; // 点がOBBの範囲内にある場合
+}
+
 void Obb::Update() {
 	worldMatrix_.Affin(scale_, rotate_, center_);
 

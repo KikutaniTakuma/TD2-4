@@ -2,6 +2,7 @@
 #include"fstream"
 #include"Engine/Core/WindowFactory/WindowFactory.h"
 #include"../SoLib/SoLib/SoLib_Json.h"
+#include"Input/Mouse/Mouse.h"
 
 void BlockEditor::Initialize(){
 
@@ -16,6 +17,16 @@ void BlockEditor::Initialize(){
 	obb_ = std::make_unique<Obb>();
 
 	obb_->scale_ = { 1.f,1.f,1.f };
+
+	reticle_ = std::make_unique<Obb>();
+
+	reticle_->scale_ = { 1.f,1.f,1.f };
+
+	scanningOBB_ = std::make_unique<Obb>();
+
+	scanningOBB_->scale_ = { 1.f,1.f,1.f };
+
+	isDraw_[0] = true;
 	
 }
 
@@ -27,7 +38,6 @@ void BlockEditor::Update(){
 
 	if (input_->GetKey()->LongPush(DIK_LSHIFT)&& input_->GetKey()->Pushed(DIK_0)){
 		selectFloor_ = 0;
-
 	}
 	else if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_1)) {
 		selectFloor_ = 1;
@@ -51,13 +61,25 @@ void BlockEditor::Update(){
 		}
 	}
 
+	if (obb_->OBBinPoint(reticle_->center_)){
+		reticle_->color_ = 0x00ff00ff;
+	}
+	else {
+		reticle_->color_ = 0x000000ff;
+	}
+
 	if (isAllDraw_)
 		isFloorDrawing_ = { 0b11111 };
 
 	map_->SetDraingFlag(isFloorDrawing_);
 
-	obb_->Debug("OBB");
+	
+	MapinPoint(reticle_->center_);
+	
+
 	obb_->Update();
+	reticle_->Update();
+	scanningOBB_->Update();
 }
 
 void BlockEditor::Draw(const Camera& camera){
@@ -166,10 +188,43 @@ void BlockEditor::Debug(){
 
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("レティクルテスト")) {
+			ImGui::DragFloat("レティクルとの距離", &distancePlayerTo3DReticleCopy_, 0.1f, 0.0f, 30.0f);
+
+			ImGui::EndMenu();
+		}
 		ImGui::EndMenuBar();
 	}
 
 	ImGui::End();
+
+	if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
+		if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
+			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]] = Map::BoxType::kBox;
+		}
+		else if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
+			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]] = Map::BoxType::kNone;
+		}
+
+		if (Mouse::GetInstance()->GetWheelVelocity() > 0){		
+			selectFloor_ -= 1;
+			isDraw_ = { 0,0,0,0,0 };
+			
+		}
+		else if (Mouse::GetInstance()->GetWheelVelocity() < 0) {
+			selectFloor_ += 1;
+			isDraw_ = { 0,0,0,0,0 };
+		}	
+
+	}
+
+	if (selectFloor_ > 4) {
+		selectFloor_ = 4;
+	}
+	else if (selectFloor_ < 0) {
+		selectFloor_ = 0;
+	}
+	isDraw_[selectFloor_] = true;
 
 #endif // _DEBUG
 }
@@ -207,6 +262,54 @@ bool BlockEditor::OperationConfirmation(){
 	else {
 		return false;
 	}
+}
+
+bool BlockEditor::MapinPoint(const Vector3& point){
+	for (size_t y = 0; y < 5u; y++) {
+		if (selectFloor_ != y)
+			continue;
+		for (size_t z = 0; z < 10u; z++) {
+			for (size_t x = 0; x < 10u; x++) {
+				scanningOBB_->center_ = map_->GetGrobalPos(x, y, z);
+				if (scanningOBB_->OBBinPoint(point)){
+					obb_->center_ = scanningOBB_->center_;
+					boxPos_ = { x,y,z };
+					return true;
+				}
+			}
+		}
+
+	}
+	return false;
+}
+
+void BlockEditor::MousePosTrans(const Camera& camera){
+	Vector2 mousePou = Mouse::GetInstance()->GetPos();
+	Mat4x4 matVPV = camera.GetViewProjectionVp();
+	Mat4x4 matInverseVPV = matVPV.Inverse();
+
+	Vector3 posNear = Vector3(mousePou.x, mousePou.y, 0);
+	Vector3 posFar = Vector3(mousePou.x, mousePou.y, 1);
+
+	posNear = posNear * matInverseVPV;
+	posFar = posFar * matInverseVPV;
+
+	Vector3 mouseDirection = posFar - posNear;
+	mouseDirection = mouseDirection.Normalize();
+
+	// 自機から3Dレティクルへの距離
+	float distancePlayerTo3DReticle = 30.0f;
+
+	while (camera.pos.y - (posNear + mouseDirection * distancePlayerTo3DReticle).y > 30.03f) {
+		distancePlayerTo3DReticle -= 0.01f;
+	}
+	while (camera.pos.y - (posNear + mouseDirection * distancePlayerTo3DReticle).y < 29.97f) {
+		distancePlayerTo3DReticle += 0.01f;
+	}
+	distancePlayerTo3DReticleCopy_ = distancePlayerTo3DReticle;
+	reticle_->center_ = posNear + mouseDirection * distancePlayerTo3DReticle;
+
+	
 }
 
 void BlockEditor::SaveFile(const std::string& fileName){

@@ -44,6 +44,7 @@ void GameScene::Initialize() {
 
 	blockEditor_ = std::make_unique<BlockEditor>();
 	blockEditor_->Initialize();
+	
 }
 
 void GameScene::Finalize() {
@@ -57,6 +58,8 @@ void GameScene::Update() {
 	const float deltaTime = Lamb::DeltaTime();
 
 	currentCamera_->Debug("カメラ");
+
+	
 	currentCamera_->Update();
 
 	water_->Update(currentCamera_->GetPos());
@@ -64,9 +67,18 @@ void GameScene::Update() {
 	cloud_->Update();
 	skydome_->Upadate();
 
+	ImGui::Begin("モード変更");
+	ImGui::Checkbox("エディターモード", &editorMode_);
+	ImGui::End();
+
 #ifdef _DEBUG
-	blockEditor_->Update();
-	blockEditor_->Debug();
+	if (editorMode_){
+		currentCamera_->pos.y = 30.0f + blockEditor_->GetSelectFloor() * Map::GetMapDistance();
+		blockEditor_->MousePosTrans(*currentCamera_);
+		blockEditor_->Debug();
+		blockEditor_->Update();
+	}
+	
 
 #endif // _DEBUG
 	gameManager_->InputAction();

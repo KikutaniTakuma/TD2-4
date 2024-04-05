@@ -52,5 +52,7 @@ public:
 	std::unique_ptr<SkyDome> skydome_ = nullptr;
 	class Cloud *cloud_ = nullptr;
 
+	bool editorMode_ = false;
+
 	std::unique_ptr<BlockEditor> blockEditor_;
 };

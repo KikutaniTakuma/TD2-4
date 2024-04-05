@@ -24,6 +24,10 @@ public:
 	/// </summary>
 	void Draw(const Camera& camera);
 
+	int GetSelectFloor()const {
+		return selectFloor_;
+	}
+
 	/// <summary>
 	/// Imguiの情報
 	/// </summary>
@@ -47,6 +51,16 @@ public:
 	//imguiの操作をそのまま続けるかどうかのメッセージボックスを表示
 	bool OperationConfirmation();
 
+	/// <summary>
+	/// マップの中にpointがあるかどうか
+	/// </summary>
+	bool MapinPoint(const Vector3& point);
+
+	/// <summary>
+	/// マウスのポジションを3D空間上に変換する
+	/// </summary>
+	void MousePosTrans(const Camera& camera);
+
 private:
 
 	Map* map_ = nullptr;
@@ -54,6 +68,8 @@ private:
 	Map::MapSize* mapSize_ = nullptr;
 
 	Map::MapSize beforeMapSize_;
+
+	std::array<size_t, 3> boxPos_;
 
 	std::bitset<Map::kMapY> isFloorDrawing_{ 0b00000 };
 
@@ -67,6 +83,13 @@ private:
 
 	//設置するするとき用のプリミティブ
 	std::unique_ptr<Obb> obb_;
+
+	// 自機から3Dレティクルへの距離
+	float distancePlayerTo3DReticleCopy_ = 30.0f;
+
+	std::unique_ptr<Obb> reticle_;
+
+	std::unique_ptr<Obb> scanningOBB_;
 
 	/*ファイル制御関連*/
 private:
