@@ -19,6 +19,10 @@
 
 #include "Game/CollisionManager/AABB/AABB.h"
 
+#include "Game/CollisionManager/CollisionManager.h"
+
+#include"Game/Player/Player.h"
+
 #include "Editor/BlockEditor/BlockEditor.h"
 
 class GameScene : public BaseScene {
@@ -41,7 +45,7 @@ public:
 	void Draw() override;
 
 public:
-	class Water *water_ = nullptr;
+	//class Water *water_ = nullptr;
 
 	GameManager *gameManager_ = nullptr;
 
@@ -49,10 +53,14 @@ public:
 
 	std::unique_ptr<Model> boxModel_;
 
-	std::unique_ptr<SkyDome> skydome_ = nullptr;
-	class Cloud *cloud_ = nullptr;
+	std::unique_ptr<Player> player_;
+
+	CollisionManager* collisionManager_ = nullptr;
+
+	/*std::unique_ptr<SkyDome> skydome_ = nullptr;
+	class Cloud *cloud_ = nullptr;*/
 
 	bool editorMode_ = false;
 
-	std::unique_ptr<BlockEditor> blockEditor_;
+	//std::unique_ptr<BlockEditor> blockEditor_;
 };

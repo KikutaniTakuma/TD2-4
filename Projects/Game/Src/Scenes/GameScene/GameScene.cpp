@@ -18,33 +18,35 @@ GameScene::GameScene() :
 {}
 
 void GameScene::Initialize() {
+	collisionManager_ = CollisionManager::GetInstance();
+
 	currentCamera_->farClip = 3000.0f;
-	currentCamera_->pos.y = 30.0f;
+	currentCamera_->pos.y = 10.0f;
+	currentCamera_->pos.z = -70.0f;
 	currentCamera_->offset.z = -60.0f;
 	currentCamera_->offset.y = 8.0f;
-	currentCamera_->rotate.x = 90_deg;
+	currentCamera_->rotate.x = 0_deg;
 
-	water_ = Water::GetInstance();
+	/*water_ = Water::GetInstance();*/
 
-	cloud_ = Cloud::GetInstance();
+	/*cloud_ = Cloud::GetInstance();
 
 	skydome_ = std::make_unique<SkyDome>();
 	skydome_->Initialize();
-	skydome_->SetTexture(cloud_->GetTex());
+	skydome_->SetTexture(cloud_->GetTex());*/
 
 	gameManager_ = GameManager::GetInstance();
 	gameManager_->Init();
 
-	aabb_ = AABB::Create(Vector3::kZero, Vector3::kIdentity);
+	aabb_ = AABB::Create({ 0.0f,-0.5f,0.0f }, { 20.0f,1.0f,20.0f });
 
 	boxModel_ = std::make_unique<Model>("Resources/Cube.obj");
 	boxModel_->pos = aabb_.GetCentor();
 	boxModel_->scale = aabb_.GetRadius();
 	boxModel_->Update();
 
-	blockEditor_ = std::make_unique<BlockEditor>();
-	blockEditor_->Initialize();
-	
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
 }
 
 void GameScene::Finalize() {
@@ -58,26 +60,19 @@ void GameScene::Update() {
 	const float deltaTime = Lamb::DeltaTime();
 
 	currentCamera_->Debug("カメラ");
-
 	
 	currentCamera_->Update();
 
-	water_->Update(currentCamera_->GetPos());
+	/*water_->Update(currentCamera_->GetPos());*/
 
-	cloud_->Update();
-	skydome_->Upadate();
+	/*cloud_->Update();
+	skydome_->Upadate();*/
+	player_->Debug();
+	player_->Update();
 
-	ImGui::Begin("モード変更");
-	ImGui::Checkbox("エディターモード", &editorMode_);
-	ImGui::End();
 
 #ifdef _DEBUG
-	if (editorMode_){
-		currentCamera_->pos.y = 30.0f + blockEditor_->GetSelectFloor() * Map::GetMapDistance();
-		blockEditor_->MousePosTrans(*currentCamera_);
-		blockEditor_->Debug();
-		blockEditor_->Update();
-	}
+
 	
 
 #endif // _DEBUG
@@ -93,21 +88,27 @@ void GameScene::Update() {
 		boxModel_->Update();
 	}
 
+	collisionManager_->Update();
+	collisionManager_->Debug();
+
+	player_->AllTrade();
+
 	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
 		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}
 }
 
 void GameScene::Draw() {
-	cloud_->Draw();
-	skydome_->Draw(*currentCamera_);
+	/*cloud_->Draw();
+	skydome_->Draw(*currentCamera_);*/
 
-	water_->Draw(currentCamera_->GetViewProjection());
+	boxModel_->Draw(currentCamera_->GetViewProjection(), currentCamera_->GetPos());
 
-	//boxModel_->Draw(currentCamera_->GetViewProjection(), currentCamera_->GetPos());
+	player_->Draw(*currentCamera_);
 
 #ifdef _DEBUG
-	blockEditor_->Draw(*currentCamera_);
+
+	
 
 #endif // _DEBUG
 

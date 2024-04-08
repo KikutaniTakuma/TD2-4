@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include "../SoLib/Containers/Singleton.h"
+#include"Game/CollisionManager/Collider/Collider.h"
 
 /// <summary>
 /// コリジョンマネージャー
@@ -18,10 +19,14 @@ class CollisionManager : public SoLib::Singleton<CollisionManager> {
 	CollisionManager& operator=(CollisionManager&&) = delete;
 
 public:
-	void SetCollider(class Collider* collider);
+	void SetCollider(Collider* collider);
+
+	void DeleteCollider(Collider* collider);
+
+	void Debug();
 
 	void Update();
 
 private:
-	std::list<class Collider*> colliders_;
+	std::list<Collider*> colliders_;
 };

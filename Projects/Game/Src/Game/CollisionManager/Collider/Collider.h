@@ -58,6 +58,9 @@ public:
 		return flg_.OnExit();
 	}
 
+	Vector3 GetMax()const { return max_; }
+
+	Vector3 GetMin()const { return min_; }
 	//void Adjusment(Collider& other, const Vector3& moveVec);
 
 public:
