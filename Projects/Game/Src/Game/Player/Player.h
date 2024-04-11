@@ -46,6 +46,8 @@ private:
 	
 	// 箱の数
 	size_t boxCount_{};
+
+	float moveSpeed_ = 1.000001f;
 	//箱リスト
 	std::list<std::unique_ptr<Block>> blockList_;
 

@@ -30,9 +30,7 @@ void Player::Update(){
 	obb_->Update();
 	obb_->Debug("PLOBB");
 
-	if (input_->GetKey()->Pushed(DIK_RETURN)){
-		AddBox(obb_->center_);
-	}
+	
 
 	std::list<std::unique_ptr<Block>>::iterator blockItr = blockList_.begin();
 
