@@ -30,7 +30,22 @@ void Player::Update(){
 	obb_->Update();
 	obb_->Debug("PLOBB");
 
-	
+	if (input_->GetKey()->Pushed(DIK_A)) {
+		obb_->center_.x -= moveSpeed_;
+	}
+	if (input_->GetKey()->Pushed(DIK_D)) {
+		obb_->center_.x += moveSpeed_;
+	}
+	if (input_->GetKey()->Pushed(DIK_S)) {
+		obb_->center_.y -= moveSpeed_;
+	}
+	if (input_->GetKey()->Pushed(DIK_W)) {
+		obb_->center_.y += moveSpeed_;
+	}
+
+	if (input_->GetKey()->Pushed(DIK_SPACE)) {
+		AddBox(obb_->center_);
+	}
 
 	std::list<std::unique_ptr<Block>>::iterator blockItr = blockList_.begin();
 
