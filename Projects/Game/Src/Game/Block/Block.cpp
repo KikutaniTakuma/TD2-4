@@ -6,11 +6,11 @@ void Block::Initialize(){
 
 	model_ = std::make_unique<Model>("Resources/Cube.obj");
 
-	collider_ = std::make_unique<Collider>();
+	obb_ = std::make_unique<Obb>();
 
 	model_->scale = { vBlockScale->x,vBlockScale->y,vBlockScale->y };
 
-	collider_->scale_ = model_->scale * 2.0f;
+	obb_->scale_ = { model_->scale.x,model_->scale.y * 2.0f,model_->scale.z * 2.0f };
 
 	isBreak_ = false;
 }
@@ -20,11 +20,18 @@ void Block::Finalize(){
 }
 
 void Block::Update(){
+	
 	if (pos_.y < -10.0f) {
 		isBreak_ = true;
 	}
 	if (pos_.y > 1.0f){
-		pos_.y -= 0.2f;
+		if (obb_->OnStay()){
+
+		}
+		else {
+			pos_.y -= 0.4f;
+		}
+		
 	}
 	
 
@@ -34,15 +41,15 @@ void Block::Update(){
 
 	model_->Update();
 
-	collider_->collisionPos_ = model_->pos;
+	obb_->center_ = model_->pos;
+	obb_->Update();
 	
 
-	collider_->UpdateCollision();
+	
 }
 
 void Block::Draw(const Camera& camera){
 	model_->Draw(camera.GetViewProjection(), camera.GetPos());
-	collider_->DebugDraw(camera.GetViewProjection());
 }
 
 void Block::Debug(){
@@ -50,10 +57,10 @@ void Block::Debug(){
 	ImGui::DragFloat3("ポジション", &pos_.x, 0.1f);
 	ImGui::End();
 
-	collider_->Debug("コライダー");
+	obb_->Debug("コライダー");
 	model_->Debug("ボックスモデル");
 }
 
 void Block::Trade(){
-	model_->pos = collider_->collisionPos_;
+	model_->pos = obb_->center_;
 }

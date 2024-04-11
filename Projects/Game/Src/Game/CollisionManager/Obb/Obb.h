@@ -27,13 +27,38 @@ public:
 
 	bool IsCollision(Vector3 pos, float radius);
 
+	bool OnEnter() const {
+		return isCollision_.OnEnter();
+	}
 
+	bool OnStay() const {
+		return isCollision_.OnStay();
+	}
+
+	bool OnExit() const {
+		return isCollision_.OnExit();
+	}
+
+	Vector3 GetSize()const { return size_; }
+
+	/// <summary>
+	/// obbの回転を取得する
+	/// </summary>
+	/// <returns></returns>
+	Mat4x4 GetRotate()const;
 	/// <summary>
 	/// obbの中に点があるかどうかの判定
 	/// </summary>
 	/// <param name="point">点の座標</param>
 	/// <returns></returns>
 	bool OBBinPoint(const Vector3& point);
+
+	/// <summary>
+	/// obb同士の当たり判定処理
+	/// </summary>
+	/// <param name="obb">当たるobb </param>
+	/// <returns></returns>
+	bool IsCollisionOBBOBB(const Obb& obb);
 
 public:
 	Vector3 center_;
@@ -42,8 +67,8 @@ public:
 
 	uint32_t color_;
 
-private:
 	std::array<Vector3, 3> orientations_;
+private:
 	std::array<Line, 12> lines_;
 	std::array<Line, 3> orientationLines_;
 	Vector3 size_;

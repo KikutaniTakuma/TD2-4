@@ -3,6 +3,7 @@
 #include "Math/Mat4x4.h"
 #include "Drawers/Line/Line.h"
 #include "Utils/Flg/Flg.h"
+#include"Game/CollisionManager/Obb/Obb.h"
 #include <bitset>
 #include <memory>
 
@@ -38,6 +39,8 @@ public:
 
 	bool CollisionPush(Collider& other);
 
+	bool ObbCollision(Collider& other);
+
 	void DebugDraw(const Mat4x4& viewProjection);
 
 	void Debug(const std::string& guiName);
@@ -67,9 +70,13 @@ public:
 	Vector3 scale_;
 	Vector3 collisionPos_;
 
+	std::unique_ptr<Obb> obb_;
+
 protected:
 	Vector3 max_;
 	Vector3 min_;
+
+	
 
 	uint32_t color_;
 

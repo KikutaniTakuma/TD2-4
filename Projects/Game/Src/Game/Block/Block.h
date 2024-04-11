@@ -42,11 +42,12 @@ public:
 	/// 交換するだけの関数
 	/// </summary>
 	void Trade();
+	
 
 public:
 	bool GetIsBreak()const { return isBreak_; }
 
-	Collider* GetCollider()const { return collider_.get(); }
+	Obb* GetObb()const { return obb_.get(); }
 
 public:
 	Vector3 pos_;
@@ -58,7 +59,7 @@ private:
 
 	std::unique_ptr<Model> model_;
 
-	std::unique_ptr<Collider> collider_;
+	std::unique_ptr<Obb> obb_;
 
 	bool isBreak_;
 };

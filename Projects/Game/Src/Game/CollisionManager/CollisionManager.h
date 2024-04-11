@@ -21,7 +21,11 @@ class CollisionManager : public SoLib::Singleton<CollisionManager> {
 public:
 	void SetCollider(Collider* collider);
 
+	void SetCollider(Obb* collider);
+
 	void DeleteCollider(Collider* collider);
+
+	void DeleteCollider(Obb* collider);
 
 	void Debug();
 
@@ -29,4 +33,6 @@ public:
 
 private:
 	std::list<Collider*> colliders_;
+
+	std::list<Obb*> obbColliders_;
 };

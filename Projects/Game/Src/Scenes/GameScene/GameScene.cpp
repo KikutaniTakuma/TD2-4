@@ -91,7 +91,7 @@ void GameScene::Update() {
 	collisionManager_->Update();
 	collisionManager_->Debug();
 
-	player_->AllTrade();
+	//player_->AllTrade();
 
 	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
 		sceneManager_->SceneChange(BaseScene::ID::Title);
