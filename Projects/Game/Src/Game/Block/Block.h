@@ -54,8 +54,8 @@ public:
 
 	float rotateZ_ = 0.0f;
 
+	inline static const SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale{ {1.5f ,0.5f} };
 private:
-	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale{ {1.5f ,0.5f} };
 
 	std::unique_ptr<Model> model_;
 

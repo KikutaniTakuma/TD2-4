@@ -9,10 +9,12 @@ Player::~Player(){
 void Player::Initialize(){
 	CollisionManager_ = CollisionManager::GetInstance();
 
+
 	input_ = Input::GetInstance();
 
 	obb_ = std::make_unique<Obb>();
 
+	obb_->center_.y = 15.0f;
 	obb_->scale_ = { 3.f,1.f,1.f };
 
 }
@@ -27,25 +29,11 @@ void Player::Update(){
 		return false;
 	});
 
+	PlayerMove();
+
 	obb_->Update();
 	obb_->Debug("PLOBB");
-
-	if (input_->GetKey()->Pushed(DIK_A)) {
-		obb_->center_.x -= moveSpeed_;
-	}
-	if (input_->GetKey()->Pushed(DIK_D)) {
-		obb_->center_.x += moveSpeed_;
-	}
-	if (input_->GetKey()->Pushed(DIK_S)) {
-		obb_->center_.y -= moveSpeed_;
-	}
-	if (input_->GetKey()->Pushed(DIK_W)) {
-		obb_->center_.y += moveSpeed_;
-	}
-
-	if (input_->GetKey()->Pushed(DIK_SPACE)) {
-		AddBox(obb_->center_);
-	}
+	
 
 	std::list<std::unique_ptr<Block>>::iterator blockItr = blockList_.begin();
 
@@ -65,6 +53,25 @@ void Player::Draw(const Camera& camera){
 	for (size_t i = 0; i < boxCount_; i++) {
 		// モデルを描画
 		(*blockItr++)->Draw(camera);	// 次のモデルに移動
+	}
+}
+
+void Player::PlayerMove(){
+	if (input_->GetKey()->Pushed(DIK_A)) {
+		obb_->center_.x -= moveSpeed_;
+	}
+	if (input_->GetKey()->Pushed(DIK_D)) {
+		obb_->center_.x += moveSpeed_;
+	}
+	if (input_->GetKey()->Pushed(DIK_S)) {
+		obb_->center_.y -= moveSpeed_;
+	}
+	if (input_->GetKey()->Pushed(DIK_W)) {
+		obb_->center_.y += moveSpeed_;
+	}
+
+	if (input_->GetKey()->Pushed(DIK_SPACE)) {
+		AddBox(obb_->center_);
 	}
 }
 
