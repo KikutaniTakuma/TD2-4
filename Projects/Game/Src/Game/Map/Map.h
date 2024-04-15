@@ -13,14 +13,22 @@ class Map
 {
 public:
 
+
+	struct BoxInfo{
+		//建設予定になって入るかどうか
+		bool isConstruction;
+		//小人は何人設置されているかどうか
+		int32_t dwarfNum;
+	};
+
 	enum class BoxType : uint32_t {
 		kNone,	// 虚空
 		kBox,	// 箱
 	};
-	inline static constexpr int32_t kMapX = 10u, kMapY = 5u, kMapZ = 10u;
+	inline static constexpr int32_t kMapX = 20u, kMapY = 1u, kMapZ = 1u;
 
 	// 箱の配列 [y][z][x]
-	using MapSize = std::array<std::array<std::array<BoxType, kMapX>, kMapZ>, kMapY>;
+	using MapSize = std::array<std::array<std::array<BoxInfo, kMapX>, kMapZ>, kMapY>;
 
 public:
 	Map() = default;
@@ -42,7 +50,9 @@ public:
 	/// @brief 箱のデータをモデルに転送
 	void TransferBoxData();
 
-	const BoxType GetBoxType(const Vector3 &localPos) const;
+	const BoxInfo GetBoxInfo(const Vector3 &localPos) const;
+
+	const BoxType GetBoxType(const Vector3& localPos) const;
 
 	inline void SetDraingFlag(const std::bitset<kMapY>& flag) noexcept { isFloorDrawing_ = flag; }
 	inline const std::bitset<kMapY>& GetDraingFlag() const noexcept { return isFloorDrawing_; }
@@ -73,10 +83,10 @@ private:
 	// 箱の数
 	size_t boxCount_{};
 
-	std::bitset<kMapY> isFloorDrawing_{ 0b11111 };
+	std::bitset<kMapY> isFloorDrawing_{ 0b1 };
 
 	inline static SoLib::VItem<"ブロックの間隔", Vector2> vBoxDistance_{ {1, 3} };
-	inline static SoLib::VItem<"ブロックのサイズ", float> vBlockScale{ 1.f };
+	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale{ {1.f,10.0f} };
 
 	std::list<std::unique_ptr<Model>> models_;
 

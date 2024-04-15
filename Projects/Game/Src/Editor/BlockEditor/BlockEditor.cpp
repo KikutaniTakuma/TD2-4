@@ -13,20 +13,26 @@ void BlockEditor::Initialize(){
 	beforeMapSize_ = *mapSize_;
 
 	input_ = Input::GetInstance();
+	for (size_t i = 0; i < 3; i++){
+		obb_[i] = std::make_unique<Obb>();
 
-	obb_ = std::make_unique<Obb>();
+		obb_[i]->scale_ = { 1.f,1.f,3.2f };
 
-	obb_->scale_ = { 1.f,1.f,1.f };
+		obb_[i]->color_ = 0x0000ffff;
+	}
+
+	
 
 	reticle_ = std::make_unique<Obb>();
 
 	reticle_->scale_ = { 1.f,1.f,1.f };
 
+	reticle_->color_ = 0xff0000ff;
+
 	scanningOBB_ = std::make_unique<Obb>();
 
 	scanningOBB_->scale_ = { 1.f,1.f,1.f };
 
-	isDraw_[0] = true;
 	
 }
 
@@ -36,54 +42,28 @@ void BlockEditor::Finalize(){
 
 void BlockEditor::Update(){
 
-	if (input_->GetKey()->LongPush(DIK_LSHIFT)&& input_->GetKey()->Pushed(DIK_0)){
-		selectFloor_ = 0;
-	}
-	else if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_1)) {
-		selectFloor_ = 1;
-	}
-	else if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_2)) {
-		selectFloor_ = 2;
-	}
-	else if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_3)) {
-		selectFloor_ = 3;
-	}
-	else if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_4)) {
-		selectFloor_ = 4;
-	}
 
-	for (size_t i = 0; i < 5u; i++){
-		if (isDraw_[i]) {
-			isFloorDrawing_[i] = true;
-		}
-		else {
-			isFloorDrawing_[i] = false;
-		}
-	}
-
-	if (obb_->OBBinPoint(reticle_->center_)){
+	if (obb_[1]->OBBinPoint(reticle_->center_)) {
 		reticle_->color_ = 0x00ff00ff;
 	}
 	else {
 		reticle_->color_ = 0x000000ff;
 	}
-
-	if (isAllDraw_)
-		isFloorDrawing_ = { 0b11111 };
-
-	map_->SetDraingFlag(isFloorDrawing_);
-
 	
 	MapinPoint(reticle_->center_);
 	
-
-	obb_->Update();
+	for (size_t i = 0; i < 3; i++) {
+		obb_[i]->Update();
+	}
+	
 	reticle_->Update();
 	scanningOBB_->Update();
 }
 
 void BlockEditor::Draw(const Camera& camera){
-	obb_->Draw(camera.GetViewProjection());
+	for (size_t i = 0; i < 3; i++) {
+		obb_[i]->Draw(camera.GetViewProjection());
+	}
 }
 
 void BlockEditor::Debug(){
@@ -94,25 +74,12 @@ void BlockEditor::Debug(){
 
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("ブロック整理")) {
-			ImGui::Checkbox("全階層表示", &isAllDraw_);
 			
 			ImGui::Text("表示階層");
-			for (size_t i = 0; i < 5u; i++){
-				ImGui::Checkbox(std::to_string(i).c_str(), &isDraw_[i]);
-				if (i == 4u)
-					continue;
-				ImGui::SameLine();
-			}
 
 			ImGui::Text("選択階層");
 
 			for (size_t i = 0; i < 5u; i++){
-				ImGui::RadioButton(("階層" + std::to_string(i)).c_str(), &selectFloor_, static_cast<int>(i));
-				if (ImGui::IsItemActive()) {
-					isFloorDrawing_[i] = true;
-					isDraw_ = { 0,0,0,0,0 };
-					isDraw_[i] = true;
-				}				
 
 				if (i == 4u)
 					continue;
@@ -130,16 +97,17 @@ void BlockEditor::Debug(){
 				AllDataReset();
 			}
 
-			for (size_t y = 0; y < 5u; y++) {
-				if (selectFloor_ != y)
-					continue;
+			for (size_t y = 0; y < Map::kMapY; y++) {
 				
-				for (size_t z = 0; z < 10u; z++) {
-					for (size_t x = 0; x < 10u; x++) {
+				for (size_t z = 0; z < Map::kMapZ; z++) {
+					for (size_t x = 0; x < Map::kMapX; x++) {
 						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*mapSize_)[y][z][x]));
 						if (ImGui::IsItemHovered()) {
-							obb_->center_ = map_->GetGrobalPos(x, y, z);
-							obb_->color_ = 0xff0000ff;
+							for (size_t i = 0; i < 3; i++){
+								obb_[i]->center_ = map_->GetGrobalPos(x - 1 + i, y, z);
+								obb_[i]->color_ = 0xff0000ff;
+							}
+							
 						}
 						else {
 								
@@ -190,7 +158,8 @@ void BlockEditor::Debug(){
 		}
 		if (ImGui::BeginMenu("レティクルテスト")) {
 			ImGui::DragFloat("レティクルとの距離", &distancePlayerTo3DReticleCopy_, 0.1f, 0.0f, 30.0f);
-
+			ImGui::DragFloat3("レティクルのポジション", &reticle_->center_.x, 0.1f);
+			//ImGui::DragFloat("どれだけ離すか", &correction_, 0.1f, 0.0f, 15.0f);
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
@@ -200,31 +169,19 @@ void BlockEditor::Debug(){
 
 	if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
 		if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]] = Map::BoxType::kBox;
+			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] - 1].isConstruction = true;
+			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].isConstruction = true;
+			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] + 1].isConstruction = true;
 		}
 		else if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]] = Map::BoxType::kNone;
+			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] - 1].isConstruction = false;
+			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].isConstruction = false;
+			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] + 1].isConstruction = false;
 		}
 
-		if (Mouse::GetInstance()->GetWheelVelocity() > 0){		
-			selectFloor_ -= 1;
-			isDraw_ = { 0,0,0,0,0 };
-			
-		}
-		else if (Mouse::GetInstance()->GetWheelVelocity() < 0) {
-			selectFloor_ += 1;
-			isDraw_ = { 0,0,0,0,0 };
-		}	
 
 	}
 
-	if (selectFloor_ > 4) {
-		selectFloor_ = 4;
-	}
-	else if (selectFloor_ < 0) {
-		selectFloor_ = 0;
-	}
-	isDraw_[selectFloor_] = true;
 
 #endif // _DEBUG
 }
@@ -239,7 +196,6 @@ void BlockEditor::FloorReset(){
 	if (OperationConfirmation()) {		
 		for (size_t z = 0; z < Map::kMapZ; ++z) {
 			for (size_t x = 0; x < Map::kMapX; ++x) {
-				((*mapSize_)[selectFloor_][z][x]) = beforeMapSize_[selectFloor_][z][x];
 			}
 		}		
 	}
@@ -247,7 +203,7 @@ void BlockEditor::FloorReset(){
 
 void BlockEditor::AllDataReset(){
 	if (OperationConfirmation()) {
-		(*mapSize_).fill({ {Map::BoxType::kNone} });
+		
 	}
 }
 
@@ -265,14 +221,18 @@ bool BlockEditor::OperationConfirmation(){
 }
 
 bool BlockEditor::MapinPoint(const Vector3& point){
-	for (size_t y = 0; y < 5u; y++) {
-		if (selectFloor_ != y)
-			continue;
-		for (size_t z = 0; z < 10u; z++) {
-			for (size_t x = 0; x < 10u; x++) {
+	for (size_t y = 0; y < Map::kMapY; y++) {
+		for (size_t z = 0; z < Map::kMapZ; z++) {
+			for (size_t x = 0; x < Map::kMapX; x++) {
+				if (x == 0 || x == 19)
+					continue;
 				scanningOBB_->center_ = map_->GetGrobalPos(x, y, z);
+				scanningOBB_->center_.z -= correction_;
 				if (scanningOBB_->OBBinPoint(point)){
-					obb_->center_ = scanningOBB_->center_;
+					for (size_t i = 0; i < 3; i++) {
+						obb_[i]->center_ = map_->GetGrobalPos(x - 1 + i, y, z);
+						//obb_[i]->center_.z += correction_;
+					}
 					boxPos_ = { x,y,z };
 					return true;
 				}
@@ -298,12 +258,17 @@ void BlockEditor::MousePosTrans(const Camera& camera){
 	mouseDirection = mouseDirection.Normalize();
 
 	// 自機から3Dレティクルへの距離
-	float distancePlayerTo3DReticle = 30.0f;
+	float distancePlayerTo3DReticle = 40.0f - correction_;
+	float minRange = (-distancePlayerTo3DReticle - 0.05f);
+	float maxRange = (-distancePlayerTo3DReticle + 0.05f);
+	float chackNum = 0;
 
-	while (camera.pos.y - (posNear + mouseDirection * distancePlayerTo3DReticle).y > 30.03f) {
+	while (camera.pos.z - (posNear + mouseDirection * distancePlayerTo3DReticle).z < minRange) {
+		chackNum = camera.pos.z - (posNear + mouseDirection * distancePlayerTo3DReticle).z;
 		distancePlayerTo3DReticle -= 0.01f;
 	}
-	while (camera.pos.y - (posNear + mouseDirection * distancePlayerTo3DReticle).y < 29.97f) {
+	while (camera.pos.z - (posNear + mouseDirection * distancePlayerTo3DReticle).z > maxRange) {
+		chackNum = camera.pos.z - (posNear + mouseDirection * distancePlayerTo3DReticle).z;
 		distancePlayerTo3DReticle += 0.01f;
 	}
 	distancePlayerTo3DReticleCopy_ = distancePlayerTo3DReticle;
@@ -318,13 +283,13 @@ void BlockEditor::SaveFile(const std::string& fileName){
 	root = json::object();
 	
 	// 3次元配列をJSONオブジェクトに変換
-	for (size_t y = 0; y < Map::kMapY; ++y) {
+	/*for (size_t y = 0; y < Map::kMapY; ++y) {
 		for (size_t z = 0; z < Map::kMapZ; ++z) {
 			for (size_t x = 0; x < Map::kMapX; ++x) {
 				root["boxes"][y][z][x] = static_cast<int>((*mapSize_)[y][z][x]);
 			}
 		}
-	}
+	}*/
 
 	std::filesystem::path dir(kDirectoryPath_);
 	if (!std::filesystem::exists(kDirectoryName_)) {
@@ -459,13 +424,13 @@ void BlockEditor::LoadFile(const std::string& fileName){
 	
 
 	//各アイテムについて
-	for (size_t y = 0; y < Map::kMapY; ++y) {
+	/*for (size_t y = 0; y < Map::kMapY; ++y) {
 		for (size_t z = 0; z < Map::kMapZ; ++z) {
 			for (size_t x = 0; x < Map::kMapX; ++x) {
 				((*mapSize_)[y][z][x]) = root["boxes"][y][z][x];
 			}
 		}
-	}
+	}*/
 
 	beforeMapSize_ = *mapSize_;
 

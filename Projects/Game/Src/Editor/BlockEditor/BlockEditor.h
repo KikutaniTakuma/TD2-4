@@ -24,10 +24,6 @@ public:
 	/// </summary>
 	void Draw(const Camera& camera);
 
-	int GetSelectFloor()const {
-		return selectFloor_;
-	}
-
 	/// <summary>
 	/// Imguiの情報
 	/// </summary>
@@ -71,21 +67,15 @@ private:
 
 	std::array<size_t, 3> boxPos_;
 
-	std::bitset<Map::kMapY> isFloorDrawing_{ 0b00000 };
-
-	std::array<bool, Map::kMapY> isDraw_;
-
-	int selectFloor_ = 0;
-
-	bool isAllDraw_ = false;
-
 	Input* input_ = nullptr;
 
 	//設置するするとき用のプリミティブ
-	std::unique_ptr<Obb> obb_;
+	std::array< std::unique_ptr<Obb>, 3> obb_;
 
 	// 自機から3Dレティクルへの距離
 	float distancePlayerTo3DReticleCopy_ = 30.0f;
+	//本来図る距離とは変えるための変数
+	float correction_ = 4.62f;
 
 	std::unique_ptr<Obb> reticle_;
 

@@ -49,10 +49,6 @@ public:
 
 	GameManager *gameManager_ = nullptr;
 
-	AABB aabb_;
-
-	std::unique_ptr<Model> boxModel_;
-
 	std::unique_ptr<Player> player_;
 
 	CollisionManager* collisionManager_ = nullptr;
@@ -62,5 +58,5 @@ public:
 
 	bool editorMode_ = false;
 
-	//std::unique_ptr<BlockEditor> blockEditor_;
+	std::unique_ptr<BlockEditor> blockEditor_;
 };
