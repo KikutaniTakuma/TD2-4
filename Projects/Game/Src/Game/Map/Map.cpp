@@ -94,9 +94,21 @@ void Map::TransferBoxData()
 					model.Update();
 					if (boxInfo.isConstruction == true) {
 						model.color = 0x00ff00ff;
+						if (boxInfo.dwarfNum == 1) {
+							model.color = 0xffff00ff;
+						}
+						else if (boxInfo.dwarfNum == 2) {
+							model.color = 0x00ffffff;
+						}
 					}
 					else {
 						model.color = 0xffffffff;
+						if (boxInfo.dwarfNum == 1) {
+							model.color = 0xff0000ff;
+						}
+						else if (boxInfo.dwarfNum == 2) {
+							model.color = 0x0000ffff;
+						}
 					}
 
 					boxCount_++;

@@ -1,8 +1,7 @@
 #pragma once
+#include"Game/EnemyManager/EnemyManager.h"
 #include"Game/GameManager/GameManager.h"
-#include"Game/CollisionManager/Obb/Obb.h"
-class BlockEditor{
-
+class EnemyEditor{
 public:
 	/// <summary>
 	/// 初期化
@@ -70,14 +69,17 @@ private:
 	Input* input_ = nullptr;
 
 	//設置するするとき用のプリミティブ
-	std::array< std::unique_ptr<Obb>, 3> obb_;
+	std::unique_ptr<Obb> obb_;
+
+	//エネミーを置く用の
+	Vector3 setPos_;
+	//エネミー削除用の
+	Vector3 delPos_;
 
 	// 自機から3Dレティクルへの距離
 	float distancePlayerTo3DReticleCopy_ = 30.0f;
 	//本来図る距離とは変えるための変数
 	float correction_ = 4.62f;
-
-	bool isUseImgui_ = false;
 
 	std::unique_ptr<Obb> reticle_;
 
@@ -113,11 +115,11 @@ private:
 	//imguiで選択しているステージナンバー
 	int stageSelectNum_;
 	//アイテムのファイルパス
-	inline static const std::string kDirectoryPath_ = "Resources/Datas/Boxes/";
+	inline static const std::string kDirectoryPath_ = "Resources/Datas/Enemies/";
 	//アイテムのファイルパス
-	inline static const std::string kDirectoryName_ = "Resources/Datas/Boxes";
+	inline static const std::string kDirectoryName_ = "Resources/Datas/Enemies";
 	//名前
-	inline static const std::string kItemName_ = "boxes";
+	inline static const std::string kItemName_ = "Enemies";
 
 	std::vector<std::string> fileName_;
 

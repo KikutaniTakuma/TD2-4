@@ -6,16 +6,16 @@
       <Filter>GlobalVariables</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\CollisionManager\CollisionManager.cpp">
-      <Filter>Game\CollisionManager</Filter>
+      <Filter>Game\Manager\CollisionManager</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\CollisionManager\Collider\Collider.cpp">
-      <Filter>Game\CollisionManager\Collider</Filter>
+      <Filter>Game\Manager\CollisionManager\Collider</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\CollisionManager\Obb\Obb.cpp">
-      <Filter>Game\CollisionManager\Obb</Filter>
+      <Filter>Game\Manager\CollisionManager\Obb</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\CollisionManager\Plane\Plane.cpp">
-      <Filter>Game\CollisionManager\Plane</Filter>
+      <Filter>Game\Manager\CollisionManager\Plane</Filter>
     </ClCompile>
     <ClCompile Include="Src\World\World.cpp">
       <Filter>World</Filter>
@@ -60,7 +60,7 @@
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\CollisionManager\Sphere\Sphere.cpp">
-      <Filter>Game\CollisionManager\Sphere</Filter>
+      <Filter>Game\Manager\CollisionManager\Sphere</Filter>
     </ClCompile>
     <ClCompile Include="Src\GameObject\Component\ModelComp.cpp">
       <Filter>GameObject\Component</Filter>
@@ -84,7 +84,7 @@
       <Filter>GameObject\Component</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp">
-      <Filter>Game\GameManager</Filter>
+      <Filter>Game\Manager\GameManager</Filter>
     </ClCompile>
     <ClCompile Include="Src\GameObject\Component\EnergyItem.cpp">
       <Filter>GameObject\Component</Filter>
@@ -93,17 +93,17 @@
       <Filter>GameObject\Component</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\CollisionManager\Capsule\Capsule.cpp">
-      <Filter>Game\CollisionManager\Capsule</Filter>
+      <Filter>Game\Manager\CollisionManager\Capsule</Filter>
     </ClCompile>
     <ClCompile Include="Src\Camera\DebugCamera\DebugCamera.cpp">
       <Filter>Camera\DebugCamera</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\CollisionManager\AABB\AABB.cpp">
-      <Filter>Game\CollisionManager\AABB</Filter>
+      <Filter>Game\Manager\CollisionManager\AABB</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\Map\Map.cpp" />
     <ClCompile Include="Src\Game\ItemManager\ItemManager.cpp">
-      <Filter>Game\ItemManager</Filter>
+      <Filter>Game\Manager\ItemManager</Filter>
     </ClCompile>
     <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp">
       <Filter>Editor\BlockEditor</Filter>
@@ -120,6 +120,15 @@
     <ClCompile Include="Src\Game\Block\Block.cpp">
       <Filter>Game\Block</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\Enemy\Enemy.cpp">
+      <Filter>Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\EnemyManager\EnemyManager.cpp">
+      <Filter>Game\Manager\EnemyManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Editor\EnemyEditor\EnemyEditor.cpp">
+      <Filter>Editor\EnemyEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -127,15 +136,6 @@
     </Filter>
     <Filter Include="Game">
       <UniqueIdentifier>{e16d5b6d-612f-4477-b4d3-85f9d99b2ab8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\CollisionManager">
-      <UniqueIdentifier>{1451ec42-a15b-4d2f-8a7d-7edbc8a26e9b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\CollisionManager\Collider">
-      <UniqueIdentifier>{9e6dd177-5172-4dfe-bf41-1cfaa76118cd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\CollisionManager\Obb">
-      <UniqueIdentifier>{f1b87284-7f48-48e0-946d-317f4c3da22f}</UniqueIdentifier>
     </Filter>
     <Filter Include="World">
       <UniqueIdentifier>{b8981fb7-5ba2-4533-897e-e706c7dc3049}</UniqueIdentifier>
@@ -167,9 +167,6 @@
     <Filter Include="Editor\ParticleEditor">
       <UniqueIdentifier>{4b7de689-4b28-45f6-bb48-00506bfb839d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\CollisionManager\Plane">
-      <UniqueIdentifier>{268eefac-748b-4452-b6c2-10e06349215c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Water">
       <UniqueIdentifier>{db170fba-cd99-4b05-a820-35cea969012a}</UniqueIdentifier>
     </Filter>
@@ -188,26 +185,14 @@
     <Filter Include="Camera">
       <UniqueIdentifier>{31e5ecf8-6bc1-4f5a-97ce-394f3988c342}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\CollisionManager\Sphere">
-      <UniqueIdentifier>{03d14d68-3998-48a1-950b-d7aa4dec5fed}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObject">
       <UniqueIdentifier>{44fa33a9-cc40-417d-b9b0-36521d469c8c}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameObject\Component">
       <UniqueIdentifier>{0323e700-4ffc-4e87-983b-59d2162784f5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\GameManager">
-      <UniqueIdentifier>{ea8534b9-646f-4ddf-aaed-06c92f5f42b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\CollisionManager\Capsule">
-      <UniqueIdentifier>{decf7b45-ff6d-42a2-85f0-8d30b56bb527}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Camera\DebugCamera">
       <UniqueIdentifier>{d27f2ca5-b12d-42ad-aae0-6af7e63f3c9e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\CollisionManager\AABB">
-      <UniqueIdentifier>{34a8b057-6542-48de-9165-028f1b9a3444}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Map">
       <UniqueIdentifier>{53f24296-84ed-43ec-9de4-354c3461bf35}</UniqueIdentifier>
@@ -215,14 +200,50 @@
     <Filter Include="Editor\BlockEditor">
       <UniqueIdentifier>{ac571e6b-65fa-4b08-b878-ab3e3cab9bed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\ItemManager">
-      <UniqueIdentifier>{dc3095a5-ba68-4784-908e-1eb2a0323e86}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Block">
       <UniqueIdentifier>{44033f75-5a14-455e-b909-6200bd5aecc5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Player">
       <UniqueIdentifier>{9d9be9c4-6bcc-4354-8e0d-bd65a0029eed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager">
+      <UniqueIdentifier>{5662ba70-c48f-49ac-92ac-c349d16563d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\ItemManager">
+      <UniqueIdentifier>{dc3095a5-ba68-4784-908e-1eb2a0323e86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\CollisionManager">
+      <UniqueIdentifier>{1451ec42-a15b-4d2f-8a7d-7edbc8a26e9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\CollisionManager\Collider">
+      <UniqueIdentifier>{9e6dd177-5172-4dfe-bf41-1cfaa76118cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\CollisionManager\Obb">
+      <UniqueIdentifier>{f1b87284-7f48-48e0-946d-317f4c3da22f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\CollisionManager\Plane">
+      <UniqueIdentifier>{268eefac-748b-4452-b6c2-10e06349215c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\CollisionManager\Sphere">
+      <UniqueIdentifier>{03d14d68-3998-48a1-950b-d7aa4dec5fed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\CollisionManager\Capsule">
+      <UniqueIdentifier>{decf7b45-ff6d-42a2-85f0-8d30b56bb527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\CollisionManager\AABB">
+      <UniqueIdentifier>{34a8b057-6542-48de-9165-028f1b9a3444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\GameManager">
+      <UniqueIdentifier>{ea8534b9-646f-4ddf-aaed-06c92f5f42b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\EnemyManager">
+      <UniqueIdentifier>{b8bb4175-b5f3-466e-95fb-e2bf95f84093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Enemy">
+      <UniqueIdentifier>{b275312c-2f59-418a-9e86-b8f0b4b29ec6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\EnemyEditor">
+      <UniqueIdentifier>{4ec1fc64-92ec-4948-9170-fb1b17ea103a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -230,16 +251,16 @@
       <Filter>GlobalVariables</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\CollisionManager.h">
-      <Filter>Game\CollisionManager</Filter>
+      <Filter>Game\Manager\CollisionManager</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\Collider\Collider.h">
-      <Filter>Game\CollisionManager\Collider</Filter>
+      <Filter>Game\Manager\CollisionManager\Collider</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\Obb\Obb.h">
-      <Filter>Game\CollisionManager\Obb</Filter>
+      <Filter>Game\Manager\CollisionManager\Obb</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\Plane\Plane.h">
-      <Filter>Game\CollisionManager\Plane</Filter>
+      <Filter>Game\Manager\CollisionManager\Plane</Filter>
     </ClInclude>
     <ClInclude Include="Src\World\World.h">
       <Filter>World</Filter>
@@ -284,7 +305,7 @@
       <Filter>Camera</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\Sphere\Sphere.h">
-      <Filter>Game\CollisionManager\Sphere</Filter>
+      <Filter>Game\Manager\CollisionManager\Sphere</Filter>
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\HealthComp.h">
       <Filter>GameObject\Component</Filter>
@@ -314,7 +335,7 @@
       <Filter>GameObject\Component</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\GameManager\GameManager.h">
-      <Filter>Game\GameManager</Filter>
+      <Filter>Game\Manager\GameManager</Filter>
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\IvyModel.h">
       <Filter>GameObject\Component</Filter>
@@ -323,19 +344,19 @@
       <Filter>GameObject\Component</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\Capsule\Capsule.h">
-      <Filter>Game\CollisionManager\Capsule</Filter>
+      <Filter>Game\Manager\CollisionManager\Capsule</Filter>
     </ClInclude>
     <ClInclude Include="Src\Camera\DebugCamera\DebugCamera.h">
       <Filter>Camera\DebugCamera</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\AABB\AABB.h">
-      <Filter>Game\CollisionManager\AABB</Filter>
+      <Filter>Game\Manager\CollisionManager\AABB</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\Map\Map.h">
       <Filter>Game\Map</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\ItemManager\ItemManager.h">
-      <Filter>Game\ItemManager</Filter>
+      <Filter>Game\Manager\ItemManager</Filter>
     </ClInclude>
     <ClInclude Include="Src\Editor\BlockEditor\BlockEditor.h">
       <Filter>Editor\BlockEditor</Filter>
@@ -348,6 +369,15 @@
     </ClInclude>
     <ClInclude Include="Src\Game\Block\Block.h">
       <Filter>Game\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Enemy\Enemy.h">
+      <Filter>Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\EnemyManager\EnemyManager.h">
+      <Filter>Game\Manager\EnemyManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Editor\EnemyEditor\EnemyEditor.h">
+      <Filter>Editor\EnemyEditor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

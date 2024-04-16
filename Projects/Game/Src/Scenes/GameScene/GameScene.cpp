@@ -46,10 +46,20 @@ void GameScene::Initialize() {
 
 	blockEditor_ = std::make_unique<BlockEditor>();
 	blockEditor_->Initialize();
+
+
+	enemyManager_ = EnemyManager::GetInstance();
+	enemyManager_->Initialize();
+
+	enemyEditor_ = std::make_unique<EnemyEditor>();
+	enemyEditor_->Initialize();
+
+	enemyMode_ = false;
+	
 }
 
 void GameScene::Finalize() {
-
+	enemyManager_->Finalize();
 	// 実体の破棄
 	GameManager::Finalize();
 }
@@ -62,6 +72,7 @@ void GameScene::Update() {
 	
 	currentCamera_->Update();
 
+
 	/*water_->Update(currentCamera_->GetPos());*/
 
 	/*cloud_->Update();
@@ -69,27 +80,45 @@ void GameScene::Update() {
 	player_->Debug();
 	player_->Update();
 
-
+	
 #ifdef _DEBUG
 	ImGui::Begin("モード変更");
 	ImGui::Checkbox("エディターモード", &editorMode_);
+	ImGui::Checkbox("エネミーモード", &enemyMode_);
 	ImGui::End();
 	if (input_->GetKey()->Pushed(DIK_E)){
 		if (!editorMode_)
 			editorMode_ = true;
-		if (editorMode_)
+		else if (editorMode_)
 			editorMode_ = false;
 	}
 
 	if (editorMode_) {
 		currentCamera_->pos.y = 0.0f;
 		currentCamera_->pos.z = -40.0f;
-		blockEditor_->MousePosTrans(*currentCamera_);
-		blockEditor_->Debug();
-		blockEditor_->Update();
+		if (Mouse::GetInstance()->GetWheelVelocity() != 0) {
+			if (!enemyMode_)
+				enemyMode_ = true;
+			else if (enemyMode_)
+				enemyMode_ = false;
+		}
+		if (enemyMode_){
+			enemyEditor_->MousePosTrans(*currentCamera_);
+			enemyEditor_->Debug();
+			enemyEditor_->Update();
+		}
+		else{
+			blockEditor_->MousePosTrans(*currentCamera_);
+			blockEditor_->Debug();
+			blockEditor_->Update();
+		}
+		
 	}
 
 #endif // _DEBUG
+	enemyManager_->Update();
+	enemyManager_->Debug();
+
 	gameManager_->InputAction();
 	gameManager_->Update(deltaTime);
 
@@ -111,9 +140,18 @@ void GameScene::Draw() {
 
 	player_->Draw(*currentCamera_);
 
+	enemyManager_->Draw(*currentCamera_);
+
 #ifdef _DEBUG
 
-	blockEditor_->Draw(*currentCamera_);
+	if (editorMode_) {
+		if (enemyMode_) {
+			enemyEditor_->Draw(*currentCamera_);
+		}
+		else {
+			blockEditor_->Draw(*currentCamera_);
+		}
+	}
 
 #endif // _DEBUG
 

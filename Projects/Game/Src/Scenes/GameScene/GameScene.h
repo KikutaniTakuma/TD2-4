@@ -24,6 +24,7 @@
 #include"Game/Player/Player.h"
 
 #include "Editor/BlockEditor/BlockEditor.h"
+#include "Editor/EnemyEditor/EnemyEditor.h"
 
 class GameScene : public BaseScene {
 public:
@@ -58,5 +59,11 @@ public:
 
 	bool editorMode_ = false;
 
+	bool enemyMode_ = false;
+
 	std::unique_ptr<BlockEditor> blockEditor_;
+
+	std::unique_ptr<EnemyEditor> enemyEditor_;
+
+	EnemyManager* enemyManager_ = nullptr;
 };

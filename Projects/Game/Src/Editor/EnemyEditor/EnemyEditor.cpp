@@ -1,11 +1,10 @@
-#include "BlockEditor.h"
+#include "EnemyEditor.h"
 #include"fstream"
 #include"Engine/Core/WindowFactory/WindowFactory.h"
 #include"../SoLib/SoLib/SoLib_Json.h"
 #include"Input/Mouse/Mouse.h"
 
-void BlockEditor::Initialize(){
-
+void EnemyEditor::Initialize(){
 	map_ = GameManager::GetInstance()->GetMap();
 
 	mapSize_ = map_->GetBlockMap();
@@ -13,15 +12,12 @@ void BlockEditor::Initialize(){
 	beforeMapSize_ = *mapSize_;
 
 	input_ = Input::GetInstance();
-	for (size_t i = 0; i < 3; i++){
-		obb_[i] = std::make_unique<Obb>();
 
-		obb_[i]->scale_ = { 1.f,1.f,3.2f };
+	obb_ = std::make_unique<Obb>();
 
-		obb_[i]->color_ = 0x0000ffff;
-	}
+	obb_->scale_ = { 1.f,1.f,3.2f };
 
-	
+	obb_->color_ = 0x0000ffff;
 
 	reticle_ = std::make_unique<Obb>();
 
@@ -32,186 +28,172 @@ void BlockEditor::Initialize(){
 	scanningOBB_ = std::make_unique<Obb>();
 
 	scanningOBB_->scale_ = { 1.f,1.f,1.f };
-
-	
 }
 
-void BlockEditor::Finalize(){
+void EnemyEditor::Finalize(){
 
 }
 
-void BlockEditor::Update(){
-
-
-	if (obb_[1]->OBBinPoint(reticle_->center_)) {
+void EnemyEditor::Update(){
+	if (obb_->OBBinPoint(reticle_->center_)) {
 		reticle_->color_ = 0x00ff00ff;
 	}
 	else {
 		reticle_->color_ = 0x000000ff;
 	}
-	
-	if (MapinPoint(reticle_->center_))
-		isUseImgui_ = true;
-	
-	for (size_t i = 0; i < 3; i++) {
-		obb_[i]->Update();
-	}
-	
+
+	MapinPoint(reticle_->center_);
+
+	obb_->Update();
+
 	reticle_->Update();
 	scanningOBB_->Update();
 }
 
-void BlockEditor::Draw(const Camera& camera){
-	for (size_t i = 0; i < 3; i++) {
-		obb_[i]->Draw(camera.GetViewProjection());
-	}
+void EnemyEditor::Draw(const Camera& camera){
+	obb_->Draw(camera.GetViewProjection());
 }
 
-void BlockEditor::Debug(){
+void EnemyEditor::Debug(){
 	bool isChange = false;
 
 #ifdef _DEBUG
-	if (isUseImgui_){
+	ImGui::Begin("エネミーエディター", nullptr, ImGuiWindowFlags_MenuBar);
 
+	if (ImGui::BeginMenuBar()) {
+		if (ImGui::BeginMenu("エネミー整理")) {
 
-		ImGui::Begin("ブロックエディター", nullptr, ImGuiWindowFlags_MenuBar);
+			ImGui::Text("表示階層");
 
-		if (ImGui::BeginMenuBar()) {
-			if (ImGui::BeginMenu("ブロック整理")) {
+			ImGui::Text("選択階層");
 
-				ImGui::Text("表示階層");
+			for (size_t i = 0; i < 5u; i++) {
 
-				ImGui::Text("選択階層");
-
-				for (size_t i = 0; i < 5u; i++) {
-
-					if (i == 4u)
-						continue;
-					ImGui::SameLine();
-				}
-				if (ImGui::Button("今の階層を前回のロード時までリセット")) {
-					FloorReset();
-				}
-				if (ImGui::Button("前回のロード時までリセット")) {
-					DataReset();
-				}
+				if (i == 4u)
+					continue;
 				ImGui::SameLine();
+			}
+			if (ImGui::Button("今の階層を前回のロード時までリセット")) {
+				FloorReset();
+			}
+			if (ImGui::Button("前回のロード時までリセット")) {
+				DataReset();
+			}
+			ImGui::SameLine();
 
-				if (ImGui::Button("全部リセット")) {
-					AllDataReset();
-				}
+			if (ImGui::Button("全部リセット")) {
+				AllDataReset();
+			}
 
-				for (size_t y = 0; y < Map::kMapY; y++) {
+			for (size_t y = 0; y < Map::kMapY; y++) {
 
-					for (size_t z = 0; z < Map::kMapZ; z++) {
-						for (size_t x = 0; x < Map::kMapX; x++) {
-							isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*mapSize_)[y][z][x]));
-							if (ImGui::IsItemHovered()) {
-								for (size_t i = 0; i < 3; i++) {
-									obb_[i]->center_ = map_->GetGrobalPos(x - 1 + i, y, z);
-									obb_[i]->color_ = 0xff0000ff;
-								}
+				for (size_t z = 0; z < Map::kMapZ; z++) {
+					for (size_t x = 0; x < Map::kMapX; x++) {
+						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*mapSize_)[y][z][x]));
+						if (ImGui::IsItemHovered()) {
+							obb_->center_ = map_->GetGrobalPos(x, y, z);
+							obb_->color_ = 0xff0000ff;
+						}
+						else {
 
-							}
-							else {
-
-							}
-							if (x != 9) {
-								ImGui::SameLine();
-							}
+						}
+						if (x != 9) {
+							ImGui::SameLine();
 						}
 					}
-
 				}
 
-
-				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("ファイル関連")) {
-				// char型のバッファを用意して、std::stringを変換
-				static char buffer[256]; // 適切なサイズに調整してください
-				strcpy_s(buffer, sizeof(buffer), stageName_.c_str()); // std::stringをcharバッファにコピー
 
-				// テキストボックスの作成
-				ImGui::InputText("出力するファイル名", buffer, sizeof(buffer));
-
-				stageName_ = buffer;
-
-				if (ImGui::Button("選択したファイルに保存")) {
-					if (OperationConfirmation()) {
-						SaveFile(stageName_);
-					}
-				}
-				if (ImGui::TreeNode("ファイル読み込み")) {
-					auto file = Lamb::GetFilePathFormDir(kDirectoryPath_, ".json");
-
-					for (auto& i : file) {
-						if (ImGui::Button(i.string().c_str())) {
-							if (OperationConfirmation()) {
-								LoadFiles(i.string());
-							}
-							break;
-						}
-					}
-
-					ImGui::TreePop();
-				}
-
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("レティクルテスト")) {
-				ImGui::DragFloat("レティクルとの距離", &distancePlayerTo3DReticleCopy_, 0.1f, 0.0f, 30.0f);
-				ImGui::DragFloat3("レティクルのポジション", &reticle_->center_.x, 0.1f);
-				//ImGui::DragFloat("どれだけ離すか", &correction_, 0.1f, 0.0f, 15.0f);
-				ImGui::EndMenu();
-			}
-			ImGui::EndMenuBar();
+			ImGui::EndMenu();
 		}
 
-		ImGui::End();
+		if (ImGui::BeginMenu("ファイル関連")) {
+			// char型のバッファを用意して、std::stringを変換
+			static char buffer[256]; // 適切なサイズに調整してください
+			strcpy_s(buffer, sizeof(buffer), stageName_.c_str()); // std::stringをcharバッファにコピー
+
+			// テキストボックスの作成
+			ImGui::InputText("出力するファイル名", buffer, sizeof(buffer));
+
+			stageName_ = buffer;
+
+			if (ImGui::Button("選択したファイルに保存")) {
+				if (OperationConfirmation()) {
+					SaveFile(stageName_);
+				}
+			}
+			if (ImGui::TreeNode("ファイル読み込み")) {
+				auto file = Lamb::GetFilePathFormDir(kDirectoryPath_, ".json");
+
+				for (auto& i : file) {
+					if (ImGui::Button(i.string().c_str())) {
+						if (OperationConfirmation()) {
+							LoadFiles(i.string());
+						}
+						break;
+					}
+				}
+
+				ImGui::TreePop();
+			}
+
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("レティクルテスト")) {
+			ImGui::DragFloat("レティクルとの距離", &distancePlayerTo3DReticleCopy_, 0.1f, 0.0f, 30.0f);
+			ImGui::DragFloat3("レティクルのポジション", &reticle_->center_.x, 0.1f);
+			//ImGui::DragFloat("どれだけ離すか", &correction_, 0.1f, 0.0f, 15.0f);
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
 	}
+
+	ImGui::End();
+
 	if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
+		int32_t& num = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].dwarfNum;
 		if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] - 1].isConstruction = true;
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].isConstruction = true;
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] + 1].isConstruction = true;
+			if (num < 2u) {
+				EnemyManager::GetInstance()->AddEnemy(setPos_);
+				num++;
+			}
 		}
 		else if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] - 1].isConstruction = false;
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].isConstruction = false;
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] + 1].isConstruction = false;
+			if (num > 0) {
+				EnemyManager::GetInstance()->DeadEnemy(delPos_);
+				num--;
+			}
 		}
-
-
 	}
 
 
 #endif // _DEBUG
 }
 
-void BlockEditor::DataReset(){
-	if (OperationConfirmation()){
+void EnemyEditor::DataReset(){
+	if (OperationConfirmation()) {
 		*mapSize_ = beforeMapSize_;
 	}
 }
 
-void BlockEditor::FloorReset(){
-	if (OperationConfirmation()) {		
+void EnemyEditor::FloorReset(){
+	if (OperationConfirmation()) {
 		for (size_t z = 0; z < Map::kMapZ; ++z) {
 			for (size_t x = 0; x < Map::kMapX; ++x) {
 			}
-		}		
+		}
 	}
 }
 
-void BlockEditor::AllDataReset(){
+void EnemyEditor::AllDataReset(){
 	if (OperationConfirmation()) {
-		
+
 	}
 }
 
-bool BlockEditor::OperationConfirmation(){
+bool EnemyEditor::OperationConfirmation(){
 	int result = MessageBox(WindowFactory::GetInstance()->GetHwnd(), L"この操作を続けますか?", L"Confirmation", MB_YESNO | MB_ICONQUESTION);
 	if (result == IDYES) {
 		return true;
@@ -224,19 +206,28 @@ bool BlockEditor::OperationConfirmation(){
 	}
 }
 
-bool BlockEditor::MapinPoint(const Vector3& point){
+bool EnemyEditor::MapinPoint(const Vector3& point){
 	for (size_t y = 0; y < Map::kMapY; y++) {
 		for (size_t z = 0; z < Map::kMapZ; z++) {
 			for (size_t x = 0; x < Map::kMapX; x++) {
-				if (x == 0 || x == 19)
-					continue;
+				int32_t num = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].dwarfNum;
 				scanningOBB_->center_ = map_->GetGrobalPos(x, y, z);
 				scanningOBB_->center_.z -= correction_;
-				if (scanningOBB_->OBBinPoint(point)){
-					for (size_t i = 0; i < 3; i++) {
-						obb_[i]->center_ = map_->GetGrobalPos(x - 1 + i, y, z);
-						//obb_[i]->center_.z += correction_;
+				if (scanningOBB_->OBBinPoint(point)) {
+					obb_->center_ = map_->GetGrobalPos(x, y, z);
+					if (num > 0) {
+						setPos_ = map_->GetGrobalPos(x, y + 3, z);
 					}
+					else {
+						setPos_ = map_->GetGrobalPos(x, y + 1, z);
+					}
+					if (num > 1) {
+						delPos_ = map_->GetGrobalPos(x, y + 3, z);
+					}
+					else {
+						delPos_ = map_->GetGrobalPos(x, y + 1, z);
+					}
+					//obb_[i]->center_.z += correction_;
 					boxPos_ = { x,y,z };
 					return true;
 				}
@@ -247,7 +238,7 @@ bool BlockEditor::MapinPoint(const Vector3& point){
 	return false;
 }
 
-void BlockEditor::MousePosTrans(const Camera& camera){
+void EnemyEditor::MousePosTrans(const Camera& camera){
 	Vector2 mousePou = Mouse::GetInstance()->GetPos();
 	Mat4x4 matVPV = camera.GetViewProjectionVp();
 	Mat4x4 matInverseVPV = matVPV.Inverse();
@@ -277,15 +268,13 @@ void BlockEditor::MousePosTrans(const Camera& camera){
 	}
 	distancePlayerTo3DReticleCopy_ = distancePlayerTo3DReticle;
 	reticle_->center_ = posNear + mouseDirection * distancePlayerTo3DReticle;
-
-	
 }
 
-void BlockEditor::SaveFile(const std::string& fileName){
+void EnemyEditor::SaveFile(const std::string& fileName){
 	//保存
 	json root;
 	root = json::object();
-	
+
 	// 3次元配列をJSONオブジェクトに変換
 	/*for (size_t y = 0; y < Map::kMapY; ++y) {
 		for (size_t z = 0; z < Map::kMapZ; ++z) {
@@ -321,7 +310,7 @@ void BlockEditor::SaveFile(const std::string& fileName){
 	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
 }
 
-void BlockEditor::ChackFiles(){
+void EnemyEditor::ChackFiles(){
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "Failed open data file for write.";
 		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
@@ -365,7 +354,7 @@ void BlockEditor::ChackFiles(){
 	}
 }
 
-void BlockEditor::LoadFiles(const std::string& fileName){
+void EnemyEditor::LoadFiles(const std::string& fileName){
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "This file path does not exist.";
 		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
@@ -396,7 +385,7 @@ void BlockEditor::LoadFiles(const std::string& fileName){
 	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
 }
 
-void BlockEditor::LoadFile(const std::string& fileName){
+void EnemyEditor::LoadFile(const std::string& fileName){
 	if (!LoadChackItem(fileName))
 		return;
 	//読み込むjsonファイルのフルパスを合成する
@@ -425,7 +414,7 @@ void BlockEditor::LoadFile(const std::string& fileName){
 	//未登録チェック
 	assert(itGroup != root.end());
 
-	
+
 
 	//各アイテムについて
 	/*for (size_t y = 0; y < Map::kMapY; ++y) {
@@ -443,9 +432,10 @@ void BlockEditor::LoadFile(const std::string& fileName){
 	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
 
 #endif // _DEBUG
+
 }
 
-bool BlockEditor::LoadChackItem(const std::string& fileName){
+bool EnemyEditor::LoadChackItem(const std::string& fileName){
 	// 書き込むjsonファイルのフルパスを合成する
 	std::string filePath = fileName;
 	//読み込み用のファイルストリーム
@@ -476,7 +466,7 @@ bool BlockEditor::LoadChackItem(const std::string& fileName){
 	}
 }
 
-void BlockEditor::from_json(const json& j, Vector3& v){
+void EnemyEditor::from_json(const json& j, Vector3& v){
 	v.x = j.at(0).get<float>();
 	v.y = j.at(1).get<float>();
 	v.z = j.at(2).get<float>();
