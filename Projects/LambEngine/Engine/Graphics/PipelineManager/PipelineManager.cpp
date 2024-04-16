@@ -6,13 +6,13 @@
 #include "Utils/ExecutionLog/ExecutionLog.h"
 #include "Error/Error.h"
 
-PipelineManager* PipelineManager::instance_ = nullptr;
+Lamb::SafePtr<PipelineManager> PipelineManager::instance_ = nullptr;
 
 void PipelineManager::Initialize() {
 	if (instance_) {
 		return;
 	}
-	instance_ = new PipelineManager();
+	instance_.reset(new PipelineManager());
 	if(instance_){
 		Lamb::AddLog("Initialize PipelineManager succeeded");
 	}
@@ -21,7 +21,7 @@ void PipelineManager::Initialize() {
 	}
 }
 void PipelineManager::Finalize() {
-	Lamb::SafeDelete(instance_);
+	instance_.reset();
 }
 
 void PipelineManager::CreateRootSgnature(D3D12_ROOT_PARAMETER* rootParamater, size_t rootParamaterSize, bool isTexture, bool isOutRangeBorder) {

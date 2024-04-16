@@ -30,21 +30,21 @@ Camera::Camera(Camera&& right) noexcept
 }
 
 void Camera::Update() {
-	view_.Affin(scale, rotate, pos);
+	view_ = Mat4x4::MakeAffin(scale, rotate, pos);
 	worldPos_ = pos;
-	view_.Inverse();
+	view_ = view_.Inverse();
 
 	Vector2 clientSize = WindowFactory::GetInstance()->GetClientSize();
 	const float aspect = clientSize.x / clientSize.y;
 
 
 	fov = std::clamp(fov, 0.0f, 1.0f);
-	projection_.PerspectiveFov(fov, aspect, kNearClip_, farClip);
+	projection_ = Mat4x4::MakePerspectiveFov(fov, aspect, kNearClip_, farClip);
 	viewProjecction_ = view_ * projection_;
 
 	viewProjecctionVp_ = viewProjecction_ * Mat4x4::MakeViewPort(0.0f, 0.0f, clientSize.x, clientSize.y, 0.0f, 1.0f);
 
-	othograohics_.Orthographic(
+	othograohics_ = Mat4x4::MakeOrthographic(
 		-clientSize.x * 0.5f * drawScale,
 		clientSize.y * 0.5f * drawScale,
 		clientSize.x * 0.5f * drawScale,
@@ -63,21 +63,21 @@ void Camera::Update(const Vector3& gazePoint) {
 }
 
 void Camera::Update(const Mat4x4& worldMat) {
-	view_.Affin(scale, rotate, pos);
+	view_ = Mat4x4::MakeAffin(scale, rotate, pos);
 	view_ = worldMat * view_;
 	worldPos_ = { view_[0][3],view_[1][3], view_[2][3] };
-	view_.Inverse();
+	view_ = view_.Inverse();
 
 	Vector2 clientSize = WindowFactory::GetInstance()->GetClientSize();
 	const float aspect = clientSize.x / clientSize.y;
 
 	fov = std::clamp(fov, 0.0f, 1.0f);
-	projection_.PerspectiveFov(fov, aspect, kNearClip_, farClip);
+	projection_= Mat4x4::MakePerspectiveFov(fov, aspect, kNearClip_, farClip);
 	viewProjecction_ = view_ * projection_;
 
 	viewProjecctionVp_ = viewProjecction_ * Mat4x4::MakeViewPort(0.0f, 0.0f, clientSize.x, clientSize.y, 0.0f, 1.0f);
 
-	othograohics_.Orthographic(
+	othograohics_= Mat4x4::MakeOrthographic(
 		-clientSize.x * 0.5f * drawScale,
 		clientSize.y * 0.5f * drawScale,
 		clientSize.x * 0.5f * drawScale,

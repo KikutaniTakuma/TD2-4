@@ -10,7 +10,7 @@ Audio::Audio():
 	pBuffer_(nullptr),
 	bufferSize_(0u),
 	pSourceVoice_(nullptr),
-	loopFlg_(false),
+	isLoop_(false),
 	isStart_(false),
 	volume_(1.0f),
 	isLoad_{false},
@@ -20,20 +20,41 @@ Audio::Audio():
 Audio::~Audio() {
 	delete[] pBuffer_;
 
+	if (pMFMediaType_) {
+		pMFMediaType_->Release();
+	}
+	if (pMFSourceReader_) {
+		pMFSourceReader_->Release();
+	}
 	pBuffer_ = nullptr;
 	bufferSize_ = 0;
 	wfet_ = {};
 }
 
-void Audio::Load(const std::string& fileName, bool loopFlg) {
+void Audio::Load(const std::string& fileName) {
 	if (!std::filesystem::exists(std::filesystem::path{ fileName })) {
 		throw Lamb::Error::Code<Audio>(("This file is not found -> " + fileName), __func__);
 	}
-	if (std::filesystem::path{fileName}.extension() != ".wav") {
-		throw Lamb::Error::Code<Audio>(("This file is not wav -> " + fileName), __func__);
+	if (std::filesystem::path(fileName).extension() == ".wav") {
+		LoadWav(fileName);
+	}
+	else if (std::filesystem::path(fileName).extension() == ".mp3") {
+		LoadMp3(fileName);
+	}
+	else {
+		throw Lamb::Error::Code<Audio>(("This file is not supported (only ""mp3"" or ""wav"" file) -> " + fileName), __func__);
 	}
 
 
+	HRESULT hr = AudioManager::GetInstance()->xAudio2_->CreateSourceVoice(&pSourceVoice_, &wfet_);
+	if (!SUCCEEDED(hr)) {
+		throw Lamb::Error::Code<Audio>("CreateSourceVoice() failed", "Load()");
+	}
+
+	isLoad_ = true;
+}
+
+void Audio::LoadWav(const std::string& fileName) {
 	std::ifstream file;
 	try {
 		file.open(fileName, std::ios::binary);
@@ -43,7 +64,6 @@ void Audio::Load(const std::string& fileName, bool loopFlg) {
 	}
 
 	fileName_ = fileName;
-	loopFlg_ = loopFlg;
 
 	RiffHeader riff;
 	file.read((char*)&riff, sizeof(riff));
@@ -96,25 +116,64 @@ void Audio::Load(const std::string& fileName, bool loopFlg) {
 	wfet_ = format.fmt_;
 	pBuffer_ = reinterpret_cast<BYTE*>(pBufferLocal);
 	bufferSize_ = data.size_;
+}
 
-	HRESULT hr = AudioManager::GetInstance()->xAudio2_->CreateSourceVoice(&pSourceVoice_, &wfet_);
-	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<Audio>("CreateSourceVoice() failed", "Load()");
+void Audio::LoadMp3(const std::string& fileName) {
+	MFCreateSourceReaderFromURL(ConvertString(fileName).c_str(), NULL, &pMFSourceReader_);
+
+
+	MFCreateMediaType(&pMFMediaType_);
+	pMFMediaType_->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
+	pMFMediaType_->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
+	pMFSourceReader_->SetCurrentMediaType(
+		static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM),
+		nullptr, pMFMediaType_.get()
+	);
+
+	pMFMediaType_->Release();
+	pMFMediaType_ = nullptr;
+	pMFSourceReader_->GetCurrentMediaType(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), &pMFMediaType_);
+
+	Lamb::SafePtr<WAVEFORMATEX> pWaveFormat = &wfet_;
+	MFCreateWaveFormatExFromMFMediaType(pMFMediaType_.get(), &pWaveFormat, nullptr);
+	wfet_ = *pWaveFormat;
+
+	std::vector<BYTE> mediaData;
+	while (true)
+	{
+		Lamb::SafePtr<IMFSample> pMFSample{ nullptr };
+		DWORD dwStreamFlags{ 0 };
+		pMFSourceReader_->ReadSample(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), 0, nullptr, &dwStreamFlags, nullptr, &pMFSample);
+
+		if (dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM)
+		{
+			break;
+		}
+
+		Lamb::SafePtr<IMFMediaBuffer> pMFMediaBuffer{ nullptr };
+		pMFSample->ConvertToContiguousBuffer(&pMFMediaBuffer);
+
+		Lamb::SafePtr<BYTE> localBuffer = nullptr;
+		DWORD cbCurrentLength{ 0 };
+		pMFMediaBuffer->Lock(&localBuffer, nullptr, &cbCurrentLength);
+
+		mediaData.resize(mediaData.size() + cbCurrentLength);
+		std::memcpy(mediaData.data() + mediaData.size() - cbCurrentLength, localBuffer.get(), cbCurrentLength);
+
+		pMFMediaBuffer->Unlock();
+
+		pMFMediaBuffer->Release();
+		pMFSample->Release();
 	}
 
-	XAUDIO2_BUFFER buf{};
-	buf.pAudioData = pBuffer_;
-	buf.AudioBytes = bufferSize_;
-	buf.Flags = XAUDIO2_END_OF_STREAM;
-	buf.LoopCount = loopFlg_ ? XAUDIO2_LOOP_INFINITE : 0;
+	pBuffer_ = new BYTE[mediaData.size()];
+	std::memcpy(pBuffer_, mediaData.data(), mediaData.size());
 
-	hr = pSourceVoice_->SubmitSourceBuffer(&buf);
-
-	isLoad_ = true;
+	bufferSize_ = static_cast<uint32_t>(mediaData.size() * sizeof(BYTE));
 }
 
 
-void Audio::Start(float volume) {
+void Audio::Start(float volume, bool isLoop) {
 	if (!isLoad_) {
 		return;
 	}
@@ -124,12 +183,14 @@ void Audio::Start(float volume) {
 
 	Stop();
 	if (!pSourceVoice_) {
+		isLoop_ = isLoop;
+
 		hr = AudioManager::GetInstance()->xAudio2_->CreateSourceVoice(&pSourceVoice_, &wfet_);
 		XAUDIO2_BUFFER buf{};
 		buf.pAudioData = pBuffer_;
 		buf.AudioBytes = bufferSize_;
 		buf.Flags = XAUDIO2_END_OF_STREAM;
-		buf.LoopCount = loopFlg_ ? XAUDIO2_LOOP_INFINITE : 0;
+		buf.LoopCount = isLoop_ ? XAUDIO2_LOOP_INFINITE : 0;
 
 		if (!SUCCEEDED(hr)) {
 			throw Lamb::Error::Code<Audio>("SubmitSourceBuffer() failed", __func__);
@@ -190,9 +251,9 @@ void Audio::Debug([[maybe_unused]]const std::string& guiName) {
 	ImGui::DragFloat("volume", &volume_, 0.001f, 0.0f, 1.0f);
 	SetAudio(volume_);
 	
-	ImGui::Checkbox("isLoop", &loopFlg_);
+	ImGui::Checkbox("isLoop", &isLoop_);
 	if (ImGui::Button("Start")) {
-		Start(volume_);
+		Start(volume_, isLoop_);
 	}
 	if (ImGui::Button("Stop")) {
 		Stop();

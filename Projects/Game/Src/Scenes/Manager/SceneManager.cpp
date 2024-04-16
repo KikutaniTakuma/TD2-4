@@ -2,7 +2,6 @@
 #include "Engine/Engine.h"
 #include "Input/Input.h"
 #include "SceneFactory/SceneFactory.h"
-#include "Engine/Graphics/ResourceManager/ResourceManager.h"
 
 #include "Engine/Core/StringOutPutManager/StringOutPutManager.h"
 #include "Engine/EngineUtils/FrameInfo/FrameInfo.h"
@@ -35,8 +34,6 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 
 
 	load_.reset(new SceneLoad{});
-
-	ResourceManager::GetInstance()->Enable();
 
 #ifdef _DEBUG
 	sceneName_[BaseScene::ID::Title] = "Title";
@@ -100,8 +97,6 @@ void SceneManager::Update() {
 		scene_.reset(next_.release());
 		// 次のシーンを格納するものユニークポインタをリセット
 		next_.reset();
-
-		ResourceManager::GetInstance()->Unload();
 #pragma endregion
 
 #pragma region ロード中
@@ -198,6 +193,4 @@ void SceneManager::Finalize() {
 		next_->Finalize();
 	}
 	next_.reset();
-
-	ResourceManager::GetInstance()->Unenable();
 }

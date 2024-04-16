@@ -69,6 +69,7 @@
       <OmitFramePointers>false</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -101,6 +102,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -118,7 +120,9 @@
   <ItemGroup>
     <ClCompile Include="AudioManager\AudioManager.cpp" />
     <ClCompile Include="AudioManager\Audio\Audio.cpp" />
+    <ClCompile Include="Drawers\AnimationModel\AnimationModel.cpp" />
     <ClCompile Include="Drawers\BaseDrawer.cpp" />
+    <ClCompile Include="Drawers\DrawerManager.cpp" />
     <ClCompile Include="Drawers\Line\Line.cpp" />
     <ClCompile Include="Drawers\Model\Model.cpp" />
     <ClCompile Include="Drawers\Particle\Particle.cpp" />
@@ -141,17 +145,18 @@
     <ClCompile Include="Engine\EngineUtils\ErrorCheck\ErrorCheck.cpp" />
     <ClCompile Include="Engine\EngineUtils\FlgManager\FlgManager.cpp" />
     <ClCompile Include="Engine\EngineUtils\FrameInfo\FrameInfo.cpp" />
+    <ClCompile Include="Engine\Graphics\AnimationManager\AnimationManager.cpp" />
+    <ClCompile Include="Engine\Graphics\Animator\Animator.cpp" />
     <ClCompile Include="Engine\Graphics\DepthBuffer\DepthBuffer.cpp" />
+    <ClCompile Include="Engine\Graphics\MeshLoader\MeshLoader.cpp" />
     <ClCompile Include="Engine\Graphics\MeshManager\MeshManager.cpp" />
-    <ClCompile Include="Engine\Graphics\MeshManager\Mesh\Mesh.cpp" />
     <ClCompile Include="Engine\Graphics\PipelineManager\PipelineManager.cpp" />
     <ClCompile Include="Engine\Graphics\PipelineManager\Pipeline\Pipeline.cpp" />
     <ClCompile Include="Engine\Graphics\PipelineObject\CloudPipeline\CloudPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\PipelineObject\PeraPipeline\PeraPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\PipelineObject\PipelineObject.cpp" />
-    <ClCompile Include="Engine\Graphics\PipelineObject\WaterPipeline\WaterPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\RenderContextManager\RenderContextManager.cpp" />
     <ClCompile Include="Engine\Graphics\RenderTarget\RenderTarget.cpp" />
-    <ClCompile Include="Engine\Graphics\ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="Engine\Graphics\RootSignature\RootSignature.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ShaderFactory\ShaderFactory.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ShaderManager\ShaderManager.cpp" />
@@ -181,7 +186,9 @@
   <ItemGroup>
     <ClInclude Include="AudioManager\AudioManager.h" />
     <ClInclude Include="AudioManager\Audio\Audio.h" />
+    <ClInclude Include="Drawers\AnimationModel\AnimationModel.h" />
     <ClInclude Include="Drawers\BaseDrawer.h" />
+    <ClInclude Include="Drawers\DrawerManager.h" />
     <ClInclude Include="Drawers\Line\Line.h" />
     <ClInclude Include="Drawers\Model\Model.h" />
     <ClInclude Include="Drawers\Particle\Particle.h" />
@@ -206,17 +213,20 @@
     <ClInclude Include="Engine\EngineUtils\FlgManager\FlgManager.h" />
     <ClInclude Include="Engine\EngineUtils\FrameInfo\FrameInfo.h" />
     <ClInclude Include="Engine\EngineUtils\LambPtr\LambPtr.h" />
+    <ClInclude Include="Engine\Graphics\AnimationManager\AnimationManager.h" />
+    <ClInclude Include="Engine\Graphics\Animator\Animator.h" />
     <ClInclude Include="Engine\Graphics\DepthBuffer\DepthBuffer.h" />
+    <ClInclude Include="Engine\Graphics\GraphicsStructs.h" />
+    <ClInclude Include="Engine\Graphics\MeshLoader\MeshLoader.h" />
     <ClInclude Include="Engine\Graphics\MeshManager\MeshManager.h" />
-    <ClInclude Include="Engine\Graphics\MeshManager\Mesh\Mesh.h" />
     <ClInclude Include="Engine\Graphics\PipelineManager\PipelineManager.h" />
     <ClInclude Include="Engine\Graphics\PipelineManager\Pipeline\Pipeline.h" />
     <ClInclude Include="Engine\Graphics\PipelineObject\CloudPipeline\CloudPipeline.h" />
     <ClInclude Include="Engine\Graphics\PipelineObject\PeraPipeline\PeraPipeline.h" />
     <ClInclude Include="Engine\Graphics\PipelineObject\PipelineObject.h" />
-    <ClInclude Include="Engine\Graphics\PipelineObject\WaterPipeline\WaterPipeline.h" />
+    <ClInclude Include="Engine\Graphics\RenderContextManager\RenderContextManager.h" />
+    <ClInclude Include="Engine\Graphics\RenderContextManager\RenderContext\RenderContext.h" />
     <ClInclude Include="Engine\Graphics\RenderTarget\RenderTarget.h" />
-    <ClInclude Include="Engine\Graphics\ResourceManager\ResourceManager.h" />
     <ClInclude Include="Engine\Graphics\RootSignature\RootSignature.h" />
     <ClInclude Include="Engine\Graphics\Shader\Shader.h" />
     <ClInclude Include="Engine\Graphics\Shader\ShaderFactory\ShaderFactory.h" />
@@ -231,12 +241,13 @@
     <ClInclude Include="Input\Mouse\Mouse.h" />
     <ClInclude Include="Math\MathCommon.h" />
     <ClInclude Include="Math\Mat4x4.h" />
+    <ClInclude Include="Math\Matrix.h" />
     <ClInclude Include="Math\Quaternion.h" />
     <ClInclude Include="Math\Transform.h" />
     <ClInclude Include="Math\Vector2.h" />
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />
-    <ClInclude Include="Utils\Concepts\Concepts.h" />
+    <ClInclude Include="Utils\Cocepts\Cocepts.h" />
     <ClInclude Include="Utils\ConvertString\ConvertString.h" />
     <ClInclude Include="Utils\CsvLoad\CsvLoad.h" />
     <ClInclude Include="Utils\Easeing\Easeing.h" />
@@ -245,6 +256,7 @@
     <ClInclude Include="Utils\Flg\Flg.h" />
     <ClInclude Include="Utils\Random\Random.h" />
     <ClInclude Include="Utils\SafeDelete\SafeDelete.h" />
+    <ClInclude Include="Utils\SafePtr\SafePtr.h" />
     <ClInclude Include="Utils\ScreenOut\ScreenOut.h" />
     <ClInclude Include="Utils\UtilsLib\UtilsLib.h" />
   </ItemGroup>

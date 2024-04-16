@@ -12,20 +12,18 @@
 
 #include "Utils/SafeDelete/SafeDelete.h"
 
-StringOutPutManager* StringOutPutManager::instance_ = nullptr;
+Lamb::SafePtr<StringOutPutManager> StringOutPutManager::instance_ = nullptr;
 
 void StringOutPutManager::Initialize() {
-	assert(!instance_);
-	instance_ = new StringOutPutManager{};
-	assert(!!instance_);
+	instance_.reset(new StringOutPutManager());
 }
 
 void StringOutPutManager::Finalize() {
-	Lamb::SafeDelete(instance_);
+	instance_.reset();
 }
 
 StringOutPutManager* const StringOutPutManager::GetInstance() {
-	return instance_;
+	return instance_.get();
 }
 
 
@@ -93,7 +91,7 @@ void StringOutPutManager::LoadFont(const std::string& fontName) {
 
 	descriptorHeap->UseThisPosition(useHandle);
 
-	auto directXCommon = DirectXCommand::GetInstance();
+	auto directXCommon = DirectXCommand::GetMainCommandlist();
 	auto future = resUploadBach.End(directXCommon->GetCommandQueue());
 
 	directXCommon->WaitForFinishCommnadlist();
@@ -122,6 +120,6 @@ DirectX::SpriteBatch* const StringOutPutManager::GetBatch(const std::string& fon
 }
 
 void StringOutPutManager::GmemoryCommit() {
-	static auto directXCommon = DirectXCommand::GetInstance();
+	static auto directXCommon = DirectXCommand::GetMainCommandlist();
 	gmemory_->Commit(directXCommon->GetCommandQueue());
 }

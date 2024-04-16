@@ -8,7 +8,7 @@
 #include "Engine/EngineUtils/LambPtr/LambPtr.h"
 
 class DirectXCommand {
-private:
+public:
 	DirectXCommand();
 	DirectXCommand(const DirectXCommand&) = delete;
 	DirectXCommand(DirectXCommand&&) = delete;
@@ -19,13 +19,8 @@ public:
 	~DirectXCommand();
 
 public:
-	static DirectXCommand* const GetInstance();
+	static DirectXCommand* const GetMainCommandlist();
 
-	static void Initialize();
-	static void Finalize();
-
-private:
-	static DirectXCommand* instance_;
 
 public:
 	/// <summary>
@@ -80,7 +75,6 @@ private:
 	uint64_t fenceVal_;
 	HANDLE fenceEvent_;
 };
-
 /// <summary>
 /// バリア
 /// </summary>

@@ -215,7 +215,7 @@ void Pipeline::Use() const {
 	if (!graphicsPipelineState_) {
 		throw Lamb::Error::Code<Pipeline>("GraphicsPipelineState is nullptr", __func__);
 	}
-	auto commandlist = DirectXCommand::GetInstance()->GetCommandList();
+	auto commandlist = DirectXCommand::GetMainCommandlist()->GetCommandList();
 	commandlist->SetGraphicsRootSignature(rootSignature_);
 	commandlist->SetPipelineState(graphicsPipelineState_.Get());
 

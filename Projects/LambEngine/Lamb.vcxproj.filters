@@ -133,9 +133,6 @@
     <ClCompile Include="Engine\Graphics\MeshManager\MeshManager.cpp">
       <Filter>Engine\Graphics\MeshManager</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Graphics\MeshManager\Mesh\Mesh.cpp">
-      <Filter>Engine\Graphics\MeshManager\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="Math\Mat4x4.cpp">
       <Filter>Math</Filter>
     </ClCompile>
@@ -157,26 +154,38 @@
     <ClCompile Include="Engine\Graphics\PipelineObject\PipelineObject.cpp">
       <Filter>Engine\Graphics\PipelineObject</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Graphics\PipelineObject\WaterPipeline\WaterPipeline.cpp">
-      <Filter>Engine\Graphics\PipelineObject\WaterPipeline</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Graphics\PipelineObject\PeraPipeline\PeraPipeline.cpp">
       <Filter>Engine\Graphics\PipelineObject\PeraPipeline</Filter>
     </ClCompile>
     <ClCompile Include="Drawers\BaseDrawer.cpp">
       <Filter>Drawers</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Graphics\ResourceManager\ResourceManager.cpp">
-      <Filter>Engine\Graphics\ResourceManager</Filter>
+    <ClCompile Include="Engine\Graphics\RenderContextManager\RenderContextManager.cpp">
+      <Filter>Engine\Graphics\RenderContextManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\MeshLoader\MeshLoader.cpp">
+      <Filter>Engine\Graphics\MeshLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\AnimationManager\AnimationManager.cpp">
+      <Filter>Engine\Graphics\AnimationManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Animator\Animator.cpp">
+      <Filter>Engine\Graphics\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawers\AnimationModel\AnimationModel.cpp">
+      <Filter>Drawers\AnimationModel</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Graphics\PipelineObject\CloudPipeline\CloudPipeline.cpp">
       <Filter>Engine\Graphics\PipelineObject\CloudPipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\Easeing\Easeing.cpp">
-      <Filter>Utils\Easeing</Filter>
+    <ClCompile Include="Drawers\DrawerManager.cpp">
+      <Filter>Drawers</Filter>
     </ClCompile>
     <ClCompile Include="Math\Transform.cpp">
       <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Easeing\Easeing.cpp">
+      <Filter>Utils\Easeing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -306,6 +315,9 @@
     <Filter Include="Utils\SafeDelete">
       <UniqueIdentifier>{94134e6e-da45-45f9-b920-bf5e3ae5f7af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\Cocepts">
+      <UniqueIdentifier>{d34d4eed-7ec5-4e6e-a6d6-e19ad5846855}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine\Core\ImGuiManager">
       <UniqueIdentifier>{d6d93ca6-1ebb-4ead-ad68-07b252c618a4}</UniqueIdentifier>
     </Filter>
@@ -326,9 +338,6 @@
     </Filter>
     <Filter Include="Engine\Graphics\MeshManager">
       <UniqueIdentifier>{e3b837b9-c45b-439a-98d3-36af6cb3ea8e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Graphics\MeshManager\Mesh">
-      <UniqueIdentifier>{32d082aa-0e85-4ef4-b2d9-1c07a678fc69}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Graphics\TextureManager">
       <UniqueIdentifier>{1336c590-e855-4d4f-92b9-fa2698582835}</UniqueIdentifier>
@@ -351,23 +360,35 @@
     <Filter Include="Engine\Graphics\PipelineObject">
       <UniqueIdentifier>{66d80ced-8ef5-46f0-ba3a-0d1f3f777498}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Graphics\PipelineObject\WaterPipeline">
-      <UniqueIdentifier>{bdf75616-892b-4ee7-bcc0-2e4c1686180f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Graphics\PipelineObject\PeraPipeline">
       <UniqueIdentifier>{4fd0d217-6bd2-4ca7-8592-5b493248756a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Graphics\ResourceManager">
-      <UniqueIdentifier>{d8d8caf8-64d7-4a93-9916-e560c82ff737}</UniqueIdentifier>
+    <Filter Include="Engine\Graphics\RenderContextManager">
+      <UniqueIdentifier>{8a28b82c-21de-47c0-ba38-a5b7a2c11e0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphics\MeshLoader">
+      <UniqueIdentifier>{cde4235d-86b5-4e9d-941a-d920e34c5cd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphics\RenderContextManager\RenderContext">
+      <UniqueIdentifier>{ed16a241-2fda-436b-96b6-6136375891f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphics\AnimationManager">
+      <UniqueIdentifier>{add96670-dfee-46cd-bd03-5f72b25dbe9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Graphics\Animator">
+      <UniqueIdentifier>{0359fcab-3674-4f23-a03c-3ef946b211c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Drawers\AnimationModel">
+      <UniqueIdentifier>{ce9b2a74-162e-42e2-9e98-2f278ed2aa76}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Graphics\PipelineObject\CloudPipeline">
       <UniqueIdentifier>{5a6f62f6-9b81-4403-a912-610eb20e5551}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utils\Concepts">
-      <UniqueIdentifier>{d34d4eed-7ec5-4e6e-a6d6-e19ad5846855}</UniqueIdentifier>
+    <Filter Include="Utils\SafePtr">
+      <UniqueIdentifier>{fcae1063-d491-4ffb-bc1c-4ab8f97d5d6d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Utils\Easeing">
-      <UniqueIdentifier>{1dc7052e-fce1-4542-b5fb-a5f223d204de}</UniqueIdentifier>
+      <UniqueIdentifier>{aef64d4f-fe46-4b8a-9005-99ceaf8c7dcf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -488,6 +509,9 @@
     <ClInclude Include="Utils\SafeDelete\SafeDelete.h">
       <Filter>Utils\SafeDelete</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\Cocepts\Cocepts.h">
+      <Filter>Utils\Cocepts</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Core\ImGuiManager\ImGuiManager.h">
       <Filter>Engine\Core\ImGuiManager</Filter>
     </ClInclude>
@@ -511,9 +535,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Graphics\MeshManager\MeshManager.h">
       <Filter>Engine\Graphics\MeshManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\MeshManager\Mesh\Mesh.h">
-      <Filter>Engine\Graphics\MeshManager\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Math\Mat4x4.h">
       <Filter>Math</Filter>
@@ -545,9 +566,6 @@
     <ClInclude Include="Engine\Graphics\PipelineObject\PipelineObject.h">
       <Filter>Engine\Graphics\PipelineObject</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Graphics\PipelineObject\WaterPipeline\WaterPipeline.h">
-      <Filter>Engine\Graphics\PipelineObject\WaterPipeline</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Graphics\PipelineObject\PeraPipeline\PeraPipeline.h">
       <Filter>Engine\Graphics\PipelineObject\PeraPipeline</Filter>
     </ClInclude>
@@ -560,20 +578,44 @@
     <ClInclude Include="Engine\Core\DescriptorHeap\Descriptor.h">
       <Filter>Engine\Core\DescriptorHeap</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Graphics\ResourceManager\ResourceManager.h">
-      <Filter>Engine\Graphics\ResourceManager</Filter>
+    <ClInclude Include="Engine\Graphics\GraphicsStructs.h">
+      <Filter>Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\RenderContextManager\RenderContextManager.h">
+      <Filter>Engine\Graphics\RenderContextManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\MeshLoader\MeshLoader.h">
+      <Filter>Engine\Graphics\MeshLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\RenderContextManager\RenderContext\RenderContext.h">
+      <Filter>Engine\Graphics\RenderContextManager\RenderContext</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\AnimationManager\AnimationManager.h">
+      <Filter>Engine\Graphics\AnimationManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Animator\Animator.h">
+      <Filter>Engine\Graphics\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawers\AnimationModel\AnimationModel.h">
+      <Filter>Drawers\AnimationModel</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Graphics\PipelineObject\CloudPipeline\CloudPipeline.h">
       <Filter>Engine\Graphics\PipelineObject\CloudPipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\Concepts\Concepts.h">
-      <Filter>Utils\Concepts</Filter>
+    <ClInclude Include="Math\Matrix.h">
+      <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\Easeing\Easeing.h">
-      <Filter>Utils\Easeing</Filter>
+    <ClInclude Include="Drawers\DrawerManager.h">
+      <Filter>Drawers</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\SafePtr\SafePtr.h">
+      <Filter>Utils\SafePtr</Filter>
     </ClInclude>
     <ClInclude Include="Math\Transform.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Easeing\Easeing.h">
+      <Filter>Utils\Easeing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

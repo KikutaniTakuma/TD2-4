@@ -3,7 +3,18 @@
 #include <xaudio2.h>
 #pragma comment(lib, "xaudio2.lib")
 
+#include <mfapi.h>
+#include <mfidl.h>
+#include <mfreadwrite.h>
+
+#pragma comment(lib, "Mf.lib")
+#pragma comment(lib, "mfplat.lib")
+#pragma comment(lib, "Mfreadwrite.lib")
+#pragma comment(lib, "mfuuid.lib")
+
+
 #include <string>
+#include "Utils/SafePtr/SafePtr.h"
 
 /// <summary>
 /// 音の再生や停止、ロードを担う
@@ -36,7 +47,7 @@ public:
 	Audio& operator=(Audio&&) = delete;
 
 public:
-	void Start(float volume);
+	void Start(float volume, bool isLoop);
 
 	void Pause();
 
@@ -53,14 +64,22 @@ public:
 	void Debug(const std::string& guiName);
 
 private:
-	void Load(const std::string& fileName, bool loopFlg_);
+	void Load(const std::string& fileName);
+
+	void LoadWav(const std::string& fileName);
+
+	void LoadMp3(const std::string& fileName);
 
 private:
 	WAVEFORMATEX wfet_;
 	BYTE* pBuffer_;
 	uint32_t bufferSize_;
 	IXAudio2SourceVoice* pSourceVoice_;
-	bool loopFlg_;
+
+	Lamb::SafePtr<IMFSourceReader> pMFSourceReader_;
+	Lamb::SafePtr<IMFMediaType> pMFMediaType_;
+
+	bool isLoop_;
 	bool isStart_;
 	float volume_;
 

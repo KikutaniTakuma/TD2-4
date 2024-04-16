@@ -4,6 +4,7 @@
 #include <dxgi1_6.h>
 #pragma comment(lib, "dxgi.lib")
 #include "Engine/EngineUtils/LambPtr/LambPtr.h"
+#include "Utils/SafePtr/SafePtr.h"
 
 /// <summary>
 /// デバイス等の管理クラス
@@ -25,7 +26,7 @@ public:
 	static void Finalize();
 
 private:
-	static DirectXDevice* instance_;
+	static Lamb::SafePtr<DirectXDevice> instance_;
 
 private:
 	void SettingAdapter();

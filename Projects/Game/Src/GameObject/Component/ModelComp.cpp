@@ -57,7 +57,7 @@ void ModelComp::ModelBone::Update() {
 
 void ModelComp::ModelBone::Draw(const Camera &vp) const {
 	if (model_) {
-		this->model_->Draw(transform_.matWorld_, vp.GetPos());
+		this->model_->Draw(transform_.matWorld_, vp.GetViewProjection(), 0xffffffff, BlendType::kNormal);
 	}
 	for (auto &child : children_) {
 		child->Draw(vp);

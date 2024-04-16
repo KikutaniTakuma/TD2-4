@@ -2,6 +2,7 @@
 #include "DescriptorHeap.h"
 #include <array>
 #include <initializer_list>
+#include "Utils/SafePtr/SafePtr.h"
 
 class RtvHeap final : public DescriptorHeap {
 public:
@@ -23,7 +24,7 @@ public:
 	static RtvHeap* const GetInstance();
 
 private:
-	static RtvHeap* instance_;
+	static Lamb::SafePtr<RtvHeap> instance_;
 
 private:
 	void CreateDescriptorHeap(uint32_t heapSize) override;

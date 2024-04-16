@@ -10,17 +10,17 @@
 #include "Error/Error.h"
 #include "Utils/SafeDelete/SafeDelete.h"
 
-DirectXDevice* DirectXDevice::instance_ = nullptr;
+Lamb::SafePtr<DirectXDevice> DirectXDevice::instance_ = nullptr;
 
 DirectXDevice* const DirectXDevice::GetInstance() {
-	return instance_;
+	return instance_.get();
 }
 
 void DirectXDevice::Initialize() {
-	instance_ = new DirectXDevice{};
+	instance_.reset(new DirectXDevice());
 }
 void DirectXDevice::Finalize() {
-	Lamb::SafeDelete(instance_);
+	instance_.reset();
 }
 
 
@@ -63,7 +63,9 @@ void DirectXDevice::SettingAdapter() {
 	useAdapter_ = nullptr;
 	for (UINT i = 0;
 		dxgiFactory_->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(useAdapter_.GetAddressOf())) != DXGI_ERROR_NOT_FOUND;
-		++i) {
+		++i
+		) 
+	{
 
 		DXGI_ADAPTER_DESC3 adapterDesc{};
 		HRESULT hr = useAdapter_->GetDesc3(&adapterDesc);
@@ -108,8 +110,8 @@ void DirectXDevice::CreateDevice() {
 
 #ifdef _DEBUG
 void DirectXDevice::InfoQueue() const {
-	ID3D12InfoQueue* infoQueue = nullptr;
-	if (SUCCEEDED(device_->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
+	Lamb::LambPtr<ID3D12InfoQueue> infoQueue = nullptr;
+	if (SUCCEEDED(device_->QueryInterface(IID_PPV_ARGS(infoQueue.GetAddressOf())))) {
 		// やばいエラーの予期に止まる
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
 		// エラーの時に止まる
@@ -132,7 +134,7 @@ void DirectXDevice::InfoQueue() const {
 		infoQueue->PushStorageFilter(&filter);
 
 		// 解放
-		infoQueue->Release();
+		infoQueue.Reset();
 	}
 }
 #endif // _DEBUG

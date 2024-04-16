@@ -25,8 +25,10 @@
 
 #include "Engine/Graphics/TextureManager/TextureManager.h"
 #include "AudioManager/AudioManager.h"
+#include "Engine/Graphics/RenderContextManager/RenderContextManager.h"
+#include "Engine/Graphics/AnimationManager/AnimationManager.h"
 #include "Engine/Graphics/MeshManager/MeshManager.h"
-#include "Graphics/PipelineManager/PipelineManager.h"
+#include "Engine/Graphics/PipelineManager/PipelineManager.h"
 
 #include "EngineUtils/FrameInfo/FrameInfo.h"
 #include "EngineUtils/FlgManager/FlgManager.h"
@@ -36,10 +38,13 @@
 
 #include "Math/Vector2.h"
 
-#include "Graphics/DepthBuffer/DepthBuffer.h"
+#include "Engine/Graphics/DepthBuffer/DepthBuffer.h"
 #include "Utils/ScreenOut/ScreenOut.h"
 
 #include "Error/Error.h"
+#include "Utils/SafeDelete/SafeDelete.h"
+
+#include "Drawers/DrawerManager.h"
 
 
 
@@ -141,12 +146,21 @@ void Engine::Initialize(const std::string& windowName, const Vector2& windowSize
 	AudioManager::Inititalize();
 	PipelineManager::Initialize();
 	MeshManager::Initialize();
+	RenderContextManager::Initialize();
+	AnimationManager::Initialize();
+
+
+	DrawerManager::Initialize();
 }
 
 void Engine::Finalize() {
 	instance_->isFinalize_ = true;
 
 	// 各種マネージャー解放
+	DrawerManager::Finalize();
+
+	AnimationManager::Finalize();
+	RenderContextManager::Finalize();
 	MeshManager::Finalize();
 	PipelineManager::Finalize();
 	AudioManager::Finalize();
@@ -164,7 +178,7 @@ void Engine::Finalize() {
 	ImGuiManager::Finalize();
 
 	DirectXSwapChain::Finalize();
-	DirectXCommand::Finalize();
+	instance_->FinalizeDirectXCommand();
 	DirectXDevice::Finalize();
 
 	delete instance_;
@@ -315,8 +329,12 @@ void Engine::InitializeDirectXDevice() {
 /// 
 
 void Engine::InitializeDirectXCommand() {
-	DirectXCommand::Initialize();
-	directXCommand_ = DirectXCommand::GetInstance();
+	directXCommand_ = new DirectXCommand();
+}
+
+void Engine::FinalizeDirectXCommand()
+{
+	Lamb::SafeDelete(directXCommand_);
 }
 
 
@@ -384,18 +402,28 @@ void Engine::FrameStart() {
 }
 
 void Engine::FrameEnd() {
+	// エラーチェック
 	static auto err = ErrorCheck::GetInstance();
 	if (err->GetError()) {
 		return;
 	}
 	FlgManager::GetInstance()->AllFlgUpdate();
 
+	RenderContextManager* const renderContextManager = RenderContextManager::GetInstance();
+	renderContextManager->Draw();
+
 	static FrameInfo* const frameInfo = FrameInfo::GetInstance();
 	frameInfo->DrawFps();
-
 	Lamb::screenout.Draw();
 
 	ImGuiManager::GetInstance()->End();
+
+	auto textureManager = TextureManager::GetInstance();
+	// このフレームで画像読み込みが発生していたらTextureをvramに送る
+	textureManager->UploadTextureData();
+	// dramから解放
+	textureManager->ReleaseIntermediateResource();
+
 
 	instance_->directXSwapChain_->ChangeBackBufferState();
 
@@ -415,24 +443,14 @@ void Engine::FrameEnd() {
 
 	instance_->directXCommand_->ResetCommandlist();
 
-	// テクスチャの非同期読み込み
-	auto textureManager = TextureManager::GetInstance();
-	textureManager->ThreadLoadTexture();
 
-	// このフレームで画像読み込みが発生していたら開放する
-	// またUnloadされていたらそれをコンテナから削除する
-	textureManager->ReleaseIntermediateResource();
-
-	// メッシュの非同期読み込み
-	auto meshManager = MeshManager::GetInstance();
-	meshManager->ThreadLoad();
-	meshManager->JoinThread();
-	meshManager->CheckLoadFinish();
 
 	// 音の非同期読み込み
 	auto audioManager = AudioManager::GetInstance();
 	audioManager->ThreadLoad();
 	audioManager->CheckThreadLoadFinish();
+
+	renderContextManager->ResetDrawCount();
 
 	frameInfo->End();
 }

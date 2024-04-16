@@ -5,6 +5,7 @@
 #include "../externals/DirectXTK12/Inc/SpriteFont.h"
 #include "../externals/DirectXTK12/Inc/ResourceUploadBatch.h"
 #pragma comment(lib, "DirectXTK12.lib")
+#include "Utils/SafePtr/SafePtr.h"
 
 class StringOutPutManager {
 private:
@@ -25,7 +26,7 @@ public:
 	static StringOutPutManager* const GetInstance();
 
 private:
-	static StringOutPutManager* instance_;
+	static Lamb::SafePtr<StringOutPutManager> instance_;
 
 public:
 	void LoadFont(const std::string& fontName);

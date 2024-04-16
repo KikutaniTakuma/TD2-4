@@ -44,8 +44,8 @@ public:
 
 	std::unique_ptr<GameObject> ivy_;
 
-	std::unique_ptr<SkyDome> skydome_;
-	class Cloud *cloud_;
+	//std::unique_ptr<SkyDome> skydome_;
+	//class Cloud *cloud_;
 
 	std::unique_ptr<DebugCamera> debugCamera_;
 	bool isDebug_;

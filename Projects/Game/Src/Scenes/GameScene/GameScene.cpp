@@ -34,13 +34,13 @@ void GameScene::Initialize() {
 	debugCamera_->offset.z = -60.0f;
 	debugCamera_->offset.y = 8.0f;
 
-	water_ = Water::GetInstance();
+	//water_ = Water::GetInstance();
 
-	cloud_ = Cloud::GetInstance();
+	//cloud_ = Cloud::GetInstance();
 
-	skydome_.reset(new SkyDome);
+	/*skydome_.reset(new SkyDome);
 	skydome_->Initialize();
-	skydome_->SetTexture(cloud_->GetTex());
+	skydome_->SetTexture(cloud_->GetTex());*/
 
 	file_ = std::make_unique<SoLib::IO::File>();
 	csv_ = std::make_unique<SoLib::IO::CSV>();
@@ -60,10 +60,10 @@ void GameScene::Update() {
 	currentCamera_->Debug("カメラ");
 	currentCamera_->Update();
 
-	water_->Update(currentCamera_->GetPos());
+	//water_->Update(currentCamera_->GetPos());
 
-	cloud_->Update();
-	skydome_->Upadate();
+	/*cloud_->Update();
+	skydome_->Upadate();*/
 
 	std::string str;
 	for (const auto i : array2d_->view()) {
@@ -78,10 +78,10 @@ void GameScene::Update() {
 }
 
 void GameScene::Draw() {
-	cloud_->Draw();
+	/*cloud_->Draw();
 	skydome_->Draw(*currentCamera_);
 
-	water_->Draw(currentCamera_->GetViewProjection());
+	water_->Draw(currentCamera_->GetViewProjection());*/
 
 	Lamb::screenout << "Water and cloud scene" << Lamb::endline
 		<< "Press space to change ""Model scene""";

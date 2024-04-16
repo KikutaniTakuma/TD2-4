@@ -23,6 +23,10 @@ namespace Lamb {
 	/// </summary>
 	template<IsIUnknownBased T>
 	class LambPtr {
+	public:
+		using type = T;
+		static constexpr size_t size = sizeof(T);
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>

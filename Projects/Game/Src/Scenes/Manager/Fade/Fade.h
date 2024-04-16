@@ -1,6 +1,5 @@
 #pragma once
-#include "Drawers/Texture2D/Texture2D.h"
-#include "Utils/UtilsLib/UtilsLib.h"
+#include "Math/Mat4x4.h"
 #include "Utils/Easeing/Easeing.h"
 
 class Fade {
@@ -76,7 +75,7 @@ private:
 	/// </summary>
 	Lamb::Flg isOutStart_;
 
-	Texture2D tex_;
+	//Texture2D tex_;
 
 	Easeing ease_;
 	/// <summary>
