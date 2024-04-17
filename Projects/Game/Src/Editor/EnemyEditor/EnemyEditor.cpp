@@ -204,6 +204,10 @@ void EnemyEditor::Debug(){
 					}
 				}
 			}
+			if (input_->GetKey()->Pushed(DIK_R)){
+				multiMode_ = false;
+				map_->MultiReset();
+			}
 		}
 		else {
 			if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {

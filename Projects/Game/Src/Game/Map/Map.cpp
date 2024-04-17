@@ -118,6 +118,22 @@ void Map::TransferBoxData()
 	}
 }
 
+void Map::MultiReset(){
+	for (size_t y = 0; y < kMapY; y++) {
+
+		for (size_t z = 0; z < kMapZ; z++) {
+			for (size_t x = 0; x < kMapX; x++) {
+				// 箱の状態
+				BoxInfo& boxInfo = ((*boxMap_)[y][z][x]);
+				boxInfo.isMultiSelect_ = false;
+			}
+		}
+
+		
+	}
+
+}
+
 const Map::BoxInfo Map::GetBoxInfo(const Vector3 &localPos) const
 {
 
