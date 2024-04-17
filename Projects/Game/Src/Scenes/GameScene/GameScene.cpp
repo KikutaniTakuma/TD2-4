@@ -129,9 +129,9 @@ void GameScene::Update() {
 
 	//player_->AllTrade();
 
-	if (input_->GetKey()->Pushed(DIK_RETURN) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
+	/*if (input_->GetKey()->Pushed(DIK_RETURN) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
 		sceneManager_->SceneChange(BaseScene::ID::Title);
-	}
+	}*/
 }
 
 void GameScene::Draw() {

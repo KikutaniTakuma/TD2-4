@@ -151,23 +151,78 @@ void EnemyEditor::Debug(){
 	}
 
 	ImGui::End();
-
-	if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
-		int32_t& num = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].dwarfNum;
-		if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
-			if (num < 2u) {
-				EnemyManager::GetInstance()->AddEnemy(setPos_);
-				num++;
+	if (input_->GetKey()->LongPush(DIK_LSHIFT)){
+		if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
+			bool& num = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].isMultiSelect_;
+			if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
+				multiMode_ = true;
+				num = true;
 			}
-		}
-		else if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
-			if (num > 0) {
-				EnemyManager::GetInstance()->DeadEnemy(delPos_);
-				num--;
+			else if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
+				num = false;
 			}
 		}
 	}
+	else {
+		if (multiMode_){
+			if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {			
 
+				if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
+
+					bool select = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].isMultiSelect_;
+
+					if (select){
+
+						for (size_t x = 0; x < Map::kMapX; x++) {
+							Map::BoxInfo& num = (*mapSize_)[boxPos_[1]][boxPos_[2]][x];
+
+							if (num.isMultiSelect_) {
+
+								if (num.dwarfNum < 2u) {
+									if (num.dwarfNum > 0) {
+										setPos_ = map_->GetGrobalPos(x, 2, 0);
+										setPos_.y -= 0.5f;
+									}
+									else {
+										setPos_ = map_->GetGrobalPos(x, 1, 0);
+									}
+									setPos_.z -= 5.0;
+
+									EnemyManager::GetInstance()->AddEnemy(setPos_);
+
+									num.dwarfNum++;
+								}								
+							}
+						}						
+					}					
+				}
+				else if(Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
+					int32_t& num = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].dwarfNum;
+					if (num > 0) {
+						EnemyManager::GetInstance()->DeadEnemy(delPos_);
+						num--;
+					}
+				}
+			}
+		}
+		else {
+			if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
+				int32_t& num = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].dwarfNum;
+				if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
+					if (num < 2u) {
+						EnemyManager::GetInstance()->AddEnemy(setPos_);
+						num++;
+					}
+				}
+				else if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
+					if (num > 0) {
+						EnemyManager::GetInstance()->DeadEnemy(delPos_);
+						num--;
+					}
+				}
+			}
+		}
+	}
 
 #endif // _DEBUG
 }
@@ -216,19 +271,24 @@ bool EnemyEditor::MapinPoint(const Vector3& point){
 				if (scanningOBB_->OBBinPoint(point)) {
 					obb_->center_ = map_->GetGrobalPos(x, y, z);
 					if (num > 0) {
-						setPos_ = map_->GetGrobalPos(x, y + 3, z);
+						setPos_ = map_->GetGrobalPos(x, y + 2, z);
+						setPos_.y -= 0.5f;
 					}
 					else {
 						setPos_ = map_->GetGrobalPos(x, y + 1, z);
 					}
 					if (num > 1) {
-						delPos_ = map_->GetGrobalPos(x, y + 3, z);
+						delPos_ = map_->GetGrobalPos(x, y + 2, z);
+						delPos_.y -= 0.5f;
 					}
 					else {
 						delPos_ = map_->GetGrobalPos(x, y + 1, z);
 					}
+					setPos_.z -= 5.0;
+					delPos_.z -= 5.0f;
 					//obb_[i]->center_.z += correction_;
 					boxPos_ = { x,y,z };
+					boxVector_ = Vector3(float(boxPos_[0]), float(boxPos_[1]), float(boxPos_[2]));
 					return true;
 				}
 			}

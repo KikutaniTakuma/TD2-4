@@ -19,6 +19,8 @@ public:
 		bool isConstruction;
 		//小人は何人設置されているかどうか
 		int32_t dwarfNum;
+		//複数選択の大将かどうか
+		bool isMultiSelect_;
 	};
 
 	enum class BoxType : uint32_t {

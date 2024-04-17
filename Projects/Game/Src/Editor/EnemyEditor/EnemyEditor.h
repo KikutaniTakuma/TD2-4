@@ -62,9 +62,11 @@ private:
 
 	Map::MapSize* mapSize_ = nullptr;
 
-	Map::MapSize beforeMapSize_;
+	Map::MapSize beforeMapSize_{};
 
-	std::array<size_t, 3> boxPos_;
+	std::array<size_t, 3> boxPos_{};
+
+	Vector3 boxVector_;
 
 	Input* input_ = nullptr;
 
@@ -79,7 +81,11 @@ private:
 	// 自機から3Dレティクルへの距離
 	float distancePlayerTo3DReticleCopy_ = 30.0f;
 	//本来図る距離とは変えるための変数
-	float correction_ = 4.62f;
+	const float correction_ = 4.62f;
+
+	bool multiMode_ = false;
+
+	
 
 	std::unique_ptr<Obb> reticle_;
 
@@ -113,7 +119,7 @@ private:
 	//選んでいるステージ名
 	std::string stageName_;
 	//imguiで選択しているステージナンバー
-	int stageSelectNum_;
+	int stageSelectNum_ = 0;
 	//アイテムのファイルパス
 	inline static const std::string kDirectoryPath_ = "Resources/Datas/Enemies/";
 	//アイテムのファイルパス

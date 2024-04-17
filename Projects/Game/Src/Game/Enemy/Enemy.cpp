@@ -11,7 +11,7 @@ void Enemy::Initialize(){
 
 	obb_ = std::make_unique<Obb>();
 
-	model_->scale = Vector3::kIdentity * 0.3f;
+	model_->scale = Vector3::kIdentity * 0.2f;
 
 	obb_->scale_ = { model_->scale.x,model_->scale.y * 2.0f,model_->scale.z * 2.0f };
 
