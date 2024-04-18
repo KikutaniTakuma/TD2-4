@@ -287,13 +287,13 @@ void BlockEditor::SaveFile(const std::string& fileName){
 	root = json::object();
 	
 	// 3次元配列をJSONオブジェクトに変換
-	/*for (size_t y = 0; y < Map::kMapY; ++y) {
+	for (size_t y = 0; y < Map::kMapY; ++y) {
 		for (size_t z = 0; z < Map::kMapZ; ++z) {
 			for (size_t x = 0; x < Map::kMapX; ++x) {
-				root["boxes"][y][z][x] = static_cast<int>((*mapSize_)[y][z][x]);
+				root["boxes"][x] = ((*mapSize_)[y][z][x].isConstruction);
 			}
 		}
-	}*/
+	}
 
 	std::filesystem::path dir(kDirectoryPath_);
 	if (!std::filesystem::exists(kDirectoryName_)) {
@@ -428,15 +428,17 @@ void BlockEditor::LoadFile(const std::string& fileName){
 	
 
 	//各アイテムについて
-	/*for (size_t y = 0; y < Map::kMapY; ++y) {
+	for (size_t x = 0; x < Map::kMapX; ++x) {
+		boxData_[x] = root["boxes"][x];
+	}
+
+	for (size_t y = 0; y < Map::kMapY; ++y) {
 		for (size_t z = 0; z < Map::kMapZ; ++z) {
 			for (size_t x = 0; x < Map::kMapX; ++x) {
-				((*mapSize_)[y][z][x]) = root["boxes"][y][z][x];
+				((*mapSize_)[y][z][x].isConstruction) = boxData_[x];
 			}
 		}
-	}*/
-
-	beforeMapSize_ = *mapSize_;
+	}
 
 #ifdef _DEBUG
 	std::string message = "File loading completed";

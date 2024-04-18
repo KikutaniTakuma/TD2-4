@@ -67,6 +67,8 @@ private:
 
 	std::array<size_t, 3> boxPos_;
 
+	std::array<bool, Map::kMapX> boxData_;
+
 	Input* input_ = nullptr;
 
 	//設置するするとき用のプリミティブ

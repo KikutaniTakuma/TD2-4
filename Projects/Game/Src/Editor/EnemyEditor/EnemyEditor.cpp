@@ -338,15 +338,28 @@ void EnemyEditor::SaveFile(const std::string& fileName){
 	//保存
 	json root;
 	root = json::object();
+	root[kItemName_] = json::object();
 
 	// 3次元配列をJSONオブジェクトに変換
-	/*for (size_t y = 0; y < Map::kMapY; ++y) {
+	for (size_t y = 0; y < Map::kMapY; ++y) {
 		for (size_t z = 0; z < Map::kMapZ; ++z) {
 			for (size_t x = 0; x < Map::kMapX; ++x) {
-				root["boxes"][y][z][x] = static_cast<int>((*mapSize_)[y][z][x]);
+				root[kItemName_]["Num"][x] = static_cast<int>((*mapSize_)[y][z][x].dwarfNum);
 			}
 		}
-	}*/
+	}
+
+	for (size_t y = 0; y < Map::kMapY; ++y) {
+		for (size_t z = 0; z < Map::kMapZ; ++z) {
+			for (size_t x = 0; x < EnemyManager::GetInstance()->GetStartPosListSize(); ++x) {
+				root[kItemName_]["Pos"][x] =json::array({
+					   EnemyManager::GetInstance()->GetEnemyStartPos(x).x,
+					   EnemyManager::GetInstance()->GetEnemyStartPos(x).y,
+					   EnemyManager::GetInstance()->GetEnemyStartPos(x).z
+				});				
+			}
+		}
+	}
 
 	std::filesystem::path dir(kDirectoryPath_);
 	if (!std::filesystem::exists(kDirectoryName_)) {
@@ -474,20 +487,58 @@ void EnemyEditor::LoadFile(const std::string& fileName){
 	ifs.close();
 
 	//グループを検索
+	nlohmann::json::iterator itGroupEn = root.find(kItemName_);
+	//未登録チェック
+	assert(itGroupEn != root.end());
+
+	EnemyManager::GetInstance()->ListReset();
+	
+	//グループを検索
+	nlohmann::json::iterator itGroupNum = root[kItemName_].find("Num");
+	//未登録チェック
+	assert(itGroupNum != root[kItemName_].end());
+
+	//各アイテムについて
+	for (size_t y = 0; y < Map::kMapY; ++y) {
+		for (size_t z = 0; z < Map::kMapZ; ++z) {
+			for (size_t x = 0; x < Map::kMapX; ++x) {
+				((*mapSize_)[y][z][x].dwarfNum) = root[kItemName_]["Num"][x];
+			}
+		}
+	}
+
+	//グループを検索
+	nlohmann::json::iterator itGroupPos = root[kItemName_].find("Pos");
+	//未登録チェック
+	assert(itGroupPos != root[kItemName_].end());
+
+	
+
+	for (const auto& i : root[kItemName_]["Pos"]) {
+		Vector3 newPos{};
+
+		from_json(i, newPos);
+
+		EnemyManager::GetInstance()->AddEnemy(newPos);
+	}
+
+	/*//グループを検索
 	nlohmann::json::iterator itGroup = root.find(kItemName_);
 	//未登録チェック
 	assert(itGroup != root.end());
-
-
-
 	//各アイテムについて
-	/*for (size_t y = 0; y < Map::kMapY; ++y) {
-		for (size_t z = 0; z < Map::kMapZ; ++z) {
-			for (size_t x = 0; x < Map::kMapX; ++x) {
-				((*mapSize_)[y][z][x]) = root["boxes"][y][z][x];
-			}
-		}
+	for (const auto& i : root[kItemName_]) {
+		Vector3 newScale{};
+		Vector3 newRotate{};
+		Vector3 newPos{};
+				
+		from_json(i["Scale"], newScale);
+		from_json(i["Rotate"], newRotate);
+		from_json(i["Pos"], newPos);		
+		
+		AddItem(newPos, newScale);
 	}*/
+
 
 	beforeMapSize_ = *mapSize_;
 

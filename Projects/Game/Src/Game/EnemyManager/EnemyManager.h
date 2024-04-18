@@ -55,9 +55,12 @@ public:
 	/// <param name="pos"> 座標</param>
 	void DeadEnemy(const Vector3& pos);
 
-private:
-	
+public:
+	Vector3 GetEnemyStartPos(const size_t i)const { return startPosList_[i]; }
 
+	size_t GetStartPosListSize()const { return startPosList_.size(); }
+
+	void ListReset();
 private:
 	Map* map_ = nullptr;
 
@@ -74,6 +77,8 @@ private:
 	float moveSpeed_ = 1.000002f;
 	//箱リスト
 	std::list<std::unique_ptr<Enemy>> EnemyList_;
+
+	std::vector<Vector3> startPosList_;
 
 	std::unique_ptr<Enemy> newEnemy_;
 };

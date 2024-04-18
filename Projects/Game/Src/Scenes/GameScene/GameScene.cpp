@@ -86,7 +86,7 @@ void GameScene::Update() {
 	ImGui::Checkbox("エディターモード", &editorMode_);
 	ImGui::Checkbox("エネミーモード", &enemyMode_);
 	ImGui::End();
-	if (input_->GetKey()->Pushed(DIK_E)){
+	if (input_->GetKey()->Pushed(DIK_E) && input_->GetKey()->LongPush(DIK_LSHIFT)) {
 		if (!editorMode_)
 			editorMode_ = true;
 		else if (editorMode_)

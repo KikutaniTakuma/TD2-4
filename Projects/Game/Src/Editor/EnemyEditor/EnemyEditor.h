@@ -125,7 +125,7 @@ private:
 	//アイテムのファイルパス
 	inline static const std::string kDirectoryName_ = "Resources/Datas/Enemies";
 	//名前
-	inline static const std::string kItemName_ = "Enemies";
+	inline static const std::string kItemName_ = "enemies";
 
 	std::vector<std::string> fileName_;
 
