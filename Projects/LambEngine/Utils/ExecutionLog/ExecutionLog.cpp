@@ -97,7 +97,7 @@ namespace Lamb {
 	void ErrorLog(const Error& err) {
 		static ErrorCheck* const errorCheck = ErrorCheck::GetInstance();
 		errorCheck->ErrorTextBox(
-			err.FunctionName() + " failed : " + err.What(),
+			err.FunctionName() + " failed : \n" + err.What(),
 			err.ClassName()
 		);
 	}
