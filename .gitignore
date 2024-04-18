@@ -361,4 +361,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-Projects/externals/DirectXTex/Shaders/Compiled/*.pdb
+Projects/externals/DirectXTex/Shaders/Compiled/
