@@ -7,7 +7,7 @@
 /// </summary>
 class Texture2D : public BaseDrawer {
 public:
-	static constexpr uint32_t kMaxDrawCount = 1024u;
+	static constexpr uint32_t kMaxDrawCount = 4096u;
 
 private:
 	struct ShaderData{
