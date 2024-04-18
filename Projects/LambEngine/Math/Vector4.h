@@ -72,8 +72,9 @@ public:
 
 	[[nodiscard]] float Dot(const Vector4& right) const noexcept;
 
-	[[nodiscard]] class Vector3 GetVector3() const noexcept;
-	[[nodiscard]] class Vector2 GetVector2() const noexcept;
+	[[nodiscard]] class Vector3& GetVector3() noexcept;
+	[[nodiscard]] const class Vector3& GetVector3() const noexcept;
+	[[nodiscard]] const class Vector2& GetVector2() const noexcept;
 
 
 	[[nodiscard]] uint32_t GetColorRGBA() const;

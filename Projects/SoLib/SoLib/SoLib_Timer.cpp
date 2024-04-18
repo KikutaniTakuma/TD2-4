@@ -88,6 +88,8 @@ namespace SoLib {
 
 
 		bool DeltaTimer::Update(float deltaTime) {
+			// もし動作中でない場合は終了
+			if (not isActive_) { return false; }
 			if (isFinish_) {
 				isActive_ = false;
 				return false;

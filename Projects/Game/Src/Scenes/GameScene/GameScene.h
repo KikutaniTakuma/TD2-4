@@ -15,6 +15,15 @@
 #include "SoLib/Containers/Array2D.h"
 
 #include "GameObject/GameObject.h"
+#include "Game/GameManager/GameManager.h"
+
+#include "Game/CollisionManager/AABB/AABB.h"
+
+#include "Game/CollisionManager/CollisionManager.h"
+
+#include"Game/Player/Player.h"
+
+#include "Editor/BlockEditor/BlockEditor.h"
 
 class GameScene : public BaseScene {
 public:
@@ -36,20 +45,18 @@ public:
 	void Draw() override;
 
 public:
-	class Water *water_;
+	//class Water *water_ = nullptr;
 
-	std::unique_ptr<SoLib::IO::File> file_;
-	std::unique_ptr<SoLib::IO::CSV> csv_;
-	std::unique_ptr<SoLib::Array2D<uint32_t>> array2d_;
+	GameManager *gameManager_ = nullptr;
 
-	std::unique_ptr<GameObject> ivy_;
+	std::unique_ptr<Player> player_;
 
-	//std::unique_ptr<SkyDome> skydome_;
-	//class Cloud *cloud_;
+	CollisionManager* collisionManager_ = nullptr;
 
+	/*std::unique_ptr<SkyDome> skydome_ = nullptr;
+	class Cloud *cloud_ = nullptr;*/
 
-	std::unique_ptr<Particle> particle_;
+	bool editorMode_ = false;
 
-	std::unique_ptr<DebugCamera> debugCamera_;
-	bool isDebug_;
+	//std::unique_ptr<BlockEditor> blockEditor_;
 };

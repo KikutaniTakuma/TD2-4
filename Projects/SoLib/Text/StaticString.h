@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <array>
 #include <ostream>
+#include <string_view>
+#include <string>
 
 namespace SoLib {
 	namespace Text {
@@ -20,16 +22,21 @@ namespace SoLib {
 				}
 				buf_[length_] = '\0'; // 終端文字を追加
 			}
+
+			constexpr std::string_view view() const noexcept { return { buf_.data(), length_ + 1 }; }
+			constexpr const char *const c_str() const noexcept { return buf_.data(); }
 		};
 
 		/// @brief 静的固定文字列
 		/// @tparam Str 文字列
 		template <ConstExprString Str>
 		struct StaticString {
-			static constexpr auto str_ = Str;
+			static constexpr ConstExprString str_ = Str;
 		public:
 
-			constexpr const char *const c_str() const { return str_.buf_.data(); }
+			constexpr std::string_view view() const noexcept { return str_.view(); }
+
+			constexpr const char *const c_str() const noexcept { return str_.c_str(); }
 			inline static constexpr friend std::ostream &operator<< (std::ostream &ost, const StaticString str) { return ost << str.c_str(); }
 		};
 	}

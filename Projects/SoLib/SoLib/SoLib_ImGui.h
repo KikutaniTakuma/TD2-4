@@ -26,7 +26,7 @@ namespace SoLib {
 		}
 
 		template<::SoLib::IsNotPointer T>
-		void ImGuiText(const char *const label, const T &text);
+		void ImGuiText(const char *const label, const T &text) { ImGui::Text("%s : %s", label, SoLib::to_string(text).c_str()); }
 
 		template<>
 		void ImGuiText(const char *const label, const ::std::string &text);

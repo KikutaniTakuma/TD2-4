@@ -15,7 +15,7 @@ TitleScene::TitleScene():
 
 void TitleScene::Initialize()
 {
-	camera_->pos = Vector2{ 500.f, 300.f };
+	currentCamera_->pos = Vector2{ 500.f, 300.f };
 
 	/*tex_.reset( new Texture2D( "./Resources/Ball.png" ) );
 	tex_->scale *= 30.0f;
@@ -30,15 +30,14 @@ void TitleScene::Initialize()
 
 }
 
-void TitleScene::Finalize()
-{
+void TitleScene::Finalize(){
 	
 }
 
 void TitleScene::Update()
 {
-	camera_->Debug("カメラ");
-	camera_->Update();
+	currentCamera_->Debug("カメラ");
+	currentCamera_->Update();
 
 	auto* const key = input_->GetKey();
 
@@ -93,4 +92,9 @@ void TitleScene::Draw()
 
 	Lamb::screenout << "Capsule Test" << Lamb::endline
 		<< "Check : " << isCollision_;
+}
+
+void TitleScene::Debug(){
+
+
 }

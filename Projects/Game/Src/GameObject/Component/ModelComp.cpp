@@ -18,7 +18,7 @@ void ModelComp::ImGuiWidget() {
 	}
 }
 
-void ModelComp::ModelBone::Init(Model *const model) {
+void ModelComp::ModelBone::Init(Model* model) {
 	if (model) { model_ = model; }
 }
 
@@ -28,7 +28,7 @@ void ModelComp::ModelBone::SetTransform(const Transform &srt) {
 	transform_.translate = srt.translate;
 }
 
-ModelComp::ModelBone *const ModelComp::ModelBone::AddChild(Model *const model) {
+ModelComp::ModelBone *const ModelComp::ModelBone::AddChild(Model* model) {
 	ModelBone *const modelBone = new ModelBone;
 	modelBone->Init(model);
 
@@ -48,7 +48,11 @@ void ModelComp::ModelBone::SetParent(ModelBone *const parent) {
 
 void ModelComp::ModelBone::Update() {
 
+	//model_->Update();
+
 	transform_.CalcMatrix();
+
+	//model_->SetWorldMatrix(transform_.matWorld_);
 
 	for (auto &child : children_) {
 		child->Update();
@@ -76,25 +80,30 @@ bool ModelComp::ModelBone::ImGuiWidget() {
 	return result;
 }
 
-ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, Model *const model, const Transform &srt) {
-	if (modelKey_.count(key) != 0u) return nullptr;
+ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, Model* model, const Transform &srt) {
+	if (modelKey_.count(key) != 0u) { return nullptr; }
+	// �{�[���̒ǉ�
 	auto  newBone = std::make_unique<ModelBone>();
+	// ���f����n��
 	newBone->Init(model);
-
+	// GameObject��e�Ƃ���
 	newBone->transform_.parent_ = &transform_;
 
+	// transform�̃f�[�^��n��
 	newBone->SetTransform(srt);
-
+	
+	// �{�[���̃L�[��ۑ�����
 	modelKey_.insert({ key,newBone.get() });
 
+	// �{�[���̃c���[�ɒǉ�����
 	modelTree_.push_back(std::move(newBone));
 
-
+	// �{�[����Ԃ�
 	return modelKey_.at(key);
 }
 
-ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, Model *const model, ModelBone *const parent, const Transform &srt) {
-	if (modelKey_.count(key) != 0u) return nullptr;
+ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, Model* model, ModelBone *const parent, const Transform &srt) {
+	if (modelKey_.count(key) != 0u) { return nullptr; }
 
 	auto *const newBone = parent->AddChild(model);
 

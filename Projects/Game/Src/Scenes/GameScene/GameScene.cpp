@@ -18,78 +18,85 @@ GameScene::GameScene() :
 {}
 
 void GameScene::Initialize() {
-	debugCamera_ = std::make_unique<DebugCamera>();
+	collisionManager_ = CollisionManager::GetInstance();
 
-	/*currentCamera_->farClip = 3000.0f;
-	currentCamera_->pos.y = 15.0f;*/
-	currentCamera_->pos.z = -5.0f;
-	/*currentCamera_->rotate.x = 0.25f;
+	currentCamera_->farClip = 3000.0f;
+	currentCamera_->pos.y = 10.0f;
+	currentCamera_->pos.z = -70.0f;
 	currentCamera_->offset.z = -60.0f;
-	currentCamera_->offset.y = 8.0f;*/
+	currentCamera_->offset.y = 8.0f;
+	currentCamera_->rotate.x = 0_deg;
 
-	/*debugCamera_->farClip = 3000.0f;
-	debugCamera_->pos.y = 15.0f;
-	debugCamera_->pos.z = -5.0f;
-	debugCamera_->rotate.x = 0.25f;
-	debugCamera_->offset.z = -60.0f;
-	debugCamera_->offset.y = 8.0f;*/
+	/*water_ = Water::GetInstance();*/
 
-	//water_ = Water::GetInstance();
+	/*cloud_ = Cloud::GetInstance();
 
-	//cloud_ = Cloud::GetInstance();
-
-	/*skydome_.reset(new SkyDome);
+	skydome_ = std::make_unique<SkyDome>();
 	skydome_->Initialize();
 	skydome_->SetTexture(cloud_->GetTex());*/
 
-	file_ = std::make_unique<SoLib::IO::File>();
-	csv_ = std::make_unique<SoLib::IO::CSV>();
-	array2d_ = std::make_unique<SoLib::Array2D<uint32_t>>(0, 0);
+	gameManager_ = GameManager::GetInstance();
+	gameManager_->Init();
 
-	file_->Load("Resources/TestResource/testcsv.csv");
-	*file_ >> *csv_;
-	array2d_->Resize(csv_->GetHeight(), csv_->GetWidth());
-	std::transform(csv_->view().begin(), csv_->view().end(), array2d_->view().begin(), [](const std::string &str)->uint32_t { return std::stoul(str); });
-
-	particle_ = std::make_unique<Particle>();
-	particle_->LoadSettingDirectory("tiny-death");
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
 }
 
 void GameScene::Finalize() {
 
+	// 実体の破棄
+	GameManager::Finalize();
 }
 
 void GameScene::Update() {
+	// デルタタイム
+	const float deltaTime = Lamb::DeltaTime();
+
 	currentCamera_->Debug("カメラ");
+	
 	currentCamera_->Update();
 
-	//water_->Update(currentCamera_->GetPos());
+	/*water_->Update(currentCamera_->GetPos());*/
 
 	/*cloud_->Update();
 	skydome_->Upadate();*/
+	player_->Debug();
+	player_->Update();
 
-	particle_->Debug("テスト");
-	particle_->Update();
 
-	std::string str;
-	for (const auto i : array2d_->view()) {
-		str += std::to_string(i) + ' ';
-	}
+#ifdef _DEBUG
 
-	ImGui::Text("%s", str.c_str());
+	
 
-	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
+#endif // _DEBUG
+	gameManager_->InputAction();
+	gameManager_->Update(deltaTime);
+
+	/*gameManager_->Debug("GameManager");*/
+
+	collisionManager_->Update();
+	collisionManager_->Debug();
+
+	//player_->AllTrade();
+
+	if (input_->GetKey()->Pushed(DIK_RETURN) || input_->GetGamepad()->Pushed(Gamepad::Button::START)) {
 		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}
 }
 
 void GameScene::Draw() {
 	/*cloud_->Draw();
-	skydome_->Draw(*currentCamera_);
+	skydome_->Draw(*currentCamera_);*/
 
-	water_->Draw(currentCamera_->GetViewProjection());*/
+	player_->Draw(*currentCamera_);
 
-	particle_->Draw(camera_->rotate, camera_->GetViewOthographics());
+#ifdef _DEBUG
+
+	
+
+#endif // _DEBUG
+
+	gameManager_->Draw(*currentCamera_);
 
 	Lamb::screenout << "Water and cloud scene" << Lamb::endline
 		<< "Press space to change ""Model scene""";

@@ -80,11 +80,39 @@
     <ClCompile Include="Src\GameObject\GameObject.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\IvyComponent.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\GameManager\GameManager.cpp">
+      <Filter>Game\GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\IvyModel.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
     <ClCompile Include="Src\Game\CollisionManager\Capsule\Capsule.cpp">
       <Filter>Game\CollisionManager\Capsule</Filter>
     </ClCompile>
     <ClCompile Include="Src\Camera\DebugCamera\DebugCamera.cpp">
       <Filter>Camera\DebugCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\CollisionManager\AABB\AABB.cpp">
+      <Filter>Game\CollisionManager\AABB</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\Map\Map.cpp" />
+    <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp">
+      <Filter>Editor\BlockEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\OnBlockMoveComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\Map\Map.cpp">
+      <Filter>Game\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\Player\Player.cpp">
+      <Filter>Game\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\Block\Block.cpp">
+      <Filter>Game\Block</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -163,11 +191,29 @@
     <Filter Include="GameObject\Component">
       <UniqueIdentifier>{0323e700-4ffc-4e87-983b-59d2162784f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameManager">
+      <UniqueIdentifier>{ea8534b9-646f-4ddf-aaed-06c92f5f42b5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Game\CollisionManager\Capsule">
       <UniqueIdentifier>{decf7b45-ff6d-42a2-85f0-8d30b56bb527}</UniqueIdentifier>
     </Filter>
     <Filter Include="Camera\DebugCamera">
       <UniqueIdentifier>{d27f2ca5-b12d-42ad-aae0-6af7e63f3c9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CollisionManager\AABB">
+      <UniqueIdentifier>{34a8b057-6542-48de-9165-028f1b9a3444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Map">
+      <UniqueIdentifier>{53f24296-84ed-43ec-9de4-354c3461bf35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\BlockEditor">
+      <UniqueIdentifier>{ac571e6b-65fa-4b08-b878-ab3e3cab9bed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Block">
+      <UniqueIdentifier>{44033f75-5a14-455e-b909-6200bd5aecc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Player">
+      <UniqueIdentifier>{9d9be9c4-6bcc-4354-8e0d-bd65a0029eed}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -255,11 +301,38 @@
     <ClInclude Include="Src\GameObject\GameObject.h">
       <Filter>GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\IvyComponent.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\GameManager\GameManager.h">
+      <Filter>Game\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\IvyModel.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\Capsule\Capsule.h">
       <Filter>Game\CollisionManager\Capsule</Filter>
     </ClInclude>
     <ClInclude Include="Src\Camera\DebugCamera\DebugCamera.h">
       <Filter>Camera\DebugCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\CollisionManager\AABB\AABB.h">
+      <Filter>Game\CollisionManager\AABB</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Map\Map.h">
+      <Filter>Game\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Editor\BlockEditor\BlockEditor.h">
+      <Filter>Editor\BlockEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\OnBlockMoveComp.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Player\Player.h">
+      <Filter>Game\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Block\Block.h">
+      <Filter>Game\Block</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

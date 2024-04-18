@@ -30,6 +30,8 @@ public:
 
 	void Draw() override;
 
+	void Debug();
+
 public:
 	std::unique_ptr<Texture2D> tex_;
 	std::unique_ptr<Texture2D> sphere_;

@@ -10,6 +10,8 @@ Collider::Collider() :
 {
 	color_ = Vector4ToUint(Vector4::kIdentity);
 
+	obb_ = std::make_unique<Obb>();
+
 	for (auto& i : lines_) {
 		i = std::make_unique<Line>();
 	}
@@ -21,6 +23,12 @@ void Collider::UpdateCollision() {
 
 	max_ *= Mat4x4::MakeAffin(scale_, Vector3::kZero, collisionPos_);
 	min_ *= Mat4x4::MakeAffin(scale_, Vector3::kZero, collisionPos_);
+
+	obb_->center_ = collisionPos_;
+
+	obb_->scale_ = scale_;
+
+	obb_->Update();
 }
 
 
@@ -38,7 +46,7 @@ bool Collider::IsCollision(const Vector3& pos) {
 }
 
 bool Collider::CollisionExtrusion(Collider& other) {
-	if (other.scale_.Length() > scale_.Length()) {
+	if (obb_->IsCollisionOBBOBB((*other.obb_.get()))) {
 		std::array<Vector3, 8> otherPositions = {
 			Vector3(min_), // 左下手前
 			Vector3(min_.x, min_.y, max_.z), // 左下奥
@@ -173,6 +181,21 @@ bool Collider::CollisionExtrusion(Collider& other) {
 
 bool Collider::CollisionPush(Collider& other) {
 	return other.CollisionExtrusion(*this);
+}
+
+bool Collider::ObbCollision(Collider& other){
+	if (obb_->IsCollisionOBBOBB((*other.obb_.get()))) {
+		flg_ = true;
+		other.flg_ = true;
+		color_ = Vector4ToUint(Vector4::kXIdentity);
+		other.color_ = color_;
+		return static_cast<bool>(flg_);
+	}
+	flg_ = false;
+	other.flg_ = false;
+	color_ = Vector4ToUint(Vector4::kIdentity);
+	other.color_ = color_;
+	return static_cast<bool>(flg_);
 }
 
 void Collider::DebugDraw(const Mat4x4& viewProjection) {

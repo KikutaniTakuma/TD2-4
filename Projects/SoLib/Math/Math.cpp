@@ -13,14 +13,19 @@ Mat4x4 SoLib::Math::Affine(const Vector3 &scale, const Vector3 &rotate, const Ve
 Mat4x4 SoLib::Math::Affine(const Vector3 &scale, const Quaternion &quaternion, const Vector3 &transform) {
 	Mat4x4 result;
 
+	// 回転行列を作成
 	result = quaternion.GetMatrix();
 
-	Vector4 *const matItr = reinterpret_cast<Vector4 *>(&result);
+	// 回転部に対してスカラを乗算
 	for (uint8_t i = 0u; i < 3u; i++) {
-		matItr[i] *= SoLib::begin(scale)[i];
+		for (uint8_t k = 0; k < 3; k++) {
+			result[i][k] *= scale[i];
+		}
 	}
-	*reinterpret_cast<Vector3 *>(&matItr[3]) = transform;
-
+	// 平行移動部を加算
+	for (uint8_t i = 0u; i < 3; i++) {
+		result[3][i] = transform[i];
+	}
 	return result;
 }
 
