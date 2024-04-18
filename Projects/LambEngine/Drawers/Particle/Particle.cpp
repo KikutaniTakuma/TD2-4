@@ -1,144 +1,30 @@
 #include "Particle.h"
+#include "Engine/Graphics/TextureManager/TextureManager.h"
 #include "imgui.h"
 #include "Utils/EngineInfo/EngineInfo.h"
 #include "Engine/Core/WindowFactory/WindowFactory.h"
-#include "Engine/Core/DescriptorHeap/CbvSrvUavHeap.h"
-#include "Engine/Core/DirectXCommand/DirectXCommand.h"
 
 #include "Utils/UtilsLib/UtilsLib.h"
 #include "Utils/Random/Random.h"
-#include "Error/Error.h"
+#include "Drawers/DrawerManager.h"
 
 #include "../externals/nlohmann/json.hpp"
 #include <cassert>
 #include <filesystem>
 #include <fstream>
 
-/// <summary>
-/// 静的変数のインスタンス化
-/// </summary>
-
-std::array<Pipeline*, size_t(Pipeline::Blend::BlendTypeNum)> Particle::graphicsPipelineState_ = {};
-Shader Particle::shader_ = {};
-
-D3D12_INDEX_BUFFER_VIEW Particle::indexView_ = {};
-Lamb::LambPtr<ID3D12Resource> Particle::indexResource_ = nullptr;
-
-void Particle::Initialize(const std::string& vsFileName, const std::string& psFileName) {
-	LoadShader(vsFileName, psFileName);
-
-	uint16_t indices[] = {
-			0,1,3, 1,2,3
-	};
-	indexResource_ = DirectXDevice::GetInstance()->CreateBufferResuorce(sizeof(indices));
-	indexResource_.SetName<Particle>();
-	indexView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
-	indexView_.SizeInBytes = sizeof(indices);
-	indexView_.Format = DXGI_FORMAT_R16_UINT;
-	uint16_t* indexMap = nullptr;
-	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexMap));
-	for (int32_t i = 0; i < _countof(indices); i++) {
-		indexMap[i] = indices[i];
-	}
-	indexResource_->Unmap(0, nullptr);
-
-	CreateGraphicsPipeline();
-}
-
-void Particle::Finalize() {
-	indexResource_.Reset();
-}
-
-void Particle::LoadShader(const std::string& vsFileName, const std::string& psFileName) {
-	static ShaderManager* const shaderManager = shaderManager->GetInstance();
-	shader_.vertex = shaderManager->LoadVertexShader(vsFileName);
-	assert(shader_.vertex);
-	shader_.pixel = shaderManager->LoadPixelShader(psFileName);
-	assert(shader_.pixel);
-}
-
-void Particle::CreateGraphicsPipeline() {
-	std::array<D3D12_DESCRIPTOR_RANGE,1> texRange = {};
-	texRange[0].NumDescriptors = 1;
-	texRange[0].BaseShaderRegister = 0;
-	texRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-	texRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-
-	std::array<D3D12_DESCRIPTOR_RANGE, 1> strucBufRange = {};
-	strucBufRange[0].NumDescriptors = 2;
-	strucBufRange[0].BaseShaderRegister = 1;
-	strucBufRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-	strucBufRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-
-	std::array<D3D12_ROOT_PARAMETER, 2> rootPrams={};
-	rootPrams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootPrams[0].DescriptorTable.NumDescriptorRanges = UINT(texRange.size());
-	rootPrams[0].DescriptorTable.pDescriptorRanges = texRange.data();
-	rootPrams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-	rootPrams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootPrams[1].DescriptorTable.NumDescriptorRanges = UINT(strucBufRange.size());
-	rootPrams[1].DescriptorTable.pDescriptorRanges = strucBufRange.data();
-	rootPrams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-	PipelineManager::CreateRootSgnature(rootPrams.data(), rootPrams.size(), true);
-	PipelineManager::SetShader(shader_);
-	PipelineManager::SetVertexInput("POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT);
-	PipelineManager::SetVertexInput("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
-	PipelineManager::IsDepth(false);
-
-	for (int32_t i = Pipeline::Blend::None; i < Pipeline::Blend::BlendTypeNum; i++) {
-		PipelineManager::SetState(Pipeline::Blend(i), Pipeline::SolidState::Solid);
-		graphicsPipelineState_[i] = PipelineManager::Create();
-	}
-
-	PipelineManager::StateReset();
-
-	for (auto& i : graphicsPipelineState_) {
-		if (!i) {
-			throw Lamb::Error::Code<Particle>("pipeline is nullptr", __func__);
-		}
-	}
-}
 
 Particle::Particle() :
 	wtfs_(),
-	uvPibot(),
-	uvSize(Vector2::kIdentity),
-	tex_(TextureManager::GetInstance()->GetWhiteTex()),
+	tex_(TextureManager::GetInstance()->GetTexture(TextureManager::kWhiteTexturePath)),
 	isLoad_(false),
 	isBillboard_(true),
 	isYBillboard_(false),
-	wvpMat_(1),
-	colorBuf_(1),
-	aniStartTime_(),
-	aniCount_(0.0f),
-	uvPibotSpd_(0.0f),
-	isAnimation_(0.0f),
 	settings_(),
 	currentSettingIndex_(0u),
 	currentParticleIndex_(0u),
-	srvHeap_(nullptr),
 	isClose_{false}
 {
-	srvHeap_ = CbvSrvUavHeap::GetInstance();
-	srvHeap_->BookingHeapPos(2u);
-	srvHeap_->CreateView(wvpMat_);
-	srvHeap_->CreateView(colorBuf_);
-	for (uint32_t i = 0; i < wvpMat_.Size(); i++) {
-		wvpMat_[i] = Mat4x4::kIdentity;
-	}
-
-	for (uint32_t i = 0; i < colorBuf_.Size(); i++) {
-		colorBuf_[i] = Vector4::kIdentity;
-	}
-
-	vertexResource_ = DirectXDevice::GetInstance()->CreateBufferResuorce(sizeof(VertexData) * 4);
-	vertexResource_.SetName<Particle>();
-
-	vertexView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	vertexView_.SizeInBytes = sizeof(VertexData) * 4;
-	vertexView_.StrideInBytes = sizeof(VertexData);
 
 	wtfs_.resize(1);
 
@@ -169,174 +55,6 @@ Particle::Particle() :
 		dirCount++;
 	}
 
-}
-
-Particle::Particle(uint32_t indexNum) :
-	wtfs_(),
-	uvPibot(),
-	uvSize(Vector2::kIdentity),
-	tex_(TextureManager::GetInstance()->GetWhiteTex()),
-	isLoad_(false),
-	isBillboard_(true),
-	isYBillboard_(false),
-	wvpMat_(indexNum),
-	colorBuf_(indexNum),
-	aniStartTime_(),
-	aniCount_(0.0f),
-	uvPibotSpd_(0.0f),
-	isAnimation_(0.0f),
-	settings_(),
-	currentSettingIndex_(0u),
-	currentParticleIndex_(0u),
-	srvHeap_(nullptr),
-	isClose_{false}
-{
-	srvHeap_ = CbvSrvUavHeap::GetInstance();
-	srvHeap_->BookingHeapPos(2u);
-	srvHeap_->CreateView(wvpMat_);
-	srvHeap_->CreateView(colorBuf_);
-
-	for (uint32_t i = 0; i < wvpMat_.Size();i++) {
-		wvpMat_[i] = Mat4x4::kIdentity;
-	}
-	
-	for (uint32_t i = 0; i < colorBuf_.Size(); i++) {
-		colorBuf_[i] = Vector4::kIdentity;
-	}
-
-	if (vertexResource_) {
-		vertexResource_.Reset();
-		vertexResource_ = nullptr;
-	}
-
-	vertexResource_ = DirectXDevice::GetInstance()->CreateBufferResuorce(sizeof(VertexData) * 4);
-	vertexResource_.SetName<Particle>();
-
-	vertexView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	vertexView_.SizeInBytes = sizeof(VertexData) * 4;
-	vertexView_.StrideInBytes = sizeof(VertexData);
-
-	wtfs_.resize(indexNum);
-
-	for (size_t i = 0; i < wtfs_.size();i++) {
-		wtfs_[i].scale_ = Vector2::kIdentity * 512.0f;
-		wtfs_[i].pos_.x = 10.0f * i;
-		wtfs_[i].pos_.y = 10.0f * i;
-		wtfs_[i].pos_.z += 0.3f;
-	}
-
-	const std::filesystem::path kDirectoryPath = "./Resources/Datas/Particles/";
-
-	if (!std::filesystem::exists(kDirectoryPath)) {
-		std::filesystem::create_directories(kDirectoryPath);
-	}
-
-	std::filesystem::directory_iterator dirItr(kDirectoryPath);
-
-	dataDirectoryName_ = "particle0";
-
-	uint32_t dirCount = 0u;
-
-	// directory内のファイルをすべて読み込む
-	for (const auto& entry : dirItr) {
-		if (dataDirectoryName_ == entry.path().string()) {
-			dataDirectoryName_ = "particle" + std::to_string(dirCount);
-		}
-		dirCount++;
-	}
-}
-
-Particle::Particle(const Particle& right) :
-	Particle(right.wvpMat_.Size())
-{
-	*this = right;
-}
-Particle::Particle(Particle&& right) noexcept :
-	Particle(right.wvpMat_.Size())
-{
-	*this = std::move(right);
-}
-
-Particle& Particle::operator=(const Particle& right) {
-	assert(wvpMat_.Size() == right.wvpMat_.Size());
-
-	wtfs_ = right.wtfs_;
-
-	uvPibot = right.uvPibot;
-	uvSize = right.uvSize;
-
-	tex_ = right.tex_;
-	isLoad_ = right.isLoad_;
-
-	for (uint32_t i = 0; i < wvpMat_.Size();i++) {
-		wvpMat_[i] = right.wvpMat_[i];
-	}
-	
-	for (uint32_t i = 0; i < colorBuf_.Size(); i++) {
-		colorBuf_[i] = right.colorBuf_[i];
-	}
-
-	aniStartTime_ = right.aniStartTime_;
-	aniCount_ = right.aniCount_;
-	isAnimation_ = right.isAnimation_;
-	uvPibotSpd_ = right.uvPibotSpd_;
-
-	emitterPos = right.emitterPos;
-
-	datas_ = right.datas_;
-	dataDirectoryName_ = right.dataDirectoryName_;
-
-	settings_ = right.settings_;
-
-	isLoop_ = right.isLoop_;
-
-	currentSettingIndex_ = right.currentSettingIndex_;
-	currentParticleIndex_ = right.currentParticleIndex_;
-
-	return *this;
-}
-
-Particle& Particle::operator=(Particle&& right) noexcept {
-	wtfs_ = std::move(right.wtfs_);
-
-	uvPibot = std::move(right.uvPibot);
-	uvSize = std::move(right.uvSize);
-
-	tex_ = std::move(right.tex_);
-	isLoad_ = std::move(right.isLoad_);
-
-	for (uint32_t i = 0; i < wvpMat_.Size(); i++) {
-		wvpMat_[i] = right.wvpMat_[i];
-	}
-	for (uint32_t i = 0; i < colorBuf_.Size(); i++) {
-		colorBuf_[i] = right.colorBuf_[i];
-	}
-
-	aniStartTime_ = std::move(right.aniStartTime_);
-	aniCount_ = std::move(right.aniCount_);
-	isAnimation_ = std::move(right.isAnimation_);
-	uvPibotSpd_ = std::move(right.uvPibotSpd_);
-
-
-	emitterPos = std::move(right.emitterPos);
-
-	datas_ = std::move(right.datas_);
-	dataDirectoryName_ = std::move(right.dataDirectoryName_);
-
-	settings_ = std::move(right.settings_);
-
-	isLoop_ = std::move(right.isLoop_);
-
-	currentSettingIndex_ = std::move(right.currentSettingIndex_);
-	currentParticleIndex_ = std::move(right.currentParticleIndex_);
-
-	return *this;
-}
-
-void Particle::Resize(uint32_t index) {
-	wvpMat_.Resize(index);
-	colorBuf_.Resize(index);
-	wtfs_.resize(index);
 }
 
 Particle::~Particle() {
@@ -399,30 +117,18 @@ Particle::~Particle() {
 //			<< tex->GetFileName();
 //	}
 //#endif // _DEBUG
-
-	srvHeap_->ReleaseView(wvpMat_.GetHandleUINT());
-	srvHeap_->ReleaseView(colorBuf_.GetHandleUINT());
 }
 
 
 void Particle::LoadTexture(const std::string& fileName) {
 	static TextureManager* textureManager = TextureManager::GetInstance();
-	assert(textureManager);
-	while (textureManager->IsNowThreadLoading()) {
-		// 非同期読み込みが終わるまでビジーループ
-	}
 
-	tex_ = textureManager->LoadTexture(fileName);
+	textureManager->LoadTexture(fileName);
+	tex_ = textureManager->GetTexture(fileName);
 
 	if (tex_ && !isLoad_) {
 		isLoad_ = true;
 	}
-}
-
-void Particle::ThreadLoadTexture(const std::string& fileName) {
-	tex_ = nullptr;
-	TextureManager::GetInstance()->LoadTexture(fileName, &tex_);
-	isLoad_ = false;
 }
 
 
@@ -468,7 +174,7 @@ void Particle::LoadSettingDirectory(const std::string& directoryName) {
 			this->LoadTexture(lineBuf);
 		}
 		else {
-			tex_ = TextureManager::GetInstance()->GetWhiteTex();
+			tex_ = TextureManager::GetInstance()->GetTexture(TextureManager::kWhiteTexturePath);
 			isLoad_ = true;
 		}
 		if (std::getline(file, lineBuf)) {
@@ -744,9 +450,7 @@ void Particle::ParticleStop()
 
 
 void Particle::Update() {
-	assert(wtfs_.size() == wvpMat_.Size());
-
-	if (tex_ && tex_->CanUse() && !isLoad_) {
+	if (tex_ && !isLoad_) {
 		isLoad_ = true;
 	}
 
@@ -910,60 +614,36 @@ void Particle::Update() {
 void Particle::Draw(
 	const Vector3& cameraRotate,
 	const Mat4x4& viewProjection,
-	Pipeline::Blend blend
+	BlendType blend
 ) {
 	if (tex_ && isLoad_ && !settings_.empty()) {
-		const Vector2& uv0 = { uvPibot.x, uvPibot.y + uvSize.y }; const Vector2& uv1 = uvSize + uvPibot;
-		const Vector2& uv2 = { uvPibot.x + uvSize.x, uvPibot.y }; const Vector2& uv3 = uvPibot;
-
-		std::array<VertexData, 4> pv = {
-			Vector3{ -0.5f,  0.5f, 0.1f }, uv3,
-			Vector3{  0.5f,  0.5f, 0.1f }, uv2,
-			Vector3{  0.5f, -0.5f, 0.1f }, uv1,
-			Vector3{ -0.5f, -0.5f, 0.1f }, uv0
-		};
-
-		VertexData* mappedData = nullptr;
-		vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedData));
-		std::copy(pv.begin(), pv.end(), mappedData);
-		vertexResource_->Unmap(0, nullptr);
-
-		UINT drawCount = 0;
-		assert(wtfs_.size() == wvpMat_.Size());
-		Vector3 billboardRotate;
+		Mat4x4 billboardMat;
 		if (isBillboard_) {
 			if (isYBillboard_) {
-				billboardRotate.y = cameraRotate.y;
+				billboardMat = Mat4x4::MakeRotateY(cameraRotate.y);
 			}
 			else {
-				billboardRotate = cameraRotate;
+				billboardMat = Mat4x4::MakeRotate(cameraRotate);
 			}
 		}
 		else {
-			billboardRotate = Vector3::kZero;
+			billboardMat = Mat4x4::kIdentity;
 		}
+		
+		Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
+		Lamb::SafePtr tex2D_ = drawerManager->GetTexture2D();
 
-		for (uint32_t i = 0; i < wvpMat_.Size();i++) {
+		for (size_t i = 0; i < wtfs_.size();i++) {
 			if (wtfs_[i].isActive_) {
-				wvpMat_[drawCount] = Mat4x4::MakeAffin(
-					wtfs_[i].scale_, 
-					wtfs_[i].rotate_ + billboardRotate, 
-					wtfs_[i].pos_) * viewProjection;
-				colorBuf_[drawCount] = UintToVector4(wtfs_[i].color_);
-				drawCount++;
+				tex2D_->Draw(
+					Mat4x4::MakeAffin(wtfs_[i].scale_, wtfs_[i].rotate_, wtfs_[i].pos_) * billboardMat,
+					Mat4x4::kIdentity,
+					viewProjection,
+					tex_->GetHandleUINT(),
+					wtfs_[i].color_,
+					blend
+				);
 			}
-		}
-
-
-		if (0 < drawCount) {
-			auto commandlist = DirectXCommand::GetInstance()->GetCommandList();
-			// 各種描画コマンドを積む
-			graphicsPipelineState_[blend]->Use();
-			tex_->Use(0);
-			srvHeap_->Use(wvpMat_.GetHandleUINT(), 1);
-			commandlist->IASetVertexBuffers(0, 1, &vertexView_);
-			commandlist->IASetIndexBuffer(&indexView_);
-			commandlist->DrawIndexedInstanced(6, drawCount, 0, 0, 0);
 		}
 	}
 }
@@ -1047,7 +727,7 @@ void Particle::Debug(const std::string& guiName) {
 		// パーティクルの設定
 		if (ImGui::TreeNode("Particle")) {
 			if (ImGui::TreeNode("size")) {
-				ImGui::Checkbox("Same height and width", settings_[i].isSameHW_.Data());
+				ImGui::Checkbox("Same height and width", settings_[i].isSameHW_.data());
 				if (settings_[i].isSameHW_) {
 					ImGui::DragFloat("size min", &settings_[i].size_.first.x, 0.01f);
 					ImGui::DragFloat("size max", &settings_[i].size_.second.x, 0.01f);
@@ -1223,7 +903,7 @@ void Particle::Debug(const std::string& guiName) {
 
 	ImGui::Checkbox("isBillboard", &isBillboard_);
 	ImGui::Checkbox("isYBillboard", &isYBillboard_);
-	ImGui::Checkbox("isLoop", isLoop_.Data());
+	ImGui::Checkbox("isLoop", isLoop_.data());
 	if (ImGui::Button("all setting save")) {
 		for (auto i = 0llu; i < settings_.size(); i++) {
 			const auto groupName = ("setting" + std::to_string(i));
@@ -1297,7 +977,7 @@ void Particle::Debug(const std::string& guiName) {
 			ImGui::Text(("now Texture is : " + tex_->GetFileName()).c_str());
 			for (auto& fileName : fileNames) {
 				if (ImGui::Button(fileName.string().c_str())) {
-					this->ThreadLoadTexture(fileName.string());
+					this->LoadTexture(fileName.string());
 				}
 			}
 			ImGui::TreePop();
@@ -1311,42 +991,6 @@ void Particle::Debug(const std::string& guiName) {
 	ImGui::End();
 }
 
-void Particle::AnimationStart(float aniUvPibot) {
-	if (!isAnimation_) {
-		aniStartTime_ = std::chrono::steady_clock::now();
-		isAnimation_ = true;
-		aniCount_ = 0.0f;
-		uvPibot.x = aniUvPibot;
-	}
-}
-
-void Particle::AnimationPause() {
-	isAnimation_ = false;
-}
-
-void Particle::AnimationRestart() {
-	isAnimation_ = true;
-}
-
-void Particle::Animation(size_t aniSpd, bool isLoop, float aniUvStart, float aniUvEnd) {
-	if (isAnimation_) {
-		auto nowTime = std::chrono::steady_clock::now();
-		if (std::chrono::duration_cast<std::chrono::milliseconds>(nowTime - aniStartTime_) >= std::chrono::milliseconds(aniSpd)) {
-			aniStartTime_ = nowTime;
-			aniCount_++;
-
-			if (aniCount_ >= aniUvEnd) {
-				if (isLoop) {
-					aniCount_ = aniUvStart;
-				}
-				else {
-					--aniCount_;
-					isAnimation_ = false;
-				}
-			}
-
-			uvPibot.x = aniUvStart;
-			uvPibot.x += uvPibotSpd_ * aniCount_;
-		}
-	}
+void Particle::Resize(uint32_t index) {
+	wtfs_.resize(index);
 }

@@ -5,10 +5,10 @@
 Fade::Fade():
 	isInStart_(false),
 	isOutStart_(false),
-	tex_(),
+	//tex_(),
 	fadeTime_(0.75f)
 {
-	tex_.scale = Lamb::ClientSize();
+	//tex_.scale = Lamb::ClientSize();
 }
 
 void Fade::OutStart() {
@@ -50,13 +50,13 @@ bool Fade::IsActive() const
 
 void Fade::Update() {
 	if (isInStart_) {
-		tex_.color = ColorLerp(0xff, 0x00, ease_.GetT());
+		//tex_.color = ColorLerp(0xff, 0x00, ease_.GetT());
 	}
 	else if (isOutStart_) {
-		tex_.color = ColorLerp(0x00, 0xff, ease_.GetT());
+		//tex_.color = ColorLerp(0x00, 0xff, ease_.GetT());
 	}
 
-	tex_.Update();
+	//tex_.Update();
 
 	ease_.Update();
 
@@ -65,8 +65,8 @@ void Fade::Update() {
 		isOutStart_ = false;
 	}
 }
-void Fade::Draw(const Mat4x4& viewProjection) {
+void Fade::Draw([[maybe_unused]]const Mat4x4& viewProjection) {
 	if (isInStart_ || isOutStart_) {
-		tex_.Draw(viewProjection, Pipeline::Blend::Normal, false);
+		//tex_.Draw(viewProjection, Pipeline::Blend::Normal, false);
 	}
 }

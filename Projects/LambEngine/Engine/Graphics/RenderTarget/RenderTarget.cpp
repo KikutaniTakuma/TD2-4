@@ -50,7 +50,7 @@ RenderTarget::RenderTarget() :
 		throw Lamb::Error::Code<RenderTarget>("CreateCommittedResource Function Failed", "Constructor");
 	}
 
-	RtvHeap* const rtvHeap = RtvHeap::GetInstance();
+	Lamb::SafePtr rtvHeap = RtvHeap::GetInstance();
 	rtvHeap->BookingHeapPos(1u);
 	rtvHeap->CreateView(*this);
 
@@ -86,7 +86,7 @@ RenderTarget::RenderTarget(uint32_t width, uint32_t height) :
 		clearValue.Color[i] = clsValue[i];
 	}
 
-	static ID3D12Device* device = DirectXDevice::GetInstance()->GetDevice();
+	Lamb::SafePtr device = DirectXDevice::GetInstance()->GetDevice();
 
 	// 実際にリソースを作る
 	HRESULT hr = device->
@@ -102,7 +102,7 @@ RenderTarget::RenderTarget(uint32_t width, uint32_t height) :
 		throw Lamb::Error::Code<RenderTarget>("CreateCommittedResource Function Failed", "Constructor");
 	}
 
-	RtvHeap* const rtvHeap = RtvHeap::GetInstance();
+	Lamb::SafePtr rtvHeap = RtvHeap::GetInstance();
 	rtvHeap->BookingHeapPos(1u);
 	rtvHeap->CreateView(*this);
 
@@ -114,7 +114,7 @@ RenderTarget::RenderTarget(uint32_t width, uint32_t height) :
 }
 
 RenderTarget::~RenderTarget() {
-	RtvHeap* const rtvHeap = RtvHeap::GetInstance();
+	Lamb::SafePtr rtvHeap = RtvHeap::GetInstance();
 	rtvHeap->ReleaseView(rtvHeapHandleUint_);
 }
 
@@ -127,7 +127,7 @@ void RenderTarget::SetThisRenderTarget() {
 		D3D12_RESOURCE_STATE_RENDER_TARGET
 	);
 
-	RtvHeap* const rtvHeap = RtvHeap::GetInstance();
+	Lamb::SafePtr rtvHeap = RtvHeap::GetInstance();
 	rtvHeap->SetRtv(rtvHeapHandleUint_);
 
 	Vector4 clearColor = { 0.1f, 0.25f, 0.5f, 0.0f };
@@ -152,7 +152,7 @@ void RenderTarget::SetMainRenderTarget() {
 }
 
 void RenderTarget::UseThisRenderTargetShaderResource() {
-	static auto mainComList = DirectXCommand::GetInstance()->GetCommandList();
+	static auto mainComList = DirectXCommand::GetMainCommandlist()->GetCommandList();
 	mainComList->SetGraphicsRootDescriptorTable(0, heapHandleGPU_);
 }
 
@@ -161,7 +161,7 @@ void RenderTarget::CreateView(
 	D3D12_GPU_DESCRIPTOR_HANDLE heapHandleGPU,
 	UINT heapHandle
 ) {
-	static ID3D12Device* const device = DirectXDevice::GetInstance()->GetDevice();
+	Lamb::SafePtr device = DirectXDevice::GetInstance()->GetDevice();
 	
 	device->CreateShaderResourceView(
 		resource_.Get(),
@@ -175,7 +175,6 @@ void RenderTarget::CreateView(
 
 	tex_.reset();
 	tex_ = std::make_unique<Texture>();
-	assert(tex_);
 	tex_->Set(
 		resource_,
 		srvDesc_,

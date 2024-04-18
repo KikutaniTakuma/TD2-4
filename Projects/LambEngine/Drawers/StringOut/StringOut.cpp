@@ -125,7 +125,7 @@ void StringOut::Draw() {
 		return;
 	}
 
-	ID3D12GraphicsCommandList* commandList = DirectXCommand::GetInstance()->GetCommandList();
+	ID3D12GraphicsCommandList* commandList = DirectXCommand::GetMainCommandlist()->GetCommandList();
 	auto  stringOutPutManager = StringOutPutManager::GetInstance();
 	
 	auto batch = stringOutPutManager->GetBatch(format_);

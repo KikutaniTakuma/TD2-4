@@ -1,5 +1,6 @@
 #pragma once
 #include "Pipeline/Pipeline.h"
+#include "Utils/SafePtr/SafePtr.h"
 #include <list>
 #include <vector>
 #include <memory>
@@ -89,7 +90,7 @@ public:
 /// シングルトンインスタンス
 /// </summary>
 private:
-	static PipelineManager* instance_;
+	static Lamb::SafePtr<PipelineManager> instance_;
 
 /// <summary>
 /// メンバ変数

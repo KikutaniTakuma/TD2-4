@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <string>
 #include "Engine/EngineUtils/LambPtr/LambPtr.h"
+#include "Utils/SafePtr/SafePtr.h"
 
 #include "../Shader.h"
 
@@ -30,7 +31,7 @@ public:
 	static void Finalize();
 
 	static inline ShaderManager* const GetInstance() {
-		return instance_;
+		return instance_.get();
 	}
 
 public:
@@ -41,7 +42,7 @@ public:
 	IDxcBlob* const LoadPixelShader(const std::string& fileName);
 
 private:
-	static ShaderManager* instance_;
+	static Lamb::SafePtr<ShaderManager> instance_;
 
 private:
 	class ShaderFactory* shaderFactory_;

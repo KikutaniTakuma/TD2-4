@@ -4,7 +4,6 @@
 #pragma comment(lib, "d3d12.lib")
 
 #include "../externals/DirectXTex/DirectXTex.h"
-#include "../externals/DirectXTex/d3dx12.h"
 
 #include <string>
 
@@ -43,13 +42,10 @@ public:
 /// 画像読み込み用
 /// </summary>
 private:
-	void Load(const std::string& filePath);
 	void Load(const std::string& filePath, ID3D12GraphicsCommandList* commandList);
 
 	DirectX::ScratchImage LoadTexture(const std::string& filePath);
 	ID3D12Resource* CreateTextureResource(const DirectX::TexMetadata& metaData);
-	[[nodiscard]]
-	ID3D12Resource* UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
 	[[nodiscard]]
 	ID3D12Resource* UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, ID3D12GraphicsCommandList* commandList);
 

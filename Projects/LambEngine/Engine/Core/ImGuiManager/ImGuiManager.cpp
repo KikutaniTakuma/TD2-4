@@ -14,18 +14,16 @@
 
 #include "Utils/SafeDelete/SafeDelete.h"
 
-ImGuiManager* ImGuiManager::instance_ = nullptr;
+Lamb::SafePtr<ImGuiManager> ImGuiManager::instance_ = nullptr;
 
 ImGuiManager* const ImGuiManager::GetInstance() {
-	return instance_;
+	return instance_.get();
 }
 void ImGuiManager::Initialize() {
-	assert(!instance_);
-	instance_ = new ImGuiManager{};
-	assert(!!instance_);
+	instance_.reset(new ImGuiManager());
 }
 void ImGuiManager::Finalize() {
-	Lamb::SafeDelete(instance_);
+	instance_.reset();
 }
 
 ImGuiManager::ImGuiManager() {
@@ -43,8 +41,18 @@ ImGuiManager::ImGuiManager() {
 	// ImGuiの初期化
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+
+	// ImGuiIO
+	auto& imguiIO = ImGui::GetIO();
+	// Docking有効化
+	imguiIO.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	// キーボードコントロール有効
+	imguiIO.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	// ゲームパッドコントロール有効
+	imguiIO.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
 	// 日本語フォント追加
-	ImGui::GetIO().Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 13.0f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
+	imguiIO.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 13.0f, NULL, ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(WindowFactory::GetInstance()->GetHwnd());
 	ImGui_ImplDX12_Init(
@@ -77,7 +85,7 @@ void ImGuiManager::Start() {
 
 void ImGuiManager::End() {
 #ifdef _DEBUG
-	ID3D12GraphicsCommandList* const commandList = DirectXCommand::GetInstance()->GetCommandList();
+	ID3D12GraphicsCommandList* const commandList = DirectXCommand::GetMainCommandlist()->GetCommandList();
 	// ImGui描画
 	ImGui::Render();
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);

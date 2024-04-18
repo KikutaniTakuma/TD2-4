@@ -63,7 +63,7 @@ void Easeing::Debug([[maybe_unused]]const std::string& debugName) {
 	ImGui::Begin(debugName.c_str());
 	ImGui::SliderInt("easeType", &easeType_, 0, 30);
 	ImGui::DragFloat("easeSpd(seconds)", &easeTime_, 0.01f, 0.0f, std::numeric_limits<float>::max());
-	ImGui::Checkbox("isLoop", isLoop_.Data());
+	ImGui::Checkbox("isLoop", isLoop_.data());
 	if (ImGui::Button("Start")) {
 		isActive_ = true;
 		t_ = 0.0f;
@@ -96,7 +96,7 @@ void Easeing::DebugTreeNode([[maybe_unused]] const std::string& debugName) {
 	if (ImGui::TreeNode(debugName.c_str())) {
 		ImGui::SliderInt("easeType", &easeType_, 0, 30);
 		ImGui::DragFloat("easeSpd(seconds)", &easeTime_, 0.01f, 0.0f);
-		ImGui::Checkbox("isLoop", isLoop_.Data());
+		ImGui::Checkbox("isLoop", isLoop_.data());
 
 		ease_ = GetFunction(easeType_);
 

@@ -61,7 +61,7 @@ void ModelComp::ModelBone::Update() {
 
 void ModelComp::ModelBone::Draw(const Camera &vp) const {
 	if (model_) {
-		this->model_->Draw(vp.GetViewProjection(), vp.GetPos());
+		this->model_->Draw(transform_.matWorld_, vp.GetViewProjection(), 0xffffffff, BlendType::kNormal);
 	}
 	for (auto &child : children_) {
 		child->Draw(vp);
@@ -82,23 +82,23 @@ bool ModelComp::ModelBone::ImGuiWidget() {
 
 ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, std::unique_ptr<Model> model, const Transform &srt) {
 	if (modelKey_.count(key) != 0u) { return nullptr; }
-	// ボーンの追加
+	// �{�[���̒ǉ�
 	auto  newBone = std::make_unique<ModelBone>();
-	// モデルを渡す
+	// ���f����n��
 	newBone->Init(std::move(model));
-	// GameObjectを親とする
+	// GameObject��e�Ƃ���
 	newBone->transform_.parent_ = &transform_;
 
-	// transformのデータを渡す
+	// transform�̃f�[�^��n��
 	newBone->SetTransform(srt);
 	
-	// ボーンのキーを保存する
+	// �{�[���̃L�[��ۑ�����
 	modelKey_.insert({ key,newBone.get() });
 
-	// ボーンのツリーに追加する
+	// �{�[���̃c���[�ɒǉ�����
 	modelTree_.push_back(std::move(newBone));
 
-	// ボーンを返す
+	// �{�[����Ԃ�
 	return modelKey_.at(key);
 }
 

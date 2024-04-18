@@ -69,7 +69,7 @@ public:
 	/// ディスクリプタの解放関数
 	/// </summary>
 	/// <param name="viewHandle"></param>
-	void ReleaseView(UINT viewHandle);
+	virtual void ReleaseView(UINT viewHandle);
 
 	/// <summary>
 	/// Useハンドルコンテナに追加(既に追加済みなら追加されない)

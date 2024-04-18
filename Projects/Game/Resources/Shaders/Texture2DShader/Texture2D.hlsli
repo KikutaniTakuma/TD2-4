@@ -1,10 +1,9 @@
-Texture2D<float4> tex : register(t0);
-SamplerState smp : register(s0);
-cbuffer Color : register(b1){
-    float4 color;
-}
+#include "../Lamb.hlsli"
 
-struct Output{
-    float4 svPos : SV_POSITION;
-    float2 uv : TEXCOORD;
+struct Texture2DData {
+    float32_t4x4 uvTransform;
+    float32_t3 pad; // <- huh?
+    uint32_t textureID;
 };
+
+StructuredBuffer<Texture2DData> kTexture2DData : register(t2);

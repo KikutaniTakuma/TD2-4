@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Graphics/TextureManager/Texture/Texture.h"
 #include "Engine/Core/DescriptorHeap/Descriptor.h"
+#include <memory>
 
 /// <summary>
 /// ポストエフェクト用のレンダーターゲットリソース等を管理するクラス

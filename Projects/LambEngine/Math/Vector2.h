@@ -8,11 +8,11 @@ class Vector2 final {
 /// コンストラクタ
 /// </summary>
 public:
-	Vector2() noexcept;
+	constexpr Vector2() noexcept;
 	Vector2(float x, float y) noexcept;
 
-	Vector2(const Vector2& right) noexcept;
-	Vector2(Vector2&& right) noexcept;
+	constexpr Vector2(const Vector2& right) = default;
+	constexpr Vector2(Vector2&& right) = default;
 public:
 	~Vector2() = default;
 
@@ -20,39 +20,40 @@ public:
 /// 演算子のオーバーロード
 /// </summary>
 public:
-	inline Vector2 operator+() const noexcept {
+	[[nodiscard]] inline Vector2 operator+() const noexcept {
 		return *this;
 	}
-	inline Vector2 operator-() const noexcept {
+	[[nodiscard]] inline Vector2 operator-() const noexcept {
 		return { -x, -y };
 	}
 
-	Vector2 operator+(const Vector2& right) const noexcept;
-	Vector2 operator-(const Vector2& right) const noexcept;
-	Vector2 operator*(float scalar) const noexcept;
-	Vector2 operator/(float scalar) const noexcept;
+	[[nodiscard]] Vector2 operator+(const Vector2& right) const noexcept;
+	[[nodiscard]] Vector2 operator-(const Vector2& right) const noexcept;
+	[[nodiscard]] Vector2 operator*(float scalar) const noexcept;
+	[[nodiscard]] Vector2 operator/(float scalar) const noexcept;
 	Vector2& operator=(const Vector2& right) noexcept;
 	Vector2& operator=(Vector2&& right) noexcept;
 	Vector2& operator+=(const Vector2& right) noexcept;
 	Vector2& operator-=(const Vector2& right) noexcept;
 	Vector2& operator*=(float scalar) noexcept;
 	Vector2& operator/=(float scalar) noexcept;
-	bool operator==(const Vector2& right) const noexcept;
-	bool operator!=(const Vector2& right) const noexcept;
+	[[nodiscard]] bool operator==(const Vector2& right) const noexcept;
+	[[nodiscard]] bool operator!=(const Vector2& right) const noexcept;
 
 /// <summary>
 /// メンバ関数
 /// </summary>
 public:
-	void Rotate(float rad) noexcept;
+	[[noreturn]] void Rotate(float rad) noexcept;
 
-	float Cross(const Vector2& right) const noexcept;
-	float Dot(const Vector2& right) const noexcept;
-	float Length() const noexcept;
+	[[nodiscard]] float Cross(const Vector2& right) const noexcept;
+	[[nodiscard]] float Dot(const Vector2& right) const noexcept;
+	[[nodiscard]] float Length() const noexcept;
+	[[nodiscard]] float LengthSQ() const noexcept;
 
-	Vector2 Normalize() const noexcept;
+	[[nodiscard]] Vector2 Normalize() const noexcept;
 
-	float GetRad() const noexcept;
+	[[nodiscard]] float GetRad() const noexcept;
 
 /// <summary>
 /// メンバ変数
@@ -65,7 +66,7 @@ public:
 /// 静的関数
 /// </summary>
 public:
-	static Vector2 Lerp(const Vector2& start, const Vector2& end, float easeSpd);
+	static [[nodiscard]] Vector2 Lerp(const Vector2& start, const Vector2& end, float easeSpd);
 
 /// <summary>
 /// 静的定数

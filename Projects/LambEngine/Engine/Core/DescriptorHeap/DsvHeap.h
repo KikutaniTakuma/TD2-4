@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Core/DescriptorHeap/DescriptorHeap.h"
+#include "Utils/SafePtr/SafePtr.h"
 
 class DsvHeap final : public DescriptorHeap{
 private:
@@ -22,7 +23,7 @@ public:
 	static DsvHeap* const GetInstance();
 
 private:
-	static DsvHeap* instance_;
+	static Lamb::SafePtr<DsvHeap> instance_;
 
 private:
 	void CreateDescriptorHeap(uint32_t heapSize) override;

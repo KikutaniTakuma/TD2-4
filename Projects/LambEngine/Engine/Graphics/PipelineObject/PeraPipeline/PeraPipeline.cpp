@@ -21,7 +21,7 @@ void PeraPipeline::Use(Pipeline::Blend blendType, bool isDepth) {
 	else {
 		pipelinesNoDepth_[blendType]->Use();
 	}
-	auto* const commandList = DirectXCommand::GetInstance()->GetCommandList();
+	auto* const commandList = DirectXCommand::GetMainCommandlist()->GetCommandList();
 
 	render_->UseThisRenderTargetShaderResource();
 	commandList->SetGraphicsRootDescriptorTable(1, wvpMat_.GetHandleGPU());
