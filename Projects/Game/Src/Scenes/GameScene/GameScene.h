@@ -47,6 +47,9 @@ public:
 	//std::unique_ptr<SkyDome> skydome_;
 	//class Cloud *cloud_;
 
+
+	std::unique_ptr<Particle> particle_;
+
 	std::unique_ptr<DebugCamera> debugCamera_;
 	bool isDebug_;
 };

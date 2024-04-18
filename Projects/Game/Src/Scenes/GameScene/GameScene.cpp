@@ -20,19 +20,19 @@ GameScene::GameScene() :
 void GameScene::Initialize() {
 	debugCamera_ = std::make_unique<DebugCamera>();
 
-	currentCamera_->farClip = 3000.0f;
-	currentCamera_->pos.y = 15.0f;
+	/*currentCamera_->farClip = 3000.0f;
+	currentCamera_->pos.y = 15.0f;*/
 	currentCamera_->pos.z = -5.0f;
-	currentCamera_->rotate.x = 0.25f;
+	/*currentCamera_->rotate.x = 0.25f;
 	currentCamera_->offset.z = -60.0f;
-	currentCamera_->offset.y = 8.0f;
+	currentCamera_->offset.y = 8.0f;*/
 
-	debugCamera_->farClip = 3000.0f;
+	/*debugCamera_->farClip = 3000.0f;
 	debugCamera_->pos.y = 15.0f;
 	debugCamera_->pos.z = -5.0f;
 	debugCamera_->rotate.x = 0.25f;
 	debugCamera_->offset.z = -60.0f;
-	debugCamera_->offset.y = 8.0f;
+	debugCamera_->offset.y = 8.0f;*/
 
 	//water_ = Water::GetInstance();
 
@@ -50,6 +50,9 @@ void GameScene::Initialize() {
 	*file_ >> *csv_;
 	array2d_->Resize(csv_->GetHeight(), csv_->GetWidth());
 	std::transform(csv_->view().begin(), csv_->view().end(), array2d_->view().begin(), [](const std::string &str)->uint32_t { return std::stoul(str); });
+
+	particle_ = std::make_unique<Particle>();
+	particle_->LoadSettingDirectory("enemy-generation-delete");
 }
 
 void GameScene::Finalize() {
@@ -64,6 +67,9 @@ void GameScene::Update() {
 
 	/*cloud_->Update();
 	skydome_->Upadate();*/
+
+	particle_->Debug("テスト");
+	particle_->Update();
 
 	std::string str;
 	for (const auto i : array2d_->view()) {
@@ -82,6 +88,8 @@ void GameScene::Draw() {
 	skydome_->Draw(*currentCamera_);
 
 	water_->Draw(currentCamera_->GetViewProjection());*/
+
+	particle_->Draw(camera_->rotate, camera_->GetViewOthographics());
 
 	Lamb::screenout << "Water and cloud scene" << Lamb::endline
 		<< "Press space to change ""Model scene""";
