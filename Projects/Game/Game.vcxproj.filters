@@ -129,6 +129,12 @@
     <ClCompile Include="Src\Editor\EnemyEditor\EnemyEditor.cpp">
       <Filter>Editor\EnemyEditor</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Scenes\SelectScene\SelectScene.cpp">
+      <Filter>Scenes\SelectScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenes\ResultScene\ResultScene.cpp">
+      <Filter>Scenes\ResultScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -244,6 +250,12 @@
     </Filter>
     <Filter Include="Editor\EnemyEditor">
       <UniqueIdentifier>{4ec1fc64-92ec-4948-9170-fb1b17ea103a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\SelectScene">
+      <UniqueIdentifier>{bcbd1a7d-9561-49dc-ac80-dfd6f604db99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\ResultScene">
+      <UniqueIdentifier>{6f240767-15b1-4f40-8858-4d5fc374957c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -378,6 +390,12 @@
     </ClInclude>
     <ClInclude Include="Src\Editor\EnemyEditor\EnemyEditor.h">
       <Filter>Editor\EnemyEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\SelectScene\SelectScene.h">
+      <Filter>Scenes\SelectScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\ResultScene\ResultScene.h">
+      <Filter>Scenes\ResultScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
