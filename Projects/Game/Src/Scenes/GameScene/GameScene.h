@@ -10,9 +10,9 @@
 #include "Utils/Easeing/Easeing.h"
 #include "Game/SkyDome/SkyDome.h"
 
-#include "../../../../SoLib/IO/File.h"
-#include "../../../../SoLib/IO/CSV.h"
-#include "../../../../SoLib/Containers/Array2D.h"
+#include "SoLib/IO/File.h"
+#include "SoLib/IO/CSV.h"
+#include "SoLib/Containers/Array2D.h"
 
 #include "GameObject/GameObject.h"
 
