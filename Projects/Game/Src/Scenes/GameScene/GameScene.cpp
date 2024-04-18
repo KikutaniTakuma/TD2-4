@@ -52,7 +52,7 @@ void GameScene::Initialize() {
 	std::transform(csv_->view().begin(), csv_->view().end(), array2d_->view().begin(), [](const std::string &str)->uint32_t { return std::stoul(str); });
 
 	particle_ = std::make_unique<Particle>();
-	particle_->LoadSettingDirectory("enemy-generation-delete");
+	particle_->LoadSettingDirectory("tiny-death");
 }
 
 void GameScene::Finalize() {
