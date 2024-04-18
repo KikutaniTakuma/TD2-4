@@ -38,13 +38,6 @@ void GameScene::Initialize() {
 	gameManager_ = GameManager::GetInstance();
 	gameManager_->Init();
 
-	aabb_ = AABB::Create({ 0.0f,-0.5f,0.0f }, { 20.0f,1.0f,20.0f });
-
-	boxModel_ = std::make_unique<Model>("Resources/Cube.obj");
-	boxModel_->pos = aabb_.GetCentor();
-	boxModel_->scale = aabb_.GetRadius();
-	boxModel_->Update();
-
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
 }
@@ -81,13 +74,6 @@ void GameScene::Update() {
 
 	/*gameManager_->Debug("GameManager");*/
 
-
-	if (aabb_.ImGuiDebug("AABB")) {
-		boxModel_->pos = aabb_.GetCentor();
-		boxModel_->scale = aabb_.GetRadius();
-		boxModel_->Update();
-	}
-
 	collisionManager_->Update();
 	collisionManager_->Debug();
 
@@ -101,8 +87,6 @@ void GameScene::Update() {
 void GameScene::Draw() {
 	/*cloud_->Draw();
 	skydome_->Draw(*currentCamera_);*/
-
-	boxModel_->Draw(currentCamera_->GetViewProjection(), currentCamera_->GetPos());
 
 	player_->Draw(*currentCamera_);
 

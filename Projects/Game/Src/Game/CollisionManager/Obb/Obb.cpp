@@ -73,7 +73,7 @@ bool Obb::IsCollision(Vector3 pos, float radius) {
 
 Mat4x4 Obb::GetRotate() const{
 	Mat4x4 rotateMatrix;
-	rotateMatrix.Identity();
+	rotateMatrix = Mat4x4::kIdentity;
 	rotateMatrix[0][0] = orientations_[0].x;
 	rotateMatrix[0][1] = orientations_[0].y;
 	rotateMatrix[0][2] = orientations_[0].z;

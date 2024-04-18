@@ -49,10 +49,6 @@ public:
 
 	GameManager *gameManager_ = nullptr;
 
-	AABB aabb_;
-
-	std::unique_ptr<Model> boxModel_;
-
 	std::unique_ptr<Player> player_;
 
 	CollisionManager* collisionManager_ = nullptr;

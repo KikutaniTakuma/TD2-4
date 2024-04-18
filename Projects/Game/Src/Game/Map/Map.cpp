@@ -12,16 +12,8 @@ void Map::Update([[maybe_unused]] const float deltaTime)
 {
 }
 
-void Map::Draw(const Camera& camera) const
+void Map::Draw([[maybe_unused]] const Camera& camera) const
 {
-	// モデルのイテレータ
-	std::list<std::unique_ptr<Model>>::const_iterator modelItr = models_.begin();
-
-	// 箱の数分のモデルを描画する
-	for (size_t i = 0; i < boxCount_; i++) {
-		// モデルを描画
-		(*modelItr++)->Draw(camera.GetViewProjection(), camera.GetPos());	// 次のモデルに移動
-	}
 
 }
 
@@ -63,46 +55,46 @@ void Map::TransferBoxData()
 	// 箱の数をリセット
 	boxCount_ = 0u;
 
-	// モデルのイテレータ
-	std::list<std::unique_ptr<Model>>::iterator modelItr = models_.begin();
+	//// モデルのイテレータ
+	//std::list<std::unique_ptr<Model>>::iterator modelItr = models_.begin();
 
-	for (size_t y = 0; y < 5u; y++) {
-		// 描画フラグが有効であった場合は描画
-		if (isFloorDrawing_[y]) {
+	//for (size_t y = 0; y < 5u; y++) {
+	//	// 描画フラグが有効であった場合は描画
+	//	if (isFloorDrawing_[y]) {
 
-			for (size_t z = 0; z < 10u; z++) {
-				for (size_t x = 0; x < 10u; x++) {
-					// 箱の状態
-					BoxType boxType = static_cast<BoxType>((*boxMap_)[y][z][x]);
+	//		for (size_t z = 0; z < 10u; z++) {
+	//			for (size_t x = 0; x < 10u; x++) {
+	//				// 箱の状態
+	//				BoxType boxType = static_cast<BoxType>((*boxMap_)[y][z][x]);
 
-					// 箱が存在するか
-					if (boxType != BoxType::kNone) {
-						// モデルのイテレータが末尾に到達しているか
-						if (modelItr == models_.end()) {
-							// 1つ追加する
-							models_.push_back(std::make_unique<Model>("Resources/Cube.obj"));
-							modelItr = (--models_.end());
-						}
-						// 現在のモデル
-						Model& model = **modelItr;
+	//				// 箱が存在するか
+	//				if (boxType != BoxType::kNone) {
+	//					// モデルのイテレータが末尾に到達しているか
+	//					if (modelItr == models_.end()) {
+	//						// 1つ追加する
+	//						models_.push_back(std::make_unique<Model>("Resources/Cube.obj"));
+	//						modelItr = (--models_.end());
+	//					}
+	//					// 現在のモデル
+	//					Model& model = **modelItr;
 
-						// イテレータを加算する
-						++modelItr;
+	//					// イテレータを加算する
+	//					++modelItr;
 
-						model.pos = GetGrobalPos(x, y, z);
-						model.scale = Vector3::kIdentity * *vBlockScale * 0.5f;
-						model.Update();
+	//					model.pos = GetGrobalPos(x, y, z);
+	//					model.scale = Vector3::kIdentity * *vBlockScale * 0.5f;
+	//					model.Update();
 
-						boxCount_++;
-					}
-				}
-			}
+	//					boxCount_++;
+	//				}
+	//			}
+	//		}
 
-		}
-	}
+	//	}
+	//}
 }
 
-const Map::BoxType Map::GetBoxType(const Vector3 &localPos) const
+const Map::BoxType Map::GetBoxType(const Vector3& localPos) const
 {
 
 	// もしマップ外に行っていた場合虚無

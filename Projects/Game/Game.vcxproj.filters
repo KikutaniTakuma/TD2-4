@@ -86,9 +86,6 @@
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp">
       <Filter>Game\GameManager</Filter>
     </ClCompile>
-    <ClCompile Include="Src\GameObject\Component\EnergyItem.cpp">
-      <Filter>GameObject\Component</Filter>
-    </ClCompile>
     <ClCompile Include="Src\GameObject\Component\IvyModel.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
@@ -102,9 +99,6 @@
       <Filter>Game\CollisionManager\AABB</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\Map\Map.cpp" />
-    <ClCompile Include="Src\Game\ItemManager\ItemManager.cpp">
-      <Filter>Game\ItemManager</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp">
       <Filter>Editor\BlockEditor</Filter>
     </ClCompile>
@@ -215,9 +209,6 @@
     <Filter Include="Editor\BlockEditor">
       <UniqueIdentifier>{ac571e6b-65fa-4b08-b878-ab3e3cab9bed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\ItemManager">
-      <UniqueIdentifier>{dc3095a5-ba68-4784-908e-1eb2a0323e86}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Block">
       <UniqueIdentifier>{44033f75-5a14-455e-b909-6200bd5aecc5}</UniqueIdentifier>
     </Filter>
@@ -319,9 +310,6 @@
     <ClInclude Include="Src\GameObject\Component\IvyModel.h">
       <Filter>GameObject\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Src\GameObject\Component\EnergyItem.h">
-      <Filter>GameObject\Component</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Game\CollisionManager\Capsule\Capsule.h">
       <Filter>Game\CollisionManager\Capsule</Filter>
     </ClInclude>
@@ -333,9 +321,6 @@
     </ClInclude>
     <ClInclude Include="Src\Game\Map\Map.h">
       <Filter>Game\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Game\ItemManager\ItemManager.h">
-      <Filter>Game\ItemManager</Filter>
     </ClInclude>
     <ClInclude Include="Src\Editor\BlockEditor\BlockEditor.h">
       <Filter>Editor\BlockEditor</Filter>

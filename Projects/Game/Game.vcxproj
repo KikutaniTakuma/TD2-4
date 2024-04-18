@@ -131,7 +131,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Camera\DebugCamera\DebugCamera.cpp" />
     <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp" />
     <ClCompile Include="Src\Editor\ParticleEditor\ParticleEditor.cpp" />
-    <ClCompile Include="Src\GameObject\Component\EnergyItem.cpp" />
     <ClCompile Include="Src\GameObject\Component\FollowCameraComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\HealthComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\IvyComponent.cpp" />
@@ -151,7 +150,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Game\CollisionManager\Plane\Plane.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Sphere\Sphere.cpp" />
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp" />
-    <ClCompile Include="Src\Game\ItemManager\ItemManager.cpp" />
     <ClCompile Include="Src\Game\Map\Map.cpp" />
     <ClCompile Include="Src\Game\Player\Player.cpp" />
     <ClCompile Include="Src\Game\SkyDome\SkyDome.cpp" />
@@ -175,7 +173,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Editor\ParticleEditor\ParticleEditor.h" />
     <ClInclude Include="Src\GameObject\Component\Collider.h" />
     <ClInclude Include="Src\GameObject\Component\ComponentManager.h" />
-    <ClInclude Include="Src\GameObject\Component\EnergyItem.h" />
     <ClInclude Include="Src\GameObject\Component\FollowCameraComp.h" />
     <ClInclude Include="Src\GameObject\Component\HealthComp.h" />
     <ClInclude Include="Src\GameObject\Component\IvyComponent.h" />
@@ -195,7 +192,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\CollisionManager\Plane\Plane.h" />
     <ClInclude Include="Src\Game\CollisionManager\Sphere\Sphere.h" />
     <ClInclude Include="Src\Game\GameManager\GameManager.h" />
-    <ClInclude Include="Src\Game\ItemManager\ItemManager.h" />
     <ClInclude Include="Src\Game\Map\Map.h" />
     <ClInclude Include="Src\Game\Player\Player.h" />
     <ClInclude Include="Src\Game\SkyDome\SkyDome.h" />

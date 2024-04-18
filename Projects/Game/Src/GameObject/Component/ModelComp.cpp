@@ -18,8 +18,8 @@ void ModelComp::ImGuiWidget() {
 	}
 }
 
-void ModelComp::ModelBone::Init(std::unique_ptr<Model> model) {
-	if (model) { model_ = std::move(model); }
+void ModelComp::ModelBone::Init(Model* model) {
+	if (model) { model_ = model; }
 }
 
 void ModelComp::ModelBone::SetTransform(const Transform &srt) {
@@ -28,9 +28,9 @@ void ModelComp::ModelBone::SetTransform(const Transform &srt) {
 	transform_.translate = srt.translate;
 }
 
-ModelComp::ModelBone *const ModelComp::ModelBone::AddChild(std::unique_ptr<Model> model) {
+ModelComp::ModelBone *const ModelComp::ModelBone::AddChild(Model* model) {
 	ModelBone *const modelBone = new ModelBone;
-	modelBone->Init(std::move(model));
+	modelBone->Init(model);
 
 	AddChild(modelBone);
 	return modelBone;
@@ -48,11 +48,11 @@ void ModelComp::ModelBone::SetParent(ModelBone *const parent) {
 
 void ModelComp::ModelBone::Update() {
 
-	model_->Update();
+	//model_->Update();
 
 	transform_.CalcMatrix();
 
-	model_->SetWorldMatrix(transform_.matWorld_);
+	//model_->SetWorldMatrix(transform_.matWorld_);
 
 	for (auto &child : children_) {
 		child->Update();
@@ -80,12 +80,12 @@ bool ModelComp::ModelBone::ImGuiWidget() {
 	return result;
 }
 
-ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, std::unique_ptr<Model> model, const Transform &srt) {
+ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, Model* model, const Transform &srt) {
 	if (modelKey_.count(key) != 0u) { return nullptr; }
 	// �{�[���̒ǉ�
 	auto  newBone = std::make_unique<ModelBone>();
 	// ���f����n��
-	newBone->Init(std::move(model));
+	newBone->Init(model);
 	// GameObject��e�Ƃ���
 	newBone->transform_.parent_ = &transform_;
 
@@ -102,10 +102,10 @@ ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, std::uniq
 	return modelKey_.at(key);
 }
 
-ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, std::unique_ptr<Model> model, ModelBone *const parent, const Transform &srt) {
+ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, Model* model, ModelBone *const parent, const Transform &srt) {
 	if (modelKey_.count(key) != 0u) { return nullptr; }
 
-	auto *const newBone = parent->AddChild(std::move(model));
+	auto *const newBone = parent->AddChild(model);
 
 	newBone->SetTransform(srt);
 
