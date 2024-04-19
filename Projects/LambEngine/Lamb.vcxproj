@@ -122,6 +122,7 @@
     <ClCompile Include="AudioManager\Audio\Audio.cpp" />
     <ClCompile Include="Drawers\AnimationModel\AnimationModel.cpp" />
     <ClCompile Include="Drawers\BaseDrawer.cpp" />
+    <ClCompile Include="Drawers\BloodBlock\BloodBlock.cpp" />
     <ClCompile Include="Drawers\DrawerManager.cpp" />
     <ClCompile Include="Drawers\Line\Line.cpp" />
     <ClCompile Include="Drawers\Model\Model.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="AudioManager\Audio\Audio.h" />
     <ClInclude Include="Drawers\AnimationModel\AnimationModel.h" />
     <ClInclude Include="Drawers\BaseDrawer.h" />
+    <ClInclude Include="Drawers\BloodBlock\BloodBlock.h" />
     <ClInclude Include="Drawers\DrawerManager.h" />
     <ClInclude Include="Drawers\Line\Line.h" />
     <ClInclude Include="Drawers\Model\Model.h" />

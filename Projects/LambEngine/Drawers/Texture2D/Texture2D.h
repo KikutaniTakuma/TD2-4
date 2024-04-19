@@ -16,7 +16,7 @@ private:
 		uint32_t textureID = 0u;
 	};
 
-	using Texture2DRenderContext = RenderContext<ShaderData, kMaxDrawCount>;
+	using RenderContextType = RenderContext<ShaderData, kMaxDrawCount>;
 
 	static const LoadFileNames kFileNames_;
 

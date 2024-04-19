@@ -27,7 +27,7 @@ void Texture2D::Load()
 {
 	Lamb::SafePtr renderContextManager = RenderContextManager::GetInstance();
 
-	renderContextManager->Load<Texture2DRenderContext>(kFileNames_);
+	renderContextManager->Load<RenderContextType>(kFileNames_);
 
 	renderSet = renderContextManager->Get(kFileNames_);
 }
@@ -40,7 +40,7 @@ void Texture2D::Draw(
 	uint32_t color,
 	BlendType blend
 ) {
-	Lamb::SafePtr renderContext = renderSet->GetRenderContextDowncast<Texture2DRenderContext>(blend);
+	Lamb::SafePtr renderContext = renderSet->GetRenderContextDowncast<RenderContextType>(blend);
 
 	renderContext->SetSahderStruct(
 		ShaderData{

@@ -187,6 +187,9 @@
     <ClCompile Include="Utils\Easeing\Easeing.cpp">
       <Filter>Utils\Easeing</Filter>
     </ClCompile>
+    <ClCompile Include="Drawers\BloodBlock\BloodBlock.cpp">
+      <Filter>Drawers\BloodBlock</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -389,6 +392,9 @@
     </Filter>
     <Filter Include="Utils\Easeing">
       <UniqueIdentifier>{aef64d4f-fe46-4b8a-9005-99ceaf8c7dcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Drawers\BloodBlock">
+      <UniqueIdentifier>{f0094d6c-6a58-47c5-b426-f75b54710489}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -616,6 +622,9 @@
     </ClInclude>
     <ClInclude Include="Utils\Easeing\Easeing.h">
       <Filter>Utils\Easeing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawers\BloodBlock\BloodBlock.h">
+      <Filter>Drawers\BloodBlock</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
