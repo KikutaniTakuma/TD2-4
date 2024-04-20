@@ -6,7 +6,7 @@ PixelShaderOutPut main(VertexShaderOutput input)
 	
 	float32_t4 textureColor = textures[input.textureID].Sample(smp, input.uv);
 
-	output.color = textureColor * kColor[input.instanceID].color;
+	output.color = textureColor;
 
 	if(kIsLighting[input.instanceID].isLighting == 1) {
 	// ディレクションライト拡散反射光
@@ -24,5 +24,7 @@ PixelShaderOutPut main(VertexShaderOutput input)
 
 		output.color.xyz *= lig;
 	}
+
+	output.color *= kColor[input.instanceID].color;
 	return output;
 }
