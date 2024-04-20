@@ -25,3 +25,10 @@ void BaseDrawer::Draw(const Mat4x4& worldMatrix, const Mat4x4& camera, uint32_t 
 
 	render->AddDrawCount();
 }
+
+void BaseDrawer::SetLight(const Light& light)
+{
+	for (auto& i : *renderSet) {
+		i->SetLight(light);
+	}
+}
