@@ -1,4 +1,4 @@
-#include "Model.hlsli"
+#include "BloodBlock.hlsli"
 
 VertexShaderOutput main(VertexShaderInput input,uint32_t instanceID : SV_InstanceID)
 {
