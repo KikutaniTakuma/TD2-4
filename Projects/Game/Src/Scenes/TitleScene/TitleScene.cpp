@@ -17,7 +17,7 @@ void TitleScene::Initialize()
 {
 	currentCamera_->pos = Vector2{ 500.f, 300.f };
 
-	tex_.reset( new Texture2D( "./Resources/Ball.png" ) );
+	/*tex_.reset( new Texture2D( "./Resources/Ball.png" ) );
 	tex_->scale *= 30.0f;
 	tex_->pos = Vector2{ 500.0f, 0.0f };
 
@@ -26,7 +26,7 @@ void TitleScene::Initialize()
 	sphere_->pos = Vector2{ 100.0f, 100.0f };
 	sphere2_.reset(new Texture2D("./Resources/Ball.png"));
 	sphere2_->scale *= 60.0f;
-	sphere2_->pos = Vector2{ 1000.0f, 400.0f };
+	sphere2_->pos = Vector2{ 1000.0f, 400.0f };*/
 
 }
 
@@ -55,21 +55,21 @@ void TitleScene::Update()
 	if (key->GetKey(DIK_A)) {
 		moveVec.x = -1.0f;
 	}
-	tex_->pos += moveVec.Normalize() * 100.0f * Lamb::DeltaTime();
+	//tex_->pos += moveVec.Normalize() * 100.0f * Lamb::DeltaTime();
 
 	auto* const mouse = input_->GetMouse();
 
 	if (mouse->LongPush(Mouse::Button::Left)) {
-		tex_->pos = Vector3(mouse->GetPos()) * Mat4x4::MakeInverse(currentCamera_->GetViewOthographicsVp());
+		//tex_->pos = Vector3(mouse->GetPos()) * Mat4x4::MakeInverse(camera_->GetViewOthographicsVp());
 	}
 
 
-	isCollision_ = Lamb::Collision::Capsule(
+	/*isCollision_ = Lamb::Collision::Capsule(
 		sphere_->pos, sphere2_->pos, sphere_->scale.x * 0.5f,
 		tex_->pos, tex_->scale.x * 0.5f
-	);
+	);*/
 
-	tex_->color = isCollision_ ? 0xff0000ff : 0xffffffff;
+	/*tex_->color = isCollision_ ? 0xff0000ff : 0xffffffff;
 
 	tex_->Debug("テスト用サークル");
 	tex_->Update();
@@ -77,18 +77,18 @@ void TitleScene::Update()
 	sphere_->Debug("Sphere");
 	sphere_->Update();
 	sphere2_->Debug("Sphere2");
-	sphere2_->Update();
+	sphere2_->Update();*/
 
 }
 
 void TitleScene::Draw()
 {
-	tex_->Draw(currentCamera_->GetViewOthographics());
+	//tex_->Draw(camera_->GetViewOthographics());
 
-	sphere_->Draw(currentCamera_->GetViewOthographics());
-	sphere2_->Draw(currentCamera_->GetViewOthographics());
+	//sphere_->Draw(camera_->GetViewOthographics());
+	//sphere2_->Draw(camera_->GetViewOthographics());
 
-	Line::Draw(sphere_->pos, sphere2_->pos, currentCamera_->GetViewOthographics(), 0xffffffff);
+	//Line::Draw(sphere_->pos, sphere2_->pos, camera_->GetViewOthographics(), 0xffffffff);
 
 	Lamb::screenout << "Capsule Test" << Lamb::endline
 		<< "Check : " << isCollision_;

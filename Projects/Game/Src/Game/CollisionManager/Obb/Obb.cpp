@@ -36,7 +36,7 @@ bool Obb::IsCollision(Vector3 pos, float radius) {
 		position *= Mat4x4::MakeScalar(scale_);
 	}
 
-	pos *= Mat4x4::MakeInverse(Mat4x4::MakeAffin(Vector3::kIdentity, rotate_, center_));
+	pos *= Mat4x4::MakeAffin(Vector3::kIdentity, rotate_, center_).Inverse();
 
 	//std::array<Plane, 6> planes = {
 	//	Plane{-orientations[1].Normalize(), (center_ - orientations[1]).Length()}, //底面
@@ -73,7 +73,7 @@ bool Obb::IsCollision(Vector3 pos, float radius) {
 
 Mat4x4 Obb::GetRotate() const{
 	Mat4x4 rotateMatrix;
-	rotateMatrix.Identity();
+	rotateMatrix = Mat4x4::kIdentity;
 	rotateMatrix[0][0] = orientations_[0].x;
 	rotateMatrix[0][1] = orientations_[0].y;
 	rotateMatrix[0][2] = orientations_[0].z;
@@ -203,7 +203,7 @@ bool Obb::IsCollisionOBBOBB(const Obb& obb) {
 
 
 void Obb::Update() {
-	worldMatrix_.Affin(scale_, rotate_, center_);
+	worldMatrix_= Mat4x4::MakeAffin(scale_, rotate_, center_);
 
 	size_ = scale_ * 0.5f;
 

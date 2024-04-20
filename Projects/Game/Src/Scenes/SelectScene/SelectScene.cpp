@@ -4,6 +4,12 @@ bool SelectScene::isStageClear_[maxStage_]{};
 
 int SelectScene::selectNum_ = 0;
 
+struct Tex2DState {
+	Transform transform;
+	uint32_t textureID;
+	uitn32_t color;
+};
+
 SelectScene::SelectScene():
 	BaseScene{ BaseScene::ID::StageSelect }{
 
@@ -38,14 +44,12 @@ void SelectScene::Update(){
 	for (size_t i = 0; i < texies_.size(); i++) {
 		texies_[i]->color = 0xffffffff;
 		texies_[selectNum_]->color = 0xff0000ff;
-		texies_[i]->Update();
 	}
 	SelectMove();
 
 	selectTex_->pos.x = -450.0f + stageInterbal * selectNum_;
 
 	selectTex_->Debug("テスト用サークル");
-	selectTex_->Update();
 	
 
 

@@ -14,11 +14,11 @@ SceneLoad::SceneLoad() :
 	isLoad_{ false },
 	isWait_{false}
 {
-	loadTex_.reset(new Texture2D{ setting.fileName });
+	//loadTex_.reset(new Texture2D{ setting.fileName });
 
-	loadTex_->scale = Lamb::ClientSize();
+	/*loadTex_->scale = Lamb::ClientSize();
 	loadTex_->uvSize.x = 1.0f / static_cast<float>(setting.animationNumber);
-	loadTex_->uvPibotSpd = 1.0f / static_cast<float>(setting.animationNumber);
+	loadTex_->uvPibotSpd = 1.0f / static_cast<float>(setting.animationNumber);*/
 
 	std::unique_ptr<Camera> camera{ new Camera{} };
 	camera->Update();
@@ -39,16 +39,16 @@ SceneLoad::SceneLoad() :
 			isWait_ = false;
 			Engine::FrameStart();
 
-			loadTex_->Animation(
+			/*loadTex_->Animation(
 				static_cast<size_t>(setting.animationSpeed),
 				true,
 				0.0f,
 				static_cast<float>(setting.animationNumber)
-			);
+			);*/
 
-			loadTex_->Update();
+			//loadTex_->Update();
 
-			loadTex_->Draw(cameraMatrix_);
+			//loadTex_->Draw(cameraMatrix_);
 
 			Engine::FrameEnd();
 
@@ -70,11 +70,11 @@ SceneLoad::~SceneLoad()
 void SceneLoad::Start()
 {
 	if (!isLoad_) {
-		loadTex_->AnimationStart();
+		//loadTex_->AnimationStart();
 		isLoad_ = true;
 
-		loadTex_->Update();
-		loadTex_->Draw(cameraMatrix_);
+		//loadTex_->Update();
+		//loadTex_->Draw(cameraMatrix_);
 		Engine::FrameEnd();
 
 		condition_.notify_all();

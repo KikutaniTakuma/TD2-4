@@ -18,20 +18,9 @@ const Quaternion Quaternion::kZero = { 0.0f, 0.0f, 0.0f, 0.0f };
 /// コンストラクタ
 /// ========================================================================
 #pragma region Constructor
-Quaternion::Quaternion():
+constexpr Quaternion::Quaternion():
 	m{0.0f}
 {}
-
-Quaternion::Quaternion(const Quaternion& right):
-	Quaternion()
-{
-	*this = right;
-}
-Quaternion::Quaternion(Quaternion&& right) noexcept :
-	Quaternion()
-{
-	*this = right;
-}
 
 Quaternion::Quaternion(const Vector4& right):
 	Quaternion()
@@ -60,17 +49,6 @@ Quaternion::Quaternion(float x, float y, float z, float w) {
 /// コピー演算子
 /// ========================================================================
 #pragma region Copy operator
-Quaternion& Quaternion::operator=(const Quaternion& right) {
-	m = right.m;
-
-	return *this;
-}
-Quaternion& Quaternion::operator=(Quaternion&& right)noexcept {
-	m = std::move(right.m);
-
-	return *this;
-}
-
 Quaternion& Quaternion::operator=(const Vector4& right) {
 	m = right.m;
 
@@ -85,10 +63,10 @@ Quaternion& Quaternion::operator=(const Vector4& right) {
 /// 単項演算子
 /// ========================================================================
 #pragma region Unary operator
-Quaternion Quaternion::operator+() const {
+Quaternion Quaternion::operator+() const noexcept {
 	return *this;
 }
-Quaternion Quaternion::operator-() const {
+Quaternion Quaternion::operator-() const noexcept {
 	return Quaternion{ -m[0],-m[1],-m[2],-m[3] };
 }
 #pragma endregion
@@ -185,7 +163,7 @@ Quaternion& Quaternion::operator*=(float right) {
 Quaternion Quaternion::operator/(float right) const {
 	return *this * (1.0f / right);
 }
-Quaternion operator/(float right, const Quaternion& left) {
+[[nodiscard]] Quaternion operator/(float right, const Quaternion& left) {
 	return left / right;
 }
 Quaternion& Quaternion::operator/=(float right) {
@@ -235,38 +213,62 @@ Quaternion Quaternion::Normalize() const {
 		return *this;
 	}
 
-	float nor = 1.0f / this->Length();
-
-	return Quaternion{ *this } *nor;
+	return Quaternion{ *this } / this->Length();
 }
 
 Quaternion Quaternion::Inverce() const {
 	return Conjugate() / std::pow(Length(), 2.0f);
 }
 
+Vector3 Quaternion::GetDirectionX() const {
+	return Vector3(
+		std::pow(quaternion.w, 2.0f) + std::pow(quaternion.x, 2.0f) - std::pow(quaternion.y, 2.0f) - std::pow(quaternion.z, 2.0f),
+		2.0f * (quaternion.x * quaternion.y + quaternion.w * quaternion.z),
+		2.0f * (quaternion.x * quaternion.z - quaternion.w * quaternion.y)
+	);
+}
+
+Vector3 Quaternion::GetDirectionY() const
+{
+	return Vector3(
+		2.0f * (quaternion.x * quaternion.y - quaternion.w * quaternion.z),
+		std::pow(quaternion.w, 2.0f) - std::pow(quaternion.x, 2.0f) + std::pow(quaternion.y, 2.0f) - std::pow(quaternion.z, 2.0f),
+		2.0f * (quaternion.y * quaternion.z + quaternion.w * quaternion.x)
+	);
+}
+
+Vector3 Quaternion::GetDirectionZ() const
+{
+	return Vector3(
+		2.0f * (quaternion.x * quaternion.z + quaternion.w * quaternion.y),
+		2.0f * (quaternion.y * quaternion.z - quaternion.w * quaternion.x),
+		std::pow(quaternion.w, 2.0f) - std::pow(quaternion.x, 2.0f) - std::pow(quaternion.y, 2.0f) + std::pow(quaternion.z, 2.0f)
+	);
+}
+
 Mat4x4 Quaternion::GetMatrix() const {
+	Vector3&& directionX = GetDirectionX();
+	Vector3&& directionY = GetDirectionY();
+	Vector3&& directionZ = GetDirectionZ();
+
+
 	Mat4x4 result = Mat4x4{
-		std::array<Vector4, 4>{
-			Vector4{
-				std::pow(quaternion.w, 2.0f) + std::pow(quaternion.x, 2.0f) - std::pow(quaternion.y, 2.0f) - std::pow(quaternion.z, 2.0f),
-				2.0f * (quaternion.x * quaternion.y + quaternion.w * quaternion.z),
-				2.0f * (quaternion.x * quaternion.z - quaternion.w * quaternion.y),
-				0.0f
-			},
-			Vector4{
-				2.0f * (quaternion.x * quaternion.y - quaternion.w * quaternion.z),
-				std::pow(quaternion.w, 2.0f) - std::pow(quaternion.x, 2.0f) + std::pow(quaternion.y, 2.0f) - std::pow(quaternion.z, 2.0f),
-				2.0f * (quaternion.y * quaternion.z + quaternion.w * quaternion.x),
-				0.0f
-			},
-			Vector4{
-				2.0f * (quaternion.x * quaternion.z + quaternion.w * quaternion.y),
-				2.0f * (quaternion.y * quaternion.z - quaternion.w * quaternion.x),
-				std::pow(quaternion.w, 2.0f) - std::pow(quaternion.x, 2.0f) - std::pow(quaternion.y, 2.0f) + std::pow(quaternion.z, 2.0f),
-				0.0f
-			},
-			Vector4::kWIdentity
-		}
+			directionX.x,
+			directionX.y,
+			directionX.z,
+			0.0f,
+
+			directionY.x,
+			directionY.y,
+			directionY.z,
+			0.0f,
+
+			directionZ.x,
+			directionZ.y,
+			directionZ.z,
+			0.0f,
+
+			0.0f,0.0f,0.0f,1.0f
 	};
 
 
@@ -322,6 +324,24 @@ Quaternion Quaternion::MakeRotateZAxis(float angle) {
 	return Quaternion{ 0.0f, 0.0f, std::sin(angle * 0.5f),std::cos(angle * 0.5f) };
 }
 
+Quaternion Quaternion::EulerToQuaternion(const Vector3& euler)
+{
+	float cz = std::cos(euler.z * 0.5f);
+	float sz = std::sin(euler.z * 0.5f);
+	float cy = std::cos(euler.y * 0.5f);
+	float sy = std::sin(euler.y * 0.5f);
+	float cx = std::cos(euler.x * 0.5f);
+	float sx = std::sin(euler.x * 0.5f);
+
+	Quaternion result;
+	result.quaternion.w = cz * cy * cx + sz * sy * sx;
+	result.quaternion.x = cz * cy * sx - sz * sy * cx;
+	result.quaternion.y = sz * cy * sx + cz * sy * cx;
+	result.quaternion.z = sz * cy * cx - cz * sy * sx;
+
+	return result;
+}
+
 Quaternion Quaternion::Slerp(Quaternion start, const Quaternion& end, float t) {
 	float dot = start.Dot(end);
 	if (dot < 0.0f) {
@@ -342,6 +362,31 @@ Quaternion Quaternion::Slerp(Quaternion start, const Quaternion& end, float t) {
 	else {
 		result = (std::sin(theata * (1.0f - t)) * sinTheata) * start + (std::sin(theata * t) * sinTheata) * end;
 	}
+
+	return result;
+}
+LogQuaternion Quaternion::Log(const Quaternion& quaternion)
+{
+	LogQuaternion result;
+	float theata = std::acos(quaternion.quaternion.w);
+	if (theata == 0.0f) {
+		return result;
+	}
+	Vector3&& u = quaternion.vector.vector3 / std::sin(theata);
+	result = u * theata;
+	
+	return result;
+}
+Quaternion Quaternion::Exp(const LogQuaternion& logQuaternion)
+{
+	Quaternion result;
+	float theata = logQuaternion.Length();
+	result.vector.w = std::cos(theata);
+	if (theata == 0.0f) {
+		return result;
+	}
+	Vector3&& u = logQuaternion / theata;
+	result.vector.vector3 = u * std::sin(theata);
 
 	return result;
 }

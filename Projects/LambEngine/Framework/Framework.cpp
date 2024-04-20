@@ -2,21 +2,14 @@
 #include "Engine/Engine.h"
 #include "Engine/Core/WindowFactory/WindowFactory.h"
 #include "Engine/EngineUtils/FrameInfo/FrameInfo.h"
-#include "Engine/Graphics/ResourceManager/ResourceManager.h"
 #include "Utils/ExecutionLog/ExecutionLog.h"
 #include "Error/Error.h"
 
 #include "Input/Input.h"
 
-#include "Drawers/Texture2D/Texture2D.h"
-#include "Drawers/Model/Model.h"
 #include "Drawers/Line/Line.h"
-#include "Drawers/Particle/Particle.h"
-
-#include "Math/Vector2.h"
 
 void Framework::Initialize() {
-	ResourceManager::Initialize();
 	// ライブラリ初期化
 	Engine::Initialize(initDesc_.windowName, initDesc_.windowSize, initDesc_.maxFps, initDesc_.isFullesceen);
 
@@ -24,24 +17,15 @@ void Framework::Initialize() {
 	// 入力処理初期化
 	Input::Initialize();
 
-	// 各種パイプライン生成
-	Texture2D::Initialize();
-	Mesh::Initialize();
-	Model::Initialize();
 	Line::Initialize();
-	Particle::Initialize();
 }
 
 void Framework::Finalize() {
 	// インデックスリソース解放
 	Line::Finalize();
-	Particle::Finalize();
-	Texture2D::Finalize();
 
 	// 入力関連解放
 	Input::Finalize();
-
-	ResourceManager::Finalize();
 
 	// ライブラリ終了
 	Engine::Finalize();

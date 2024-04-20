@@ -1,4 +1,5 @@
 #pragma once
+#include "Utils/SafePtr/SafePtr.h"
 
 class ImGuiManager {
 private:
@@ -17,7 +18,7 @@ public:
 	static void Finalize();
 
 private:
-	static ImGuiManager* instance_;
+	static Lamb::SafePtr<ImGuiManager> instance_;
 
 public:
 	void Start();

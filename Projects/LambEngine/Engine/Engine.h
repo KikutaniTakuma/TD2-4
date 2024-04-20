@@ -103,6 +103,12 @@ private:
 	/// 
 private:
 	void InitializeDirectXCommand();
+	void FinalizeDirectXCommand();
+
+public:
+	class DirectXCommand* const GetMainCommandlist() const {
+		return directXCommand_;
+	}
 
 private:
 	class DirectXCommand* directXCommand_ = nullptr;

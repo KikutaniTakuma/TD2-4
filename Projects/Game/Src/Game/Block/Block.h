@@ -6,6 +6,8 @@
 #include"Math/Vector3.h"
 #include <list>
 #include <Drawers/Model/Model.h>
+#include "Utils/SafePtr/SafePtr.h"
+#include "Math/Transform.h"
 #include <Camera/Camera.h>
 #include"Game/CollisionManager/AABB/AABB.h"
 #include"Game/CollisionManager/Collider/Collider.h"
@@ -57,7 +59,9 @@ public:
 	inline static const SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale{ {1.5f ,0.5f} };
 private:
 
-	std::unique_ptr<Model> model_;
+	std::unique_ptr<Transform> transform_;
+
+	Lamb::SafePtr<Model> model_;
 
 	std::unique_ptr<Obb> obb_;
 

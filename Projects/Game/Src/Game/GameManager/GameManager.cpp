@@ -2,7 +2,6 @@
 
 #include <fstream>
 
-#include "GameObject/Component/EnergyItem.h"
 #include "GameObject/Component/IvyComponent.h"
 #include "Utils/Random/Random.h"
 #include <Game/CollisionManager/Capsule/Capsule.h>
@@ -10,6 +9,8 @@
 #include <GlobalVariables/GlobalVariables.h>
 #include <GameObject/Component/ModelComp.h>
 #include <GameObject/Component/OnBlockMoveComp.h>
+#include "Utils/SafePtr/SafePtr.h"
+#include "Drawers/DrawerManager.h"
 
 void GameManager::Init()
 {
@@ -19,11 +20,14 @@ void GameManager::Init()
 	blockMap_ = std::make_unique<Map>();
 	blockMap_->Init();
 
+	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
+	drawerManager->LoadModel("Resources/Cube.obj");
+
 	//player_ = std::make_unique<GameObject>();
 	//{
 	//	auto *const modelComp = player_->AddComponent<ModelComp>();
-	//	modelComp->AddBone("Body", std::make_unique<Model>("Resources/Cube.obj"), { { 0.4f,0.5f,0.4f} });
-	//	modelComp->GetBone("Body")->model_->color = 0xFF0000FF;
+	//	modelComp->AddBone("Body", drawerManager->GetModel("Resources/Cube.obj"), { { 0.4f,0.5f,0.4f} });
+	//	//modelComp->GetBone("Body")->model_->color = 0xFF0000FF;
 	//}
 
 	//player_->AddComponent<OnBlockMoveComp>();

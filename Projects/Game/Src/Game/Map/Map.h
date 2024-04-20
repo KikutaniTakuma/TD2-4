@@ -95,6 +95,6 @@ private:
 	inline static SoLib::VItem<"ブロックの間隔", Vector2> vBoxDistance_{ {1, 1} };
 	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale{ {1.f,10.0f} };
 
-	std::list<std::unique_ptr<Model>> models_;
+	Model* models_;
 
 };

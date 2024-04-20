@@ -1,16 +1,20 @@
 #include "Block.h"
 #include "../SoLib/SoLib/SoLib_Traits.h"
+#include "Drawers/DrawerManager.h"
 
 void Block::Initialize(){
 	pos_ = Vector3::kZero;
 
-	model_ = std::make_unique<Model>("Resources/Cube.obj");
+	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
+	drawerManager->LoadModel("Resources/Cube.obj");
+	model_ = drawerManager->GetModel("Resources/Cube.obj");
 
 	obb_ = std::make_unique<Obb>();
 
-	model_->scale = { vBlockScale->x,vBlockScale->y,vBlockScale->y };
+	transform_ = std::make_unique<Transform>();
+	transform_->scale = { vBlockScale->x,vBlockScale->y,vBlockScale->y };
 
-	obb_->scale_ = { model_->scale.x,model_->scale.y * 2.0f,model_->scale.z * 2.0f };
+	obb_->scale_ = { transform_->scale.x,transform_->scale.y * 2.0f,transform_->scale.z * 2.0f };
 
 	isBreak_ = false;
 }
@@ -35,13 +39,13 @@ void Block::Update(){
 	}
 	
 
-	model_->pos = pos_;
+	transform_->translate = pos_;
 	
-	model_->rotate.z = rotateZ_;
+	transform_->rotate.z = rotateZ_;
 
-	model_->Update();
+	transform_->CalcMatrix();
 
-	obb_->center_ = model_->pos;
+	obb_->center_ = transform_->translate;
 	obb_->Update();
 	
 
@@ -49,7 +53,7 @@ void Block::Update(){
 }
 
 void Block::Draw(const Camera& camera){
-	model_->Draw(camera.GetViewProjection(), camera.GetPos());
+	model_->Draw(transform_->matWorld_, camera.GetViewProjection(), 0xffffffff, BlendType::kNormal);
 }
 
 void Block::Debug(){
@@ -58,9 +62,9 @@ void Block::Debug(){
 	ImGui::End();
 
 	obb_->Debug("コライダー");
-	model_->Debug("ボックスモデル");
+	transform_->ImGuiWidget("ボックスモデル");
 }
 
 void Block::Trade(){
-	model_->pos = obb_->center_;
+	transform_->translate = obb_->center_;
 }

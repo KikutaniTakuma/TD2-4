@@ -9,7 +9,6 @@
 #include "Game/CollisionManager/Collider/Collider.h"
 #include "Utils/Easeing/Easeing.h"
 #include "Game/SkyDome/SkyDome.h"
-#include "Game/ItemManager/ItemManager.h"
 #include "Game/CollisionManager/Sphere/Sphere.h"
 
 class ResultScene : public BaseScene{
@@ -33,7 +32,7 @@ public:
 
 	void Debug();
 private:
-	std::unique_ptr<Texture2D> tex_;
+	//std::unique_ptr<Texture2D> tex_;
 
 
 

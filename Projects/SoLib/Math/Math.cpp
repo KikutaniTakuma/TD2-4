@@ -18,11 +18,14 @@ Mat4x4 SoLib::Math::Affine(const Vector3 &scale, const Quaternion &quaternion, c
 
 	// 回転部に対してスカラを乗算
 	for (uint8_t i = 0u; i < 3u; i++) {
-		result[i] *= scale[i];
+		for (uint8_t k = 0; k < 3; k++) {
+			result[i][k] *= scale[i];
+		}
 	}
 	// 平行移動部を加算
-	result[3].GetVector3() = transform;
-
+	for (uint8_t i = 0u; i < 3; i++) {
+		result[3][i] = transform[i];
+	}
 	return result;
 }
 

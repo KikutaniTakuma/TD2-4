@@ -63,7 +63,7 @@ void EnemyManager::Debug(){
 void EnemyManager::AddEnemy(const Vector3& pos){
 	newEnemy_ = std::make_unique<Enemy>();
 	newEnemy_->Initialize();
-	newEnemy_->pos_ = pos;
+	newEnemy_->transform.translate = pos;
 	newEnemy_->SetStartPos(pos);
 	startPosList_.push_back(pos);
 

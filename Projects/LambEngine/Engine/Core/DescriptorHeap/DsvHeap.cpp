@@ -1,24 +1,21 @@
 #include "DsvHeap.h"
 #include "Engine/Graphics/DepthBuffer/DepthBuffer.h"
 #include "Utils/ExecutionLog/ExecutionLog.h"
-#include <cassert>
 #include <algorithm>
 #include "Error/Error.h"
-#include "Utils/SafeDelete/SafeDelete.h"
 
-DsvHeap* DsvHeap::instance_ = nullptr;
+Lamb::SafePtr<DsvHeap> DsvHeap::instance_ = nullptr;
 
 void DsvHeap::Initialize(UINT heapSize) {
-	assert(!instance_);
-	instance_ = new DsvHeap{ heapSize };
+	instance_.reset(new DsvHeap( heapSize ));
 }
 
 void DsvHeap::Finalize() {
-	Lamb::SafeDelete(instance_);
+	instance_.reset();
 }
 
 DsvHeap* const DsvHeap::GetInstance() {
-	return instance_;
+	return instance_.get();
 }
 
 DsvHeap::DsvHeap(uint32_t heapSize) :
@@ -54,7 +51,6 @@ void DsvHeap::CreateHeapHandles() {
 }
 
 uint32_t DsvHeap::CreateView(DepthBuffer& depthStencilBuffer) {
-	assert(currentHandleIndex_ < heapSize_);
 	if (currentHandleIndex_ >= heapSize_) {
 		throw Lamb::Error::Code<DsvHeap>("Over HeapSize", __func__);
 	}

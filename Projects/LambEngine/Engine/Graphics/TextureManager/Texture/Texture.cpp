@@ -1,12 +1,9 @@
 #include "Texture.h"
+#include "../externals/DirectXTex/d3dx12.h"
 #include "Utils/ConvertString/ConvertString.h"
-#include "Engine/Engine.h"
 #include "Engine/Core/DirectXDevice/DirectXDevice.h"
-#include "Engine/Core/DirectXCommand/DirectXCommand.h"
 #include <cassert>
-#include <iostream>
 #include <filesystem>
-#include "Utils/ExecutionLog/ExecutionLog.h"
 #include "../TextureManager.h"
 #include "Engine/Core/DescriptorHeap/CbvSrvUavHeap.h"
 #include "Error/Error.h"
@@ -39,33 +36,6 @@ Texture& Texture::operator=(Texture&& tex) noexcept {
 	return *this;
 }
 
-void Texture::Load(const std::string& filePath) {
-	if (!isLoad_ && !threadLoadFlg_) {
-		this->fileName_ = filePath;
-
-		DirectX::ScratchImage mipImages = LoadTexture(filePath);
-		const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-		size_ = { static_cast<float>(metadata.width),static_cast<float>(metadata.height) };
-		textureResouce_ = CreateTextureResource(metadata);
-		textureResouce_.SetName<Texture>();
-
-		if (textureResouce_ && !DirectXCommand::GetInstance()->GetIsCloseCommandList()) {
-			intermediateResource_ = UploadTextureData(textureResouce_.Get(), mipImages);
-		}
-		else {
-			return;
-		}
-
-		srvDesc_.Format = metadata.format;
-		srvDesc_.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc_.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc_.Texture2D.MipLevels = UINT(metadata.mipLevels);
-
-		// load済み
-		isLoad_ = true;
-	}
-}
-
 void Texture::Load(const std::string& filePath, ID3D12GraphicsCommandList* commandList) {
 	if (!isLoad_ && !threadLoadFlg_) {
 		this->fileName_ = filePath;
@@ -74,7 +44,6 @@ void Texture::Load(const std::string& filePath, ID3D12GraphicsCommandList* comma
 		const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
 		size_ = { static_cast<float>(metadata.width),static_cast<float>(metadata.height) };
 		textureResouce_ = CreateTextureResource(metadata);
-		textureResouce_.SetName<Texture>();
 
 		if (textureResouce_) {
 			intermediateResource_ = UploadTextureData(textureResouce_.Get(), mipImages, commandList);
@@ -104,7 +73,7 @@ void Texture::Unload() {
 			textureResouce_.Reset();
 		}
 
-		CbvSrvUavHeap::GetInstance()->ReleaseView(heapHandle_);
+		CbvSrvUavHeap::GetInstance()->ReleaseView(*this);
 
 		// Unload済み
 		isLoad_ = false;
@@ -174,27 +143,6 @@ ID3D12Resource* Texture::CreateTextureResource(const DirectX::TexMetadata& metaD
 	return resource;
 }
 
-[[nodiscard]]
-ID3D12Resource* Texture::UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages) {
-	static ID3D12Device* device = DirectXDevice::GetInstance()->GetDevice();
-	
-	std::vector<D3D12_SUBRESOURCE_DATA> subresources;
-	DirectX::PrepareUpload(device, mipImages.GetImages(), mipImages.GetImageCount(), mipImages.GetMetadata(), subresources);
-	uint64_t intermediateSize = GetRequiredIntermediateSize(texture, 0, UINT(subresources.size()));
-	ID3D12Resource* resource = DirectXDevice::GetInstance()->CreateBufferResuorce(intermediateSize);
-	UpdateSubresources(DirectXCommand::GetInstance()->GetCommandList(), texture, resource, 0, 0, UINT(subresources.size()), subresources.data());
-	// Textureへの転送後は利用できるよう、D3D12_STATE_COPY_DESTからD3D12_RESOURCE_STATE_GENERIC_READへResouceStateを変更する
-	Barrier(
-		texture,
-		D3D12_RESOURCE_STATE_COPY_DEST,
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES
-	);
-	
-	return resource;
-}
-
-[[nodiscard]]
 ID3D12Resource* Texture::UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, ID3D12GraphicsCommandList* commandList) {
 	static ID3D12Device* device = DirectXDevice::GetInstance()->GetDevice();
 	
@@ -261,7 +209,7 @@ void Texture::Set(
 ) {
 	if (CanUse()) {
 		CbvSrvUavHeap* srvHeap = CbvSrvUavHeap::GetInstance();
-		srvHeap->ReleaseView(heapHandle_);
+		srvHeap->ReleaseView(*this);
 		textureResouce_.Reset();
 	}
 

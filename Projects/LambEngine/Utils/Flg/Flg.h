@@ -51,7 +51,10 @@ namespace Lamb {
 			return flg_ != other.flg_ || preFlg_ != other.preFlg_;
 		}
 
-		inline bool* const Data() {
+		inline bool* const data() {
+			return &flg_;
+		}
+		inline const bool* const data() const {
 			return &flg_;
 		}
 

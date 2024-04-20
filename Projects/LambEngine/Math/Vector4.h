@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
 #include <immintrin.h>
-#include "Utils/Concepts/Concepts.h"
+#include "Utils/Cocepts/Cocepts.h"
 
 /// <summary>
 /// 4次元配列
@@ -11,13 +11,14 @@ class Vector4 final {
 	/// コンストラクタ
 	/// </summary>
 public:
-	Vector4() noexcept;
-	Vector4(const Vector4& right) noexcept;
-	Vector4(Vector4&& right) noexcept;
+	constexpr Vector4() noexcept;
+	constexpr Vector4(const Vector4&) = default;
+	constexpr Vector4(Vector4&&) = default;
 	Vector4(float x, float y, float z, float w) noexcept;
 	Vector4(const class Vector3& vec3, float w) noexcept;
 	Vector4(const class Vector2& vec2, float z, float w) noexcept;
 	Vector4(uint32_t right) noexcept;
+	Vector4(const std::array<float, 4>& right) noexcept;
 public:
 	~Vector4() = default;
 
@@ -25,36 +26,39 @@ public:
 	/// 演算子のオーバーロード
 	/// </summary>
 public:
-	Vector4& operator=(const Vector4& right) noexcept;
+	[[nodiscard]] Vector4 operator+() const noexcept;
+	[[nodiscard]] Vector4 operator-() const noexcept;
+
+	Vector4& operator=(const Vector4& right) noexcept = default;
+	Vector4& operator=(Vector4&& right) noexcept = default;
 	Vector4& operator=(const class Vector3& right) noexcept;
 	Vector4& operator=(const class Vector2& right) noexcept;
-	Vector4& operator=(Vector4&& right) noexcept;
 	Vector4& operator=(uint32_t right) noexcept;
 
-	Vector4 operator+(const Vector4& right) const noexcept;
+	[[nodiscard]] Vector4 operator+(const Vector4& right) const noexcept;
 	Vector4& operator+=(const Vector4& right) noexcept;
 
-	Vector4 operator-(const Vector4& right) const noexcept;
+	[[nodiscard]] Vector4 operator-(const Vector4& right) const noexcept;
 	Vector4& operator-=(const Vector4& right) noexcept;
 
-	Vector4 operator*(float scalar) const noexcept;
+	[[nodiscard]] Vector4 operator*(float scalar) const noexcept;
 	Vector4& operator*=(float scalar) noexcept;
-	Vector4 operator/(float scalar) const noexcept;
+	[[nodiscard]] Vector4 operator/(float scalar) const noexcept;
 	Vector4& operator/=(float scalar) noexcept;
 
-	Vector4 operator*(const class Mat4x4& mat) const noexcept;
+	[[nodiscard]] Vector4 operator*(const class Mat4x4& mat) const noexcept;
 	Vector4& operator*=(const class Mat4x4& mat) noexcept;
 	friend Vector4 operator*(const class Mat4x4& left, const Vector4& right) noexcept;
 
-	bool operator==(const Vector4& right) const noexcept;
-	bool operator!=(const Vector4& right) const noexcept;
+	[[nodiscard]] bool operator==(const Vector4& right) const noexcept;
+	[[nodiscard]] bool operator!=(const Vector4& right) const noexcept;
 
 	template<Lamb::IsInt T>
-	float& operator[](T index) noexcept {
+	[[nodiscard]] float& operator[](T index) noexcept {
 		return m[index];
 	}
 	template<Lamb::IsInt T>
-	const float& operator[](T index) const noexcept {
+	[[nodiscard]] const float& operator[](T index) const noexcept {
 		return m[index];
 	}
 
@@ -62,18 +66,56 @@ public:
 	/// メンバ関数
 	/// </summary>
 public:
-	float Length() const noexcept;
+	[[nodiscard]] float Length() const noexcept;
 
-	Vector4 Normalize() const noexcept;
+	[[nodiscard]] Vector4 Normalize() const noexcept;
 
-	float Dot(const Vector4& right) const noexcept;
+	[[nodiscard]] float Dot(const Vector4& right) const noexcept;
 
-	class Vector3& GetVector3() noexcept;
-	const class Vector3& GetVector3() const noexcept;
-	const class Vector2& GetVector2() const noexcept;
+	[[nodiscard]] class Vector3& GetVector3() noexcept;
+	[[nodiscard]] const class Vector3& GetVector3() const noexcept;
+	[[nodiscard]] const class Vector2& GetVector2() const noexcept;
 
 
-	uint32_t GetColorRGBA() const;
+	[[nodiscard]] uint32_t GetColorRGBA() const;
+
+/// <summary>
+/// 配列関係の関数
+/// </summary>
+public:
+	[[nodiscard]] float* data() noexcept {
+		return m.data();
+	}
+
+	[[nodiscard]] const float* data() const noexcept {
+		return m.data();
+	}
+
+	[[nodiscard]] std::array<float, 4>::iterator begin() noexcept {
+		return m.begin();
+	}
+	[[nodiscard]] std::array<float, 4>::iterator end() noexcept {
+		return m.end();
+	}
+	[[nodiscard]] std::array<float, 4>::const_iterator cbegin() const noexcept {
+		return m.cbegin();
+	}
+	[[nodiscard]] std::array<float, 4>::const_iterator cend() const noexcept {
+		return m.cend();
+	}
+	[[nodiscard]] std::array<float, 4>::reverse_iterator rbegin() noexcept {
+		return m.rbegin();
+	}
+	[[nodiscard]] std::array<float, 4>::reverse_iterator rend() noexcept {
+		return m.rend();
+	}
+	[[nodiscard]] std::array<float, 4>::const_reverse_iterator crbegin() const noexcept {
+		return m.crbegin();
+	}
+	[[nodiscard]] std::array<float, 4>::const_reverse_iterator crend() const noexcept {
+		return m.crend();
+	}
+
 
 /// <summary>
 /// 静的定数
@@ -131,13 +173,13 @@ public:
 /// <summary>
 /// uint32_tからVector4への変換
 /// </summary>
-Vector4 UintToVector4(uint32_t color);
+[[nodiscard]] Vector4 UintToVector4(uint32_t color);
 
 /// <summary>
 /// Vector4からuint32_tへの変換
 /// </summary>
-uint32_t Vector4ToUint(const Vector4& color);
+[[nodiscard]] uint32_t Vector4ToUint(const Vector4& color);
 
-Vector4 ColorLerp(const Vector4& start, const Vector4& end, float t);
+[[nodiscard]] Vector4 ColorLerp(const Vector4& start, const Vector4& end, float t);
 
-uint32_t ColorLerp(uint32_t start, uint32_t end, float t);
+[[nodiscard]] uint32_t ColorLerp(uint32_t start, uint32_t end, float t);

@@ -9,7 +9,6 @@
 #include "Game/CollisionManager/Collider/Collider.h"
 #include "Utils/Easeing/Easeing.h"
 #include "Game/SkyDome/SkyDome.h"
-#include "Game/ItemManager/ItemManager.h"
 #include "Game/CollisionManager/Sphere/Sphere.h"
 
 class SelectScene : public BaseScene {
@@ -55,6 +54,7 @@ private:
 
 	const float stageInterbal = 100.0f;
 
+	Texture2D* tex2D_;
 	std::array<std::unique_ptr<Texture2D>,maxStage_> texies_;
 
 	std::unique_ptr<Texture2D> selectTex_;

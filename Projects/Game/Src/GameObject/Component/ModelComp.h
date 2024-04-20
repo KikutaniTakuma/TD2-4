@@ -11,15 +11,15 @@ class ModelComp : public IComponent {
 public:
 	struct ModelBone {
 		Transform transform_;
-		std::unique_ptr<Model> model_;
+		Model* model_;
 
 		ModelBone *parent_ = nullptr;
 		std::list<std::unique_ptr<ModelBone>> children_;
 
-		void Init(std::unique_ptr<Model> model = nullptr);
+		void Init(Model* model = nullptr);
 		void SetTransform(const Transform &srt);
 
-		ModelBone *const AddChild(std::unique_ptr<Model> model);
+		ModelBone *const AddChild(Model* model);
 		void AddChild(ModelBone *const child);
 		void SetParent(ModelBone *const parent);
 
@@ -55,8 +55,8 @@ public:
 
 	void ImGuiWidget() override;
 
-	ModelBone *const AddBone(const std::string &key, std::unique_ptr<Model> model, const Transform &srt = {});
-	ModelBone *const AddBone(const std::string &key, std::unique_ptr<Model> model, ModelBone *const parent, const Transform &srt);
+	ModelBone *const AddBone(const std::string &key, Model* model, const Transform &srt = {});
+	ModelBone *const AddBone(const std::string &key, Model* model, ModelBone *const parent, const Transform &srt);
 
 	ModelBone *const GetBone(const std::string &key) { return modelKey_.at(key); }
 

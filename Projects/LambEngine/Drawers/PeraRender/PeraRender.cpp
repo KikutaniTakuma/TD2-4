@@ -10,6 +10,8 @@
 
 #include "Utils/EngineInfo/EngineInfo.h"
 
+#include "Utils/SafePtr/SafePtr.h"
+
 PeraRender::PeraRender():
 	peraVertexResource_(nullptr),
 	peraVertexView_(),
@@ -59,7 +61,7 @@ void PeraRender::Initialize(const std::string& psFileName) {
 	indexView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
 	indexView_.SizeInBytes = sizeof(indices);
 	indexView_.Format = DXGI_FORMAT_R16_UINT;
-	uint16_t* indexMap = nullptr;
+	Lamb::SafePtr<uint16_t> indexMap = nullptr;
 	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexMap));
 	for (int32_t i = 0; i < _countof(indices); i++) {
 		indexMap[i] = indices[i];
@@ -80,7 +82,7 @@ void PeraRender::Initialize(const std::string& psFileName) {
 	peraVertexView_.SizeInBytes = sizeof(pv);
 	peraVertexView_.StrideInBytes = sizeof(PeraVertexData);
 
-	PeraVertexData* mappedData = nullptr;
+	Lamb::SafePtr<PeraVertexData> mappedData = nullptr;
 	peraVertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedData));
 	std::copy(pv.begin(), pv.end(), mappedData);
 	peraVertexResource_->Unmap(0, nullptr);
@@ -97,7 +99,7 @@ void PeraRender::Initialize(PeraPipeline* pipelineObject) {
 	indexView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
 	indexView_.SizeInBytes = sizeof(indices);
 	indexView_.Format = DXGI_FORMAT_R16_UINT;
-	uint16_t* indexMap = nullptr;
+	Lamb::SafePtr<uint16_t> indexMap = nullptr;
 	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexMap));
 	for (int32_t i = 0; i < _countof(indices); i++) {
 		indexMap[i] = indices[i];
@@ -118,7 +120,7 @@ void PeraRender::Initialize(PeraPipeline* pipelineObject) {
 	peraVertexView_.SizeInBytes = sizeof(pv);
 	peraVertexView_.StrideInBytes = sizeof(PeraVertexData);
 
-	PeraVertexData* mappedData = nullptr;
+	Lamb::SafePtr<PeraVertexData> mappedData = nullptr;
 	peraVertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedData));
 	std::copy(pv.begin(), pv.end(), mappedData);
 	peraVertexResource_->Unmap(0, nullptr);
@@ -167,7 +169,7 @@ void PeraRender::Draw(
 		localpos[3], uv0,
 	};
 
-	PeraVertexData* mappedData = nullptr;
+	Lamb::SafePtr<PeraVertexData> mappedData = nullptr;
 	peraVertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedData));
 	std::copy(pv.begin(), pv.end(), mappedData);
 	peraVertexResource_->Unmap(0, nullptr);
@@ -182,7 +184,7 @@ void PeraRender::Draw(
 	peraPipelineObject_->Update();
 
 	// 各種描画コマンドを積む
-	ID3D12GraphicsCommandList* commandList = DirectXCommand::GetInstance()->GetCommandList();
+	Lamb::SafePtr commandList = DirectXCommand::GetMainCommandlist()->GetCommandList();
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	peraPipelineObject_->Use(blend, isDepth);
 	commandList->IASetVertexBuffers(0, 1, &peraVertexView_);

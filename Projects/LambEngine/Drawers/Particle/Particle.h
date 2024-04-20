@@ -1,15 +1,14 @@
 #pragma once
-#include "Engine/Graphics/TextureManager/TextureManager.h"
-#include "Engine/Graphics/PipelineManager/PipelineManager.h"
-#include "Engine/Buffer/StructuredBuffer/StructuredBuffer.h"
-
-#include "Math/Mat4x4.h"
+#include "Engine/Graphics/GraphicsStructs.h"
 
 #include "Utils/Flg/Flg.h"
 #include "Utils/Easeing/Easeing.h"
 
 #include <array>
 #include <variant>
+#include <deque>
+#include <chrono>
+
 
 /// <summary>
 /// パーティクルの描画
@@ -148,14 +147,13 @@ private:
 
 public:
 	Particle();
-	Particle(uint32_t indexNum);
-	Particle(const Particle&);
-	Particle(Particle&&) noexcept;
+	Particle(const Particle&) = delete;
+	Particle(Particle&&) = delete;
 	~Particle();
 
 public:
-	Particle& operator=(const Particle& right);
-	Particle& operator=(Particle&& right) noexcept;
+	Particle& operator=(const Particle&) = delete;
+	Particle& operator=(Particle&&) = delete;
 
 	inline WorldTransForm& operator[](size_t index) {
 		return wtfs_[index];
@@ -164,33 +162,6 @@ public:
 	inline const WorldTransForm& operator[](size_t index) const {
 		return wtfs_[index];
 	}
-
-
-	/// <summary>
-	/// 静的メンバ関数
-	/// </summary>
-public:
-	static void Initialize(
-		const std::string& vsFileName = "./Resources/Shaders/ParticleShader/Particle.VS.hlsl",
-		const std::string& psFileName = "./Resources/Shaders/ParticleShader/Particle.PS.hlsl"
-	);
-
-	static void Finalize();
-
-private:
-	static void LoadShader(const std::string& vsFileName, const std::string& psFileName);
-
-	static void CreateGraphicsPipeline();
-
-	/// <summary>
-	/// 静的メンバ変数
-	/// </summary>
-private:
-	static std::array<Pipeline*, size_t(Pipeline::Blend::BlendTypeNum)> graphicsPipelineState_;
-	static Shader shader_;
-
-	static D3D12_INDEX_BUFFER_VIEW indexView_;
-	static Lamb::LambPtr<ID3D12Resource> indexResource_;
 
 public:
 	void LoadSettingDirectory(const std::string& directoryName);
@@ -207,7 +178,6 @@ private:
 
 public:
 	void LoadTexture(const std::string& fileName);
-	void ThreadLoadTexture(const std::string& fileName);
 
 public:
 	/// <summary>
@@ -239,7 +209,7 @@ public:
 	void Draw(
 		const Vector3& cameraRotate,
 		const Mat4x4& viewProjection,
-		Pipeline::Blend blend = Pipeline::Blend::Normal
+		BlendType blend = BlendType::kNormal
 	);
 
 	/// <summary>
@@ -247,58 +217,6 @@ public:
 	/// </summary>
 	/// <param name="guiName">ImGuiの名前</param>
 	void Debug(const std::string& guiName);
-
-	/// <summary>
-	/// テクスチャのサイズ取得
-	/// </summary>
-	/// <returns></returns>
-	Vector2 GetTexSize() const {
-		if (tex_) {
-			return tex_->getSize();
-		}
-		else {
-			return Vector2::kZero;
-		}
-	}
-
-	/// <summary>
-	/// アニメーションスタート関数
-	/// </summary>
-	/// <param name="aniUvPibot">アニメーションをスタートさせる場所</param>
-	void AnimationStart(float aniUvPibot = 0.0f);
-
-	/// <summary>
-	/// アニメーション関数
-	/// </summary>
-	/// <param name="aniSpd">アニメーション速度(milliseconds)</param>
-	/// <param name="isLoop">アニメーションをループさせるか</param>
-	/// <param name="aniUvStart">アニメーションをスタートさせる場所</param>
-	/// <param name="aniUvEnd">アニメーションを終わらせる場所</param>
-	void Animation(size_t aniSpd, bool isLoop, float aniUvStart, float aniUvEnd);
-
-	/// <summary>
-	/// アニメーションを一時停止
-	/// </summary>
-	void AnimationPause();
-
-	/// <summary>
-	/// アニメーションを再スタート
-	/// </summary>
-	void AnimationRestart();
-
-	/// <summary>
-	/// アニメーションしているかを取得
-	/// </summary>
-	/// <returns>アニメーションフラグ</returns>
-	bool GetIsAnimation()const {
-		return isAnimation_;
-	}
-
-	/// <summary>
-	/// パーティクルの量を返る
-	/// </summary>
-	/// <param name="index">particleのインデックス</param>
-	void Resize(uint32_t index);
 
 	const Lamb::Flg& GetIsParticleStart() const {
 		if (settings_.empty()) {
@@ -313,10 +231,9 @@ public:
 		return isClose_;
 	}
 
-public:
-	Vector2 uvPibot;
-	Vector2 uvSize;
+	void Resize(uint32_t index);
 
+public:
 	Vector3 emitterPos;
 
 private:
@@ -330,27 +247,11 @@ private:
 
 	std::vector<WorldTransForm> wtfs_;
 
-	class CbvSrvUavHeap* srvHeap_;
-
-
-	D3D12_VERTEX_BUFFER_VIEW vertexView_;
-	Lamb::LambPtr<ID3D12Resource> vertexResource_;
-
-	StructuredBuffer<Mat4x4> wvpMat_;
-	StructuredBuffer<Vector4> colorBuf_;
-
-	Texture* tex_;
+	const class Texture* tex_;
 	bool isLoad_;
 
 	bool isBillboard_;
 	bool isYBillboard_;
 
-	// アニメーション変数
-	std::chrono::steady_clock::time_point aniStartTime_;
-	float aniCount_;
-	bool isAnimation_;
-
 	bool isClose_;
-public:
-	float uvPibotSpd_;
 };

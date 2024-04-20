@@ -3,6 +3,9 @@
 #include"Game/CollisionManager/CollisionManager.h"
 #include"Input/Input.h"
 #include"Game/CollisionManager/Obb/Obb.h"
+
+#include "Utils/SafePtr/SafePtr.h"
+
 class Enemy{
 public:
 	/// <summary>
@@ -33,23 +36,20 @@ public:
 public:
 	void SetDead() { isDead_ = true; }
 
-	void SetPos(const Vector3& pos) { pos_ = pos; }
-
 	void SetStartPos(const Vector3& pos) { startPos_ = pos; }
 
 	bool GetIsDead()const { return isDead_; }
 
 	Obb* GetObb()const { return obb_.get(); }
 
-	Vector3 GetPos()const { return pos_; }
+	const Vector3& GetPos()const { return transform.translate; }
 
-	Vector3 GetStartPos()const { return startPos_; }
+	const Vector3& GetStartPos()const { return startPos_; }
 
 public:
-	Vector3 pos_;
-
+	Transform transform;
 private:
-	std::unique_ptr<Model> model_;
+	Lamb::SafePtr<Model> model_;
 
 	std::unique_ptr<Obb> obb_;
 

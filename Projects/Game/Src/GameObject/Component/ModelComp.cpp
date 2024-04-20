@@ -18,8 +18,8 @@ void ModelComp::ImGuiWidget() {
 	}
 }
 
-void ModelComp::ModelBone::Init(std::unique_ptr<Model> model) {
-	if (model) { model_ = std::move(model); }
+void ModelComp::ModelBone::Init(Model* model) {
+	if (model) { model_ = model; }
 }
 
 void ModelComp::ModelBone::SetTransform(const Transform &srt) {
@@ -28,9 +28,9 @@ void ModelComp::ModelBone::SetTransform(const Transform &srt) {
 	transform_.translate = srt.translate;
 }
 
-ModelComp::ModelBone *const ModelComp::ModelBone::AddChild(std::unique_ptr<Model> model) {
+ModelComp::ModelBone *const ModelComp::ModelBone::AddChild(Model* model) {
 	ModelBone *const modelBone = new ModelBone;
-	modelBone->Init(std::move(model));
+	modelBone->Init(model);
 
 	AddChild(modelBone);
 	return modelBone;
@@ -48,11 +48,11 @@ void ModelComp::ModelBone::SetParent(ModelBone *const parent) {
 
 void ModelComp::ModelBone::Update() {
 
-	model_->Update();
+	//model_->Update();
 
 	transform_.CalcMatrix();
 
-	model_->SetWorldMatrix(transform_.matWorld_);
+	//model_->SetWorldMatrix(transform_.matWorld_);
 
 	for (auto &child : children_) {
 		child->Update();
@@ -61,7 +61,7 @@ void ModelComp::ModelBone::Update() {
 
 void ModelComp::ModelBone::Draw(const Camera &vp) const {
 	if (model_) {
-		this->model_->Draw(vp.GetViewProjection(), vp.GetPos());
+		this->model_->Draw(transform_.matWorld_, vp.GetViewProjection(), 0xffffffff, BlendType::kNormal);
 	}
 	for (auto &child : children_) {
 		child->Draw(vp);
@@ -80,32 +80,32 @@ bool ModelComp::ModelBone::ImGuiWidget() {
 	return result;
 }
 
-ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, std::unique_ptr<Model> model, const Transform &srt) {
+ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, Model* model, const Transform &srt) {
 	if (modelKey_.count(key) != 0u) { return nullptr; }
-	// ボーンの追加
+	// �{�[���̒ǉ�
 	auto  newBone = std::make_unique<ModelBone>();
-	// モデルを渡す
-	newBone->Init(std::move(model));
-	// GameObjectを親とする
+	// ���f����n��
+	newBone->Init(model);
+	// GameObject��e�Ƃ���
 	newBone->transform_.parent_ = &transform_;
 
-	// transformのデータを渡す
+	// transform�̃f�[�^��n��
 	newBone->SetTransform(srt);
 	
-	// ボーンのキーを保存する
+	// �{�[���̃L�[��ۑ�����
 	modelKey_.insert({ key,newBone.get() });
 
-	// ボーンのツリーに追加する
+	// �{�[���̃c���[�ɒǉ�����
 	modelTree_.push_back(std::move(newBone));
 
-	// ボーンを返す
+	// �{�[����Ԃ�
 	return modelKey_.at(key);
 }
 
-ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, std::unique_ptr<Model> model, ModelBone *const parent, const Transform &srt) {
+ModelComp::ModelBone *const ModelComp::AddBone(const std::string &key, Model* model, ModelBone *const parent, const Transform &srt) {
 	if (modelKey_.count(key) != 0u) { return nullptr; }
 
-	auto *const newBone = parent->AddChild(std::move(model));
+	auto *const newBone = parent->AddChild(model);
 
 	newBone->SetTransform(srt);
 
