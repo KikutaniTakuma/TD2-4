@@ -35,22 +35,22 @@ public:
 	void SelectMove();
 
 public:
-	static int GetSelectNumber() { return selectNum_; }
+	int GetSelectNumber() { return selectNum_; }
 
-	static void SetClearFlag(int x) { isStageClear_[x] = true; }
+	void SetClearFlag(int x) { isStageClear_[x] = true; }
 
-	static void ClearFlagReset() {
+	void ClearFlagReset() {
 		for (int i = 0; i < maxStage_ - 1; i++) {
 			isStageClear_[i] = false;
 		}
 	}
 private:
 	//ステージセレクト用の変数
-	static int selectNum_;
-	int oldSelectNum_ = 0;
-	static const int maxStage_ = 10;
+	int32_t selectNum_;
+	int32_t oldSelectNum_ = 0;
+	static constexpr int32_t maxStage_ = 10;
 
-	static bool isStageClear_[maxStage_];
+	std::array <bool,maxStage_> isStageClear_;
 
 	const float stageInterbal = 100.0f;
 

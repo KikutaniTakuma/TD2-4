@@ -129,6 +129,9 @@
     <ClCompile Include="Src\Scenes\ResultScene\ResultScene.cpp">
       <Filter>Scenes\ResultScene</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Scenes\SelectToGame\SelectToGame.cpp">
+      <Filter>Scenes\SelectToGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -387,6 +390,9 @@
     </ClInclude>
     <ClInclude Include="Src\Scenes\ResultScene\ResultScene.h">
       <Filter>Scenes\ResultScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\SelectToGame\SelectToGame.h">
+      <Filter>Scenes\SelectToGame</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

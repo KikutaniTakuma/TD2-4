@@ -1,10 +1,6 @@
 #include "SelectScene.h"
 #include"Drawers/DrawerManager.h"
-
-bool SelectScene::isStageClear_[maxStage_]{};
-
-int SelectScene::selectNum_ = 0;
-
+#include"Scenes/SelectToGame/SelectToGame.h"
 
 SelectScene::SelectScene():
 	BaseScene{ BaseScene::ID::StageSelect }{
@@ -16,8 +12,7 @@ void SelectScene::Initialize() {
 
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
 
-	currentCamera_->pos = { 0.0f, 0.0f , -1.0f };
-	
+	currentCamera_->pos = { 0.0f, 0.0f , -1.0f };	
 
 	for (size_t i = 0; i < texies_.size(); i++) {
 		texies_[i] = std::make_unique<Texture2D::Tex2DState>();
@@ -38,6 +33,8 @@ void SelectScene::Finalize(){
 }
 
 void SelectScene::Update(){
+	SelectToGame::GetInstance()->Debug();
+
 	currentCamera_->Debug("カメラ");
 	currentCamera_->Update();
 
@@ -79,7 +76,9 @@ void SelectScene::SelectMove(){
 		}		
 	}
 
-
+	if (input_->GetKey()->Pushed(DIK_SPACE)){
+		SelectToGame::GetInstance()->SetSelect(selectNum_);
+	}
 
 }
 

@@ -48,6 +48,8 @@ public:
 public:
 	//class Water *water_ = nullptr;
 
+
+
 	GameManager *gameManager_ = nullptr;
 
 	std::unique_ptr<Player> player_;
