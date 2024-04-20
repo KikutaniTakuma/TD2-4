@@ -1,14 +1,10 @@
 #include "SelectScene.h"
+#include"Drawers/DrawerManager.h"
 
 bool SelectScene::isStageClear_[maxStage_]{};
 
 int SelectScene::selectNum_ = 0;
 
-struct Tex2DState {
-	Transform transform;
-	uint32_t textureID;
-	uitn32_t color;
-};
 
 SelectScene::SelectScene():
 	BaseScene{ BaseScene::ID::StageSelect }{
@@ -18,18 +14,24 @@ SelectScene::SelectScene():
 
 void SelectScene::Initialize() {
 
+	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
+
 	currentCamera_->pos = Vector2{ 0.f, 0.f };
 	
 
 	for (size_t i = 0; i < texies_.size(); i++) {
-		texies_[i] = std::make_unique<Texture2D>("./Resources/enemy_popEffect.png");
-		texies_[i]->scale *= 60.0f;
-		texies_[i]->pos = Vector2{ -450.0f + stageInterbal * i, 0.0f };
+		texies_[i] = std::make_unique<Texture2D::Tex2DState>();
+		texies_[i]->transform.scale *= 6.0f;
+		texies_[i]->transform.translate = { -450.0f + stageInterbal * i, 0.0f ,0 };
+		texies_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/enemy_popEffect.png");
 	}
 
-	selectTex_ = std::make_unique<Texture2D>("./Resources/arrow.png");
-	selectTex_->scale *= 80.0f;
-	selectTex_->pos = { texies_[0]->pos.x, 100.0f };
+	selectTex_ = std::make_unique<Texture2D::Tex2DState>();
+	selectTex_->color = 0x000000ff;
+	selectTex_->transform.scale *= 80.0f;
+	selectTex_->transform.rotate.y = -1.57f;
+	selectTex_->transform.translate = { texies_[0]->transform.translate.x, 100.0f ,0 };
+	selectTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/arrow.png");
 }
 
 void SelectScene::Finalize(){
@@ -44,22 +46,21 @@ void SelectScene::Update(){
 	for (size_t i = 0; i < texies_.size(); i++) {
 		texies_[i]->color = 0xffffffff;
 		texies_[selectNum_]->color = 0xff0000ff;
+		texies_[i]->transform.CalcMatrix();
 	}
 	SelectMove();
 
-	selectTex_->pos.x = -450.0f + stageInterbal * selectNum_;
-
-	selectTex_->Debug("テスト用サークル");
-	
-
-
+	selectTex_->transform.translate.x = -450.0f + stageInterbal * selectNum_;
+	selectTex_->transform.CalcMatrix();
 }
 
 void SelectScene::Draw(){
-	selectTex_->Draw(currentCamera_->GetViewOthographics());
+	tex2D_->Draw(selectTex_->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
+		, selectTex_->textureID, selectTex_->color, BlendType::kNone);
 
 	for (size_t i = 0; i < texies_.size(); i++) {
-		texies_[i]->Draw(currentCamera_->GetViewOthographics());
+		tex2D_->Draw(texies_[i]->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
+			, texies_[i]->textureID, texies_[i]->color, BlendType::kNone);
 	}
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "../BaseDrawer.h"
 #include "Engine/Graphics/RenderContextManager/RenderContext/RenderContext.h"
+#include <Math/Transform.h>
 
 /// <summary>
 /// 板ポリ描画
@@ -9,12 +10,18 @@ class Texture2D : public BaseDrawer {
 public:
 	static constexpr uint32_t kMaxDrawCount = 4096u;
 
+	struct Tex2DState {
+		Transform transform;
+		uint32_t textureID;
+		uint32_t color;
+	};
 private:
 	struct ShaderData{
 		Mat4x4 uvTransform;
 		Vector3 pad; // <- huh?
 		uint32_t textureID = 0u;
 	};
+
 
 	using Texture2DRenderContext = RenderContext<ShaderData, kMaxDrawCount>;
 

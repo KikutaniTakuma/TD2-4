@@ -94,17 +94,18 @@ void Map::TransferBoxData()
 	//}
 }
 
-const Map::BoxType Map::GetBoxType([[maybe_unused]]const Vector3& localPos) const
+
+void Map::MultiReset()
 {
+}
 
-	//// もしマップ外に行っていた場合虚無
-	//if (localPos.x < 0.f or localPos.y < 0.f or localPos.z < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY or localPos.z >= Map::kMapZ) {
-	//	return BoxInfo();
-	//}
+const Map::BoxInfo Map::GetBoxInfo(const Vector3& localPos) const{
+	// もしマップ外に行っていた場合虚無
+	if (localPos.x < 0.f or localPos.y < 0.f or localPos.z < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY or localPos.z >= Map::kMapZ) {
+		return BoxInfo();
+	}
 
-
-	//return (*boxMap_)[static_cast<uint32_t>(localPos.y)][static_cast<uint32_t>(localPos.z)][static_cast<uint32_t>(localPos.x)];
-	return BoxType();
+	return BoxInfo();
 }
 
 const Map::BoxType Map::GetBoxType(const Vector3& localPos) const{
