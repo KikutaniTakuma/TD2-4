@@ -34,6 +34,18 @@ public:
 public:
 	virtual void Load();
 
+	/// <summary>
+	/// 描画関数
+	/// </summary>
+	/// <param name="worldMatrix">ワールド行列</param>
+	/// <param name="camera">カメラ行列</param>
+	/// <param name="color">色</param>
+	/// <param name="blend">ブレンドタイプ</param>
+	/// <param name="bloodVector">
+	/// <para>設定するのはxとyだけでいい</para>
+	/// <para>値は0.0f～1.0fが望ましい</para>
+	/// </param>
+	/// <param name="isBlood">血ありなし</param>
 	virtual void Draw(
 		const Mat4x4& worldMatrix,
 		const Mat4x4& camera,
