@@ -3,7 +3,7 @@
 #include "Engine/Graphics/RenderContextManager/RenderContextManager.h"
 #include "Utils/SafePtr/SafePtr.h"
 
-const LoadFileNames BloodBlock::kFileNames_ =
+const LoadFileNames BloodBlock::kFileNames =
 	LoadFileNames{
 		.resourceFileName{"./Resources/Cube.obj"},
 		.shaderName{
@@ -15,9 +15,19 @@ const LoadFileNames BloodBlock::kFileNames_ =
 void BloodBlock::Load() {
 	Lamb::SafePtr renderContextManager = RenderContextManager::GetInstance();
 
-	renderContextManager->Load<RenderContextType>(kFileNames_);
+	renderContextManager->Load<RenderContextType>(kFileNames);
 
-	renderSet = renderContextManager->Get(kFileNames_);
+	renderSet = renderContextManager->Get(kFileNames);
+
+	for (auto& i : *renderSet) {
+		i->SetLight(
+			Light{
+				.ligDirection{-Vector3::kYIdentity},
+				.pad0{},
+				.ligColor{ Vector3::kIdentity },
+			}
+		);
+	}
 }
 
 void BloodBlock::Draw(
@@ -33,7 +43,7 @@ void BloodBlock::Draw(
 	renderContext->SetSahderStruct(
 		ShaderData{
 			.bloodVector = bloodVector,
-			.isBlood = isBlood
+			.isBlood = static_cast<uint32_t>(isBlood)
 		}
 	);
 

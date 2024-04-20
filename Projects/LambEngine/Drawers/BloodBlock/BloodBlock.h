@@ -20,7 +20,7 @@ public:
 	// シェーダータイプ
 	using RenderContextType = RenderContext<ShaderData, kMaxDrawCount>;
 
-	static const LoadFileNames kFileNames_;
+	static const LoadFileNames kFileNames;
 
 public:
 	BloodBlock() = default;
