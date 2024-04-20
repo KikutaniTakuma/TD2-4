@@ -9,7 +9,7 @@
 /// </summary>
 class BloodBlock : public BaseDrawer {
 public:
-	struct ShaderStruct{
+	struct ShaderData {
 		Vector3 bloodVector; // パディング系でエラーが起きる可能性を考慮して3次元配列
 		uint32_t isBlood;
 	};
@@ -18,11 +18,12 @@ public:
 	static constexpr uint32_t kMaxDrawCount = 128u;
 
 	// シェーダータイプ
-	using RenderContextType = RenderContext<ShaderStruct, kMaxDrawCount>;
+	using RenderContextType = RenderContext<ShaderData, kMaxDrawCount>;
+
+	static const LoadFileNames kFileNames_;
 
 public:
 	BloodBlock() = default;
-	BloodBlock(const std::string& fileName);
 	BloodBlock(const BloodBlock&) = default;
 	BloodBlock(BloodBlock&& right) noexcept = default;
 	virtual ~BloodBlock() = default;
@@ -31,13 +32,14 @@ public:
 	BloodBlock& operator=(BloodBlock&& right) noexcept = default;
 
 public:
-	virtual void Load(const std::string& fileName);
+	virtual void Load();
 
 	virtual void Draw(
 		const Mat4x4& worldMatrix,
 		const Mat4x4& camera,
 		uint32_t color,
 		BlendType blend,
-		bool isBlood = false
+		const Vector3& bloodVector,
+		bool isBlood
 	);
 };
