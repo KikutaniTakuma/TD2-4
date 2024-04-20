@@ -9,7 +9,7 @@
 struct Transform {
 	Transform &operator=(const Transform &other) = default;
 
-	Vector3 scale = { 1.f,1.f,1.f };
+	Vector3 scale = Vector3::kIdentity;
 	Vector3 rotate{};
 	Vector3 translate{};
 
