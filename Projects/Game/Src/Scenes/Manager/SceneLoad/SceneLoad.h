@@ -55,4 +55,6 @@ private:
 	bool isWait_;
 
 	Mat4x4 cameraMatrix_;
+
+	class RenderContextManager* renderContextManager_;
 };

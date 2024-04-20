@@ -2,6 +2,7 @@
 #include "Engine/Engine.h"
 #include "./Camera/Camera.h"
 #include "Utils/EngineInfo/EngineInfo.h"
+#include "Engine/Graphics/RenderContextManager/RenderContextManager.h"
 
 SceneLoad::Desc SceneLoad::setting = {};
 
@@ -10,15 +11,18 @@ SceneLoad::SceneLoad() :
 	mtx_{},
 	loadProc_{},
 	loadTex_{},
-	exit_{ false },
-	isLoad_{ false },
-	isWait_{false}
+	exit_(false),
+	isLoad_(false),
+	isWait_(false),
+	renderContextManager_(nullptr)
 {
+	renderContextManager_ = RenderContextManager::GetInstance();
+
 	//loadTex_.reset(new Texture2D{ setting.fileName });
 
-	/*loadTex_->scale = Lamb::ClientSize();
-	loadTex_->uvSize.x = 1.0f / static_cast<float>(setting.animationNumber);
-	loadTex_->uvPibotSpd = 1.0f / static_cast<float>(setting.animationNumber);*/
+	//loadTex_->scale = Lamb::ClientSize();
+	//loadTex_->uvRotate.x = 1.0f / static_cast<float>(setting.animationNumber);
+	//loadTex_->uvPibotSpd = 1.0f / static_cast<float>(setting.animationNumber);
 
 	std::unique_ptr<Camera> camera{ new Camera{} };
 	camera->Update();
@@ -53,7 +57,7 @@ SceneLoad::SceneLoad() :
 			Engine::FrameEnd();
 
 		}
-	};
+		};
 
 	CreateLoad();
 }
@@ -75,7 +79,10 @@ void SceneLoad::Start()
 
 		//loadTex_->Update();
 		//loadTex_->Draw(cameraMatrix_);
+
 		Engine::FrameEnd();
+
+		renderContextManager_->SetIsNowThreading(isLoad_);
 
 		condition_.notify_all();
 	}
@@ -85,9 +92,11 @@ void SceneLoad::Stop()
 {
 	if (isLoad_) {
 		isLoad_ = false;
-		while(!isWait_){
+		while (!isWait_) {
 
 		}
+
+		renderContextManager_->SetIsNowThreading(isLoad_);
 		Engine::FrameStart();
 	}
 }
