@@ -16,20 +16,19 @@ void SelectScene::Initialize() {
 
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
 
-	currentCamera_->pos = Vector2{ 0.f, 0.f };
+	currentCamera_->pos = { 0.0f, 0.0f , -1.0f };
 	
 
 	for (size_t i = 0; i < texies_.size(); i++) {
 		texies_[i] = std::make_unique<Texture2D::Tex2DState>();
-		texies_[i]->transform.scale *= 6.0f;
+		texies_[i]->transform.scale *= 40.0f;
 		texies_[i]->transform.translate = { -450.0f + stageInterbal * i, 0.0f ,0 };
 		texies_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/enemy_popEffect.png");
 	}
 
 	selectTex_ = std::make_unique<Texture2D::Tex2DState>();
-	selectTex_->color = 0x000000ff;
-	selectTex_->transform.scale *= 80.0f;
-	selectTex_->transform.rotate.y = -1.57f;
+	selectTex_->color = 0xffffffff;
+	selectTex_->transform.scale *= 40.0f;
 	selectTex_->transform.translate = { texies_[0]->transform.translate.x, 100.0f ,0 };
 	selectTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/arrow.png");
 }
@@ -56,11 +55,11 @@ void SelectScene::Update(){
 
 void SelectScene::Draw(){
 	tex2D_->Draw(selectTex_->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
-		, selectTex_->textureID, selectTex_->color, BlendType::kNone);
+		, selectTex_->textureID, selectTex_->color, BlendType::kNormal);
 
 	for (size_t i = 0; i < texies_.size(); i++) {
 		tex2D_->Draw(texies_[i]->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
-			, texies_[i]->textureID, texies_[i]->color, BlendType::kNone);
+			, texies_[i]->textureID, texies_[i]->color, BlendType::kNormal);
 	}
 }
 
