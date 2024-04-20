@@ -12,6 +12,7 @@
 #include "Game/Cloud/Cloud.h"
 #include "AudioManager/AudioManager.h"
 #include "Utils/ScreenOut/ScreenOut.h"
+#include"Scenes/SelectToGame/SelectToGame.h"
 
 GameScene::GameScene() :
 	BaseScene(BaseScene::ID::Game)
@@ -53,6 +54,9 @@ void GameScene::Initialize() {
 
 	enemyEditor_ = std::make_unique<EnemyEditor>();
 	enemyEditor_->Initialize();
+
+	blockEditor_->LoadFiles(SelectToGame::GetInstance()->GetSelect());
+	enemyEditor_->LoadFiles(SelectToGame::GetInstance()->GetSelect());
 
 	enemyMode_ = false;
 	

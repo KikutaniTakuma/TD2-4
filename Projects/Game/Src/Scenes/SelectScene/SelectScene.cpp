@@ -15,13 +15,13 @@ void SelectScene::Initialize() {
 	currentCamera_->pos = { 0.0f, 0.0f , -1.0f };	
 
 	for (size_t i = 0; i < texies_.size(); i++) {
-		texies_[i] = std::make_unique<Texture2D::Tex2DState>();
+		texies_[i] = std::make_unique<Tex2DState>();
 		texies_[i]->transform.scale *= 40.0f;
 		texies_[i]->transform.translate = { -450.0f + stageInterbal * i, 0.0f ,0 };
 		texies_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/enemy_popEffect.png");
 	}
 
-	selectTex_ = std::make_unique<Texture2D::Tex2DState>();
+	selectTex_ = std::make_unique<Tex2DState>();
 	selectTex_->color = 0xffffffff;
 	selectTex_->transform.scale *= 40.0f;
 	selectTex_->transform.translate = { texies_[0]->transform.translate.x, 100.0f ,0 };
@@ -78,6 +78,7 @@ void SelectScene::SelectMove(){
 
 	if (input_->GetKey()->Pushed(DIK_SPACE)){
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
+		sceneManager_->SceneChange(BaseScene::ID::Game);
 	}
 
 }

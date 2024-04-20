@@ -3,6 +3,12 @@
 #include "Engine/Graphics/RenderContextManager/RenderContext/RenderContext.h"
 #include <Math/Transform.h>
 
+struct Tex2DState {
+	Transform transform;
+	Transform uvTrnasform;
+	uint32_t textureID;
+	uint32_t color;
+};
 /// <summary>
 /// 板ポリ描画
 /// </summary>
@@ -10,11 +16,7 @@ class Texture2D : public BaseDrawer {
 public:
 	static constexpr uint32_t kMaxDrawCount = 4096u;
 
-	struct Tex2DState {
-		Transform transform;
-		uint32_t textureID;
-		uint32_t color;
-	};
+	
 private:
 	struct ShaderData{
 		Mat4x4 uvTransform;

@@ -1,5 +1,11 @@
 #pragma once
 #include "../BaseDrawer.h"
+#include <Math/Transform.h>
+
+struct ModelState {
+	Transform transform;
+	uint32_t color;
+};
 
 /// <summary>
 /// 3Dモデルの描画

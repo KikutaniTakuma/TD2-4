@@ -95,6 +95,10 @@ private:
 	inline static SoLib::VItem<"ブロックの間隔", Vector2> vBoxDistance_{ {1, 1} };
 	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale{ {1.f,10.0f} };
 
-	Model* models_;
+	Model* model_;
+	/// <summary>
+	/// モデルの情報
+	/// </summary>
+	std::array<std::unique_ptr<ModelState>,kMapX> modelStates_;
 
 };

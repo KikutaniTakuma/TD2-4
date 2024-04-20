@@ -27,8 +27,19 @@ public:
 	/// <summary>
 	/// Imguiの情報
 	/// </summary>
-	void Debug();
+	void Debug();	
 
+	//ファイルを読み込む(走査)
+	void LoadFiles(const std::string& fileName);
+
+	//ファイルを読み込む(走査)
+	void LoadFiles(const int32_t selectNum);
+
+	/// <summary>
+	/// マウスのポジションを3D空間上に変換する
+	/// </summary>
+	void MousePosTrans(const Camera& camera);
+private:
 	/// <summary>
 	/// 前回ロード時の状態に戻す
 	/// </summary>
@@ -52,10 +63,7 @@ public:
 	/// </summary>
 	bool MapinPoint(const Vector3& point);
 
-	/// <summary>
-	/// マウスのポジションを3D空間上に変換する
-	/// </summary>
-	void MousePosTrans(const Camera& camera);
+	
 
 private:
 
@@ -93,8 +101,7 @@ private:
 	void SaveFile(const std::string& fileName);
 	//ファイルが存在するか確認する
 	void ChackFiles();
-	//ファイルを読み込む(走査)
-	void LoadFiles(const std::string& fileName);
+	
 	//ファイルを読み込む
 	void LoadFile(const std::string& fileName);
 	//ファイルが存在するか確認する(指定)

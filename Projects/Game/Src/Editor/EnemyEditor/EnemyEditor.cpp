@@ -90,7 +90,7 @@ void EnemyEditor::Debug(){
 
 				for (size_t z = 0; z < Map::kMapZ; z++) {
 					for (size_t x = 0; x < Map::kMapX; x++) {
-						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*mapSize_)[y][z][x]));
+						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*mapSize_)[y][z][x].isMultiSelect_));
 						if (ImGui::IsItemHovered()) {
 							obb_->center_ = map_->GetGrobalPos(x, y, z);
 							obb_->color_ = 0xff0000ff;
@@ -206,8 +206,8 @@ void EnemyEditor::Debug(){
 				}
 			}
 			if (input_->GetKey()->Pushed(DIK_R)){
-				multiMode_ = false;
 				map_->MultiReset();
+				multiMode_ = false;
 			}
 		}
 		else {
@@ -459,8 +459,43 @@ void EnemyEditor::LoadFiles(const std::string& fileName){
 			return;
 		}
 	}
-	std::string message = "File not found.";
-	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
+	std::wstring message = L"ファイルが見つかりませんでした。代わりにステージ1を読み込みます";
+	MessageBoxW(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), L"ブロックないよぉ！", 0);
+	LoadFile("Resources/Datas/Enemies/stage1.json");
+}
+
+void EnemyEditor::LoadFiles(const int32_t selectNum){
+	std::string fileName = (kDirectoryPath_ + "stage" + std::to_string(selectNum + 1) + ".json").c_str();
+
+	if (!std::filesystem::exists(kDirectoryName_)) {
+		std::string message = "This file path does not exist.";
+		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
+		assert(0);
+		return;
+	}
+
+	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
+
+	for (const std::filesystem::directory_entry& entry : dir_it) {
+		//ファイルパスを取得
+		const std::filesystem::path& filePath = entry.path();
+
+		//ファイル拡張子を取得
+		std::string extension = filePath.extension().string();
+		//.jsonファイル以外はスキップ
+		if (extension.compare(".json") != 0) {
+			continue;
+		}
+
+		if (filePath == fileName) {
+			//ファイル読み込み
+			LoadFile(fileName);
+			return;
+		}
+	}
+	std::wstring message = L"ファイルが見つかりませんでした。代わりにステージ1を読み込みます";
+	MessageBoxW(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), L"エネミーないよぉ！", 0);
+	LoadFile("Resources/Datas/Enemies/stage1.json");
 }
 
 void EnemyEditor::LoadFile(const std::string& fileName){
