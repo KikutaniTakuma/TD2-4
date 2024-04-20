@@ -24,6 +24,7 @@
 #include"Game/Player/Player.h"
 
 #include "Editor/BlockEditor/BlockEditor.h"
+#include "Drawers/BloodBlock/BloodBlock.h"
 
 class GameScene : public BaseScene {
 public:
@@ -59,4 +60,9 @@ public:
 	bool editorMode_ = false;
 
 	//std::unique_ptr<BlockEditor> blockEditor_;
+
+	Transform transform_;
+	Vector3 bloodVecor_;
+
+	std::unique_ptr<BloodBlock> test;
 };

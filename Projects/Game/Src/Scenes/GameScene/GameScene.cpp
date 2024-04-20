@@ -12,6 +12,7 @@
 #include "Game/Cloud/Cloud.h"
 #include "AudioManager/AudioManager.h"
 #include "Utils/ScreenOut/ScreenOut.h"
+#include "Utils/Random/Random.h"
 
 GameScene::GameScene() :
 	BaseScene(BaseScene::ID::Game)
@@ -40,6 +41,12 @@ void GameScene::Initialize() {
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
+
+	test = std::make_unique<BloodBlock>();
+
+	test->Load();
+
+	bloodVecor_ = Lamb::Random(Vector3(0.0f,0.0f,0.0f), Vector3(1.0f, 1.0f, 0.0f));
 }
 
 void GameScene::Finalize() {
@@ -66,8 +73,10 @@ void GameScene::Update() {
 
 #ifdef _DEBUG
 
-	
-
+	ImGui::Begin("bloodBlock");
+	transform_.ImGuiWidget("bloodBlock");
+	ImGui::End();
+	transform_.CalcMatrix();
 #endif // _DEBUG
 	gameManager_->InputAction();
 	gameManager_->Update(deltaTime);
@@ -90,6 +99,7 @@ void GameScene::Draw() {
 
 	player_->Draw(*currentCamera_);
 
+
 #ifdef _DEBUG
 
 	
@@ -97,6 +107,15 @@ void GameScene::Draw() {
 #endif // _DEBUG
 
 	gameManager_->Draw(*currentCamera_);
+
+	test->Draw(
+		transform_.matWorld_,
+		currentCamera_->GetViewProjection(),
+		0xffffffff,
+		BlendType::kNormal,
+		bloodVecor_,
+		true
+	);
 
 	Lamb::screenout << "Water and cloud scene" << Lamb::endline
 		<< "Press space to change ""Model scene""";
