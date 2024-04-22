@@ -14,7 +14,7 @@ class Map
 public:
 
 
-	struct BoxInfo{
+	struct BoxInfo {
 		//建設予定になって入るかどうか
 		bool isConstruction;
 		//小人は何人設置されているかどうか
@@ -27,10 +27,10 @@ public:
 		kNone,	// 虚空
 		kBox,	// 箱
 	};
-	inline static constexpr int32_t kMapX = 20u, kMapY = 1u, kMapZ = 1u;
+	inline static constexpr int32_t kMapX = 20u, kMapY = 1u;
 
 	// 箱の配列 [y][z][x]
-	using MapSize = std::array<std::array<std::array<BoxInfo, kMapX>, kMapZ>, kMapY>;
+	using MapSize = std::array<std::array<BoxInfo, kMapX>, kMapY>;
 
 public:
 	Map() = default;
@@ -59,24 +59,24 @@ public:
 
 	const BoxInfo GetBoxInfo(const Vector3 &localPos) const;
 
-	const BoxType GetBoxType(const Vector3& localPos) const;
+	const BoxType GetBoxType(const Vector3 &localPos) const;
 
-	inline void SetDraingFlag(const std::bitset<kMapY>& flag) noexcept { isFloorDrawing_ = flag; }
-	inline const std::bitset<kMapY>& GetDraingFlag() const noexcept { return isFloorDrawing_; }
+	inline void SetDraingFlag(const std::bitset<kMapY> &flag) noexcept { isFloorDrawing_ = flag; }
+	inline const std::bitset<kMapY> &GetDraingFlag() const noexcept { return isFloorDrawing_; }
 
 public:
 	/// @brief 3次元配列の取得
 	/// @return 三次元配列
 	MapSize *GetBlockMap() { return boxMap_.get(); }
 
-	static Vector3 GetGrobalPos(size_t x, size_t y, size_t z) noexcept
+	static Vector3 GetGrobalPos(size_t x, size_t y) noexcept
 	{
-		return Vector3{ x * vBoxDistance_->x, y * vBoxDistance_->y, -(z * vBoxDistance_->x) } - Vector3{ vBoxDistance_->x * ((kMapX - 1) / 2.f), 0, -(vBoxDistance_->x * ((kMapZ - 1) / 2.f)) };
+		return Vector3{ x * vBoxDistance_->x, y * vBoxDistance_->y,0 } - Vector3{ vBoxDistance_->x * ((kMapX - 1) / 2.f), 0, 0 };
 	}
 
 	static Vector3 LocalPos(const Vector3 &gPos) noexcept
 	{
-		return Vector3{ gPos.x / vBoxDistance_->x, gPos.y / vBoxDistance_->y, -(gPos.z / vBoxDistance_->x) } + Vector3{ vBoxDistance_->x / ((kMapX - 1) / 2.f), 0, -(vBoxDistance_->x / ((kMapZ - 1) / 2.f)) };
+		return Vector3{ gPos.x / vBoxDistance_->x, gPos.y / vBoxDistance_->y,0 } + Vector3{ vBoxDistance_->x / ((kMapX - 1) / 2.f), 0, 0 };
 	}
 
 	static float GetMapDistance() {
@@ -95,10 +95,10 @@ private:
 	inline static SoLib::VItem<"ブロックの間隔", Vector2> vBoxDistance_{ {1, 1} };
 	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale{ {1.f,10.0f} };
 
-	Model* model_;
+	Model *model_;
 	/// <summary>
 	/// モデルの情報
 	/// </summary>
-	std::array<std::unique_ptr<ModelState>,kMapX> modelStates_;
+	std::array<std::unique_ptr<ModelState>, kMapX> modelStates_;
 
 };

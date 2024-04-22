@@ -39,17 +39,17 @@ bool Map::Debug(const char* const str)
 
 		for (size_t y = 0; y < kMapY; y++) {
 			// 
-			if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
-				for (size_t z = 0; z < kMapZ; z++) {
+			//if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
+				//for (size_t z = 0; z < kMapZ; z++) {
 					for (size_t x = 0; x < kMapX; x++) {
-						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*boxMap_)[y][z][x].isMultiSelect_));
+						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(y) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*boxMap_)[y][x].isMultiSelect_));
 						if (x != 9) {
 							ImGui::SameLine();
 						}
 					}
-				}
-				ImGui::TreePop();
-			}
+				//}
+				//ImGui::TreePop();
+			//}
 		}
 
 		ImGui::TreePop();
@@ -69,10 +69,10 @@ void Map::TransferBoxData()
 
 	for (size_t x = 0; x < kMapX; x++) {
 		// 箱の状態
-		BoxInfo boxInfo = static_cast<BoxInfo>((*boxMap_)[0][0][x]);
+		BoxInfo boxInfo = static_cast<BoxInfo>((*boxMap_)[0][x]);
 		
 		// 現在のモデル
-		modelStates_[x]->transform.translate = GetGrobalPos(x, 0, 0);
+		modelStates_[x]->transform.translate = GetGrobalPos(x, 0);
 		modelStates_[x]->transform.CalcMatrix();
 
 		if (boxInfo.isConstruction){
@@ -104,14 +104,14 @@ void Map::TransferBoxData()
 void Map::MultiReset(){
 	for (size_t x = 0; x < kMapX; x++) {
 		// 箱の状態
-		BoxInfo& boxInfo = ((*boxMap_)[0][0][x]);
+		BoxInfo& boxInfo = ((*boxMap_)[0][x]);
 		boxInfo.isMultiSelect_ = false;
 	}
 }
 
 const Map::BoxInfo Map::GetBoxInfo(const Vector3& localPos) const{
 	// もしマップ外に行っていた場合虚無
-	if (localPos.x < 0.f or localPos.y < 0.f or localPos.z < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY or localPos.z >= Map::kMapZ) {
+	if (localPos.x < 0.f or localPos.y < 0.f or localPos.z < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY ) {
 		return BoxInfo();
 	}
 
@@ -120,7 +120,7 @@ const Map::BoxInfo Map::GetBoxInfo(const Vector3& localPos) const{
 
 const Map::BoxType Map::GetBoxType(const Vector3& localPos) const{
 	// もしマップ外に行っていた場合虚無
-	if (localPos.x < 0.f or localPos.y < 0.f or localPos.z < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY or localPos.z >= Map::kMapZ) {
+	if (localPos.x < 0.f or localPos.y < 0.f or localPos.z < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY ) {
 		return BoxType();
 	}
 

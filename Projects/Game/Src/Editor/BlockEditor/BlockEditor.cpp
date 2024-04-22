@@ -103,12 +103,12 @@ void BlockEditor::Debug(){
 
 				for (size_t y = 0; y < Map::kMapY; y++) {
 
-					for (size_t z = 0; z < Map::kMapZ; z++) {
+					//for (size_t z = 0; z < Map::kMapZ; z++) {
 						for (size_t x = 0; x < Map::kMapX; x++) {
-							isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*mapSize_)[y][z][x].isMultiSelect_));
+							isChange |= ImGui::Checkbox(("##Checkbox" + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*mapSize_)[y][x].isMultiSelect_));
 							if (ImGui::IsItemHovered()) {
 								for (size_t i = 0; i < 3; i++) {
-									obb_[i]->center_ = map_->GetGrobalPos(x - 1 + i, y, z);
+									obb_[i]->center_ = map_->GetGrobalPos(x - 1 + i, y);
 									obb_[i]->color_ = 0xff0000ff;
 								}
 
@@ -120,7 +120,7 @@ void BlockEditor::Debug(){
 								ImGui::SameLine();
 							}
 						}
-					}
+					//}
 
 				}
 
@@ -173,14 +173,14 @@ void BlockEditor::Debug(){
 	}
 	if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
 		if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] - 1].isConstruction = true;
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].isConstruction = true;
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] + 1].isConstruction = true;
+			(*mapSize_)[boxPos_[1]][boxPos_[0] - 1].isConstruction = true;
+			(*mapSize_)[boxPos_[1]][boxPos_[0]].isConstruction = true;
+			(*mapSize_)[boxPos_[1]][boxPos_[0] + 1].isConstruction = true;
 		}
 		else if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] - 1].isConstruction = false;
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].isConstruction = false;
-			(*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0] + 1].isConstruction = false;
+			(*mapSize_)[boxPos_[1]][boxPos_[0] - 1].isConstruction = false;
+			(*mapSize_)[boxPos_[1]][boxPos_[0]].isConstruction = false;
+			(*mapSize_)[boxPos_[1]][boxPos_[0] + 1].isConstruction = false;
 		}
 
 
@@ -198,10 +198,10 @@ void BlockEditor::DataReset(){
 
 void BlockEditor::FloorReset(){
 	if (OperationConfirmation()) {		
-		for (size_t z = 0; z < Map::kMapZ; ++z) {
+		//for (size_t z = 0; z < Map::kMapZ; ++z) {
 			for (size_t x = 0; x < Map::kMapX; ++x) {
 			}
-		}		
+		//}		
 	}
 }
 
@@ -226,22 +226,22 @@ bool BlockEditor::OperationConfirmation(){
 
 bool BlockEditor::MapinPoint(const Vector3& point){
 	for (size_t y = 0; y < Map::kMapY; y++) {
-		for (size_t z = 0; z < Map::kMapZ; z++) {
+		//for (size_t z = 0; z < Map::kMapZ; z++) {
 			for (size_t x = 0; x < Map::kMapX; x++) {
 				if (x == 0 || x == 19)
 					continue;
-				scanningOBB_->center_ = map_->GetGrobalPos(x, y, z);
+				scanningOBB_->center_ = map_->GetGrobalPos(x, y);
 				scanningOBB_->center_.z -= correction_;
 				if (scanningOBB_->OBBinPoint(point)){
 					for (size_t i = 0; i < 3; i++) {
-						obb_[i]->center_ = map_->GetGrobalPos(x - 1 + i, y, z);
+						obb_[i]->center_ = map_->GetGrobalPos(x - 1 + i, y);
 						//obb_[i]->center_.z += correction_;
 					}
-					boxPos_ = { x,y,z };
+					boxPos_ = { x,y };
 					return true;
 				}
 			}
-		}
+		//}
 
 	}
 	return false;
@@ -288,11 +288,11 @@ void BlockEditor::SaveFile(const std::string& fileName){
 	
 	// 3次元配列をJSONオブジェクトに変換
 	for (size_t y = 0; y < Map::kMapY; ++y) {
-		for (size_t z = 0; z < Map::kMapZ; ++z) {
+		//for (size_t z = 0; z < Map::kMapZ; ++z) {
 			for (size_t x = 0; x < Map::kMapX; ++x) {
-				root["boxes"][x] = ((*mapSize_)[y][z][x].isConstruction);
+				root["boxes"][x] = ((*mapSize_)[y][x].isConstruction);
 			}
-		}
+		//}
 	}
 
 	std::filesystem::path dir(kDirectoryPath_);
@@ -468,11 +468,11 @@ void BlockEditor::LoadFile(const std::string& fileName){
 	}
 
 	for (size_t y = 0; y < Map::kMapY; ++y) {
-		for (size_t z = 0; z < Map::kMapZ; ++z) {
+		//for (size_t z = 0; z < Map::kMapZ; ++z) {
 			for (size_t x = 0; x < Map::kMapX; ++x) {
-				((*mapSize_)[y][z][x].isConstruction) = boxData_[x];
+				((*mapSize_)[y][x].isConstruction) = boxData_[x];
 			}
-		}
+		//}
 	}
 
 #ifdef _DEBUG
