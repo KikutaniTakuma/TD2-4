@@ -132,6 +132,9 @@
     <ClCompile Include="Src\Scenes\SelectToGame\SelectToGame.cpp">
       <Filter>Scenes\SelectToGame</Filter>
     </ClCompile>
+    <ClCompile Include="UIEditor.cpp">
+      <Filter>Editor\UIEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -256,6 +259,9 @@
     </Filter>
     <Filter Include="Scenes\SelectToGame">
       <UniqueIdentifier>{f2f70c47-b2da-467d-9ba6-209e5df9637b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\UIEditor">
+      <UniqueIdentifier>{f627b75b-fb00-42cc-b721-37409f5664b3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -393,6 +399,9 @@
     </ClInclude>
     <ClInclude Include="Src\Scenes\SelectToGame\SelectToGame.h">
       <Filter>Scenes\SelectToGame</Filter>
+    </ClInclude>
+    <ClInclude Include="UIEditor.h">
+      <Filter>Editor\UIEditor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

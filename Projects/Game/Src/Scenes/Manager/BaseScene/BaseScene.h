@@ -14,6 +14,8 @@ public:
 		Game,
 	};
 
+	static constexpr int32_t maxScene_ = 4;
+
 public:
 	BaseScene(BaseScene::ID sceneID);
 	BaseScene(const BaseScene&) = delete;
