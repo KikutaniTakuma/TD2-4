@@ -132,7 +132,7 @@
     <ClCompile Include="Src\Scenes\SelectToGame\SelectToGame.cpp">
       <Filter>Scenes\SelectToGame</Filter>
     </ClCompile>
-    <ClCompile Include="UIEditor.cpp">
+    <ClCompile Include="Src\Editor\UIEditor\UIEditor.cpp">
       <Filter>Editor\UIEditor</Filter>
     </ClCompile>
   </ItemGroup>
@@ -400,7 +400,7 @@
     <ClInclude Include="Src\Scenes\SelectToGame\SelectToGame.h">
       <Filter>Scenes\SelectToGame</Filter>
     </ClInclude>
-    <ClInclude Include="UIEditor.h">
+    <ClInclude Include="Src\Editor\UIEditor\UIEditor.h">
       <Filter>Editor\UIEditor</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,6 +5,7 @@
 #include "Engine/EngineUtils/FrameInfo/FrameInfo.h"
 #include "Input/Input.h"
 #include "Engine/Core/StringOutPutManager/StringOutPutManager.h"
+#include"Editor/UIEditor/UIEditor.h"
 
 #include "imgui.h"
 #include <typeinfo>
@@ -22,6 +23,7 @@ BaseScene::BaseScene(BaseScene::ID sceneID) :
 	frameInfo_(nullptr),
 	input_(nullptr),
 	stringOutPutManager_(nullptr),
+	uiEditor_(nullptr),
 	sceneID_(sceneID),
 	camera_(std::make_unique<Camera>()),
 	currentCamera_(camera_.get())
@@ -41,6 +43,8 @@ void BaseScene::SceneInitialize(SceneManager* sceneManager) {
 	stringOutPutManager_ = StringOutPutManager::GetInstance();
 
 	input_ = Input::GetInstance();
+
+	uiEditor_ = UIEditor::GetInstance();
 }
 
 void BaseScene::ChangeCamera()

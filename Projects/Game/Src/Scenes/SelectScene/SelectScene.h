@@ -55,6 +55,8 @@ private:
 	const float stageInterbal = 100.0f;
 
 	Texture2D* tex2D_;
+	std::vector<std::unique_ptr<Tex2DState>> selectTexies_;
+
 	std::array<std::unique_ptr<Tex2DState>,maxStage_> texies_;
 
 	std::unique_ptr<Tex2DState> selectTex_;

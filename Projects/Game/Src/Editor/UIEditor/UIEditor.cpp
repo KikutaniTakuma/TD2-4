@@ -39,8 +39,7 @@ void UIEditor::Update(){
 
 }
 
-void UIEditor::Draw(const Camera& camera){
-	
+void UIEditor::Draw(const Camera& camera){	
 
 	for (size_t i = 0; i < BaseScene::maxScene_; i++) {
 		for (size_t j = 0; j < texies_[i].size(); j++) {
@@ -57,8 +56,12 @@ void UIEditor::Debug(){
 
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("UI生成")) {
-			auto file = Lamb::GetFilePathFormDir(kDirectoryPath_, ".json");
-
+			auto file = Lamb::GetFilePathFormDir("Resources/", ".png");
+			for (auto& i : file) {
+				if (ImGui::Button(i.string().c_str())) {
+					
+				}
+			}
 			ImGui::EndMenu();
 		}
 

@@ -47,6 +47,28 @@ public:
 	//ファイルを読み込む(走査)
 	void LoadFiles(const std::string& fileName);
 
+public:
+	//std::vector<Tex2DState*> GetTexStateTitle() const{
+	//	/*std::vector<Tex2DState*> texStateTitle;
+
+	//	for (auto& vec : texies_[0]) {
+	//		for (auto& ptr : vec[0]) {
+	//			texStateTitle.push_back(ptr.get());
+	//		}
+	//	}
+
+	//	return texStateTitle;*/
+	//}
+	//std::vector<std::unique_ptr<Tex2DState>> GetTexStateSelect() const{
+	//	return texies_[1];
+	//}
+	//std::vector<std::unique_ptr<Tex2DState>> GetTexStateGame() const{
+	//	return texies_[2];
+	//}
+	//std::vector<std::unique_ptr<Tex2DState>> GetTexStateResult()const {
+	//	return texies_[3];
+	//}
+
 private:
 	Input* input_ = nullptr;
 
