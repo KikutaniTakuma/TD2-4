@@ -477,8 +477,10 @@ void BlockEditor::LoadFile(const std::string &fileName) {
 	//}
 
 #ifdef _DEBUG
-	std::string message = "File loading completed";
-	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
+
+	// コンパイル時に文字列生成してみた
+	using Message = SoLib::Text::StaticString<"File loading completed"> ;
+	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), Message::c_str(), "Object", 0);
 
 #endif // _DEBUG
 }

@@ -34,9 +34,9 @@ namespace SoLib {
 			static constexpr ConstExprString str_ = Str;
 		public:
 
-			constexpr std::string_view view() const noexcept { return str_.view(); }
+			static constexpr std::string_view view() noexcept { return str_.view(); }
 
-			constexpr const char *const c_str() const noexcept { return str_.c_str(); }
+			static constexpr const char *const c_str() noexcept { return str_.c_str(); }
 			inline static constexpr friend std::ostream &operator<< (std::ostream &ost, const StaticString str) { return ost << str.c_str(); }
 		};
 	}
