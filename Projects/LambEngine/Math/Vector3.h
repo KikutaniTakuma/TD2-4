@@ -13,6 +13,7 @@ public:
 	Vector3(float x, float y, float z) noexcept;
 	constexpr Vector3(const Vector3&) noexcept = default;
 	Vector3(const class Vector2& right) noexcept;
+	Vector3(const class Vector2& right, float rightZ) noexcept;
 	constexpr Vector3(Vector3&&) noexcept = default;
 public:
 	~Vector3() = default;

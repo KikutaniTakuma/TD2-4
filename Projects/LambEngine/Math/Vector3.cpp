@@ -25,6 +25,12 @@ Vector3::Vector3(const Vector2& right) noexcept {
 	z = 0.0f;
 }
 
+Vector3::Vector3(const Vector2& right, float rightZ) noexcept {
+	x = right.x;
+	y = right.y;
+	z = rightZ;
+}
+
 const Vector3 Vector3::kIdentity = { 1.0f,1.0f,1.0f };
 const Vector3 Vector3::kZero = { 0.0f, 0.0f,0.0f };
 const Vector3 Vector3::kXIdentity = { 1.0f,0.0f,0.0f };
@@ -174,7 +180,8 @@ float Vector3::Length() const noexcept {
 	return std::sqrt(x*x + y*y + z*z);
 }
 
-float Vector3::LengthSQ() const noexcept {
+float Vector3::LengthSQ() const noexcept
+{
 	return x * x + y * y + z * z;
 }
 

@@ -2,7 +2,9 @@
 #include "Engine/Engine.h"
 #include "./Camera/Camera.h"
 #include "Utils/EngineInfo/EngineInfo.h"
+#include "Drawers/DrawerManager.h"
 #include "Engine/Graphics/RenderContextManager/RenderContextManager.h"
+#include <climits>
 
 SceneLoad::Desc SceneLoad::setting = {};
 
@@ -14,21 +16,34 @@ SceneLoad::SceneLoad() :
 	exit_(false),
 	isLoad_(false),
 	isWait_(false),
-	renderContextManager_(nullptr)
+	tex2Danimator_(),
+	renderContextManager_()
 {
 	renderContextManager_ = RenderContextManager::GetInstance();
 
-	//loadTex_.reset(new Texture2D{ setting.fileName });
+	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
+	loadTex_ = drawerManager->GetTexture2D();
 
-	//loadTex_->scale = Lamb::ClientSize();
-	//loadTex_->uvRotate.x = 1.0f / static_cast<float>(setting.animationNumber);
-	//loadTex_->uvPibotSpd = 1.0f / static_cast<float>(setting.animationNumber);
+	tex2Danimator_ = std::make_unique<Tex2DAniamtor>();
 
-	std::unique_ptr<Camera> camera{ new Camera{} };
+	tex2Danimator_->SetStartPos(Vector2::kZero);
+	tex2Danimator_->SetDuration(setting.animationSpeed);
+	tex2Danimator_->SetAnimationNumber(setting.animationNumber);
+	tex2Danimator_->SetLoopAnimation(true);
+	textureID_ = drawerManager->LoadTexture(setting.fileName);
+
+	std::unique_ptr<Camera> camera =  std::make_unique<Camera>();
+	camera->pos.z = -1.0f;
 	camera->Update();
 	cameraMatrix_ = camera->GetViewOthographics();
 
-	loadProc_ = [this]() {
+	Mat4x4 uvMatrix = Mat4x4::MakeAffin(
+		Vector3(1.0f,1.0f,1.0f),
+		Vector3(),
+		Vector3()
+	);
+
+	loadProc_ = [this,uvMatrix]() {
 		std::unique_lock<std::mutex> uniqueLock(mtx_);
 
 
@@ -43,21 +58,21 @@ SceneLoad::SceneLoad() :
 			isWait_ = false;
 			Engine::FrameStart();
 
-			/*loadTex_->Animation(
-				static_cast<size_t>(setting.animationSpeed),
-				true,
-				0.0f,
-				static_cast<float>(setting.animationNumber)
-			);*/
+			tex2Danimator_->Update();
 
-			//loadTex_->Update();
-
-			//loadTex_->Draw(cameraMatrix_);
+			loadTex_->Draw(
+				Mat4x4::MakeAffin(Vector3(Lamb::ClientSize(), 1.0f), Vector3::kZero, Vector3::kZero),
+				tex2Danimator_->GetUvMat4x4(),
+				cameraMatrix_,
+				textureID_,
+				std::numeric_limits<uint32_t>::max(),
+				BlendType::kNone
+			);
 
 			Engine::FrameEnd();
 
 		}
-		};
+	};
 
 	CreateLoad();
 }
@@ -74,14 +89,11 @@ SceneLoad::~SceneLoad()
 void SceneLoad::Start()
 {
 	if (!isLoad_) {
-		//loadTex_->AnimationStart();
 		isLoad_ = true;
-
-		//loadTex_->Update();
-		//loadTex_->Draw(cameraMatrix_);
 
 		Engine::FrameEnd();
 
+		tex2Danimator_->Start();
 		renderContextManager_->SetIsNowThreading(isLoad_);
 
 		condition_.notify_all();
@@ -92,10 +104,11 @@ void SceneLoad::Stop()
 {
 	if (isLoad_) {
 		isLoad_ = false;
-		while (!isWait_) {
+		while(!isWait_){
 
 		}
 
+		tex2Danimator_->Stop();
 		renderContextManager_->SetIsNowThreading(isLoad_);
 		Engine::FrameStart();
 	}
