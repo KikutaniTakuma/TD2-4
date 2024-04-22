@@ -14,23 +14,30 @@ class Map
 public:
 
 
-	struct BoxInfo {
-		//建設予定になって入るかどうか
-		bool isConstruction;
-		//小人は何人設置されているかどうか
-		int32_t dwarfNum;
-		//複数選択の大将かどうか
-		bool isMultiSelect_;
+	struct HouseInfo {
+
+		// x座標
+		int32_t xPos_{};
+
+		ModelState houseModelState_;
+
+
+
+		//複数選択の対象かどうか
+		bool isMultiSelect_;	// エディター側が持ってたほうが個人的にありがたい｡
 	};
 
 	enum class BoxType : uint32_t {
 		kNone,	// 虚空
 		kBox,	// 箱
 	};
-	inline static constexpr int32_t kMapX = 20u, kMapY = 1u;
+	inline static constexpr int32_t kMapX = 30u, kMapY = 20u;
 
-	// 箱の配列 [y][z][x]
-	using MapSize = std::array<std::array<BoxInfo, kMapX>, kMapY>;
+	// 拠点のリスト
+	using HouseList = std::list<HouseInfo>;
+
+	// 箱の配列 [y][x]
+	using MapSize = std::array<std::array<BoxType, kMapX>, kMapY>;
 
 public:
 	Map() = default;
@@ -57,19 +64,25 @@ public:
 	/// </summary>
 	void MultiReset();
 
-	const BoxInfo GetBoxInfo(const Vector3 &localPos) const;
+	//const HouseInfo& GetHouseInfo(const int localPosX) const;
 
-	const BoxType GetBoxType(const Vector3 &localPos) const;
+	const BoxType GetBoxType(const Vector2 &localPos) const;
+
+	bool IsOutSide(const Vector2 &localPos) const;
 
 	inline void SetDraingFlag(const std::bitset<kMapY> &flag) noexcept { isFloorDrawing_ = flag; }
 	inline const std::bitset<kMapY> &GetDraingFlag() const noexcept { return isFloorDrawing_; }
 
 public:
-	/// @brief 3次元配列の取得
-	/// @return 三次元配列
+	/// @brief 2次元配列の取得
+	/// @return 二次元配列
 	MapSize *GetBlockMap() { return boxMap_.get(); }
 
-	static Vector3 GetGrobalPos(size_t x, size_t y) noexcept
+	/// @brief 拠点のリストを返す
+	/// @return 拠点のリスト
+	HouseList *GetHouseList() { return &houseList_; }
+
+	static Vector3 GetGrobalPos(int32_t x, int32_t y) noexcept
 	{
 		return Vector3{ x * vBoxDistance_->x, y * vBoxDistance_->y,0 } - Vector3{ vBoxDistance_->x * ((kMapX - 1) / 2.f), 0, 0 };
 	}
@@ -85,8 +98,11 @@ public:
 
 private:
 
-	// 箱の配列 [y][z][x]
+	// 箱の配列 [y][x]
 	std::unique_ptr<MapSize> boxMap_;
+	// 拠点のリスト
+	HouseList houseList_;
+
 	// 箱の数
 	size_t boxCount_{};
 

@@ -50,6 +50,7 @@ public:
 	[[nodiscard]] Vector3 operator*(const class Quaternion& right) const;
 	Vector3& operator*=(const class Quaternion& right);
 
+	operator const Vector2 &()const noexcept { return reinterpret_cast<const Vector2 &>(*this); }
 
 	// 等比演算子
 

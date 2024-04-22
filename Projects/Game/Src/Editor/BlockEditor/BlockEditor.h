@@ -69,9 +69,9 @@ private:
 
 	Map* map_ = nullptr;
 
-	Map::MapSize* mapSize_ = nullptr;
+	Map::HouseList * houseList_ = nullptr;
 
-	Map::MapSize beforeMapSize_;
+	Map::HouseList beforeHouseList_;
 
 	std::array<size_t, 3> boxPos_;
 
