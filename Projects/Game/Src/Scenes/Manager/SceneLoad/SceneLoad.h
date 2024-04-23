@@ -5,7 +5,8 @@
 #include <functional>
 #include <memory>
 #include "Drawers/Texture2D/Texture2D.h"
-#include "Math/Mat4x4.h"
+#include "Engine/Graphics/Tex2DAniamtor/Tex2DAniamtor.h"
+#include "Utils/SafePtr/SafePtr.h"
 
 
 // ロード中の描画クラス
@@ -14,7 +15,7 @@ public:
 	struct Desc {
 		std::string fileName = "./Resources/Load.png";
 		uint32_t animationNumber = 4;
-		uint32_t animationSpeed = 500;
+		float animationSpeed = 0.5f;
 	};
 public:
 	static Desc setting;
@@ -46,7 +47,6 @@ private:
 
 	// ロード中に実行する関数
 	std::function<void(void)> loadProc_;
-	std::unique_ptr<Texture2D> loadTex_;
 
 	bool exit_;
 
@@ -54,5 +54,11 @@ private:
 
 	bool isWait_;
 
+	std::unique_ptr<Tex2DAniamtor> tex2Danimator_;
+	Lamb::SafePtr<Texture2D> loadTex_;
+	uint32_t textureID_;
+
 	Mat4x4 cameraMatrix_;
+
+	class RenderContextManager* renderContextManager_;
 };
