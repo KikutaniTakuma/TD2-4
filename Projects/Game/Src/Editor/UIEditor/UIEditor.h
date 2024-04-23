@@ -22,7 +22,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	void Initialize(class SceneManager* sceneManager);
 
 	/// <summary>
 	/// 終了処理
@@ -48,28 +48,38 @@ public:
 	void LoadFiles(const std::string& fileName);
 
 public:
-	//std::vector<Tex2DState*> GetTexStateTitle() const{
-	//	/*std::vector<Tex2DState*> texStateTitle;
-
-	//	for (auto& vec : texies_[0]) {
-	//		for (auto& ptr : vec[0]) {
-	//			texStateTitle.push_back(ptr.get());
-	//		}
-	//	}
-
-	//	return texStateTitle;*/
-	//}
-	//std::vector<std::unique_ptr<Tex2DState>> GetTexStateSelect() const{
-	//	return texies_[1];
-	//}
-	//std::vector<std::unique_ptr<Tex2DState>> GetTexStateGame() const{
-	//	return texies_[2];
-	//}
-	//std::vector<std::unique_ptr<Tex2DState>> GetTexStateResult()const {
-	//	return texies_[3];
-	//}
+	std::vector<Tex2DState*> GetTexStateTitle() const{
+		std::vector<Tex2DState*> texStateTitle;
+		for (auto& ptr : texies_[0]) {			
+			texStateTitle.push_back(ptr.get());			
+		}
+		return texStateTitle;
+	}
+	std::vector<Tex2DState*> GetTexStateSelect() const{
+		std::vector<Tex2DState*> texStateTitle;
+		for (auto& ptr : texies_[1]) {
+			texStateTitle.push_back(ptr.get());
+		}
+		return texStateTitle;
+	}
+	std::vector<Tex2DState*> GetTexStateGame() const{
+		std::vector<Tex2DState*> texStateTitle;
+		for (auto& ptr : texies_[2]) {
+			texStateTitle.push_back(ptr.get());
+		}
+		return texStateTitle;
+	}
+	std::vector<Tex2DState*> GetTexStateResult()const {
+		std::vector<Tex2DState*> texStateTitle;
+		for (auto& ptr : texies_[3]) {
+			texStateTitle.push_back(ptr.get());
+		}
+		return texStateTitle;
+	}
 
 private:
+	class SceneManager* sceneManager_;
+
 	Input* input_ = nullptr;
 
 	Texture2D* tex2D_ = nullptr;

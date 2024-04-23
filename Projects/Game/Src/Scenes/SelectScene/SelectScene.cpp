@@ -12,7 +12,7 @@ void SelectScene::Initialize() {
 
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
 
-	currentCamera_->pos = { 0.0f, 0.0f , -1.0f };	
+	currentCamera_->pos = { 0.0f, 0.0f , -1.0f };
 
 	for (size_t i = 0; i < texies_.size(); i++) {
 		texies_[i] = std::make_unique<Tex2DState>();

@@ -45,6 +45,7 @@ void BaseScene::SceneInitialize(SceneManager* sceneManager) {
 	input_ = Input::GetInstance();
 
 	uiEditor_ = UIEditor::GetInstance();
+	uiEditor_->Initialize(sceneManager);
 }
 
 void BaseScene::ChangeCamera()

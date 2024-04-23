@@ -9,10 +9,8 @@
 #include <Camera/Camera.h>
 #include <bitset>
 
-class Map
-{
+class Map{
 public:
-
 
 	struct BoxInfo{
 		//建設予定になって入るかどうか
