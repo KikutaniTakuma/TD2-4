@@ -30,7 +30,7 @@ void UIEditor::Finalize(){
 void UIEditor::Update(){
 	Debug();
 
-	for (size_t i = 0; i < BaseScene::maxScene_; i++){
+	for (size_t i = 0; i < BaseScene::kMaxScene; i++){
 		for (size_t j = 0; j < texies_[i].size(); j++){
 			texies_[i][j]->transform.CalcMatrix();
 		}
@@ -42,7 +42,7 @@ void UIEditor::Update(){
 void UIEditor::Draw(const Camera& camera){
 	
 
-	for (size_t i = 0; i < BaseScene::maxScene_; i++) {
+	for (size_t i = 0; i < BaseScene::kMaxScene; i++) {
 		for (size_t j = 0; j < texies_[i].size(); j++) {
 			tex2D_->Draw(texies_[i][j]->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
 				, texies_[i][j]->textureID, texies_[i][j]->color, BlendType::kNormal);

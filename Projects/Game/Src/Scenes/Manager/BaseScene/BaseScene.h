@@ -1,6 +1,15 @@
 #pragma once
 #include "Camera/Camera.h"
 #include "Camera/DebugCamera/DebugCamera.h"
+
+#include "Drawers/DrawerManager.h"
+#include "AudioManager/AudioManager.h"
+#include "Input/Input.h"
+#include "Engine/EngineUtils/FrameInfo/FrameInfo.h"
+#include "Engine/Core/StringOutPutManager/StringOutPutManager.h"
+
+#include "Utils/SafePtr/SafePtr.h"
+
 #include <memory>
 
 class BaseScene {
@@ -13,6 +22,8 @@ public:
 		StageSelect,
 		Game,
 	};
+
+	static constexpr int32_t kMaxScene = 4;
 
 public:
 	BaseScene(BaseScene::ID sceneID);
@@ -42,18 +53,16 @@ public:
 
 protected:
 	class SceneManager* sceneManager_;
+	
+	DrawerManager* drawerManager_;
 
-	class MeshManager* meshManager_;
+	AudioManager* audioManager_;
 
-	class AudioManager* audioManager_;
+	FrameInfo* frameInfo_;
 
-	class TextureManager* textureManager_;
+	Input* input_;
 
-	class FrameInfo* frameInfo_;
-
-	class Input* input_;
-
-	class StringOutPutManager* stringOutPutManager_;
+	StringOutPutManager* stringOutPutManager_;
 
 	BaseScene::ID sceneID_;
 
@@ -61,7 +70,7 @@ private:
 	std::unique_ptr<Camera> camera_;
 
 protected:
-	Camera* currentCamera_;
+	Lamb::SafePtr<Camera> currentCamera_;
 
 #ifdef _DEBUG
 	std::unique_ptr<DebugCamera> debugCamera_;

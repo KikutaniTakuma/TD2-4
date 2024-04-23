@@ -57,7 +57,7 @@ private:
 	/// <summary>
 	/// 一時保存するリスト
 	/// </summary>
-	std::array<std::vector<std::unique_ptr<Tex2DState>>, BaseScene::maxScene_> texies_;
+	std::array<std::vector<std::unique_ptr<Tex2DState>>, BaseScene::kMaxScene> texies_;
 
 	std::unique_ptr<Tex2DState> newTex_;
 

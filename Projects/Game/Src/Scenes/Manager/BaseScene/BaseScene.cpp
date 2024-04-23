@@ -1,24 +1,18 @@
 #include "BaseScene.h"
-#include "Engine/Graphics/MeshManager/MeshManager.h"
-#include "Engine/Graphics/TextureManager/TextureManager.h"
-#include "AudioManager/AudioManager.h"
-#include "Engine/EngineUtils/FrameInfo/FrameInfo.h"
-#include "Input/Input.h"
-#include "Engine/Core/StringOutPutManager/StringOutPutManager.h"
 
+#ifdef _DEBUG
 #include "imgui.h"
-#include <typeinfo>
+#endif // _DEBUG
+
 
 BaseScene::BaseScene(BaseScene::ID sceneID) :
 #ifdef _DEBUG
 	debugCamera_(std::make_unique<DebugCamera>()),
 	isDebug_(false),
 #endif // _DEBUG
-
 	sceneManager_(nullptr),
-	meshManager_(nullptr),
+	drawerManager_(nullptr),
 	audioManager_(nullptr),
-	textureManager_(nullptr),
 	frameInfo_(nullptr),
 	input_(nullptr),
 	stringOutPutManager_(nullptr),
@@ -30,11 +24,9 @@ BaseScene::BaseScene(BaseScene::ID sceneID) :
 void BaseScene::SceneInitialize(SceneManager* sceneManager) {
 	sceneManager_ = sceneManager;
 
-	meshManager_ = MeshManager::GetInstance();
+	drawerManager_ = DrawerManager::GetInstance();
 
 	audioManager_ = AudioManager::GetInstance();
-
-	textureManager_ = TextureManager::GetInstance();
 
 	frameInfo_ = FrameInfo::GetInstance();
 
@@ -61,5 +53,5 @@ void BaseScene::ChangeCamera()
 
 const Camera& BaseScene::GetCamera() const
 {
-	return *currentCamera_;
+	return *camera_;
 }
