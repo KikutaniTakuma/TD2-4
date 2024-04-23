@@ -34,6 +34,9 @@ class GameObject;
 
 /// @brief コンポーネント指向の基盤
 class IComponent {
+
+	friend GameObject;
+
 	// 通常のコンストラクタは無効化
 	IComponent() = delete;
 	IComponent(const IComponent &) = delete;
@@ -47,6 +50,8 @@ public:
 
 	/// @brief Objectに追加した時に走る処理
 	inline virtual void Init() {};
+	/// @brief 最初にUpdateが呼ばれたときに実行される処理
+	inline virtual void Start() {};
 	/// @brief 任意で実行する初期化
 	inline virtual void Reset() {};
 	/// @brief 毎フレーム実行される処理
@@ -79,7 +84,12 @@ public:
 	GameObject &object_;
 	Transform &transform_;
 
+	// コンポーネント単体の時間倍率
 	float monoTimeScale_ = 1.f;
+
+private:
+	// 一度Updateが呼ばれたか
+	bool isUsedUpdate_ = false;
 };
 
 class GameObject {

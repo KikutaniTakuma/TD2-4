@@ -22,11 +22,20 @@ void GameObject::Update(float deltaTime) {
 	if (rigidbody) {
 		rigidbody->Update();
 	}
-	for (auto &component : componentMap_) {
-		if (modelComp != component.second.get() && rigidbody != component.second.get()) {
-			component.second->Update();
+	for (auto &[index, component] : componentMap_) {
+		if (modelComp != component.get() && rigidbody != component.get()) {
+			// 一度もアップデートが呼ばれていない場合は呼ぶ
+			if (component->isUsedUpdate_ == false) [[unlikely]]	// 初回のみ読まれる
+				{
+					// 初期化処理を行う
+					component->Start();
+					// 一度呼び出したというフラグを立てる
+					component->isUsedUpdate_ = true;
+				}
+				component->Update();
 		}
 	}
+	// 行列の計算
 	transform_.CalcMatrix();
 	if (modelComp) {
 		modelComp->Update();

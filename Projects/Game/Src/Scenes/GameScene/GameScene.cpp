@@ -42,8 +42,8 @@ void GameScene::Initialize() {
 	//aabb_ = AABB::Create({ 0.0f,-0.5f,0.0f }, { 20.0f,1.0f,20.0f });
 
 
-	player_ = std::make_unique<Player>();
-	player_->Initialize();
+	// player_ = std::make_unique<Player>();
+	// player_->Initialize();
 
 	blockEditor_ = std::make_unique<BlockEditor>();
 	blockEditor_->Initialize();
@@ -81,8 +81,8 @@ void GameScene::Update() {
 
 	/*cloud_->Update();
 	skydome_->Upadate();*/
-	player_->Debug();
-	player_->Update();
+	//player_->Debug();
+	//player_->Update();
 
 	
 #ifdef _DEBUG
@@ -142,7 +142,7 @@ void GameScene::Draw() {
 	/*cloud_->Draw();
 	skydome_->Draw(*currentCamera_);*/
 
-	player_->Draw(*currentCamera_);
+	// player_->Draw(*currentCamera_);
 
 	enemyManager_->Draw(*currentCamera_);
 

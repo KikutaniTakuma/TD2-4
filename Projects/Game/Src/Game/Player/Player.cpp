@@ -7,7 +7,7 @@ Player::~Player(){
 }
 
 void Player::Initialize(){
-	CollisionManager_ = CollisionManager::GetInstance();
+	pCollisionManager_ = CollisionManager::GetInstance();
 
 
 	input_ = Input::GetInstance();
@@ -23,7 +23,7 @@ void Player::Update(){
 	blockList_.remove_if([&](const std::unique_ptr<Block>& block) {
 		if (block->GetIsBreak()){
 			boxCount_--;
-			CollisionManager_->DeleteCollider(block->GetObb());
+			pCollisionManager_->DeleteCollider(block->GetObb());
 			return true;
 		}
 		return false;
@@ -87,7 +87,7 @@ void Player::AddBox(const Vector3& pos){
 	newBlock_->Initialize();
 	newBlock_->pos_ = pos;
 
-	CollisionManager_->SetCollider(newBlock_->GetObb());
+	pCollisionManager_->SetCollider(newBlock_->GetObb());
 
 	blockList_.push_back(std::move(newBlock_));
 	boxCount_++;
