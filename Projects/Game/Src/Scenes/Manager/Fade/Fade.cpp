@@ -16,7 +16,7 @@ Fade::Fade() :
 	tex_ = DrawerManager::GetInstance()->GetTexture2D();
 	transform = std::make_unique<Transform>();
 	transform->scale = Lamb::ClientSize();
-	transform->translate.z = 0.1f;
+	transform->translate.z = 1.0f;
 }
 
 void Fade::OutStart() {
