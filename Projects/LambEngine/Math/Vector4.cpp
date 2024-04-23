@@ -153,7 +153,7 @@ Vector4& Vector4::operator*=(const Mat4x4& mat) noexcept {
 	Vector4 result;
 	Matrix<float, 4, 1>&& tmp = right.m;
 
-	result.m = (left * tmp).view();
+	result.m = (left * tmp).GetVector();
 
 	return result;
 }

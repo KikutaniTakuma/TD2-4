@@ -59,14 +59,25 @@ public:
 	}
 	constexpr Matrix(const Matrix&) = default;
 	constexpr Matrix(Matrix&&) = default;
+
+private:
+	constexpr Matrix(const value_type identity) noexcept requires (height == width)
+		: Matrix()
+	{
+		for (size_t i = 0; i < height; i++) {
+			matrix_[i][i] = identity;
+		}
+	}
+
+public:
 	~Matrix() = default;
 
 public:
-	Matrix& operator=(const Matrix&) = default;
-	Matrix& operator=(Matrix&&) = default;
+	constexpr Matrix& operator=(const Matrix&) = default;
+	constexpr Matrix& operator=(Matrix&&) = default;
 
 	template<std::floating_point othertype, size_t otherHeight, size_t otherWidth>
-	Matrix& operator=(const Matrix<othertype, otherHeight, otherWidth>& right) {
+	constexpr Matrix& operator=(const Matrix<othertype, otherHeight, otherWidth>& right) {
 		for (size_t y = 0; y < height and y < otherHeight; y++) {
 			for (size_t x = 0; x < width and x < otherWidth; x++) {
 				this->matrix_[y][x] = value_cast(right[y][x]);
@@ -76,7 +87,7 @@ public:
 		return *this;
 	}
 	template<std::floating_point othertype, size_t otherHeight, size_t otherWidth>
-	Matrix& operator=(const std::array<std::array<othertype, otherWidth>, otherHeight>& right) {
+	constexpr Matrix& operator=(const std::array<std::array<othertype, otherWidth>, otherHeight>& right) {
 		for (size_t y = 0; y < height and y < otherHeight; y++) {
 			for (size_t x = 0; x < width and x < otherWidth; x++) {
 				this->matrix_[y][x] = value_cast(right[y][x]);
@@ -106,7 +117,7 @@ public:
 
 public:
 	template<size_t otherWidth>
-	[[nodiscard]] Matrix<value_type, height, otherWidth> operator*(const Matrix<value_type, width, otherWidth>& right) const noexcept {
+	[[nodiscard]] constexpr Matrix<value_type, height, otherWidth> operator*(const Matrix<value_type, width, otherWidth>& right) const noexcept {
 		Matrix<value_type, height, otherWidth> result;
 
 		for (size_t y = 0; y < height; y++) {
@@ -120,13 +131,13 @@ public:
 		return result;
 	}
 	template<size_t otherWidth>
-	Matrix<value_type, height, otherWidth>& operator*=(const Matrix<value_type, height, otherWidth>& right)noexcept {
+	[[nodiscard]] constexpr Matrix<value_type, height, otherWidth>& operator*=(const Matrix<value_type, height, otherWidth>& right)noexcept {
 		*this = *this * right;
 
 		return *this;
 	}
 
-	[[nodiscard]] Matrix operator+(const Matrix& right) const noexcept {
+	[[nodiscard]] constexpr Matrix operator+(const Matrix& right) const noexcept {
 		Matrix result;
 
 		for (size_t y = 0; y < height; y++) {
@@ -137,12 +148,12 @@ public:
 
 		return result;
 	}
-	Matrix& operator+=(const Matrix& right)noexcept {
+	[[nodiscard]] constexpr Matrix& operator+=(const Matrix& right)noexcept {
 		*this = *this + right;
 
 		return *this;
 	}
-	[[nodiscard]] Matrix operator-(const Matrix& right) const noexcept {
+	[[nodiscard]] constexpr  Matrix operator-(const Matrix& right) const noexcept {
 		Matrix result;
 
 		for (size_t y = 0; y < height; y++) {
@@ -153,14 +164,14 @@ public:
 
 		return result;
 	}
-	Matrix& operator-=(const Matrix& right)noexcept {
+	[[nodiscard]] constexpr Matrix& operator-=(const Matrix& right)noexcept {
 		*this = *this - right;
 
 		return *this;
 	}
 
 public:
-	[[nodiscard]] bool operator==(const Matrix& right) const {
+	[[nodiscard]] constexpr bool operator==(const Matrix& right) const {
 		return vector_ == right.vector_;
 	}
 	[[nodiscard]] bool operator!=(const Matrix& right) const {
@@ -244,11 +255,18 @@ public:
 		return vector_.data();
 	}
 
-	[[nodiscard]] constexpr vector_reference view() noexcept {
+	[[nodiscard]] constexpr vector_reference GetVector() noexcept {
 		return vector_;
 	}
-	[[nodiscard]] constexpr vector_const_reference view() const noexcept {
+	[[nodiscard]] constexpr vector_const_reference GetVector() const noexcept {
 		return vector_;
+	}
+
+	[[nodiscard]] constexpr matrix_reference GetMatrix() noexcept {
+		return matrix_;
+	}
+	[[nodiscard]] constexpr matrix_const_reference GetMatrix() const noexcept {
+		return matrix_;
 	}
 
 	[[noreturn]] constexpr void swap(Matrix& right) {
@@ -262,13 +280,8 @@ public:
 /// </summary>
 
 public:
-	static [[nodiscard]] const Matrix& Identity() requires (height == width)
-	{
-		static Matrix identity;
-
-		for (size_t i = 0; i < height; i++) {
-			identity[i][i] = 1.0f;
-		}
+	static [[nodiscard]] constexpr const Matrix& Identity() requires (height == width) {
+		static const Matrix identity(1.0f);
 
 		return identity;
 	}
