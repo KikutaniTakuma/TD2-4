@@ -135,6 +135,9 @@
     <ClCompile Include="UIEditor.cpp">
       <Filter>Editor\UIEditor</Filter>
     </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\PlayerComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
