@@ -13,24 +13,25 @@ class Map
 {
 public:
 
-
+	// 拠点1つごとの情報
 	struct HouseInfo {
 
 		// x座標
 		int32_t xPos_{};
 
+		// モデルの表示情報
 		ModelState houseModelState_;
-
-
 
 		//複数選択の対象かどうか
 		bool isMultiSelect_;	// エディター側が持ってたほうが個人的にありがたい｡
 	};
 
+	// ボックスに紐づいている情報
 	enum class BoxType : uint32_t {
 		kNone,	// 虚空
 		kBox,	// 箱
 	};
+
 	inline static constexpr int32_t kMapX = 30u, kMapY = 20u;
 
 	// 拠点のリスト
