@@ -19,7 +19,7 @@ const Quaternion Quaternion::kZero = { 0.0f, 0.0f, 0.0f, 0.0f };
 /// ========================================================================
 #pragma region Constructor
 constexpr Quaternion::Quaternion():
-	m{0.0f}
+	m({ 0.0f })
 {}
 
 Quaternion::Quaternion(const Vector4& right):
@@ -339,7 +339,7 @@ Quaternion Quaternion::EulerToQuaternion(const Vector3& euler)
 	result.quaternion.y = sz * cy * sx + cz * sy * cx;
 	result.quaternion.z = sz * cy * cx - cz * sy * sx;
 
-	return result;
+	return result.Normalize();
 }
 
 Quaternion Quaternion::Slerp(Quaternion start, const Quaternion& end, float t) {

@@ -115,11 +115,10 @@ float Vector2::Dot(const Vector2& right) const noexcept {
 }
 
 float Vector2::Length() const noexcept {
-	return std::sqrtf(x*x + y*y);
+	return std::sqrt(x * x + y* y);
 }
-
 float Vector2::LengthSQ() const noexcept {
-	return x*x + y*y;
+	return x * x + y * y;
 }
 
 Vector2 Vector2::Normalize() const noexcept {

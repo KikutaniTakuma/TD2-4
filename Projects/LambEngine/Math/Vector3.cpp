@@ -107,7 +107,7 @@ Vector3 Vector3::operator*(const Mat4x4& mat) const {
 
 Vector3 operator*(const Mat4x4& left, const Vector3& right) {
 	Vector3 result;
-	Matrix<float, 4, 1> tmp = Matrix<float, 1, 4>::VectorType{ right.x,right.y, right.z, 1.0f };
+	Matrix<float, 4, 1> tmp = Matrix<float, 4, 1>::vector_type{ right.x,right.y, right.z, 1.0f };
 	Matrix<float, 4, 1> tmpResult;
 
 	tmpResult = left * tmp;
@@ -177,12 +177,10 @@ const float& Vector3::operator[](size_t index) const {
 }
 
 float Vector3::Length() const noexcept {
-	return std::sqrt(x*x + y*y + z*z);
+	return std::sqrt(Dot(*this));
 }
-
-float Vector3::LengthSQ() const noexcept
-{
-	return x * x + y * y + z * z;
+float Vector3::LengthSQ() const noexcept {
+	return Dot(*this);
 }
 
 float Vector3::Dot(const Vector3& right) const noexcept {

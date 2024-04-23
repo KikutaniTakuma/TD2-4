@@ -187,6 +187,9 @@
     <ClCompile Include="Utils\Easeing\Easeing.cpp">
       <Filter>Utils\Easeing</Filter>
     </ClCompile>
+    <ClCompile Include="Math\MathCommon.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\Graphics\Tex2DAniamtor\Tex2DAniamtor.cpp">
       <Filter>Engine\Graphics\Tex2DAniamtor</Filter>
     </ClCompile>
