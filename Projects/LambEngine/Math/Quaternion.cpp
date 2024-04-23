@@ -19,7 +19,7 @@ const Quaternion Quaternion::kZero = { 0.0f, 0.0f, 0.0f, 0.0f };
 /// ========================================================================
 #pragma region Constructor
 constexpr Quaternion::Quaternion():
-	m{0.0f}
+	m({ 0.0f })
 {}
 
 Quaternion::Quaternion(const Vector4& right):
