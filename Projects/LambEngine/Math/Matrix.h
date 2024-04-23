@@ -8,28 +8,55 @@
 template<std::floating_point floatingType, size_t height, size_t width>
 class Matrix {
 public:
-	using ValueType = floatingType;
+	using value_type = floatingType;
+	using pointer = value_type*;
+	using const_pointer = const value_type*;
+	using reference = value_type&;
+	using const_reference = const value_type&;
 
-	using WidthType = std::array<ValueType, width>;
-	using HeightType = std::array<WidthType, height>;
 
-	using VectorType = std::array<ValueType, height * width>;
-	using MatrixType = HeightType;
+	using width_type = std::array<value_type, width>;
+	using height_type = std::array<width_type, height>;
 
-	using iterator = MatrixType::iterator;
-	using const_iterator = MatrixType::const_iterator;
+	using vector_type = std::array<value_type, height * width>;
+	using vector_pointer = vector_type*;
+	using vector_const_pointer = const vector_type*;
+	using vector_reference = vector_type&;
+	using vector_const_reference = const vector_type&;
 
-	using reverse_iterator = MatrixType::reverse_iterator;
-	using const_reverse_iterator = MatrixType::const_reverse_iterator;
+	using matrix_type = height_type;
+	using matrix_pointer = matrix_type*;
+	using matrix_const_pointer = const matrix_type*;
+	using matrix_reference = matrix_type&;
+	using matrix_const_reference = const matrix_type&;
+
+
+
+	using iterator = matrix_type::iterator;
+	using const_iterator = matrix_type::const_iterator;
+
+	using reverse_iterator = matrix_type::reverse_iterator;
+	using const_reverse_iterator = matrix_type::const_reverse_iterator;
+
+
+#define value_cast(num) static_cast<value_type>(num)
 
 public:
 	constexpr Matrix() noexcept :
 		vector_()
 	{}
 
-	constexpr Matrix(const VectorType& num) noexcept : 
+	constexpr Matrix(const vector_type& num) noexcept : 
 		vector_(num)
 	{}
+	template<std::floating_point othertype, size_t otherHeight, size_t otherWidth>
+	constexpr Matrix(const Matrix<othertype, otherHeight, otherWidth>& right) noexcept{
+		*this = right;
+	}
+	template<std::floating_point othertype, size_t otherHeight, size_t otherWidth>
+	constexpr Matrix(const std::array<std::array<othertype, otherWidth>, otherHeight>& right) noexcept{
+		*this = right;
+	}
 	constexpr Matrix(const Matrix&) = default;
 	constexpr Matrix(Matrix&&) = default;
 	~Matrix() = default;
@@ -38,9 +65,30 @@ public:
 	Matrix& operator=(const Matrix&) = default;
 	Matrix& operator=(Matrix&&) = default;
 
+	template<std::floating_point othertype, size_t otherHeight, size_t otherWidth>
+	Matrix& operator=(const Matrix<othertype, otherHeight, otherWidth>& right) {
+		for (size_t y = 0; y < height and y < otherHeight; y++) {
+			for (size_t x = 0; x < width and x < otherWidth; x++) {
+				this->matrix_[y][x] = value_cast(right[y][x]);
+			}
+		}
+
+		return *this;
+	}
+	template<std::floating_point othertype, size_t otherHeight, size_t otherWidth>
+	Matrix& operator=(const std::array<std::array<othertype, otherWidth>, otherHeight>& right) {
+		for (size_t y = 0; y < height and y < otherHeight; y++) {
+			for (size_t x = 0; x < width and x < otherWidth; x++) {
+				this->matrix_[y][x] = value_cast(right[y][x]);
+			}
+		}
+
+		return *this;
+	}
+
 public:
 	template<std::integral T>
-	[[nodiscard]] constexpr WidthType& operator[](T index) {
+	[[nodiscard]] constexpr width_type& operator[](T index) {
 		if (matrix_.size() <= index) {
 			throw Lamb::Error::Code<Matrix>("out of range", __func__);
 		}
@@ -49,7 +97,7 @@ public:
 	}
 
 	template<std::integral T>
-	[[nodiscard]] constexpr const WidthType& operator[](T index) const {
+	[[nodiscard]] constexpr const width_type& operator[](T index) const {
 		if (matrix_.size() <= index) {
 			throw Lamb::Error::Code<Matrix>("out of range", __func__);
 		}
@@ -58,8 +106,8 @@ public:
 
 public:
 	template<size_t otherWidth>
-	[[nodiscard]] Matrix<ValueType, height, otherWidth> operator*(const Matrix<ValueType, width, otherWidth>& right) const noexcept {
-		Matrix<ValueType, height, otherWidth> result;
+	[[nodiscard]] Matrix<value_type, height, otherWidth> operator*(const Matrix<value_type, width, otherWidth>& right) const noexcept {
+		Matrix<value_type, height, otherWidth> result;
 
 		for (size_t y = 0; y < height; y++) {
 			for (size_t x = 0; x < otherWidth; x++) {
@@ -72,7 +120,7 @@ public:
 		return result;
 	}
 	template<size_t otherWidth>
-	Matrix<ValueType, height, otherWidth>& operator*=(const Matrix<ValueType, height, otherWidth>& right)noexcept {
+	Matrix<value_type, height, otherWidth>& operator*=(const Matrix<value_type, height, otherWidth>& right)noexcept {
 		*this = *this * right;
 
 		return *this;
@@ -160,7 +208,7 @@ public:
 		return matrix_.rend();
 	}
 
-	[[nodiscard]] constexpr ValueType& at(size_t index) {
+	[[nodiscard]] constexpr reference at(size_t index) {
 		if (vector_.size() <= index) {
 			throw Lamb::Error::Code<Matrix>("out of range", __func__);
 		}
@@ -168,25 +216,25 @@ public:
 		return vector_.at(index);
 	}
 
-	[[nodiscard]] constexpr const ValueType& at(size_t index) const {
+	[[nodiscard]] constexpr const_reference at(size_t index) const {
 		if (vector_.size() <= index) {
 			throw Lamb::Error::Code<Matrix>("out of range", __func__);
 		}
 		return vector_.at(index);
 	}
 
-	[[nodiscard]] ValueType* data() noexcept {
-		return reinterpret_cast<ValueType*>(this);
+	[[nodiscard]] pointer data() noexcept {
+		return vector_.data();
 	}
 
-	[[nodiscard]] const ValueType* data() const noexcept {
-		return reinterpret_cast<const ValueType*>(this);
+	[[nodiscard]] const_pointer data() const noexcept {
+		return vector_.data();
 	}
 
-	[[nodiscard]] constexpr VectorType& view() noexcept {
+	[[nodiscard]] constexpr vector_reference view() noexcept {
 		return vector_;
 	}
-	[[nodiscard]] constexpr const VectorType& view() const noexcept {
+	[[nodiscard]] constexpr vector_const_reference view() const noexcept {
 		return vector_;
 	}
 
@@ -220,9 +268,9 @@ public:
 		const Matrix& kIdentity = Identity();
 		Matrix identity = kIdentity;
 
-		ValueType toOne = tmp[0][0];
+		value_type toOne = tmp[0][0];
 
-		ValueType tmpNum = 0.0f;
+		value_type tmpNum = value_cast(0.0);
 
 		for (int i = 0; i < height; i++) {
 			if (tmp.matrix_[i][i] == 0.0f && i < height) {
@@ -299,7 +347,7 @@ public:
 
 protected:
 	union {
-		MatrixType matrix_;
-		VectorType vector_;
+		matrix_type matrix_;
+		vector_type vector_;
 	};
 };

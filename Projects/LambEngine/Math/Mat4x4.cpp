@@ -1,7 +1,7 @@
 #include "Mat4x4.h"
-#include "Vector3.h"
 #include "Quaternion.h"
 #include <cmath>
+#include "Math/MathCommon.h"
 
 const Mat4x4 Mat4x4::kIdentity = BasedMatrix::Identity();
 
@@ -19,7 +19,7 @@ Mat4x4::Mat4x4(const std::initializer_list<float>& right) {
 	std::copy(right.begin(), right.end(), vector_.begin());
 }
 
-Mat4x4::Mat4x4(const BasedMatrix::VectorType& right) {
+Mat4x4::Mat4x4(const BasedMatrix::vector_type& right) {
 	std::copy(right.begin(), right.end(), vector_.begin());
 }
 
@@ -202,7 +202,7 @@ Mat4x4 Mat4x4::DirectionToDirection(const Vector3& from, const Vector3& to) {
 	float theataSin = from.Cross(to).Length();
 
 	Mat4x4 result = 
-		BasedMatrix::VectorType{
+		BasedMatrix::vector_type{
 			normal.x * normal.x * (1.0f - theataCos) + theataCos,
 			normal.x * normal.y * (1.0f - theataCos) + normal.z * theataSin,
 			normal.x * normal.z * (1.0f - theataCos) - normal.y * theataSin,
@@ -229,7 +229,7 @@ Mat4x4 Mat4x4::MakeRotateAxisAngle(const Vector3& axis, float angle) {
 	float angleCos = std::cos(angle);
 	float angleSin = std::sin(angle);
 
-	Mat4x4 result = BasedMatrix::VectorType{
+	Mat4x4 result = BasedMatrix::vector_type{
 			axis.x * axis.x * (1.0f - angleCos) + angleCos,
 			axis.x * axis.y * (1.0f - angleCos) + axis.z * angleSin,
 			axis.x * axis.z * (1.0f - angleCos) - axis.y * angleSin,
@@ -250,4 +250,39 @@ Mat4x4 Mat4x4::MakeRotateAxisAngle(const Vector3& axis, float angle) {
 
 
 	return result;
+}
+
+Vector3 Mat4x4::GetTranslate()
+{
+	return Vector3((*this)[3][0], (*this)[3][1], (*this)[3][2]);
+}
+Vector3 Mat4x4::GetScale() {
+	return Vector3(
+		Lamb::Math::Length({ matrix_[0][0], matrix_[0][1], matrix_[0][2] }),
+		Lamb::Math::Length({ matrix_[1][0], matrix_[1][1], matrix_[1][2] }),
+		Lamb::Math::Length({ matrix_[2][0], matrix_[2][1], matrix_[2][2]})
+	);
+}
+Quaternion Mat4x4::GetRotate() {
+	const Matrix<float, 3, 3>& inverceScaleMatrix = Mat4x4::MakeScalar(GetScale()).Inverse();
+	const Matrix<float, 3, 3>& rotateScaleMat = this->matrix_;
+	const Matrix<float, 3, 3>& rotateMat = rotateScaleMat * inverceScaleMatrix;
+
+	Quaternion result;
+	result.quaternion.w = std::sqrt(1.0f + rotateMat[0][0] + rotateMat[1][1] + rotateMat[2][2]) * 0.5f;
+	if (result.quaternion.w == 0.0f) {
+		throw Lamb::Error::Code<Mat4x4>("w is 0.0f", __func__);
+	}
+	float w = 1.0f / (result.quaternion.w * 4.0f);
+	result.quaternion.x = (rotateMat[1][2] - rotateMat[2][1]) * w;
+	result.quaternion.y = (rotateMat[2][0] - rotateMat[0][2]) * w;
+	result.quaternion.z = (rotateMat[0][1] - rotateMat[1][0]) * w;
+
+	return result.Normalize();
+}
+
+void Mat4x4::Decompose(Vector3& scale, Quaternion& rotate, Vector3& translate) {
+	scale = GetScale();
+	rotate = GetRotate();
+	translate = GetTranslate();
 }

@@ -6,7 +6,8 @@
 #include <initializer_list>
 #include "Matrix.h"
 
-class Vector3;
+#include "Vector3.h"
+#include "Quaternion.h"
 
 /// <summary>
 /// 4x4行列
@@ -23,7 +24,7 @@ public:
 	Mat4x4(const Mat4x4& right);
 	Mat4x4(Mat4x4&& right) noexcept;
 	Mat4x4(const std::initializer_list<float>& right);
-	Mat4x4(const BasedMatrix::VectorType& right);
+	Mat4x4(const BasedMatrix::vector_type& right);
 	Mat4x4(const BasedMatrix& right);
 
 public:
@@ -36,6 +37,13 @@ public:
 
 	[[nodiscard]] bool operator==(const Mat4x4& right) const = default;
 	[[nodiscard]] bool operator!=(const Mat4x4& right) const = default;
+
+public:
+	Vector3 GetTranslate();
+	Vector3 GetScale();
+	Quaternion GetRotate();
+
+	void Decompose(Vector3& scale, Quaternion& rotate, Vector3& translate);
 
 /// <summary>
 /// 静的メンバ関数

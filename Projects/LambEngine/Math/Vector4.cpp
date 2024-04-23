@@ -168,6 +168,9 @@ bool Vector4::operator!=(const Vector4& right) const noexcept {
 float Vector4::Length() const noexcept {
 	return std::sqrt(Dot(*this));
 }
+float Vector4::LengthSQ() const noexcept {
+	return Dot(*this);
+}
 
 Vector4 Vector4::Normalize() const noexcept {
 	if (*this == Vector4()) {
@@ -183,14 +186,11 @@ float Vector4::Dot(const Vector4& right) const noexcept {
 	return _mm_cvtss_f32(_mm_dp_ps(m128, right.m128, 0xff));
 }
 
-Vector3& Vector4::GetVector3() noexcept {
-	return reinterpret_cast<Vector3&>(vec);
+Vector3 Vector4::GetVector3() const noexcept {
+	return Vector3(vec.x, vec.y, vec.z);
 }
-const Vector3& Vector4::GetVector3() const noexcept {
-	return reinterpret_cast<const Vector3&>(vec);
-}
-const Vector2& Vector4::GetVector2() const noexcept {
-	return reinterpret_cast<const Vector2 &>(vec);
+Vector2 Vector4::GetVector2() const noexcept {
+	return Vector2(vec.x, vec.y);
 }
 
 uint32_t Vector4::GetColorRGBA() const
