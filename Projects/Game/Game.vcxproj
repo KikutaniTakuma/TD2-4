@@ -154,6 +154,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Game\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Src\Game\Enemy\Enemy.cpp" />
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp" />
+    <ClCompile Include="Src\Game\Ground\Ground.cpp" />
     <ClCompile Include="Src\Game\Map\Map.cpp" />
     <ClCompile Include="Src\Game\Player\Player.cpp" />
     <ClCompile Include="Src\Game\SkyDome\SkyDome.cpp" />
@@ -204,6 +205,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Src\Game\Enemy\Enemy.h" />
     <ClInclude Include="Src\Game\GameManager\GameManager.h" />
+    <ClInclude Include="Src\Game\Ground\Ground.h" />
     <ClInclude Include="Src\Game\Map\Map.h" />
     <ClInclude Include="Src\Game\Player\Player.h" />
     <ClInclude Include="Src\Game\SkyDome\SkyDome.h" />
