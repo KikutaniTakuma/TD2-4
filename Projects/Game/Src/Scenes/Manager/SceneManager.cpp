@@ -38,16 +38,20 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 #ifdef _DEBUG
 	sceneName_[BaseScene::ID::Title] = "Title";
 	sceneName_[BaseScene::ID::Game] = "Game";
+	sceneName_[BaseScene::ID::StageSelect] = "Select";
+	sceneName_[BaseScene::ID::Result] = "Result";
 #endif // _DEBUG
 	sceneNum_;
 	sceneNum_[BaseScene::ID::Title] = DIK_1;
 	sceneNum_[BaseScene::ID::Game] = DIK_2;
+	sceneNum_[BaseScene::ID::StageSelect] = DIK_3;
+	sceneNum_[BaseScene::ID::Result] = DIK_4;
 }
 
 void SceneManager::SceneChange(std::optional<BaseScene::ID> next) {
 	if (next_ || fade_->InEnd()
 		|| fade_->OutEnd() || fade_->IsActive()
-		) 
+		)
 	{
 		return;
 	}
