@@ -1,6 +1,6 @@
 #pragma once
+#include "Drawers/DrawerManager.h"
 #include "Camera/Camera.h"
-#include "Camera/DebugCamera/DebugCamera.h"
 #include <memory>
 
 class BaseScene {
@@ -13,8 +13,6 @@ public:
 		StageSelect,
 		Game,
 	};
-
-	static constexpr int32_t maxScene_ = 4;
 
 public:
 	BaseScene(BaseScene::ID sceneID);
@@ -34,8 +32,6 @@ public:
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 
-	void ChangeCamera();
-
 	inline BaseScene::ID GetID() const {
 		return sceneID_;
 	}
@@ -44,8 +40,8 @@ public:
 
 protected:
 	class SceneManager* sceneManager_;
-
-	class MeshManager* meshManager_;
+	
+	DrawerManager* drawerManager_;
 
 	class AudioManager* audioManager_;
 
@@ -59,14 +55,6 @@ protected:
 
 	BaseScene::ID sceneID_;
 
-private:
-	std::unique_ptr<Camera> camera_;
-
 protected:
-	Camera* currentCamera_;
-
-#ifdef _DEBUG
-	std::unique_ptr<DebugCamera> debugCamera_;
-	bool isDebug_;
-#endif // _DEBUG
+	std::unique_ptr<Camera> camera_;
 };

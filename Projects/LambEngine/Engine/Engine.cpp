@@ -126,7 +126,7 @@ void Engine::Initialize(const std::string& windowName, const Vector2& windowSize
 	// ディスクリプタヒープ初期化
 	RtvHeap::Initialize(128u);
 	DsvHeap::Initialize(128u);
-	CbvSrvUavHeap::Initialize(4096u, 256u);
+	CbvSrvUavHeap::Initialize(4096u);
 
 	// コマンドリスト生成
 	instance_->InitializeDirectXCommand();
@@ -443,13 +443,7 @@ void Engine::FrameEnd() {
 
 	instance_->directXCommand_->ResetCommandlist();
 
-
-
-	// 音の非同期読み込み
-	auto audioManager = AudioManager::GetInstance();
-	audioManager->ThreadLoad();
-	audioManager->CheckThreadLoadFinish();
-
+	// ドローカウントリセット
 	renderContextManager->ResetDrawCount();
 
 	frameInfo->End();

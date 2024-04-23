@@ -2,6 +2,7 @@
 #include "Engine/Engine.h"
 #include "Input/Input.h"
 #include "SceneFactory/SceneFactory.h"
+#include "Engine/Graphics/ResourceManager/ResourceManager.h"
 
 #include "Engine/Core/StringOutPutManager/StringOutPutManager.h"
 #include "Engine/EngineUtils/FrameInfo/FrameInfo.h"
@@ -35,17 +36,15 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 
 	load_.reset(new SceneLoad{});
 
+	ResourceManager::GetInstance()->Enable();
+
 #ifdef _DEBUG
 	sceneName_[BaseScene::ID::Title] = "Title";
 	sceneName_[BaseScene::ID::Game] = "Game";
-	sceneName_[BaseScene::ID::StageSelect] = "Select";
-	sceneName_[BaseScene::ID::Result] = "Result";
 #endif // _DEBUG
 	sceneNum_;
 	sceneNum_[BaseScene::ID::Title] = DIK_1;
 	sceneNum_[BaseScene::ID::Game] = DIK_2;
-	sceneNum_[BaseScene::ID::StageSelect] = DIK_3;
-	sceneNum_[BaseScene::ID::Result] = DIK_4;
 }
 
 void SceneManager::SceneChange(std::optional<BaseScene::ID> next) {
@@ -74,10 +73,6 @@ void SceneManager::Update() {
 
 
 	if (scene_ && !next_) {
-#ifdef _DEBUG
-		scene_->ChangeCamera();
-#endif // _DEBUG
-
 		scene_->Update();
 		Debug();
 	}
@@ -101,6 +96,8 @@ void SceneManager::Update() {
 		scene_.reset(next_.release());
 		// 次のシーンを格納するものユニークポインタをリセット
 		next_.reset();
+
+		//ResourceManager::GetInstance()->Unload();
 #pragma endregion
 
 #pragma region ロード中
@@ -197,4 +194,6 @@ void SceneManager::Finalize() {
 		next_->Finalize();
 	}
 	next_.reset();
+
+	ResourceManager::GetInstance()->Unenable();
 }

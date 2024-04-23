@@ -1,8 +1,6 @@
 #include "SceneFactory.h"
 #include "Scenes/GameScene/GameScene.h"
 #include "Scenes/TitleScene/TitleScene.h"
-#include"Scenes/SelectScene/SelectScene.h"
-#include"Scenes/ResultScene/ResultScene.h"
 
 SceneFactory::SceneFactory():
 	createScene_{}
@@ -30,10 +28,10 @@ void SceneFactory::CreateFunctions() {
 		};
 	createScene_[BaseScene::ID::Result] =
 		[]()->BaseScene* {
-		return new ResultScene{};
+		return nullptr;
 		};
 	createScene_[BaseScene::ID::StageSelect] =
 		[]()->BaseScene* {
-		return new SelectScene{};
+		return nullptr;
 		};
 }

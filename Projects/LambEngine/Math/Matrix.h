@@ -90,7 +90,7 @@ public:
 	template<std::integral T>
 	[[nodiscard]] constexpr width_type& operator[](T index) {
 		if (matrix_.size() <= index) {
-			throw Lamb::Error::Code<Matrix>("out of range", __func__);
+			OutOfRange(__func__);
 		}
 
 		return matrix_[index];
@@ -99,7 +99,7 @@ public:
 	template<std::integral T>
 	[[nodiscard]] constexpr const width_type& operator[](T index) const {
 		if (matrix_.size() <= index) {
-			throw Lamb::Error::Code<Matrix>("out of range", __func__);
+			OutOfRange(__func__);
 		}
 		return matrix_[index];
 	}
@@ -210,7 +210,7 @@ public:
 
 	[[nodiscard]] constexpr reference at(size_t index) {
 		if (vector_.size() <= index) {
-			throw Lamb::Error::Code<Matrix>("out of range", __func__);
+			OutOfRange(__func__);
 		}
 
 		return vector_.at(index);
@@ -218,9 +218,22 @@ public:
 
 	[[nodiscard]] constexpr const_reference at(size_t index) const {
 		if (vector_.size() <= index) {
-			throw Lamb::Error::Code<Matrix>("out of range", __func__);
+			OutOfRange(__func__);
 		}
 		return vector_.at(index);
+	}
+
+	[[nodiscard]] constexpr reference front() {
+		return vector_.front();
+	}
+	[[nodiscard]] constexpr const_reference front() const {
+		return vector_.front();
+	}
+	[[nodiscard]] constexpr reference back() {
+		return vector_.back();
+	}
+	[[nodiscard]] constexpr const_reference back() const {
+		return vector_.back();
 	}
 
 	[[nodiscard]] pointer data() noexcept {
@@ -243,9 +256,11 @@ public:
 	}
 
 
+
 /// <summary>
 /// 正方行列のみ
 /// </summary>
+
 public:
 	static [[nodiscard]] const Matrix& Identity() requires (height == width)
 	{
@@ -258,6 +273,7 @@ public:
 		return identity;
 	}
 
+public:
 	[[nodiscard]] Matrix Inverse() const requires (height == width) {
 		if constexpr (height == 1) {
 			return *this;
@@ -330,6 +346,9 @@ public:
 		return result;
 	}
 
+/// <summary>
+/// メンバ関数
+/// </summary>
 public:
 	[[nodiscard]] std::string GetString() const {
 		std::string str;
@@ -344,7 +363,14 @@ public:
 		return str;
 	}
 
+private:
+	void OutOfRange(const std::string& funcName) const {
+		throw Lamb::Error::Code<Matrix>("out of range", funcName);
+	}
 
+/// <summary>
+/// メンバ変数
+/// </summary>
 protected:
 	union {
 		matrix_type matrix_;

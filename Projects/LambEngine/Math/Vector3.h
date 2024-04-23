@@ -50,7 +50,6 @@ public:
 	[[nodiscard]] Vector3 operator*(const class Quaternion& right) const;
 	Vector3& operator*=(const class Quaternion& right);
 
-	operator const Vector2 &()const noexcept { return reinterpret_cast<const Vector2 &>(*this); }
 
 	// 等比演算子
 
@@ -132,9 +131,18 @@ public:
 /// メンバ変数
 /// </summary>
 public:
-	float x;
-	float y;
-	float z;
+	union {
+		float x;
+		float r;
+	};
+	union {
+		float y;
+		float g;
+	};
+	union {
+		float z;
+		float b;
+	};
 
 
 /// <summary>
@@ -143,7 +151,7 @@ public:
 public:
 	static [[nodiscard]] Vector3 Lerp(const Vector3& start, const Vector3& end, float t);
 	
-	static [[nodiscard]] class Vector3 QuaternionToEuler(const Quaternion& quaternion);
+	static [[nodiscard]] Vector3 QuaternionToEuler(const class Quaternion& quaternion);
 };
 
 struct Ray {

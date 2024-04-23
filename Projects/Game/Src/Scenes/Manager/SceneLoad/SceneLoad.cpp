@@ -37,13 +37,15 @@ SceneLoad::SceneLoad() :
 	camera->Update();
 	cameraMatrix_ = camera->GetViewOthographics();
 
-	Mat4x4 uvMatrix = Mat4x4::MakeAffin(
-		Vector3(1.0f,1.0f,1.0f),
-		Vector3(),
-		Vector3()
-	);
+	loadProc_ = [this]() {
+		HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
+		if (SUCCEEDED(hr)) {
+			Lamb::AddLog("CoInitializeEx succeeded");
+		}
+		else {
+			throw Lamb::Error::Code<Engine>("CoInitializeEx failed", __func__);
+		}
 
-	loadProc_ = [this,uvMatrix]() {
 		std::unique_lock<std::mutex> uniqueLock(mtx_);
 
 
@@ -72,6 +74,9 @@ SceneLoad::SceneLoad() :
 			Engine::FrameEnd();
 
 		}
+
+		// COM 終了
+		CoUninitialize();
 	};
 
 	CreateLoad();
@@ -116,5 +121,5 @@ void SceneLoad::Stop()
 
 void SceneLoad::CreateLoad()
 {
-	loadDrawThread_ = std::thread{ loadProc_ };
+	loadDrawThread_ = std::thread( loadProc_ );
 }

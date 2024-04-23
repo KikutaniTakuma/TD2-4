@@ -151,7 +151,7 @@ Vector4& Vector4::operator*=(const Mat4x4& mat) noexcept {
 
 [[nodiscard]] Vector4 operator*(const Mat4x4& left, const Vector4& right) noexcept {
 	Vector4 result;
-	Matrix<float, 4, 1> tmp = right.m;
+	Matrix<float, 4, 1>&& tmp = right.m;
 
 	result.m = (left * tmp).view();
 

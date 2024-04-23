@@ -45,14 +45,10 @@ Vector3 Vector3::operator-() const noexcept {
 }
 
 Vector3 Vector3::operator+(const Vector3& right) const noexcept {
-	Vector3 tmp(x + right.x, y + right.y, z + right.z);
-
-	return tmp;
+	return Vector3(x + right.x, y + right.y, z + right.z);
 }
 Vector3 Vector3::operator-(const Vector3& right) const noexcept {
-	Vector3 tmp(x - right.x, y - right.y, z - right.z);
-
-	return tmp;
+	return Vector3(x - right.x, y - right.y, z - right.z);
 }
 Vector3& Vector3::operator+=(const Vector3& right) noexcept {
 	*this = *this + right;
@@ -66,9 +62,7 @@ Vector3& Vector3::operator-=(const Vector3& right) noexcept {
 }
 
 Vector3 Vector3::operator*(float scalar) const noexcept {
-	Vector3 tmp(x * scalar, y * scalar, z * scalar);
-
-	return tmp;
+	return Vector3(x * scalar, y * scalar, z * scalar);
 }
 Vector3& Vector3::operator*=(float scalar) noexcept {
 	*this = *this * scalar;
@@ -77,9 +71,7 @@ Vector3& Vector3::operator*=(float scalar) noexcept {
 }
 
 Vector3 Vector3::operator/(float scalar) const noexcept {
-	Vector3 tmp(x / scalar, y / scalar, z / scalar);
-
-	return tmp;
+	return *this * (1.0f / scalar);
 }
 Vector3& Vector3::operator/=(float scalar) noexcept {
 	*this = *this / scalar;
@@ -89,32 +81,26 @@ Vector3& Vector3::operator/=(float scalar) noexcept {
 
 Vector3 Vector3::operator*(const Mat4x4& mat) const {
 	Vector3 result;
-	Vector4 vec = { *this,1.0f };
-	result.x = x * mat[0][0] + y * mat[1][0] + z * mat[2][0] + 1.0f * mat[3][0];
-	result.y = x * mat[0][1] + y * mat[1][1] + z * mat[2][1] + 1.0f * mat[3][1];
-	result.z = x * mat[0][2] + y * mat[1][2] + z * mat[2][2] + 1.0f * mat[3][2];
-	float&& w = x * mat[0][3] + y * mat[1][3] + z * mat[2][3] + 1.0f * mat[3][3];
-	if (w == 0.0f) {
+	Matrix<float, 1, 4>&& vec = Matrix<float, 1, 4>::vector_type{ x,y,z,1.0f };
+	const Matrix<float, 1, 4>&& tmpResult = vec * mat;
+	if (tmpResult.back() == 0.0f) {
 		throw Lamb::Error::Code<Vector3>("Vector3 * Matrix4x4 : w = 0.0f", __func__);
 	}
-	w = 1.0f / w;
-	result.x *= w;
-	result.y *= w;
-	result.z *= w;
+	float&& w = 1.0f / tmpResult.back();
+	result.x = tmpResult.at(0) * w;
+	result.y = tmpResult.at(1) * w;
+	result.z = tmpResult.at(2) * w;
 
 	return result;
 }
 
 Vector3 operator*(const Mat4x4& left, const Vector3& right) {
 	Vector3 result;
-	Matrix<float, 4, 1> tmp = Matrix<float, 4, 1>::vector_type{ right.x,right.y, right.z, 1.0f };
-	Matrix<float, 4, 1> tmpResult;
+	Matrix<float, 4, 1>&& tmp = Matrix<float, 4, 1>::vector_type{ right.x,right.y, right.z, 1.0f };
 
-	tmpResult = left * tmp;
-	
-	float& w = tmpResult.view().back();
+	const Matrix<float, 4, 1>&& tmpResult = left * tmp;
 
-	if (w == 0.0f) {
+	if (tmpResult.back() == 0.0f) {
 		throw Lamb::Error::Code<Vector3>("Matrix4x4 * Vector3 : w = 0.0f", __func__);
 	}
 
@@ -122,7 +108,7 @@ Vector3 operator*(const Mat4x4& left, const Vector3& right) {
 		result[i] = tmpResult[i][0];
 	}
 
-	w = 1.0f / w;
+	float&& w = 1.0f / tmpResult.back();
 	result.x *= w;
 	result.y *= w;
 	result.z *= w;
@@ -164,16 +150,14 @@ float& Vector3::operator[](size_t index) {
 	if (3llu <= index) {
 		throw Lamb::Error::Code<Vector3>("index is over", __func__);
 	}
-	std::array<float*,3> tmp = { &x,&y,&z };
-	return *tmp[index];
+	return data()[index];
 }
 
 const float& Vector3::operator[](size_t index) const {
 	if (3llu <= index) {
 		throw Lamb::Error::Code<Vector3>("index is over", __func__);
 	}
-	std::array<const float*, 3> tmp = { &x,&y,&z };
-	return *tmp[index];
+	return data()[index];
 }
 
 float Vector3::Length() const noexcept {

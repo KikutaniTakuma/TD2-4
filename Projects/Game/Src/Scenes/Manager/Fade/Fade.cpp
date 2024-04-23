@@ -16,7 +16,7 @@ Fade::Fade() :
 	tex_ = DrawerManager::GetInstance()->GetTexture2D();
 	transform = std::make_unique<Transform>();
 	transform->scale = Lamb::ClientSize();
-	transform->translate.z = 1.0f;
+	transform->translate.z = 0.1f;
 }
 
 void Fade::OutStart() {
@@ -64,7 +64,6 @@ void Fade::Update() {
 		color_ = ColorLerp(0x00, 0xff, ease_.GetT());
 	}
 
-	transform->CalcMatrix();
 	ease_.Update();
 
 	if (ease_.ActiveExit()) {
@@ -74,6 +73,6 @@ void Fade::Update() {
 }
 void Fade::Draw([[maybe_unused]]const Mat4x4& viewProjection) {
 	if (isInStart_ || isOutStart_) {
-		tex_->Draw(transform->matWorld_, Mat4x4::kIdentity, viewProjection, 0u, color_, BlendType::kNormal);
+		tex_->Draw(transform->GetMatrix(), Mat4x4::kIdentity, viewProjection, 0u, color_, BlendType::kNormal);
 	}
 }

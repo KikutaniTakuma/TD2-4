@@ -83,6 +83,25 @@ public:
 /// 配列関係の関数
 /// </summary>
 public:
+	[[nodiscard]] float& front() noexcept {
+		return m.front();
+	}
+	[[nodiscard]] const float& front() const noexcept {
+		return m.front();
+	}
+	[[nodiscard]] float& back() noexcept {
+		return m.back();
+	}
+	[[nodiscard]] const float& back() const noexcept {
+		return m.back();
+	}
+	[[nodiscard]] float& at(size_t index) noexcept {
+		return m.at(index);
+	}
+	[[nodiscard]] const float& at(size_t index) const noexcept {
+		return m.at(index);
+	}
+
 	[[nodiscard]] float* data() noexcept {
 		return m.data();
 	}
