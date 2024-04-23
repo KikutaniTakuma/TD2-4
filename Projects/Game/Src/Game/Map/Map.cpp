@@ -128,7 +128,22 @@ const Map::BoxType Map::GetBoxType(const Vector2 &localPos) const {
 	return (*boxMap_)[int(localPos.y)][int(localPos.x)];
 }
 
+const Map::BoxType Map::GetBoxType(const Vector3& localPos) const{
+	// もしマップ外に行っていた場合虚無
+	if (IsOutSide(localPos)) {
+		return BoxType::kNone;
+	}
+
+	// ブロックのデータを返す
+	return (*boxMap_)[int(localPos.y)][int(localPos.x)];
+}
+
 bool Map::IsOutSide(const Vector2 &localPos) const
 {
+	return localPos.x < 0.f or localPos.y < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY;
+}
+
+bool Map::IsOutSide(const Vector3& localPos) const{
+
 	return localPos.x < 0.f or localPos.y < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY;
 }

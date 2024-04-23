@@ -29,7 +29,7 @@ void OnBlockMoveComp::Update()
 		}
 	}
 
-	transform_.translate = Map::GetGrobalPos(static_cast<size_t>(onStagePos_.x), static_cast<size_t>(onStagePos_.y)) + Vector3::kYIdentity;
+	transform_.translate = Map::GetGrobalPos(static_cast<size_t>(onStagePos_.x), static_cast<size_t>(onStagePos_.y)) + Vector2::kYIdentity;
 }
 
 bool OnBlockMoveComp::CheckLanding() const

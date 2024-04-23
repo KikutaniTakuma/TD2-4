@@ -79,7 +79,11 @@ public:
 
 	const BoxType GetBoxType(const Vector2 &localPos) const;
 
+	const BoxType GetBoxType(const Vector3& localPos) const;
+
 	bool IsOutSide(const Vector2 &localPos) const;
+
+	bool IsOutSide(const Vector3& localPos) const;
 
 	inline void SetDraingFlag(const std::bitset<kMapY> &flag) noexcept { isFloorDrawing_ = flag; }
 	inline const std::bitset<kMapY> &GetDraingFlag() const noexcept { return isFloorDrawing_; }
