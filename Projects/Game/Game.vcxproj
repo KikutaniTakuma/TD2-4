@@ -138,6 +138,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\GameObject\Component\IvyModel.cpp" />
     <ClCompile Include="Src\GameObject\Component\ModelComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\OnBlockMoveComp.cpp" />
+    <ClCompile Include="Src\GameObject\Component\PlayerComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\Projectile.cpp" />
     <ClCompile Include="Src\GameObject\Component\Rigidbody.cpp" />
     <ClCompile Include="Src\GameObject\GameObject.cpp" />

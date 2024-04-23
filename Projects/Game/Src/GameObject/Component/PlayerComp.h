@@ -6,8 +6,14 @@ public:
 	using IComponent::IComponent;
 	~PlayerComp() = default;
 
-	void Init() const;
+	void Init() override;
+
+	void Start() override;
+
+	void Update() override;
 
 private:
+
+	
 
 };

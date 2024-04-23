@@ -7,7 +7,7 @@
 
 void Map::Init()
 {
-	boxMap_ = std::make_unique<BlockMapClass>();
+	boxMap_ = std::make_unique<Block2dMap>();
 	houseList_.clear();
 
 	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();

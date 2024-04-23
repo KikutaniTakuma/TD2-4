@@ -45,10 +45,10 @@ public:
 
 	// マップの配列 [y][x]
 	template<SoLib::IsRealType T>
-	using MapClass = std::array<std::array<T, kMapX>, kMapY>;
+	using Map2dMap = std::array<std::array<T, kMapX>, kMapY>;
 
 	// 箱の配列 [y][x]
-	using BlockMapClass = MapClass<BoxType>;
+	using Block2dMap = Map2dMap<BoxType>;
 
 public:
 	Map() = default;
@@ -87,7 +87,7 @@ public:
 public:
 	/// @brief 2次元配列の取得
 	/// @return 二次元配列
-	BlockMapClass *GetBlockMap() { return boxMap_.get(); }
+	Block2dMap *GetBlockMap() { return boxMap_.get(); }
 
 	/// @brief 拠点のリストを返す
 	/// @return 拠点のリスト
@@ -110,7 +110,7 @@ public:
 private:
 
 	// 箱の配列 [y][x]
-	std::unique_ptr<BlockMapClass> boxMap_;
+	std::unique_ptr<Block2dMap> boxMap_;
 	// 拠点のリスト
 	HouseList houseList_;
 
@@ -127,6 +127,6 @@ private:
 	/// <summary>
 	/// モデルの情報
 	/// </summary>
-	MapClass<std::unique_ptr<MatrixModelState>> modelStateMap_;
+	Map2dMap<std::unique_ptr<MatrixModelState>> modelStateMap_;
 
 };
