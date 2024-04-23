@@ -69,9 +69,9 @@ private:
 
 	Map* map_ = nullptr;
 
-	Map::MapSize* mapSize_ = nullptr;
+	Map::BlockMapClass* mapSize_ = nullptr;
 
-	Map::MapSize beforeMapSize_{};
+	Map::BlockMapClass beforeMapSize_{};
 
 	std::array<size_t, 3> boxPos_{};
 

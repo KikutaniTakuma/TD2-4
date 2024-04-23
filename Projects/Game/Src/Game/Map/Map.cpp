@@ -3,21 +3,17 @@
 #include "../SoLib/SoLib/SoLib_Traits.h"
 #include <imgui.h>
 #include"Drawers/DrawerManager.h"
+#include "SoLib/Math/Math.hpp"
 
 void Map::Init()
 {
-	boxMap_ = std::make_unique<MapSize>();
+	boxMap_ = std::make_unique<BlockMapClass>();
 	houseList_.clear();
 
 	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
 	drawerManager->LoadModel("Resources/Cube.obj");
 	model_ = drawerManager->GetModel("Resources/Cube.obj");
 
-
-	for (size_t i = 0; i < modelStates_.size(); i++) {
-		modelStates_[i] = std::make_unique<ModelState>();
-		modelStates_[i]->transform.scale = { vBlockScale->x * 0.5f,vBlockScale->x * 0.5f ,vBlockScale->y * 0.5f };
-	}
 }
 
 void Map::Update([[maybe_unused]] const float deltaTime) {
@@ -25,8 +21,12 @@ void Map::Update([[maybe_unused]] const float deltaTime) {
 }
 
 void Map::Draw([[maybe_unused]] const Camera &camera) const {
-	for (size_t i = 0; i < modelStates_.size(); i++) {
-		model_->Draw(modelStates_[i]->transform.matWorld_, camera.GetViewProjection(), modelStates_[i]->color, BlendType::kNormal);
+	for (const auto &modelStateArr : modelStateMap_) {
+		for (const auto &modelState : modelStateArr) {
+			if (modelState) {
+				model_->Draw(modelState->transMat, camera.GetViewProjection(), modelState->color, BlendType::kNormal);
+			}
+		}
 	}
 }
 
@@ -63,39 +63,40 @@ bool Map::Debug(const char *const str)
 
 void Map::TransferBoxData()
 {
-	// 箱配列からモデルにデータを渡す
 
-	// 箱の数をリセット
-	//boxCount_ = 0u;
+	for (int32_t yi = 0; yi < kMapY; yi++) {
+		for (int32_t xi = 0; xi < kMapX; xi++) {
+			// ボックスの状態
+			const BoxType box = (*boxMap_)[yi][xi];
 
+			// モデルのデータ
+			auto &modelState = modelStateMap_[yi][xi];
 
-	//	boxCount_++;
+			// ボックスが存在する場合は実体を作成
+			if (box != BoxType::kNone and box != BoxType::kMax) {
+				// もしすでに実在したら生成しない
+				if (not modelState) {
+					modelState = std::make_unique<MatrixModelState>();
+					modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y }, Vector3::kZero, GetGrobalPos(xi, yi));
+				}
+				// 色を指定する
+				modelState->color = kBoxColors_[static_cast<uint32_t>(box)];
+			}
+			// もしボックスが存在しない場合は
+			else {
+				// モデルデータを破棄する
+				if (modelState) {
+					modelState.reset();
+				}
+			}
+		}
+	}
 
 	// 拠点のデータの転送
 	for (auto &house : houseList_) {
 
 		// 現在のモデル
-		house.houseModelState_.transform.translate = GetGrobalPos(house.xPos_, 0);
-		house.houseModelState_.transform.CalcMatrix();
-
-		/*if (house.isConstruction) {
-			if (house.isMultiSelect_) {
-				house.houseModelState_.color = 0xffff00ff;
-			}
-			else {
-				house.houseModelState_.color = 0x00ff00ff;
-			}
-		}
-		else {
-			if (house.isMultiSelect_) {
-				house.houseModelState_.color = 0xff0000ff;
-			}
-			else {
-				house.houseModelState_.color = 0xffffffff;
-			}
-		}*/
-
-
+		house.houseModelState_.transMat = SoLib::Math::Affine(Vector3{ static_cast<float>(*vEnemyHouseWidth_),1,1 } + Vector3::kIdentity * 0.1f, Vector3::kZero, GetGrobalPos(house.xPos_, -1));
 
 	}
 

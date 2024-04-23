@@ -64,7 +64,7 @@ public:
 private:
 	Map* map_ = nullptr;
 
-	Map::MapSize* mapSize_ = nullptr;
+	Map::BlockMapClass* mapSize_ = nullptr;
 
 	Input* input_ = nullptr;
 

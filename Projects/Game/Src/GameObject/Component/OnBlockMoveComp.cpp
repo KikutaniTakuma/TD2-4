@@ -34,7 +34,7 @@ void OnBlockMoveComp::Update()
 
 bool OnBlockMoveComp::CheckLanding() const
 {
-	return pMap_->GetBoxType(onStagePos_) == Map::BoxType::kBox;
+	return pMap_->GetBoxType(onStagePos_) == Map::BoxType::kGroundBlock;
 }
 
 bool OnBlockMoveComp::CheckNormalMove() const
@@ -43,7 +43,7 @@ bool OnBlockMoveComp::CheckNormalMove() const
 	if (moveDir_.Length() != 1.f) { return false; }
 
 	// 移動先が足場ならtrue
-	return pMap_->GetBoxType(onStagePos_ + moveDir_) == Map::BoxType::kBox;
+	return pMap_->GetBoxType(onStagePos_ + moveDir_) == Map::BoxType::kGroundBlock;
 }
 
 bool OnBlockMoveComp::CheckJumpSideMove() const
@@ -53,6 +53,6 @@ bool OnBlockMoveComp::CheckJumpSideMove() const
 	if (moveDir_.Length() != 1.f) { return false; }
 
 	// 移動先が足場ならtrue
-	return pMap_->GetBoxType(onStagePos_ + moveDir_ * kJumpLength) == Map::BoxType::kBox;
+	return pMap_->GetBoxType(onStagePos_ + moveDir_ * kJumpLength) == Map::BoxType::kGroundBlock;
 }
 
