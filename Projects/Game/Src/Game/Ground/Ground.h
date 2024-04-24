@@ -21,7 +21,7 @@ public:
 		bool isMultiSelect_;
 	};
 
-	inline static constexpr int32_t kMapX = 20u;
+	inline static constexpr int32_t kMapX = 30u;
 
 	// 箱の配列 [y][z][x]
 	using MapSize = std::array<GroundInfo, kMapX>;

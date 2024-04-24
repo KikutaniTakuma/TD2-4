@@ -155,7 +155,7 @@ void BlockEditor::Debug() {
 			if (ImGui::BeginMenu("レティクルテスト")) {
 				ImGui::DragFloat("レティクルとの距離", &distancePlayerTo3DReticleCopy_, 0.1f, 0.0f, 30.0f);
 				ImGui::DragFloat3("レティクルのポジション", &reticle_->center_.x, 0.1f);
-				//ImGui::DragFloat("どれだけ離すか", &correction_, 0.1f, 0.0f, 15.0f);
+				ImGui::DragFloat("どれだけ離すか", &correction_, 0.1f, 0.0f, 15.0f);
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -219,7 +219,7 @@ bool BlockEditor::OperationConfirmation() {
 bool BlockEditor::MapinPoint(const Vector3 &point) {
 	//for (size_t z = 0; z < Map::kMapZ; z++) {
 	for (int32_t x = 0; x < Ground::kMapX; x++) {
-		if (x == 0 || x == 19)
+		if (x == 0 || x == 29)
 			continue;
 		scanningOBB_->center_ = map_->GetGrobalPos(static_cast<int32_t>(x), static_cast<int32_t>(-1), 0);
 		scanningOBB_->center_.z -= correction_;
@@ -252,7 +252,7 @@ void BlockEditor::MousePosTrans(const Camera &camera) {
 	mouseDirection = mouseDirection.Normalize();
 
 	// 自機から3Dレティクルへの距離
-	float distancePlayerTo3DReticle = 40.0f - correction_;
+	float distancePlayerTo3DReticle = -camera.pos.z - correction_;
 	float minRange = (-distancePlayerTo3DReticle - 0.05f);
 	float maxRange = (-distancePlayerTo3DReticle + 0.05f);
 	float chackNum = 0;

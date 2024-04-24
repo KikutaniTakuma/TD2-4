@@ -63,6 +63,8 @@ public:
 
 	bool enemyMode_ = false;
 
+	const float editorCameraPosZ_ = -42.0f;
+
 	std::unique_ptr<BlockEditor> blockEditor_;
 
 	std::unique_ptr<EnemyEditor> enemyEditor_;

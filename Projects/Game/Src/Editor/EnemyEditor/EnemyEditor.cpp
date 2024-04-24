@@ -6,11 +6,9 @@
 #include "Utils/UtilsLib/UtilsLib.h"
 
 void EnemyEditor::Initialize() {
-	map_ = GameManager::GetInstance()->GetMap();
+	groundMap_ = GameManager::GetInstance()->GetMap()->GetGround();
 
-	mapSize_ = map_->GetBlockMap();
-
-	beforeMapSize_ = *mapSize_;
+	groundMapSize_ = groundMap_->GetGroundData();
 
 	input_ = Input::GetInstance();
 
@@ -86,23 +84,19 @@ void EnemyEditor::Debug() {
 				AllDataReset();
 			}
 
-			for (size_t y = 0; y < Map::kMapY; y++) {
+			for (size_t x = 0; x < Ground::kMapX; x++) {
 
-				//for (size_t z = 0; z < Map::kMapZ; z++) {
-				/*for (size_t x = 0; x < Map::kMapX; x++) {
-					isChange |= ImGui::Checkbox(("##Checkbox" + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*mapSize_)[y][x].isMultiSelect_));
-					if (ImGui::IsItemHovered()) {
-						obb_->center_ = map_->GetGrobalPos(x, y);
-						obb_->color_ = 0xff0000ff;
-					}
-					else {
+				isChange |= ImGui::Checkbox(("##Checkbox" + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*groundMapSize_)[x].isMultiSelect_));
+				if (ImGui::IsItemHovered()) {
+					obb_->center_ = groundMap_->GetGrobalPos((int32_t)(x), -1, 0);
+					obb_->color_ = 0xff0000ff;
+				}
+				else {
 
-					}
-					if (x != 9) {
-						ImGui::SameLine();
-					}
-				}*/
-				//}
+				}
+				if (x != 9) {
+					ImGui::SameLine();
+				}
 
 			}
 
@@ -154,14 +148,14 @@ void EnemyEditor::Debug() {
 	ImGui::End();
 	if (input_->GetKey()->LongPush(DIK_LSHIFT)) {
 		if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
-			/*bool &num = (*mapSize_)[boxPos_[1]][boxPos_[0]].isMultiSelect_;
+			bool &num = (*groundMapSize_)[boxPos_[0]].isMultiSelect_;
 			if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
 				multiMode_ = true;
 				num = true;
 			}
 			else if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
 				num = false;
-			}*/
+			}
 		}
 	}
 	else {
@@ -170,22 +164,22 @@ void EnemyEditor::Debug() {
 
 				if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
 
-					/*bool select = (*mapSize_)[boxPos_[1]][boxPos_[0]].isMultiSelect_;
+					bool select = (*groundMapSize_)[boxPos_[0]].isMultiSelect_;
 
 					if (select) {
 
-						for (size_t x = 0; x < Map::kMapX; x++) {
-							Map::HouseInfo &num = (*mapSize_)[boxPos_[1]][x];
+						for (size_t x = 0; x < Ground::kMapX; x++) {
+							Ground::GroundInfo &num = (*groundMapSize_)[x];
 
 							if (num.isMultiSelect_) {
 
 								if (num.dwarfNum < 2u) {
 									if (num.dwarfNum > 0) {
-										setPos_ = map_->GetGrobalPos(x, 2);
+										setPos_ = groundMap_->GetGrobalPos((int32_t)(x), 1, 0);
 										setPos_.y -= 0.5f;
 									}
 									else {
-										setPos_ = map_->GetGrobalPos(x, 1);
+										setPos_ = groundMap_->GetGrobalPos((int32_t)(x), 0, 0);
 									}
 									setPos_.z -= 5.0;
 
@@ -195,24 +189,24 @@ void EnemyEditor::Debug() {
 								}
 							}
 						}
-					}*/
+					}
 				}
 				else if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
-					/*int32_t &num = (*mapSize_)[boxPos_[1]][boxPos_[0]].dwarfNum;
+					int32_t &num = (*groundMapSize_)[boxPos_[0]].dwarfNum;
 					if (num > 0) {
 						EnemyManager::GetInstance()->DeadEnemy(delPos_);
 						num--;
-					}*/
+					}
 				}
 			}
 			if (input_->GetKey()->Pushed(DIK_R)) {
-				map_->MultiReset();
+				groundMap_->MultiReset();
 				multiMode_ = false;
 			}
 		}
 		else {
 			if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
-				/*int32_t &num = (*mapSize_)[boxPos_[1]][boxPos_[0]].dwarfNum;
+				int32_t &num = (*groundMapSize_)[boxPos_[0]].dwarfNum;
 				if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
 					if (num < 2u) {
 						EnemyManager::GetInstance()->AddEnemy(setPos_);
@@ -224,7 +218,7 @@ void EnemyEditor::Debug() {
 						EnemyManager::GetInstance()->DeadEnemy(delPos_);
 						num--;
 					}
-				}*/
+				}
 			}
 		}
 	}
@@ -233,9 +227,9 @@ void EnemyEditor::Debug() {
 }
 
 void EnemyEditor::DataReset() {
-	if (OperationConfirmation()) {
+	/*if (OperationConfirmation()) {
 		*mapSize_ = beforeMapSize_;
-	}
+	}*/
 }
 
 void EnemyEditor::FloorReset() {
@@ -267,39 +261,35 @@ bool EnemyEditor::OperationConfirmation() {
 }
 
 bool EnemyEditor::MapinPoint([[maybe_unused]] const Vector3 &point) {
-	for (size_t y = 0; y < Map::kMapY; y++) {
-		//for (size_t z = 0; z < Map::kMapZ; z++) {
-		for (size_t x = 0; x < Map::kMapX; x++) {
-			//int32_t num = (*mapSize_)[boxPos_[1]][boxPos_[0]].dwarfNum;
-			//scanningOBB_->center_ = map_->GetGrobalPos(x, y);
-			//scanningOBB_->center_.z -= correction_;
-			//if (scanningOBB_->OBBinPoint(point)) {
-			//	obb_->center_ = map_->GetGrobalPos(x, y);
-			//	if (num > 0) {
-			//		setPos_ = map_->GetGrobalPos(x, y + 2);
-			//		setPos_.y -= 0.5f;
-			//	}
-			//	else {
-			//		setPos_ = map_->GetGrobalPos(x, y + 1);
-			//	}
-			//	if (num > 1) {
-			//		delPos_ = map_->GetGrobalPos(x, y + 2);
-			//		delPos_.y -= 0.5f;
-			//	}
-			//	else {
-			//		delPos_ = map_->GetGrobalPos(x, y + 1);
-			//	}
-			//	setPos_.z -= 5.0;
-			//	delPos_.z -= 5.0f;
-			//	//obb_[i]->center_.z += correction_;
-			//	boxPos_ = { x,y };
-			//	boxVector_ = Vector3(float(boxPos_[0]), float(boxPos_[1]), float(boxPos_[2]));
-			//	return true;
-			//}
+	for (size_t x = 0; x < Ground::kMapX; x++) {
+		int32_t num = (*groundMapSize_)[boxPos_[0]].dwarfNum;
+		scanningOBB_->center_ = groundMap_->GetGrobalPos((int32_t)(x), -1, 0);
+		scanningOBB_->center_.z -= correction_;
+		if (scanningOBB_->OBBinPoint(point)) {
+			obb_->center_ = groundMap_->GetGrobalPos((int32_t)(x), -1, 0);
+			if (num > 0) {
+				setPos_ = groundMap_->GetGrobalPos((int32_t)(x), 1, 0);
+				setPos_.y -= 0.5f;
+			}
+			else {
+				setPos_ = groundMap_->GetGrobalPos((int32_t)(x), 0, 0);
+			}
+			if (num > 1) {
+				delPos_ = groundMap_->GetGrobalPos((int32_t)(x), 1, 0);
+				delPos_.y -= 0.5f;
+			}
+			else {
+				delPos_ = groundMap_->GetGrobalPos((int32_t)(x), 0, 0);
+			}
+			setPos_.z -= 5.0;
+			delPos_.z -= 5.0f;
+			//obb_[i]->center_.z += correction_;
+			boxPos_ = { (int32_t)(x),-1,0 };
+			boxVector_ = Vector3(float(boxPos_[0]), float(boxPos_[1]), float(boxPos_[2]));
+			return true;
 		}
-		//}
-
 	}
+
 	return false;
 }
 
@@ -318,7 +308,7 @@ void EnemyEditor::MousePosTrans(const Camera &camera) {
 	mouseDirection = mouseDirection.Normalize();
 
 	// 自機から3Dレティクルへの距離
-	float distancePlayerTo3DReticle = 40.0f - correction_;
+	float distancePlayerTo3DReticle = -camera.pos.z - correction_;
 	float minRange = (-distancePlayerTo3DReticle - 0.05f);
 	float maxRange = (-distancePlayerTo3DReticle + 0.05f);
 	float chackNum = 0;
@@ -342,24 +332,16 @@ void EnemyEditor::SaveFile(const std::string &fileName) {
 	root[kItemName_] = json::object();
 
 	// 3次元配列をJSONオブジェクトに変換
-	for (size_t y = 0; y < Map::kMapY; ++y) {
-		//for (size_t z = 0; z < Map::kMapZ; ++z) {
-		for (size_t x = 0; x < Map::kMapX; ++x) {
-			//root[kItemName_]["Num"][x] = static_cast<int>((*mapSize_)[y][x].dwarfNum);
-		}
-		//}
+	for (size_t x = 0; x < Ground::kMapX; ++x) {
+		root[kItemName_]["Num"][x] = static_cast<int>((*groundMapSize_)[x].dwarfNum);
 	}
 
-	for (size_t y = 0; y < Map::kMapY; ++y) {
-		//for (size_t z = 0; z < Map::kMapZ; ++z) {
-		for (size_t x = 0; x < EnemyManager::GetInstance()->GetStartPosListSize(); ++x) {
-			/*root[kItemName_]["Pos"][x] = json::array({
-				   EnemyManager::GetInstance()->GetEnemyStartPos(x).x,
-				   EnemyManager::GetInstance()->GetEnemyStartPos(x).y,
-				   EnemyManager::GetInstance()->GetEnemyStartPos(x).z
-				});*/
-		}
-
+	for (size_t x = 0; x < EnemyManager::GetInstance()->GetStartPosListSize(); ++x) {
+		root[kItemName_]["Pos"][x] = json::array({
+			   EnemyManager::GetInstance()->GetEnemyStartPos(x).x,
+			   EnemyManager::GetInstance()->GetEnemyStartPos(x).y,
+			   EnemyManager::GetInstance()->GetEnemyStartPos(x).z
+		});
 	}
 
 	std::filesystem::path dir(kDirectoryPath_);
@@ -535,12 +517,8 @@ void EnemyEditor::LoadFile(const std::string &fileName) {
 	assert(itGroupNum != root[kItemName_].end());
 
 	//各アイテムについて
-	for (size_t y = 0; y < Map::kMapY; ++y) {
-		//for (size_t z = 0; z < Map::kMapZ; ++z) {
-		for (size_t x = 0; x < Map::kMapX; ++x) {
-			//((*mapSize_)[y][x].dwarfNum) = root[kItemName_]["Num"][x];
-		}
-		//}
+	for (size_t x = 0; x < Ground::kMapX; ++x) {
+		((*groundMapSize_)[x].dwarfNum) = root[kItemName_]["Num"][x];
 	}
 
 	//グループを検索
@@ -575,8 +553,6 @@ void EnemyEditor::LoadFile(const std::string &fileName) {
 		AddItem(newPos, newScale);
 	}*/
 
-
-	beforeMapSize_ = *mapSize_;
 
 #ifdef _DEBUG
 	std::string message = "File loading completed";
