@@ -83,13 +83,13 @@ Vector3 Vector3::operator*(const Mat4x4& mat) const {
 	Vector3 result;
 	Matrix<float, 1, 4>&& vec = Matrix<float, 1, 4>::vector_type{ x,y,z,1.0f };
 	const Matrix<float, 1, 4>&& tmpResult = vec * mat;
-	if (tmpResult.back() == 0.0f) {
+	if (tmpResult.back().back() == 0.0f) {
 		throw Lamb::Error::Code<Vector3>("Vector3 * Matrix4x4 : w = 0.0f", __func__);
 	}
-	float&& w = 1.0f / tmpResult.back();
-	result.x = tmpResult.at(0) * w;
-	result.y = tmpResult.at(1) * w;
-	result.z = tmpResult.at(2) * w;
+	float&& w = 1.0f / tmpResult.back().back();
+	result.x = tmpResult[0][0] * w;
+	result.y = tmpResult[0][1] * w;
+	result.z = tmpResult[0][2] * w;
 
 	return result;
 }
@@ -100,7 +100,7 @@ Vector3 operator*(const Mat4x4& left, const Vector3& right) {
 
 	const Matrix<float, 4, 1>&& tmpResult = left * tmp;
 
-	if (tmpResult.back() == 0.0f) {
+	if (tmpResult.back().back() == 0.0f) {
 		throw Lamb::Error::Code<Vector3>("Matrix4x4 * Vector3 : w = 0.0f", __func__);
 	}
 
@@ -108,7 +108,7 @@ Vector3 operator*(const Mat4x4& left, const Vector3& right) {
 		result[i] = tmpResult[i][0];
 	}
 
-	float&& w = 1.0f / tmpResult.back();
+	float&& w = 1.0f / tmpResult.back().back();
 	result.x *= w;
 	result.y *= w;
 	result.z *= w;
