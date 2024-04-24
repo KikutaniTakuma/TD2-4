@@ -362,3 +362,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 Projects/externals/DirectXTex/Shaders/Compiled/
+imgui.ini
