@@ -28,7 +28,7 @@ Mat4x4::Mat4x4(const BasedMatrix& right) {
 }
 
 Mat4x4& Mat4x4::operator=(const BasedMatrix& right) {
-	std::copy(right.begin(), right.end(), this->begin());
+	std::copy(right.GetVector().begin(), right.GetVector().end(), vector_.begin());
 
 	return *this;
 }

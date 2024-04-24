@@ -16,9 +16,13 @@ public:
 
 
 	using width_type = std::array<value_type, width>;
+	using width_pointer = width_type*;
+	using width_const_pointer = const width_type*;
+	using width_reference = width_type&;
+	using width_const_reference = const width_type&;
 	using height_type = std::array<width_type, height>;
 
-	using vector_type = std::array<value_type, height * width>;
+	using vector_type = std::array<value_type, height* width>;
 	using vector_pointer = vector_type*;
 	using vector_const_pointer = const vector_type*;
 	using vector_reference = vector_type&;
@@ -46,15 +50,15 @@ public:
 		vector_()
 	{}
 
-	constexpr Matrix(const vector_type& num) noexcept : 
-		vector_(num)
+	constexpr Matrix(const vector_type& right) noexcept :
+		vector_(right)
 	{}
 	template<std::floating_point othertype, size_t otherHeight, size_t otherWidth>
-	constexpr Matrix(const Matrix<othertype, otherHeight, otherWidth>& right) noexcept{
+	constexpr Matrix(const Matrix<othertype, otherHeight, otherWidth>& right) noexcept {
 		*this = right;
 	}
 	template<std::floating_point othertype, size_t otherHeight, size_t otherWidth>
-	constexpr Matrix(const std::array<std::array<othertype, otherWidth>, otherHeight>& right) noexcept{
+	constexpr Matrix(const std::array<std::array<othertype, otherWidth>, otherHeight>& right) noexcept {
 		*this = right;
 	}
 	constexpr Matrix(const Matrix&) = default;
@@ -98,40 +102,38 @@ public:
 	}
 
 public:
-	template<std::integral T>
-	[[nodiscard]] constexpr width_type& operator[](T index) {
-		if (matrix_.size() <= index) {
+	[[nodiscard]] constexpr width_reference operator[](size_t index) {
+		if (height <= index) {
 			OutOfRange(__func__);
 		}
 
 		return matrix_[index];
 	}
 
-	template<std::integral T>
-	[[nodiscard]] constexpr const width_type& operator[](T index) const {
-		if (matrix_.size() <= index) {
+	[[nodiscard]] constexpr width_const_reference operator[](size_t index) const {
+		if (height <= index) {
 			OutOfRange(__func__);
 		}
 		return matrix_[index];
 	}
 
 public:
-	template<size_t otherWidth>
-	[[nodiscard]] constexpr Matrix<value_type, height, otherWidth> operator*(const Matrix<value_type, width, otherWidth>& right) const noexcept {
+	template<std::floating_point othertype, size_t otherHeight, size_t otherWidth>
+	[[nodiscard]] constexpr Matrix<value_type, height, otherWidth> operator*(const Matrix<othertype, otherHeight, otherWidth>& right) const noexcept requires(width == otherHeight) {
 		Matrix<value_type, height, otherWidth> result;
 
 		for (size_t y = 0; y < height; y++) {
 			for (size_t x = 0; x < otherWidth; x++) {
 				for (size_t i = 0; i < width; i++) {
-					result[y][x] += matrix_[y][i] * right[i][x];
+					result[y][x] += matrix_[y][i] * value_cast(right[i][x]);
 				}
 			}
 		}
 
 		return result;
 	}
-	template<size_t otherWidth>
-	[[nodiscard]] constexpr Matrix<value_type, height, otherWidth>& operator*=(const Matrix<value_type, height, otherWidth>& right)noexcept {
+	template<std::floating_point othertype, size_t otherHeight, size_t otherWidth>
+	constexpr Matrix& operator*=(const Matrix<othertype, otherHeight, otherWidth>& right) noexcept requires(otherHeight == otherWidth and width == otherHeight) {
 		*this = *this * right;
 
 		return *this;
@@ -148,12 +150,12 @@ public:
 
 		return result;
 	}
-	[[nodiscard]] constexpr Matrix& operator+=(const Matrix& right)noexcept {
+	constexpr Matrix& operator+=(const Matrix& right)noexcept {
 		*this = *this + right;
 
 		return *this;
 	}
-	[[nodiscard]] constexpr  Matrix operator-(const Matrix& right) const noexcept {
+	[[nodiscard]] constexpr Matrix operator-(const Matrix& right) const noexcept {
 		Matrix result;
 
 		for (size_t y = 0; y < height; y++) {
@@ -164,7 +166,7 @@ public:
 
 		return result;
 	}
-	[[nodiscard]] constexpr Matrix& operator-=(const Matrix& right)noexcept {
+	constexpr Matrix& operator-=(const Matrix& right)noexcept {
 		*this = *this - right;
 
 		return *this;
@@ -194,57 +196,57 @@ public:
 	[[nodiscard]] constexpr iterator begin() noexcept {
 		return matrix_.begin();
 	}
-	[[nodiscard]] constexpr const_iterator begin() const noexcept {
-		return matrix_.begin();
+	[[nodiscard]] constexpr const_iterator cbegin() const noexcept {
+		return matrix_.cbegin();
 	}
 
 	[[nodiscard]] constexpr iterator end() noexcept {
 		return matrix_.end();
 	}
-	[[nodiscard]] constexpr const_iterator end() const noexcept {
-		return matrix_.end();
+	[[nodiscard]] constexpr const_iterator cend() const noexcept {
+		return matrix_.cend();
 	}
 
 	[[nodiscard]] constexpr reverse_iterator rbegin() noexcept {
 		return matrix_.rbegin();
 	}
-	[[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept {
-		return matrix_.rbegin();
+	[[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept {
+		return matrix_.crbegin();
 	}
 
 	[[nodiscard]] constexpr reverse_iterator rend() noexcept {
 		return matrix_.rend();
 	}
-	[[nodiscard]] constexpr const_reverse_iterator rend() const noexcept {
-		return matrix_.rend();
+	[[nodiscard]] constexpr const_reverse_iterator crend() const noexcept {
+		return matrix_.crend();
 	}
 
-	[[nodiscard]] constexpr reference at(size_t index) {
-		if (vector_.size() <= index) {
+	[[nodiscard]] constexpr width_reference at(size_t index) {
+		if (height <= index) {
 			OutOfRange(__func__);
 		}
 
-		return vector_.at(index);
+		return matrix_.at(index);
 	}
 
-	[[nodiscard]] constexpr const_reference at(size_t index) const {
-		if (vector_.size() <= index) {
+	[[nodiscard]] constexpr width_const_reference at(size_t index) const {
+		if (height <= index) {
 			OutOfRange(__func__);
 		}
-		return vector_.at(index);
+		return matrix_.at(index);
 	}
 
-	[[nodiscard]] constexpr reference front() {
-		return vector_.front();
+	[[nodiscard]] constexpr width_reference front() {
+		return matrix_.front();
 	}
-	[[nodiscard]] constexpr const_reference front() const {
-		return vector_.front();
+	[[nodiscard]] constexpr width_const_reference front() const {
+		return matrix_.front();
 	}
-	[[nodiscard]] constexpr reference back() {
-		return vector_.back();
+	[[nodiscard]] constexpr width_reference back() {
+		return matrix_.back();
 	}
-	[[nodiscard]] constexpr const_reference back() const {
-		return vector_.back();
+	[[nodiscard]] constexpr width_const_reference back() const {
+		return matrix_.back();
 	}
 
 	[[nodiscard]] pointer data() noexcept {
@@ -275,9 +277,9 @@ public:
 
 
 
-/// <summary>
-/// 正方行列のみ
-/// </summary>
+	/// <summary>
+	/// 正方行列のみ
+	/// </summary>
 
 public:
 	static [[nodiscard]] constexpr const Matrix& Identity() requires (height == width) {
@@ -350,7 +352,7 @@ public:
 	[[nodiscard]] Matrix Transepose() const requires (height == width) {
 		Matrix result;
 
-		for (size_t y = 0; y < height; y ++) {
+		for (size_t y = 0; y < height; y++) {
 			for (size_t x = 0; x < width; x++) {
 				result[y][x] = matrix_[x][y];
 			}
@@ -359,9 +361,9 @@ public:
 		return result;
 	}
 
-/// <summary>
-/// メンバ関数
-/// </summary>
+	/// <summary>
+	/// メンバ関数
+	/// </summary>
 public:
 	[[nodiscard]] std::string GetString() const {
 		std::string str;
@@ -381,9 +383,9 @@ private:
 		throw Lamb::Error::Code<Matrix>("out of range", funcName);
 	}
 
-/// <summary>
-/// メンバ変数
-/// </summary>
+	/// <summary>
+	/// メンバ変数
+	/// </summary>
 protected:
 	union {
 		matrix_type matrix_;
