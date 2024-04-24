@@ -15,7 +15,7 @@ struct Color {
 ConstantBuffer<DirectionLight> kLight : register(b0);
 StructuredBuffer<WVPMatrix> kWvpMat : register(t0);
 StructuredBuffer<Color> kColor : register(t1);
-Texture2D<float4> textures[] : register(t3);
+Texture2D<float32_t4> textures[] : register(t3);
 SamplerState smp : register(s0);
 
 struct VertexShaderInput {
