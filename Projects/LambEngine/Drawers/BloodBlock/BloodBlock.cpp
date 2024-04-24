@@ -7,7 +7,7 @@ const LoadFileNames BloodBlock::kFileNames =
 	LoadFileNames{
 		.resourceFileName{"./Resources/Cube.obj"},
 		.shaderName{
-			.vsFileName = "./Resources/Shaders/BloodBlockShader/BloodBlock.VS.hlsl",
+			.vsFileName = "./Resources/Shaders/ModelShader/Model.VS.hlsl",
 			.psFileName = "./Resources/Shaders/BloodBlockShader/BloodBlock.PS.hlsl"
 		}
 };
