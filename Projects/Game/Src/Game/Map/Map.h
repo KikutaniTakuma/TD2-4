@@ -9,6 +9,7 @@
 #include <Drawers/Model/Model.h>
 #include <Camera/Camera.h>
 #include <bitset>
+#include"Game/Ground/Ground.h"
 
 class Map
 {
@@ -23,8 +24,6 @@ public:
 		// モデルの表示情報
 		MatrixModelState houseModelState_;
 
-		//複数選択の対象かどうか
-		bool isMultiSelect_;	// エディター側が持ってたほうが個人的にありがたい｡
 	};
 
 	// ボックスに紐づいている情報
@@ -79,7 +78,11 @@ public:
 
 	const BoxType GetBoxType(const Vector2 &localPos) const;
 
+	const BoxType GetBoxType(const Vector3& localPos) const;
+
 	bool IsOutSide(const Vector2 &localPos) const;
+
+	bool IsOutSide(const Vector3& localPos) const;
 
 	inline void SetDraingFlag(const std::bitset<kMapY> &flag) noexcept { isFloorDrawing_ = flag; }
 	inline const std::bitset<kMapY> &GetDraingFlag() const noexcept { return isFloorDrawing_; }
@@ -88,6 +91,8 @@ public:
 	/// @brief 2次元配列の取得
 	/// @return 二次元配列
 	Block2dMap *GetBlockMap() { return boxMap_.get(); }
+
+	Ground* GetGround() { return ground_.get(); }
 
 	/// @brief 拠点のリストを返す
 	/// @return 拠点のリスト
@@ -129,4 +134,6 @@ private:
 	/// </summary>
 	Map2dMap<std::unique_ptr<MatrixModelState>> modelStateMap_;
 
+	//床のクラス
+	std::unique_ptr<Ground> ground_;
 };

@@ -7,11 +7,9 @@
 
 void BlockEditor::Initialize() {
 
-	map_ = GameManager::GetInstance()->GetMap();
+	map_ = GameManager::GetInstance()->GetMap()->GetGround();
 
-	houseList_ = map_->GetHouseList();
-
-	beforeHouseList_ = *houseList_;
+	mapSize_ = map_->GetGroundData();
 
 	input_ = Input::GetInstance();
 	for (size_t i = 0; i < 3; i++) {
@@ -101,29 +99,22 @@ void BlockEditor::Debug() {
 					AllDataReset();
 				}
 
-				//for (size_t y = 0; y < Map::kMapY; y++) {
-
-					//for (size_t z = 0; z < Map::kMapZ; z++) {
-				{
-
-					for (auto &house : *houseList_) {
-						isChange |= ImGui::Checkbox(("##Checkbox" + ' ' + std::to_string(house.xPos_)).c_str(), &house.isMultiSelect_);
-						if (ImGui::IsItemHovered()) {
-							for (int32_t i = 0; i < 3; i++) {
-								obb_[i]->center_ = map_->GetGrobalPos(house.xPos_ - 1 + i, -1);
-								obb_[i]->color_ = 0xff0000ff;
-							}
-
-						}
-						else {
-
+				for (size_t x = 0; x < Ground::kMapX; x++) {
+					isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(0) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*mapSize_)[x].isMultiSelect_));
+					if (ImGui::IsItemHovered()) {
+						for (size_t i = 0; i < 3; i++) {
+							obb_[i]->center_ = map_->GetGrobalPos((int32_t)(x - 1 + i), -1, 0);
+							obb_[i]->color_ = 0xff0000ff;
 						}
 
 					}
-				}
-				//}
+					else {
 
-			//}
+					}
+					if (x != 9) {
+						ImGui::SameLine();
+					}
+				}
 
 
 				ImGui::EndMenu();
@@ -164,7 +155,7 @@ void BlockEditor::Debug() {
 			if (ImGui::BeginMenu("レティクルテスト")) {
 				ImGui::DragFloat("レティクルとの距離", &distancePlayerTo3DReticleCopy_, 0.1f, 0.0f, 30.0f);
 				ImGui::DragFloat3("レティクルのポジション", &reticle_->center_.x, 0.1f);
-				//ImGui::DragFloat("どれだけ離すか", &correction_, 0.1f, 0.0f, 15.0f);
+				ImGui::DragFloat("どれだけ離すか", &correction_, 0.1f, 0.0f, 15.0f);
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -173,16 +164,16 @@ void BlockEditor::Debug() {
 		ImGui::End();
 	}
 	if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
-		/*if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
-			(*houseList_)[boxPos_[1]][boxPos_[0] - 1].isConstruction = true;
-			(*houseList_)[boxPos_[1]][boxPos_[0]].isConstruction = true;
-			(*houseList_)[boxPos_[1]][boxPos_[0] + 1].isConstruction = true;
+		if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
+			(*mapSize_)[boxPos_[0] - 1].isConstruction = true;
+			(*mapSize_)[boxPos_[0]].isConstruction = true;
+			(*mapSize_)[boxPos_[0] + 1].isConstruction = true;
 		}
 		else if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
-			(*houseList_)[boxPos_[1]][boxPos_[0] - 1].isConstruction = false;
-			(*houseList_)[boxPos_[1]][boxPos_[0]].isConstruction = false;
-			(*houseList_)[boxPos_[1]][boxPos_[0] + 1].isConstruction = false;
-		}*/
+			(*mapSize_)[boxPos_[0] - 1].isConstruction = false;
+			(*mapSize_)[boxPos_[0]].isConstruction = false;
+			(*mapSize_)[boxPos_[0] + 1].isConstruction = false;
+		}
 
 
 	}
@@ -192,9 +183,9 @@ void BlockEditor::Debug() {
 }
 
 void BlockEditor::DataReset() {
-	if (OperationConfirmation()) {
+	/*if (OperationConfirmation()) {
 		*houseList_ = beforeHouseList_;
-	}
+	}*/
 }
 
 void BlockEditor::FloorReset() {
@@ -226,25 +217,23 @@ bool BlockEditor::OperationConfirmation() {
 }
 
 bool BlockEditor::MapinPoint(const Vector3 &point) {
-	for (int32_t y = 0; y < Map::kMapY; y++) {
-		//for (size_t z = 0; z < Map::kMapZ; z++) {
-		for (int32_t x = 0; x < Map::kMapX; x++) {
-			if (x == 0 || x == 19)
-				continue;
-			scanningOBB_->center_ = map_->GetGrobalPos(static_cast<int32_t>(x), static_cast<int32_t>(y));
-			scanningOBB_->center_.z -= correction_;
-			if (scanningOBB_->OBBinPoint(point)) {
-				for (int32_t i = 0; i < 3; i++) {
-					obb_[i]->center_ = map_->GetGrobalPos(x - 1 + i, y);
-					//obb_[i]->center_.z += correction_;
-				}
-				boxPos_ = { static_cast<size_t>(x),static_cast<size_t>(y) };
-				return true;
+	//for (size_t z = 0; z < Map::kMapZ; z++) {
+	for (int32_t x = 0; x < Ground::kMapX; x++) {
+		if (x == 0 || x == 29)
+			continue;
+		scanningOBB_->center_ = map_->GetGrobalPos(static_cast<int32_t>(x), static_cast<int32_t>(-1), 0);
+		scanningOBB_->center_.z -= correction_;
+		if (scanningOBB_->OBBinPoint(point)) {
+			for (int32_t i = 0; i < 3; i++) {
+				obb_[i]->center_ = map_->GetGrobalPos(x - 1 + i, -1, 0);
+				//obb_[i]->center_.z += correction_;
 			}
+			boxPos_ = { static_cast<size_t>(x),static_cast<size_t>(-1) };
+			return true;
 		}
-		//}
-
 	}
+	//}
+
 	return false;
 }
 
@@ -263,7 +252,7 @@ void BlockEditor::MousePosTrans(const Camera &camera) {
 	mouseDirection = mouseDirection.Normalize();
 
 	// 自機から3Dレティクルへの距離
-	float distancePlayerTo3DReticle = 40.0f - correction_;
+	float distancePlayerTo3DReticle = -camera.pos.z - correction_;
 	float minRange = (-distancePlayerTo3DReticle - 0.05f);
 	float maxRange = (-distancePlayerTo3DReticle + 0.05f);
 	float chackNum = 0;
@@ -287,14 +276,13 @@ void BlockEditor::SaveFile(const std::string &fileName) {
 	json root;
 	root = json::object();
 
-	// 3次元配列をJSONオブジェクトに変換
-	//for (size_t y = 0; y < Map::kMapY; ++y) {
-		//for (size_t z = 0; z < Map::kMapZ; ++z) {
-	/*	for (size_t x = 0; x < Map::kMapX; ++x) {
-			root["boxes"][x] = ((*houseList_)[y][x].isConstruction);
-		}
-	*/	//}
-	//}
+	 //3次元配列をJSONオブジェクトに変換
+	
+	for (size_t x = 0; x < Map::kMapX; ++x) {
+		root["boxes"][x] = ((*mapSize_)[x].isConstruction);
+	}
+		
+	
 
 	std::filesystem::path dir(kDirectoryPath_);
 	if (!std::filesystem::exists(kDirectoryName_)) {
@@ -461,20 +449,10 @@ void BlockEditor::LoadFile(const std::string &fileName) {
 	//未登録チェック
 	assert(itGroup != root.end());
 
-
-
 	//各アイテムについて
-	for (size_t x = 0; x < Map::kMapX; ++x) {
-		//boxData_[x] = root["boxes"][x];
+	for (size_t x = 0; x < Ground::kMapX; ++x) {
+		((*mapSize_)[x].isConstruction) = root["boxes"][x];
 	}
-
-	//for (size_t y = 0; y < Map::kMapY; ++y) {
-	//	//for (size_t z = 0; z < Map::kMapZ; ++z) {
-	//	for (size_t x = 0; x < Map::kMapX; ++x) {
-	//		((*houseList_)[y][x].isConstruction) = boxData_[x];
-	//	}
-	//	//}
-	//}
 
 #ifdef _DEBUG
 

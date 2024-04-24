@@ -18,7 +18,8 @@ void Transform::CalcMatrix()
 {
 	matWorld_ = MakeAffine();
 	if (parent_) {
-		matWorld_ *= parent_->matWorld_;
+		Mat4x4 result = matWorld_ * parent_->matWorld_;
+		matWorld_ = result;
 	}
 }
 

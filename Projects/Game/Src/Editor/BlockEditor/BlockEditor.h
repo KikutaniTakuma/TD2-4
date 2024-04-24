@@ -67,15 +67,13 @@ private:
 
 private:
 
-	Map* map_ = nullptr;
+	Ground* map_ = nullptr;
 
-	Map::HouseList * houseList_ = nullptr;
-
-	Map::HouseList beforeHouseList_;
+	Ground::MapSize * mapSize_ = nullptr;
 
 	std::array<size_t, 3> boxPos_;
 
-	std::array<bool, Map::kMapX> boxData_;
+	std::array<bool, Ground::kMapX> boxData_;
 
 	Input* input_ = nullptr;
 
@@ -85,7 +83,7 @@ private:
 	// 自機から3Dレティクルへの距離
 	float distancePlayerTo3DReticleCopy_ = 30.0f;
 	//本来図る距離とは変えるための変数
-	float correction_ = 4.62f;
+	float correction_ = 5.0f;
 
 	bool isUseImgui_ = false;
 

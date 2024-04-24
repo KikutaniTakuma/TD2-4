@@ -89,6 +89,7 @@ void GameScene::Update() {
 	ImGui::Begin("モード変更");
 	ImGui::Checkbox("エディターモード", &editorMode_);
 	ImGui::Checkbox("エネミーモード", &enemyMode_);
+	//ImGui::DragFloat("エディター時のカメラの距離", &editorCameraPosZ_, 1.0f, -100.0f, 0.0f);
 	ImGui::End();
 	if (input_->GetKey()->Pushed(DIK_E) && input_->GetKey()->LongPush(DIK_LSHIFT)) {
 		if (!editorMode_)
@@ -98,8 +99,8 @@ void GameScene::Update() {
 	}
 
 	if (editorMode_) {
-		currentCamera_->pos.y = 0.0f;
-		currentCamera_->pos.z = -40.0f;
+		currentCamera_->pos.y = -2.0f;
+		currentCamera_->pos.z = editorCameraPosZ_;
 		if (Mouse::GetInstance()->GetWheelVelocity() != 0) {
 			if (!enemyMode_)
 				enemyMode_ = true;

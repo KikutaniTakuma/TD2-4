@@ -138,6 +138,9 @@
     <ClCompile Include="Src\GameObject\Component\PlayerComp.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\Ground\Ground.cpp">
+      <Filter>Game\Ground</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -265,6 +268,9 @@
     </Filter>
     <Filter Include="Editor\UIEditor">
       <UniqueIdentifier>{f627b75b-fb00-42cc-b721-37409f5664b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Ground">
+      <UniqueIdentifier>{16c5a03b-817a-415d-bfc6-7c8d982c7707}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -408,6 +414,9 @@
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\PlayerComp.h">
       <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Ground\Ground.h">
+      <Filter>Game\Ground</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
