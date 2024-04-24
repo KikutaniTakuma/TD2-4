@@ -98,7 +98,7 @@ void GameScene::Update() {
 	}
 
 	if (editorMode_) {
-		currentCamera_->pos.y = 0.0f;
+		currentCamera_->pos.y = -2.0f;
 		currentCamera_->pos.z = -40.0f;
 		if (Mouse::GetInstance()->GetWheelVelocity() != 0) {
 			if (!enemyMode_)

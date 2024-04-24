@@ -39,7 +39,7 @@ void Ground::TransferBoxData(){
 		GroundInfo boxInfo = static_cast<GroundInfo>((*boxMap_)[x]);
 
 		// 現在のモデル
-		modelStates_[x]->transform.translate = GetGrobalPos(x, 0, 0);
+		modelStates_[x]->transform.translate = GetGrobalPos((int32_t)(x), -1, 0);
 		modelStates_[x]->transform.CalcMatrix();
 
 		if (boxInfo.isConstruction) {

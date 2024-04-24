@@ -56,9 +56,14 @@ public:
 public:
 	/// @brief 3次元配列の取得
 	/// @return 三次元配列
-	MapSize* GetBlockMap() { return boxMap_.get(); }
+	MapSize* GetGroundData() { return boxMap_.get(); }
 
 	static Vector3 GetGrobalPos(size_t x, size_t y, size_t z) noexcept
+	{
+		return Vector3{ x * vBoxDistance_->x, y * vBoxDistance_->y, -(z * vBoxDistance_->x) } - Vector3{ vBoxDistance_->x * ((kMapX - 1) / 2.f), 0, -(vBoxDistance_->x * ((1 - 1) / 2.f)) };
+	}
+
+	static Vector3 GetGrobalPos(int32_t x, int32_t y, int32_t z) noexcept
 	{
 		return Vector3{ x * vBoxDistance_->x, y * vBoxDistance_->y, -(z * vBoxDistance_->x) } - Vector3{ vBoxDistance_->x * ((kMapX - 1) / 2.f), 0, -(vBoxDistance_->x * ((1 - 1) / 2.f)) };
 	}

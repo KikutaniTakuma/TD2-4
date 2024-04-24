@@ -14,6 +14,9 @@ void Map::Init()
 	drawerManager->LoadModel("Resources/Cube.obj");
 	model_ = drawerManager->GetModel("Resources/Cube.obj");
 
+	ground_ = std::make_unique<Ground>();
+	ground_->Init();
+
 }
 
 void Map::Update([[maybe_unused]] const float deltaTime) {
@@ -28,6 +31,8 @@ void Map::Draw([[maybe_unused]] const Camera &camera) const {
 			}
 		}
 	}
+
+	ground_->Draw(camera);
 }
 
 bool Map::Debug(const char *const str)
@@ -63,6 +68,7 @@ bool Map::Debug(const char *const str)
 
 void Map::TransferBoxData()
 {
+	ground_->TransferBoxData();
 
 	for (int32_t yi = 0; yi < kMapY; yi++) {
 		for (int32_t xi = 0; xi < kMapX; xi++) {
@@ -104,9 +110,9 @@ void Map::TransferBoxData()
 
 
 void Map::MultiReset() {
-	for (auto &house : houseList_) {
+	/*for (auto &house : houseList_) {
 		house.isMultiSelect_ = false;
-	}
+	}*/
 }
 
 //const Map::HouseInfo &Map::GetHouseInfo(const int localPosX) const {
