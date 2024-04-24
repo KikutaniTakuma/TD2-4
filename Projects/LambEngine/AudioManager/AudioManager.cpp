@@ -5,7 +5,6 @@
 #include <filesystem>
 #include "Error/Error.h"
 #include "Utils/SafeDelete/SafeDelete.h"
-#include "Engine/Graphics/ResourceManager/ResourceManager.h"
 
 Lamb::SafePtr<AudioManager> AudioManager::instance_ = nullptr;
 void AudioManager::Inititalize() {
@@ -55,8 +54,6 @@ Audio* const AudioManager::Load(const std::string& fileName) {
 		auto audio = std::make_unique<Audio>();
 		audio->Load(fileName);
 		audios_.insert({ fileName, std::move(audio) });
-
-		ResourceManager::GetInstance()->SetAudioResource(fileName);
 	}
 
 	return audios_[fileName].get();
