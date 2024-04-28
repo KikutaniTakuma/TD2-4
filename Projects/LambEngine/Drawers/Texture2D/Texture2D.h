@@ -7,6 +7,7 @@ struct Tex2DState {
 	Transform transform;
 	Transform uvTrnasform;
 	uint32_t textureID;
+	std::string textureName;
 	uint32_t color;
 };
 /// <summary>

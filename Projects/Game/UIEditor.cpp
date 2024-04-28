@@ -19,6 +19,16 @@ void UIEditor::Initialize(){
 	sceneName_[BaseScene::ID::Game] = "Game";
 	sceneName_[BaseScene::ID::StageSelect] = "Select";
 	sceneName_[BaseScene::ID::Result] = "Result";
+
+	newTex_ = std::make_unique<Tex2DState>();
+	newTex_->transform.translate = Vector2(0, 0);
+	newTex_->transform.translate.y *= -1;
+	newTex_->transform.translate += Vector2(-640, 360);
+	newTex_->transform.scale = { 64,64 };
+	newTex_->color = 0xffffffff;
+	newTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/white2x2.png");
+	
+
 #endif // _DEBUG
 
 }
@@ -27,10 +37,21 @@ void UIEditor::Finalize(){
 
 }
 
-void UIEditor::Update(){
-	Debug();
+void UIEditor::Update(const BaseScene::ID id){
+	Debug(id);
+	if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
+		newTex_->transform.translate = Mouse::GetInstance()->GetPos();
+		newTex_->transform.translate.y *= -1;
+		newTex_->transform.translate += Vector2{ -640, 360 };
+	}
+	
+	newTex_->transform.CalcMatrix();
+	
 
 	for (size_t i = 0; i < BaseScene::kMaxScene; i++){
+		if (i != static_cast<size_t>(id))
+			continue;
+
 		for (size_t j = 0; j < texies_[i].size(); j++){
 			texies_[i][j]->transform.CalcMatrix();
 		}
@@ -39,26 +60,66 @@ void UIEditor::Update(){
 
 }
 
-void UIEditor::Draw(const Camera& camera){
-	
+void UIEditor::Draw(const Mat4x4& camera, const BaseScene::ID id){
+	tex2D_->Draw(newTex_->transform.matWorld_, Mat4x4::kIdentity, camera
+		, newTex_->textureID, newTex_->color, BlendType::kNormal);
 
 	for (size_t i = 0; i < BaseScene::kMaxScene; i++) {
+		if (i != static_cast<size_t>(id))
+			continue;
 		for (size_t j = 0; j < texies_[i].size(); j++) {
-			tex2D_->Draw(texies_[i][j]->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
+			tex2D_->Draw(texies_[i][j]->transform.matWorld_, Mat4x4::kIdentity, camera
 				, texies_[i][j]->textureID, texies_[i][j]->color, BlendType::kNormal);
 		}
 	}
 }
 
-void UIEditor::Debug(){
+void UIEditor::Debug(const BaseScene::ID id){
 
 #ifdef _DEBUG
 	ImGui::Begin("UIエディター", nullptr, ImGuiWindowFlags_MenuBar);
 
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("UI生成")) {
-			auto file = Lamb::GetFilePathFormDir(kDirectoryPath_, ".json");
+			ImGui::DragFloat2("生成するポジション", &newTex_->transform.translate.x, 0.1f);
+			if (ImGui::TreeNode("生成するUI画像")) {
+				auto file = Lamb::GetFilePathFormDir("Resources/", ".png");
+				for (auto& i : file) {
+					if (ImGui::Button(i.string().c_str())) {						
+						if (OperationConfirmation()) {
+							std::unique_ptr<Tex2DState> setTex_ = std::make_unique<Tex2DState>();
+							setTex_->color = 0xffffffff;
+							setTex_->transform = newTex_->transform;
+							setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i.string().c_str());
+							std::string result;
 
+							size_t slashPos_ = i.string().find_last_of('/');
+							size_t dotPos_ = i.string().find_last_of('.');
+							if (slashPos_ != std::string::npos && dotPos_ != std::string::npos && dotPos_ > slashPos_) {
+								result = i.string().substr(slashPos_ + 1, dotPos_ - slashPos_ - 1);
+							}
+							setTex_->textureName = result;
+							texies_[static_cast<size_t>(id)].emplace_back(std::move(setTex_));
+						}
+						break;
+					}
+				}
+				ImGui::TreePop();
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("配置しているUI")) {
+			for (size_t i = 0; i < texies_[static_cast<size_t>(id)].size(); i++){
+				if (ImGui::TreeNode((texies_[static_cast<size_t>(id)][i]->textureName.c_str() + std::to_string(i)).c_str())) {
+					ImGui::DragFloat2("ポジション", &texies_[static_cast<size_t>(id)][i]->transform.translate.x, 1.0f);
+					ImGui::DragFloat2("大きさ", &texies_[static_cast<size_t>(id)][i]->transform.scale.x, 1.0f);
+					uint32_t colorInt = texies_[static_cast<size_t>(id)][i]->color;					
+					Vector4 color = ConvertRGBAColorToVector4(colorInt);
+					 ImGui::ColorEdit4("テクスチャの色", &color.vec.x, true);
+					 texies_[static_cast<size_t>(id)][i]->color = ConvertVector4ToRGBAColor(color);
+					ImGui::TreePop();
+				}
+			}
 			ImGui::EndMenu();
 		}
 

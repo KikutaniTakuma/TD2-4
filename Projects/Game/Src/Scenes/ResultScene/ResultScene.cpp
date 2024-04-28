@@ -27,6 +27,7 @@ void ResultScene::Update(){
 }
 
 void ResultScene::Draw(){
+	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	//tex_->Draw(currentCamera_->GetViewOthographics());
 }
 

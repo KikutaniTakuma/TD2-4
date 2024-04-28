@@ -148,7 +148,7 @@ void GameScene::Draw() {
 	enemyManager_->Draw(*currentCamera_);
 
 #ifdef _DEBUG
-
+	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	if (editorMode_) {
 		if (enemyMode_) {
 			enemyEditor_->Draw(*currentCamera_);

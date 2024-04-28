@@ -40,6 +40,10 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 	sceneNum_[BaseScene::ID::Game] = DIK_2;
 	sceneNum_[BaseScene::ID::StageSelect] = DIK_3;
 	sceneNum_[BaseScene::ID::Result] = DIK_4;
+
+	uiEditor_ = UIEditor::GetInstance();
+	uiEditor_->Initialize();
+
 }
 
 void SceneManager::SceneChange(std::optional<BaseScene::ID> next) {
@@ -73,6 +77,7 @@ void SceneManager::Update() {
 #endif // _DEBUG
 
 		scene_->Update();
+		uiEditor_->Update(scene_->GetID());
 		Debug();
 	}
 
@@ -110,6 +115,7 @@ void SceneManager::Update() {
 
 		// シーンの更新処理
 		scene_->Update();
+		uiEditor_->Update(scene_->GetID());
 #pragma endregion
 	}
 
@@ -118,6 +124,7 @@ void SceneManager::Update() {
 void SceneManager::Draw() {
 	if (scene_) {
 		scene_->Draw();
+		
 	}
 
 	fade_->Draw(fadeCamera_.GetViewOthographics());
