@@ -11,9 +11,7 @@ UIEditor::~UIEditor(){
 
 }
 
-void UIEditor::Initialize(class SceneManager* sceneManager){
-	sceneManager_ = sceneManager;
-
+void UIEditor::Initialize(){
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
 
 #ifdef _DEBUG

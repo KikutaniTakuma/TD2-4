@@ -9,7 +9,7 @@
 #include "Input/Input.h"
 #include "BaseScene/BaseScene.h"
 #include "SceneLoad/SceneLoad.h"
-#include"Game/UIEditor.h"
+#include"Editor/UIEditor/UIEditor.h"
 
 class SceneManager final {
 public:
