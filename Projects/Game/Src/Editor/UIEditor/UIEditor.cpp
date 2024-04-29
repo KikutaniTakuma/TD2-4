@@ -6,6 +6,7 @@
 #include"Input/Mouse/Mouse.h"
 #include "Utils/UtilsLib/UtilsLib.h"
 #include <fstream>
+#include <Utils/EngineInfo/EngineInfo.h>
 
 UIEditor::~UIEditor(){
 
@@ -28,7 +29,14 @@ void UIEditor::Initialize(){
 	newTex_->color = 0xffffffff;
 	newTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/white2x2.png");
 	
+	//texAnim_ = std::make_unique<Tex2DAniamtor>();
 
+	//texAnim_->SetStartPos(Vector2::kZero);
+	//texAnim_->SetDuration(0.1f);
+	//texAnim_->SetAnimationNumber(6);
+	//texAnim_->SetLoopAnimation(true);
+	//texAnim_->Start();
+	//animNum_ = DrawerManager::GetInstance()->LoadTexture("./Resources/Load.png");
 #endif // _DEBUG
 
 }
@@ -55,6 +63,7 @@ void UIEditor::Update(const BaseScene::ID id){
 
 		for (size_t j = 0; j < texies_[i].size(); j++){
 			texies_[i][j]->transform.CalcMatrix();
+			texies_[i][j]->uvTrnasform.CalcMatrix();
 		}
 	}
 
@@ -64,12 +73,21 @@ void UIEditor::Update(const BaseScene::ID id){
 void UIEditor::Draw(const Mat4x4& camera, const BaseScene::ID id){
 	tex2D_->Draw(newTex_->transform.matWorld_, Mat4x4::kIdentity, camera
 		, newTex_->textureID, newTex_->color, BlendType::kNormal);
+	//texAnim_->Update();
+	//tex2D_->Draw(
+	//	Mat4x4::MakeAffin(Vector3(Lamb::ClientSize(), 1.0f), Vector3::kZero, Vector3::kZero),
+	//	texAnim_->GetUvMat4x4(),
+	//	camera,
+	//	animNum_,
+	//	std::numeric_limits<uint32_t>::max(),
+	//	BlendType::kNone
+	//);
 
 	for (size_t i = 0; i < BaseScene::kMaxScene; i++) {
 		if (i != static_cast<size_t>(id))
 			continue;
 		for (size_t j = 0; j < texies_[i].size(); j++) {
-			tex2D_->Draw(texies_[i][j]->transform.matWorld_, Mat4x4::kIdentity, camera
+			tex2D_->Draw(texies_[i][j]->transform.matWorld_, texies_[i][j]->uvTrnasform.matWorld_, camera
 				, texies_[i][j]->textureID, texies_[i][j]->color, BlendType::kNormal);
 		}
 	}
@@ -115,6 +133,8 @@ void UIEditor::Debug(const BaseScene::ID id){
 				if (ImGui::TreeNode((texies_[static_cast<size_t>(id)][i]->textureName.c_str() + std::to_string(i)).c_str())) {
 					ImGui::DragFloat2("ポジション", &texies_[static_cast<size_t>(id)][i]->transform.translate.x, 1.0f);
 					ImGui::DragFloat2("大きさ", &texies_[static_cast<size_t>(id)][i]->transform.scale.x, 1.0f);
+					ImGui::DragFloat2("UVポジション", &texies_[static_cast<size_t>(id)][i]->uvTrnasform.translate.x, 1.0f);
+					ImGui::DragFloat2("UV大きさ", &texies_[static_cast<size_t>(id)][i]->uvTrnasform.scale.x, 1.0f);
 					uint32_t colorInt = texies_[static_cast<size_t>(id)][i]->color;					
 					Vector4 color = ConvertRGBAColorToVector4(colorInt);
 					 ImGui::ColorEdit4("テクスチャの色", &color.vec.x, true);

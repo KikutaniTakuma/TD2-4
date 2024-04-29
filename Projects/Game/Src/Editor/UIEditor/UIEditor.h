@@ -2,6 +2,7 @@
 #include"Drawers/Texture2D/Texture2D.h"
 #include"Game/GameManager/GameManager.h"
 #include"Scenes/Manager/BaseScene/BaseScene.h"
+#include"Engine/Graphics/Tex2DAniamtor/Tex2DAniamtor.h"
 
 class UIEditor{
 private:
@@ -85,6 +86,9 @@ private:
 	Input* input_ = nullptr;
 
 	Texture2D* tex2D_ = nullptr;
+
+	//std::unique_ptr<Tex2DAniamtor> texAnim_;
+	//uint32_t animNum_;
 
 	std::unordered_map<BaseScene::ID, std::string> sceneName_;
 
