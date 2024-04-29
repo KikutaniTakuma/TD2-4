@@ -230,6 +230,7 @@ void UIEditor::SaveFile(const std::string& fileName){
 	json root;
 	root = json::object();
 	root[kItemName_] = json::object();
+	root[kItemName_][fileName] = json::object();
 	/*
 	* 座標
 	* 大きさ
