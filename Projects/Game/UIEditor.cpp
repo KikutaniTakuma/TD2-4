@@ -38,6 +38,7 @@ void UIEditor::Finalize(){
 }
 
 void UIEditor::Update(const BaseScene::ID id){
+	id_ = id;
 	Debug(id);
 	if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
 		newTex_->transform.translate = Mouse::GetInstance()->GetPos();
@@ -155,7 +156,11 @@ void UIEditor::Debug(const BaseScene::ID id){
 						break;
 					}
 				}
-
+				if (ImGui::Button("全てのシーンのUIを読み込む")) {
+					if (OperationConfirmation()) {
+						LoadFileAll();
+					}
+				}
 				ImGui::TreePop();
 			}
 
@@ -384,26 +389,105 @@ void UIEditor::LoadFile(const std::string& fileName){
 	ifs.close();
 
 	//グループを検索
-	nlohmann::json::iterator itGroupEn = root.find(kItemName_);
+	nlohmann::json::iterator itGroupUI = root.find(kItemName_);
 	//未登録チェック
-	assert(itGroupEn != root.end());
+	assert(itGroupUI != root.end());
+	
+
+	//グループを検索
+	nlohmann::json::iterator itGroupNum = root[kItemName_].find(sceneName_[id_].c_str());
+	//未登録チェック
+	if (itGroupNum == root[kItemName_].end()) {
+		std::wstring message = L"選択したシーンと一致しませんでした。";
+		MessageBoxW(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), L"シーンが合ってないよぉ！", 0);
+		return;
+	}
+
+	texies_[static_cast<size_t>(id_)].clear();
+
+	for (const auto& i : root[kItemName_][sceneName_[id_].c_str()]) {
+		std::unique_ptr<Tex2DState> setTex_ = std::make_unique<Tex2DState>();
+		Vector2 pos;
+		Vector2 scale;
+		from_json(i["scale"], scale);
+		from_json(i["translate"], pos);
+		setTex_->color = i["color"];
+		setTex_->transform.scale = scale;
+		setTex_->transform.translate = pos;
+		setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i["TextureFullPath"]);
+		setTex_->textureFullPath = i["TextureFullPath"];
+		setTex_->textureName = i["TextureName"];
+		texies_[static_cast<size_t>(id_)].emplace_back(std::move(setTex_));
+
+	}
 
 	
 
-	////グループを検索
-	//nlohmann::json::iterator itGroupNum = root[kItemName_].find("Num");
-	////未登録チェック
-	//assert(itGroupNum != root[kItemName_].end());
-
-	//
-
-	////グループを検索
-	//nlohmann::json::iterator itGroupPos = root[kItemName_].find("Pos");
-	////未登録チェック
-	//assert(itGroupPos != root[kItemName_].end());
+	
 
 #ifdef _DEBUG
 	std::string message = "File loading completed";
+	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
+
+#endif // _DEBUG
+}
+
+void UIEditor::LoadFileAll(){
+	for (auto& scene : sceneName_) {
+		std::string file = (kDirectoryPath_ + scene.second + ".json");
+		if (!LoadChackItem(file))
+			continue;
+		//読み込むjsonファイルのフルパスを合成する
+		std::string filePath = file;
+		//読み込み用のファイルストリーム
+		std::ifstream ifs;
+		//ファイルを読み込み用に開く
+		ifs.open(filePath);
+		// ファイルオープン失敗
+		if (ifs.fail()) {
+			std::string message = "Failed open data file for write.";
+			MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
+			assert(0);
+			return;
+		}
+
+		nlohmann::json root;
+
+		//json文字列からjsonのデータ構造に展開
+		ifs >> root;
+		//ファイルを閉じる
+		ifs.close();
+
+		//グループを検索
+		nlohmann::json::iterator itGroupUI = root.find(kItemName_);
+		//未登録チェック
+		assert(itGroupUI != root.end());
+
+		texies_[static_cast<size_t>(scene.first)].clear();
+
+		for (const auto& i : root[kItemName_][scene.second.c_str()]) {
+			std::unique_ptr<Tex2DState> setTex_ = std::make_unique<Tex2DState>();
+			Vector2 pos;
+			Vector2 scale;
+			from_json(i["scale"], scale);
+			from_json(i["translate"], pos);
+			setTex_->color = i["color"];
+			setTex_->transform.scale = scale;
+			setTex_->transform.translate = pos;
+			setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i["TextureFullPath"]);
+			setTex_->textureFullPath = i["TextureFullPath"];
+			setTex_->textureName = i["TextureName"];
+			texies_[static_cast<size_t>(scene.first)].emplace_back(std::move(setTex_));
+
+		}
+
+
+	}
+
+
+
+#ifdef _DEBUG
+	std::string message = "File ALL loading completed";
 	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
 
 #endif // _DEBUG
