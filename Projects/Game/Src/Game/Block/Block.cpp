@@ -41,7 +41,7 @@ void Block::Update(){
 
 	transform_->translate = pos_;
 	
-	transform_->rotate.z = rotateZ_;
+	// transform_->rotate.z = rotateZ_;
 
 	transform_->CalcMatrix();
 

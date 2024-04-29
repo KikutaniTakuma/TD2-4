@@ -7,6 +7,12 @@ struct ModelState {
 	uint32_t color;
 };
 
+/// @brief Matrix形式のモデルステータス
+struct MatrixModelState {
+	Mat4x4 transMat;
+	uint32_t color;
+};
+
 /// <summary>
 /// 3Dモデルの描画
 /// </summary>

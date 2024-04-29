@@ -52,7 +52,7 @@ public:
 
 	GameManager *gameManager_ = nullptr;
 
-	std::unique_ptr<Player> player_;
+	// std::unique_ptr<Player> player_;
 
 	CollisionManager* collisionManager_ = nullptr;
 
@@ -62,6 +62,8 @@ public:
 	bool editorMode_ = false;
 
 	bool enemyMode_ = false;
+
+	const float editorCameraPosZ_ = -42.0f;
 
 	std::unique_ptr<BlockEditor> blockEditor_;
 

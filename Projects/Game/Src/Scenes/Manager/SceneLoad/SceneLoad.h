@@ -13,7 +13,7 @@
 class SceneLoad {
 public:
 	struct Desc {
-		std::string fileName = "./Resources/Load.png";
+		std::string fileName = "./Resources/EngineResources/Load.png";
 		uint32_t animationNumber = 4;
 		float animationSpeed = 0.5f;
 	};

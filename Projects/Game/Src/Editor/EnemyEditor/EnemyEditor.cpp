@@ -5,12 +5,10 @@
 #include"Input/Mouse/Mouse.h"
 #include "Utils/UtilsLib/UtilsLib.h"
 
-void EnemyEditor::Initialize(){
-	map_ = GameManager::GetInstance()->GetMap();
+void EnemyEditor::Initialize() {
+	groundMap_ = GameManager::GetInstance()->GetMap()->GetGround();
 
-	mapSize_ = map_->GetBlockMap();
-
-	beforeMapSize_ = *mapSize_;
+	groundMapSize_ = groundMap_->GetGroundData();
 
 	input_ = Input::GetInstance();
 
@@ -31,11 +29,11 @@ void EnemyEditor::Initialize(){
 	scanningOBB_->scale_ = { 1.f,1.f,1.f };
 }
 
-void EnemyEditor::Finalize(){
+void EnemyEditor::Finalize() {
 
 }
 
-void EnemyEditor::Update(){
+void EnemyEditor::Update() {
 	if (obb_->OBBinPoint(reticle_->center_)) {
 		reticle_->color_ = 0x00ff00ff;
 	}
@@ -51,12 +49,12 @@ void EnemyEditor::Update(){
 	scanningOBB_->Update();
 }
 
-void EnemyEditor::Draw(const Camera& camera){
+void EnemyEditor::Draw(const Camera &camera) {
 	obb_->Draw(camera.GetViewProjection());
 }
 
-void EnemyEditor::Debug(){
-	bool isChange = false;
+void EnemyEditor::Debug() {
+	[[maybe_unused]] bool isChange = false;
 
 #ifdef _DEBUG
 	ImGui::Begin("エネミーエディター", nullptr, ImGuiWindowFlags_MenuBar);
@@ -86,22 +84,18 @@ void EnemyEditor::Debug(){
 				AllDataReset();
 			}
 
-			for (size_t y = 0; y < Map::kMapY; y++) {
+			for (size_t x = 0; x < Ground::kMapX; x++) {
 
-				for (size_t z = 0; z < Map::kMapZ; z++) {
-					for (size_t x = 0; x < Map::kMapX; x++) {
-						isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(z) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*mapSize_)[y][z][x].isMultiSelect_));
-						if (ImGui::IsItemHovered()) {
-							obb_->center_ = map_->GetGrobalPos(x, y, z);
-							obb_->color_ = 0xff0000ff;
-						}
-						else {
+				isChange |= ImGui::Checkbox(("##Checkbox" + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*groundMapSize_)[x].isMultiSelect_));
+				if (ImGui::IsItemHovered()) {
+					obb_->center_ = groundMap_->GetGrobalPos((int32_t)(x), -1, 0);
+					obb_->color_ = 0xff0000ff;
+				}
+				else {
 
-						}
-						if (x != 9) {
-							ImGui::SameLine();
-						}
-					}
+				}
+				if (x != 9) {
+					ImGui::SameLine();
 				}
 
 			}
@@ -128,7 +122,7 @@ void EnemyEditor::Debug(){
 			if (ImGui::TreeNode("ファイル読み込み")) {
 				auto file = Lamb::GetFilePathFormDir(kDirectoryPath_, ".json");
 
-				for (auto& i : file) {
+				for (auto &i : file) {
 					if (ImGui::Button(i.string().c_str())) {
 						if (OperationConfirmation()) {
 							LoadFiles(i.string());
@@ -152,9 +146,9 @@ void EnemyEditor::Debug(){
 	}
 
 	ImGui::End();
-	if (input_->GetKey()->LongPush(DIK_LSHIFT)){
+	if (input_->GetKey()->LongPush(DIK_LSHIFT)) {
 		if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
-			bool& num = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].isMultiSelect_;
+			bool &num = (*groundMapSize_)[boxPos_[0]].isMultiSelect_;
 			if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
 				multiMode_ = true;
 				num = true;
@@ -165,54 +159,54 @@ void EnemyEditor::Debug(){
 		}
 	}
 	else {
-		if (multiMode_){
-			if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {			
+		if (multiMode_) {
+			if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
 
 				if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
 
-					bool select = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].isMultiSelect_;
+					bool select = (*groundMapSize_)[boxPos_[0]].isMultiSelect_;
 
-					if (select){
+					if (select) {
 
-						for (size_t x = 0; x < Map::kMapX; x++) {
-							Map::BoxInfo& num = (*mapSize_)[boxPos_[1]][boxPos_[2]][x];
+						for (size_t x = 0; x < Ground::kMapX; x++) {
+							Ground::GroundInfo &num = (*groundMapSize_)[x];
 
 							if (num.isMultiSelect_) {
 
 								if (num.dwarfNum < 2u) {
 									if (num.dwarfNum > 0) {
-										setPos_ = map_->GetGrobalPos(x, 2, 0);
+										setPos_ = groundMap_->GetGrobalPos((int32_t)(x), 1, 0);
 										setPos_.y -= 0.5f;
 									}
 									else {
-										setPos_ = map_->GetGrobalPos(x, 1, 0);
+										setPos_ = groundMap_->GetGrobalPos((int32_t)(x), 0, 0);
 									}
 									setPos_.z -= 5.0;
 
 									EnemyManager::GetInstance()->AddEnemy(setPos_);
 
 									num.dwarfNum++;
-								}								
+								}
 							}
-						}						
-					}					
+						}
+					}
 				}
-				else if(Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
-					int32_t& num = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].dwarfNum;
+				else if (Mouse::GetInstance()->Pushed(Mouse::Button::Right)) {
+					int32_t &num = (*groundMapSize_)[boxPos_[0]].dwarfNum;
 					if (num > 0) {
 						EnemyManager::GetInstance()->DeadEnemy(delPos_);
 						num--;
 					}
 				}
 			}
-			if (input_->GetKey()->Pushed(DIK_R)){
-				map_->MultiReset();
+			if (input_->GetKey()->Pushed(DIK_R)) {
+				groundMap_->MultiReset();
 				multiMode_ = false;
 			}
 		}
 		else {
 			if (!ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemActive()) {
-				int32_t& num = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].dwarfNum;
+				int32_t &num = (*groundMapSize_)[boxPos_[0]].dwarfNum;
 				if (Mouse::GetInstance()->Pushed(Mouse::Button::Left)) {
 					if (num < 2u) {
 						EnemyManager::GetInstance()->AddEnemy(setPos_);
@@ -232,28 +226,28 @@ void EnemyEditor::Debug(){
 #endif // _DEBUG
 }
 
-void EnemyEditor::DataReset(){
-	if (OperationConfirmation()) {
+void EnemyEditor::DataReset() {
+	/*if (OperationConfirmation()) {
 		*mapSize_ = beforeMapSize_;
-	}
+	}*/
 }
 
-void EnemyEditor::FloorReset(){
+void EnemyEditor::FloorReset() {
 	if (OperationConfirmation()) {
-		for (size_t z = 0; z < Map::kMapZ; ++z) {
-			for (size_t x = 0; x < Map::kMapX; ++x) {
-			}
+		//for (size_t z = 0; z < Map::kMapZ; ++z) {
+		for (size_t x = 0; x < Map::kMapX; ++x) {
 		}
+		//}
 	}
 }
 
-void EnemyEditor::AllDataReset(){
+void EnemyEditor::AllDataReset() {
 	if (OperationConfirmation()) {
 
 	}
 }
 
-bool EnemyEditor::OperationConfirmation(){
+bool EnemyEditor::OperationConfirmation() {
 	int result = MessageBox(WindowFactory::GetInstance()->GetHwnd(), L"この操作を続けますか?", L"Confirmation", MB_YESNO | MB_ICONQUESTION);
 	if (result == IDYES) {
 		return true;
@@ -266,44 +260,40 @@ bool EnemyEditor::OperationConfirmation(){
 	}
 }
 
-bool EnemyEditor::MapinPoint(const Vector3& point){
-	for (size_t y = 0; y < Map::kMapY; y++) {
-		for (size_t z = 0; z < Map::kMapZ; z++) {
-			for (size_t x = 0; x < Map::kMapX; x++) {
-				int32_t num = (*mapSize_)[boxPos_[1]][boxPos_[2]][boxPos_[0]].dwarfNum;
-				scanningOBB_->center_ = map_->GetGrobalPos(x, y, z);
-				scanningOBB_->center_.z -= correction_;
-				if (scanningOBB_->OBBinPoint(point)) {
-					obb_->center_ = map_->GetGrobalPos(x, y, z);
-					if (num > 0) {
-						setPos_ = map_->GetGrobalPos(x, y + 2, z);
-						setPos_.y -= 0.5f;
-					}
-					else {
-						setPos_ = map_->GetGrobalPos(x, y + 1, z);
-					}
-					if (num > 1) {
-						delPos_ = map_->GetGrobalPos(x, y + 2, z);
-						delPos_.y -= 0.5f;
-					}
-					else {
-						delPos_ = map_->GetGrobalPos(x, y + 1, z);
-					}
-					setPos_.z -= 5.0;
-					delPos_.z -= 5.0f;
-					//obb_[i]->center_.z += correction_;
-					boxPos_ = { x,y,z };
-					boxVector_ = Vector3(float(boxPos_[0]), float(boxPos_[1]), float(boxPos_[2]));
-					return true;
-				}
+bool EnemyEditor::MapinPoint([[maybe_unused]] const Vector3 &point) {
+	for (size_t x = 0; x < Ground::kMapX; x++) {
+		int32_t num = (*groundMapSize_)[boxPos_[0]].dwarfNum;
+		scanningOBB_->center_ = groundMap_->GetGrobalPos((int32_t)(x), -1, 0);
+		scanningOBB_->center_.z -= correction_;
+		if (scanningOBB_->OBBinPoint(point)) {
+			obb_->center_ = groundMap_->GetGrobalPos((int32_t)(x), -1, 0);
+			if (num > 0) {
+				setPos_ = groundMap_->GetGrobalPos((int32_t)(x), 1, 0);
+				setPos_.y -= 0.5f;
 			}
+			else {
+				setPos_ = groundMap_->GetGrobalPos((int32_t)(x), 0, 0);
+			}
+			if (num > 1) {
+				delPos_ = groundMap_->GetGrobalPos((int32_t)(x), 1, 0);
+				delPos_.y -= 0.5f;
+			}
+			else {
+				delPos_ = groundMap_->GetGrobalPos((int32_t)(x), 0, 0);
+			}
+			setPos_.z -= 5.0;
+			delPos_.z -= 5.0f;
+			//obb_[i]->center_.z += correction_;
+			boxPos_ = { (int32_t)(x),-1,0 };
+			boxVector_ = Vector3(float(boxPos_[0]), float(boxPos_[1]), float(boxPos_[2]));
+			return true;
 		}
-
 	}
+
 	return false;
 }
 
-void EnemyEditor::MousePosTrans(const Camera& camera){
+void EnemyEditor::MousePosTrans(const Camera &camera) {
 	Vector2 mousePou = Mouse::GetInstance()->GetPos();
 	Mat4x4 matVPV = camera.GetViewProjectionVp();
 	Mat4x4 matInverseVPV = matVPV.Inverse();
@@ -318,7 +308,7 @@ void EnemyEditor::MousePosTrans(const Camera& camera){
 	mouseDirection = mouseDirection.Normalize();
 
 	// 自機から3Dレティクルへの距離
-	float distancePlayerTo3DReticle = 40.0f - correction_;
+	float distancePlayerTo3DReticle = -camera.pos.z - correction_;
 	float minRange = (-distancePlayerTo3DReticle - 0.05f);
 	float maxRange = (-distancePlayerTo3DReticle + 0.05f);
 	float chackNum = 0;
@@ -335,31 +325,23 @@ void EnemyEditor::MousePosTrans(const Camera& camera){
 	reticle_->center_ = posNear + mouseDirection * distancePlayerTo3DReticle;
 }
 
-void EnemyEditor::SaveFile(const std::string& fileName){
+void EnemyEditor::SaveFile(const std::string &fileName) {
 	//保存
 	json root;
 	root = json::object();
 	root[kItemName_] = json::object();
 
 	// 3次元配列をJSONオブジェクトに変換
-	for (size_t y = 0; y < Map::kMapY; ++y) {
-		for (size_t z = 0; z < Map::kMapZ; ++z) {
-			for (size_t x = 0; x < Map::kMapX; ++x) {
-				root[kItemName_]["Num"][x] = static_cast<int>((*mapSize_)[y][z][x].dwarfNum);
-			}
-		}
+	for (size_t x = 0; x < Ground::kMapX; ++x) {
+		root[kItemName_]["Num"][x] = static_cast<int>((*groundMapSize_)[x].dwarfNum);
 	}
 
-	for (size_t y = 0; y < Map::kMapY; ++y) {
-		for (size_t z = 0; z < Map::kMapZ; ++z) {
-			for (size_t x = 0; x < EnemyManager::GetInstance()->GetStartPosListSize(); ++x) {
-				root[kItemName_]["Pos"][x] =json::array({
-					   EnemyManager::GetInstance()->GetEnemyStartPos(x).x,
-					   EnemyManager::GetInstance()->GetEnemyStartPos(x).y,
-					   EnemyManager::GetInstance()->GetEnemyStartPos(x).z
-				});				
-			}
-		}
+	for (size_t x = 0; x < EnemyManager::GetInstance()->GetStartPosListSize(); ++x) {
+		root[kItemName_]["Pos"][x] = json::array({
+			   EnemyManager::GetInstance()->GetEnemyStartPos(x).x,
+			   EnemyManager::GetInstance()->GetEnemyStartPos(x).y,
+			   EnemyManager::GetInstance()->GetEnemyStartPos(x).z
+		});
 	}
 
 	std::filesystem::path dir(kDirectoryPath_);
@@ -388,7 +370,7 @@ void EnemyEditor::SaveFile(const std::string& fileName){
 	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
 }
 
-void EnemyEditor::ChackFiles(){
+void EnemyEditor::ChackFiles() {
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "Failed open data file for write.";
 		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
@@ -398,9 +380,9 @@ void EnemyEditor::ChackFiles(){
 
 	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
 
-	for (const std::filesystem::directory_entry& entry : dir_it) {
+	for (const std::filesystem::directory_entry &entry : dir_it) {
 		//ファイルパスを取得
-		const std::filesystem::path& filePath = entry.path();
+		const std::filesystem::path &filePath = entry.path();
 
 		//ファイル拡張子を取得
 		std::string extension = filePath.extension().string();
@@ -432,7 +414,7 @@ void EnemyEditor::ChackFiles(){
 	}
 }
 
-void EnemyEditor::LoadFiles(const std::string& fileName){
+void EnemyEditor::LoadFiles(const std::string &fileName) {
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "This file path does not exist.";
 		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
@@ -442,9 +424,9 @@ void EnemyEditor::LoadFiles(const std::string& fileName){
 
 	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
 
-	for (const std::filesystem::directory_entry& entry : dir_it) {
+	for (const std::filesystem::directory_entry &entry : dir_it) {
 		//ファイルパスを取得
-		const std::filesystem::path& filePath = entry.path();
+		const std::filesystem::path &filePath = entry.path();
 
 		//ファイル拡張子を取得
 		std::string extension = filePath.extension().string();
@@ -464,7 +446,7 @@ void EnemyEditor::LoadFiles(const std::string& fileName){
 	LoadFile("Resources/Datas/Enemies/stage1.json");
 }
 
-void EnemyEditor::LoadFiles(const int32_t selectNum){
+void EnemyEditor::LoadFiles(const int32_t selectNum) {
 	std::string fileName = (kDirectoryPath_ + "stage" + std::to_string(selectNum + 1) + ".json").c_str();
 
 	if (!std::filesystem::exists(kDirectoryName_)) {
@@ -476,9 +458,9 @@ void EnemyEditor::LoadFiles(const int32_t selectNum){
 
 	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
 
-	for (const std::filesystem::directory_entry& entry : dir_it) {
+	for (const std::filesystem::directory_entry &entry : dir_it) {
 		//ファイルパスを取得
-		const std::filesystem::path& filePath = entry.path();
+		const std::filesystem::path &filePath = entry.path();
 
 		//ファイル拡張子を取得
 		std::string extension = filePath.extension().string();
@@ -498,7 +480,7 @@ void EnemyEditor::LoadFiles(const int32_t selectNum){
 	LoadFile("Resources/Datas/Enemies/stage1.json");
 }
 
-void EnemyEditor::LoadFile(const std::string& fileName){
+void EnemyEditor::LoadFile(const std::string &fileName) {
 	if (!LoadChackItem(fileName))
 		return;
 	//読み込むjsonファイルのフルパスを合成する
@@ -528,19 +510,15 @@ void EnemyEditor::LoadFile(const std::string& fileName){
 	assert(itGroupEn != root.end());
 
 	EnemyManager::GetInstance()->ListReset();
-	
+
 	//グループを検索
 	nlohmann::json::iterator itGroupNum = root[kItemName_].find("Num");
 	//未登録チェック
 	assert(itGroupNum != root[kItemName_].end());
 
 	//各アイテムについて
-	for (size_t y = 0; y < Map::kMapY; ++y) {
-		for (size_t z = 0; z < Map::kMapZ; ++z) {
-			for (size_t x = 0; x < Map::kMapX; ++x) {
-				((*mapSize_)[y][z][x].dwarfNum) = root[kItemName_]["Num"][x];
-			}
-		}
+	for (size_t x = 0; x < Ground::kMapX; ++x) {
+		((*groundMapSize_)[x].dwarfNum) = root[kItemName_]["Num"][x];
 	}
 
 	//グループを検索
@@ -548,9 +526,9 @@ void EnemyEditor::LoadFile(const std::string& fileName){
 	//未登録チェック
 	assert(itGroupPos != root[kItemName_].end());
 
-	
 
-	for (const auto& i : root[kItemName_]["Pos"]) {
+
+	for (const auto &i : root[kItemName_]["Pos"]) {
 		Vector3 newPos{};
 
 		from_json(i, newPos);
@@ -567,16 +545,14 @@ void EnemyEditor::LoadFile(const std::string& fileName){
 		Vector3 newScale{};
 		Vector3 newRotate{};
 		Vector3 newPos{};
-				
+
 		from_json(i["Scale"], newScale);
 		from_json(i["Rotate"], newRotate);
-		from_json(i["Pos"], newPos);		
-		
+		from_json(i["Pos"], newPos);
+
 		AddItem(newPos, newScale);
 	}*/
 
-
-	beforeMapSize_ = *mapSize_;
 
 #ifdef _DEBUG
 	std::string message = "File loading completed";
@@ -586,7 +562,7 @@ void EnemyEditor::LoadFile(const std::string& fileName){
 
 }
 
-bool EnemyEditor::LoadChackItem(const std::string& fileName){
+bool EnemyEditor::LoadChackItem(const std::string &fileName) {
 	// 書き込むjsonファイルのフルパスを合成する
 	std::string filePath = fileName;
 	//読み込み用のファイルストリーム
@@ -617,7 +593,7 @@ bool EnemyEditor::LoadChackItem(const std::string& fileName){
 	}
 }
 
-void EnemyEditor::from_json(const json& j, Vector3& v){
+void EnemyEditor::from_json(const json &j, Vector3 &v) {
 	v.x = j.at(0).get<float>();
 	v.y = j.at(1).get<float>();
 	v.z = j.at(2).get<float>();

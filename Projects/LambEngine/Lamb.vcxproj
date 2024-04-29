@@ -169,6 +169,7 @@
     <ClCompile Include="Input\KeyInput\KeyInput.cpp" />
     <ClCompile Include="Input\Mouse\Mouse.cpp" />
     <ClCompile Include="Math\Mat4x4.cpp" />
+    <ClCompile Include="Math\MathCommon.cpp" />
     <ClCompile Include="Math\Quaternion.cpp" />
     <ClCompile Include="Math\Transform.cpp" />
     <ClCompile Include="Math\Vector2.cpp" />

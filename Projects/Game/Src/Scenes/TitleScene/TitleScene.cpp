@@ -84,7 +84,7 @@ void TitleScene::Update()
 void TitleScene::Draw()
 {
 	//tex_->Draw(camera_->GetViewOthographics());
-
+	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	//sphere_->Draw(camera_->GetViewOthographics());
 	//sphere2_->Draw(camera_->GetViewOthographics());
 

@@ -1,17 +1,11 @@
 #include "SceneManager.h"
-#include "Engine/Engine.h"
 #include "Input/Input.h"
 #include "SceneFactory/SceneFactory.h"
 
 #include "Engine/Core/StringOutPutManager/StringOutPutManager.h"
 #include "Engine/EngineUtils/FrameInfo/FrameInfo.h"
-#include "Utils/UtilsLib/UtilsLib.h"
 
 #include "imgui.h"
-
-#include <filesystem>
-#include <fstream>
-#include <format>
 
 void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::optional<BaseScene::ID> finishID) {
 	finishID_ = finishID;
@@ -46,12 +40,16 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 	sceneNum_[BaseScene::ID::Game] = DIK_2;
 	sceneNum_[BaseScene::ID::StageSelect] = DIK_3;
 	sceneNum_[BaseScene::ID::Result] = DIK_4;
+
+	uiEditor_ = UIEditor::GetInstance();
+	uiEditor_->Initialize();
+
 }
 
 void SceneManager::SceneChange(std::optional<BaseScene::ID> next) {
 	if (next_ || fade_->InEnd()
 		|| fade_->OutEnd() || fade_->IsActive()
-		) 
+		)
 	{
 		return;
 	}
@@ -79,6 +77,7 @@ void SceneManager::Update() {
 #endif // _DEBUG
 
 		scene_->Update();
+		uiEditor_->Update(scene_->GetID());
 		Debug();
 	}
 
@@ -116,6 +115,7 @@ void SceneManager::Update() {
 
 		// シーンの更新処理
 		scene_->Update();
+		uiEditor_->Update(scene_->GetID());
 #pragma endregion
 	}
 
@@ -124,6 +124,7 @@ void SceneManager::Update() {
 void SceneManager::Draw() {
 	if (scene_) {
 		scene_->Draw();
+		
 	}
 
 	fade_->Draw(fadeCamera_.GetViewOthographics());

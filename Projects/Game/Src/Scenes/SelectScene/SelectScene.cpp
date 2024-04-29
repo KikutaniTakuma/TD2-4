@@ -51,6 +51,8 @@ void SelectScene::Update(){
 }
 
 void SelectScene::Draw(){
+	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
+
 	tex2D_->Draw(selectTex_->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
 		, selectTex_->textureID, selectTex_->color, BlendType::kNormal);
 
@@ -76,7 +78,7 @@ void SelectScene::SelectMove(){
 		}		
 	}
 
-	if (input_->GetKey()->Pushed(DIK_SPACE)){
+	if (input_->GetKey()->Pushed(DIK_SPACE)&& input_->GetKey()->Pushed(DIK_LSHIFT)){
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
 		sceneManager_->SceneChange(BaseScene::ID::Game);
 	}

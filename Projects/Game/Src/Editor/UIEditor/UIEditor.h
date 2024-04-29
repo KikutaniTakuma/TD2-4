@@ -1,7 +1,7 @@
 #pragma once
 #include"Drawers/Texture2D/Texture2D.h"
 #include"Game/GameManager/GameManager.h"
-#include"Scenes/Manager/SceneManager.h"
+#include"Scenes/Manager/BaseScene/BaseScene.h"
 
 class UIEditor{
 private:
@@ -22,7 +22,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(class SceneManager* sceneManager);
+	void Initialize();
 
 	/// <summary>
 	/// 終了処理
@@ -32,54 +32,56 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(const BaseScene::ID id);
 
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	void Draw(const Camera& camera);
+	void Draw(const Mat4x4& camera, const BaseScene::ID id);
 
 	/// <summary>
 	/// Imguiの情報
 	/// </summary>
-	void Debug();
+	void Debug(const BaseScene::ID id);
 
 	//ファイルを読み込む(走査)
 	void LoadFiles(const std::string& fileName);
 
-public:
-	std::vector<Tex2DState*> GetTexStateTitle() const{
+	/*シーンごとのテクスチャを取得する関数*/
+
+	std::vector<Tex2DState*> GetTitleTextures() {
 		std::vector<Tex2DState*> texStateTitle;
-		for (auto& ptr : texies_[0]) {			
-			texStateTitle.push_back(ptr.get());			
-		}
-		return texStateTitle;
-	}
-	std::vector<Tex2DState*> GetTexStateSelect() const{
-		std::vector<Tex2DState*> texStateTitle;
-		for (auto& ptr : texies_[1]) {
+		for (std::unique_ptr<Tex2DState>& ptr : texies_[1]) {
 			texStateTitle.push_back(ptr.get());
 		}
 		return texStateTitle;
 	}
-	std::vector<Tex2DState*> GetTexStateGame() const{
-		std::vector<Tex2DState*> texStateTitle;
-		for (auto& ptr : texies_[2]) {
-			texStateTitle.push_back(ptr.get());
+
+	std::vector<Tex2DState*> GetGameTextures() {
+		std::vector<Tex2DState*> texStateGame;
+		for (std::unique_ptr<Tex2DState>& ptr : texies_[3]) {
+			texStateGame.push_back(ptr.get());
 		}
-		return texStateTitle;
+		return texStateGame;
 	}
-	std::vector<Tex2DState*> GetTexStateResult()const {
-		std::vector<Tex2DState*> texStateTitle;
-		for (auto& ptr : texies_[3]) {
-			texStateTitle.push_back(ptr.get());
+
+	std::vector<Tex2DState*> GetSelectTextures() {
+		std::vector<Tex2DState*> texStateSelect;
+		for (std::unique_ptr<Tex2DState>& ptr : texies_[2]) {
+			texStateSelect.push_back(ptr.get());
 		}
-		return texStateTitle;
+		return texStateSelect;
+	}
+
+	std::vector<Tex2DState*> GetResultTextures() {
+		std::vector<Tex2DState*> texStateResult;
+		for (std::unique_ptr<Tex2DState>& ptr : texies_[0]) {
+			texStateResult.push_back(ptr.get());
+		}
+		return texStateResult;
 	}
 
 private:
-	class SceneManager* sceneManager_;
-
 	Input* input_ = nullptr;
 
 	Texture2D* tex2D_ = nullptr;
@@ -89,9 +91,35 @@ private:
 	/// <summary>
 	/// 一時保存するリスト
 	/// </summary>
-	std::array<std::vector<std::unique_ptr<Tex2DState>>, BaseScene::maxScene_> texies_;
+	std::array<std::vector<std::unique_ptr<Tex2DState>>, BaseScene::kMaxScene> texies_;
 
 	std::unique_ptr<Tex2DState> newTex_;
+
+	BaseScene::ID id_;
+
+	/*色を変換する関数*/
+	Vector4 ConvertRGBAColorToVector4(uint32_t color) {
+		// RGBAカラー値の各成分を0から255の範囲から0から1の範囲に変換する
+		Vector4 result;
+		float r = ((color >> 24) & 0xFF) / 255.0f;
+		float g = ((color >> 16) & 0xFF) / 255.0f;
+		float b = ((color >> 8) & 0xFF) / 255.0f;
+		float a = (color & 0xFF) / 255.0f;
+		result.color = { r,g,b,a };
+		// Vector4に変換して返す
+		return result;
+	}
+
+	uint32_t ConvertVector4ToRGBAColor(const Vector4& color) {
+		// Vector4の各成分を0から1の範囲から0から255の範囲に変換し、適切なビットシフトを行ってRGBAカラー値を作成する
+		uint32_t r = static_cast<uint32_t>(color.color.r * 255.0f) << 24;
+		uint32_t g = static_cast<uint32_t>(color.color.g * 255.0f) << 16;
+		uint32_t b = static_cast<uint32_t>(color.color.b * 255.0f) << 8;
+		uint32_t a = static_cast<uint32_t>(color.color.a * 255.0f);
+
+		// RGBAカラー値を作成して返す
+		return r | g | b | a;
+	}
 
 	/*ファイル制御関連*/
 private:
@@ -104,6 +132,8 @@ private:
 
 	//ファイルを読み込む
 	void LoadFile(const std::string& fileName);
+	//ファイルを読み込む
+	void LoadFileAll();
 	//ファイルが存在するか確認する(指定)
 	bool LoadChackItem(const std::string& fileName);
 

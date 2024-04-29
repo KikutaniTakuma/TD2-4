@@ -67,13 +67,11 @@ private:
 
 private:
 
-	Map* map_ = nullptr;
+	Ground* groundMap_ = nullptr;
 
-	Map::MapSize* mapSize_ = nullptr;
+	Ground::MapSize* groundMapSize_ = nullptr;
 
-	Map::MapSize beforeMapSize_{};
-
-	std::array<size_t, 3> boxPos_{};
+	std::array<int32_t, 3> boxPos_{};
 
 	Vector3 boxVector_;
 
@@ -90,7 +88,7 @@ private:
 	// 自機から3Dレティクルへの距離
 	float distancePlayerTo3DReticleCopy_ = 30.0f;
 	//本来図る距離とは変えるための変数
-	const float correction_ = 4.62f;
+	const float correction_ = 5.0f;
 
 	bool multiMode_ = false;
 

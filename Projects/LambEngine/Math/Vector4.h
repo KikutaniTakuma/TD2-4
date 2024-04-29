@@ -67,14 +67,14 @@ public:
 	/// </summary>
 public:
 	[[nodiscard]] float Length() const noexcept;
+	[[nodiscard]] float LengthSQ() const noexcept;
 
 	[[nodiscard]] Vector4 Normalize() const noexcept;
 
 	[[nodiscard]] float Dot(const Vector4& right) const noexcept;
 
-	[[nodiscard]] class Vector3& GetVector3() noexcept;
-	[[nodiscard]] const class Vector3& GetVector3() const noexcept;
-	[[nodiscard]] const class Vector2& GetVector2() const noexcept;
+	[[nodiscard]] class Vector3 GetVector3() const noexcept;
+	[[nodiscard]] class Vector2 GetVector2() const noexcept;
 
 
 	[[nodiscard]] uint32_t GetColorRGBA() const;
@@ -83,6 +83,25 @@ public:
 /// 配列関係の関数
 /// </summary>
 public:
+	[[nodiscard]] float& front() noexcept {
+		return m.front();
+	}
+	[[nodiscard]] const float& front() const noexcept {
+		return m.front();
+	}
+	[[nodiscard]] float& back() noexcept {
+		return m.back();
+	}
+	[[nodiscard]] const float& back() const noexcept {
+		return m.back();
+	}
+	[[nodiscard]] float& at(size_t index) noexcept {
+		return m.at(index);
+	}
+	[[nodiscard]] const float& at(size_t index) const noexcept {
+		return m.at(index);
+	}
+
 	[[nodiscard]] float* data() noexcept {
 		return m.data();
 	}

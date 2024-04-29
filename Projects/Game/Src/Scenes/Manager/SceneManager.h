@@ -9,6 +9,7 @@
 #include "Input/Input.h"
 #include "BaseScene/BaseScene.h"
 #include "SceneLoad/SceneLoad.h"
+#include"Game/UIEditor.h"
 
 class SceneManager final {
 public:
@@ -65,8 +66,11 @@ private:
 
 	std::unique_ptr<SceneLoad> load_;
 
+
 #ifdef _DEBUG
 	std::unordered_map<BaseScene::ID, std::string> sceneName_;
 #endif // _DEBUG
 	std::unordered_map<BaseScene::ID, uint8_t> sceneNum_;
+
+	UIEditor* uiEditor_;
 };

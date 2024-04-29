@@ -64,7 +64,6 @@ void Fade::Update() {
 		color_ = ColorLerp(0x00, 0xff, ease_.GetT());
 	}
 
-	transform->CalcMatrix();
 	ease_.Update();
 
 	if (ease_.ActiveExit()) {

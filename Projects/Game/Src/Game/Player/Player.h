@@ -40,7 +40,7 @@ public:
 	void AllTrade();
 
 private:
-	CollisionManager* CollisionManager_ = nullptr;
+	CollisionManager* pCollisionManager_ = nullptr;
 
 	Input* input_ = nullptr;
 	//場所を示すための

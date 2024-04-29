@@ -42,8 +42,8 @@ void GameScene::Initialize() {
 	//aabb_ = AABB::Create({ 0.0f,-0.5f,0.0f }, { 20.0f,1.0f,20.0f });
 
 
-	player_ = std::make_unique<Player>();
-	player_->Initialize();
+	// player_ = std::make_unique<Player>();
+	// player_->Initialize();
 
 	blockEditor_ = std::make_unique<BlockEditor>();
 	blockEditor_->Initialize();
@@ -81,14 +81,15 @@ void GameScene::Update() {
 
 	/*cloud_->Update();
 	skydome_->Upadate();*/
-	player_->Debug();
-	player_->Update();
+	//player_->Debug();
+	//player_->Update();
 
 	
 #ifdef _DEBUG
 	ImGui::Begin("モード変更");
 	ImGui::Checkbox("エディターモード", &editorMode_);
 	ImGui::Checkbox("エネミーモード", &enemyMode_);
+	//ImGui::DragFloat("エディター時のカメラの距離", &editorCameraPosZ_, 1.0f, -100.0f, 0.0f);
 	ImGui::End();
 	if (input_->GetKey()->Pushed(DIK_E) && input_->GetKey()->LongPush(DIK_LSHIFT)) {
 		if (!editorMode_)
@@ -98,8 +99,8 @@ void GameScene::Update() {
 	}
 
 	if (editorMode_) {
-		currentCamera_->pos.y = 0.0f;
-		currentCamera_->pos.z = -40.0f;
+		currentCamera_->pos.y = -2.0f;
+		currentCamera_->pos.z = editorCameraPosZ_;
 		if (Mouse::GetInstance()->GetWheelVelocity() != 0) {
 			if (!enemyMode_)
 				enemyMode_ = true;
@@ -142,12 +143,12 @@ void GameScene::Draw() {
 	/*cloud_->Draw();
 	skydome_->Draw(*currentCamera_);*/
 
-	player_->Draw(*currentCamera_);
+	// player_->Draw(*currentCamera_);
 
 	enemyManager_->Draw(*currentCamera_);
 
 #ifdef _DEBUG
-
+	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	if (editorMode_) {
 		if (enemyMode_) {
 			enemyEditor_->Draw(*currentCamera_);
