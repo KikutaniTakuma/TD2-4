@@ -83,7 +83,7 @@ void UIEditor::Debug(const BaseScene::ID id){
 		if (ImGui::BeginMenu("UI生成")) {
 			ImGui::DragFloat2("生成するポジション", &newTex_->transform.translate.x, 0.1f);
 			if (ImGui::TreeNode("生成するUI画像")) {
-				auto file = Lamb::GetFilePathFormDir("Resources/", ".png");
+				auto file = Lamb::GetFilePathFormDir("Resources/UI/", ".png");
 				for (auto& i : file) {
 					if (ImGui::Button(i.string().c_str())) {						
 						if (OperationConfirmation()) {
@@ -91,6 +91,7 @@ void UIEditor::Debug(const BaseScene::ID id){
 							setTex_->color = 0xffffffff;
 							setTex_->transform = newTex_->transform;
 							setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i.string().c_str());
+							setTex_->textureFullPath = i.string().c_str();
 							std::string result;
 
 							size_t slashPos_ = i.string().find_last_of('/');
@@ -124,18 +125,25 @@ void UIEditor::Debug(const BaseScene::ID id){
 		}
 
 		if (ImGui::BeginMenu("ファイル関連")) {
+			ImGui::Text("選択したファイルを保存");
 			for (auto& i : sceneName_) {
 				if (ImGui::Button(i.second.c_str())) {
 					stageName_ = i.second.c_str();
+					if (OperationConfirmation()) {
+						SaveFile(i.second.c_str());
+					}
 					break;
 				}
 			}
-
-			if (ImGui::Button("選択したファイルに保存")) {
+			if (ImGui::Button("全てのシーンを保存する")){
 				if (OperationConfirmation()) {
-					SaveFile(stageName_);
+					for (auto& i : sceneName_) {
+						stageName_ = i.second.c_str();
+						SaveFile(i.second.c_str());
+					}
 				}
 			}
+
 			if (ImGui::TreeNode("ファイル読み込み")) {
 				auto file = Lamb::GetFilePathFormDir(kDirectoryPath_, ".json");
 
@@ -197,7 +205,88 @@ void UIEditor::SaveFile(const std::string& fileName){
 	json root;
 	root = json::object();
 	root[kItemName_] = json::object();
+	/*
+	* 座標
+	* 大きさ
+	* 色
+	* テクスチャの名前
+	* テクスチャのフルパス
+	* 
+	*/
+	
 	/*保存するものを書き込む*/
+	if (sceneName_[BaseScene::ID::Title] == fileName){
+		for (size_t i = 0; i < texies_[1].size(); i++) {
+		root[kItemName_]["Title"][i]["translate"] = json::array({
+			   texies_[1][i]->transform.translate.x,
+			   texies_[1][i]->transform.translate.y
+			});
+		root[kItemName_]["Title"][i]["scale"] = json::array({
+			   texies_[1][i]->transform.scale.x,
+			   texies_[1][i]->transform.scale.y
+			});
+		root[kItemName_]["Title"][i]["color"] = texies_[1][i]->color;
+		root[kItemName_]["Title"][i]["TextureName"] = texies_[1][i]->textureName;
+		root[kItemName_]["Title"][i]["TextureFullPath"] = texies_[1][i]->textureFullPath;
+	}
+
+	}
+	else if (sceneName_[BaseScene::ID::Game] == fileName){
+		for (size_t i = 0; i < texies_[3].size(); i++) {
+		root[kItemName_]["Game"][i]["translate"] = json::array({
+			   texies_[3][i]->transform.translate.x,
+			   texies_[3][i]->transform.translate.y
+			});
+		root[kItemName_]["Game"][i]["scale"] = json::array({
+			   texies_[3][i]->transform.scale.x,
+			   texies_[3][i]->transform.scale.y
+			});
+		root[kItemName_]["Game"][i]["color"] = texies_[3][i]->color;
+		root[kItemName_]["Game"][i]["TextureName"] = texies_[3][i]->textureName;
+		root[kItemName_]["Game"][i]["TextureFullPath"] = texies_[3][i]->textureFullPath;
+	}
+
+	}
+	else if (sceneName_[BaseScene::ID::StageSelect] == fileName){
+		for (size_t i = 0; i < texies_[2].size(); i++) {
+		root[kItemName_]["Select"][i]["translate"] = json::array({
+			   texies_[2][i]->transform.translate.x,
+			   texies_[2][i]->transform.translate.y
+			});
+		root[kItemName_]["Select"][i]["scale"] = json::array({
+			   texies_[2][i]->transform.scale.x,
+			   texies_[2][i]->transform.scale.y
+			});
+		root[kItemName_]["Select"][i]["color"] = texies_[2][i]->color;
+		root[kItemName_]["Select"][i]["TextureName"] = texies_[2][i]->textureName;
+		root[kItemName_]["Select"][i]["TextureFullPath"] = texies_[2][i]->textureFullPath;
+	}
+
+	}
+	else if (sceneName_[BaseScene::ID::Result] == fileName){
+		for (size_t i = 0; i < texies_[0].size(); i++) {
+		root[kItemName_]["Result"][i]["translate"] = json::array({
+			   texies_[0][i]->transform.translate.x,
+			   texies_[0][i]->transform.translate.y
+		});
+		root[kItemName_]["Result"][i]["scale"] = json::array({
+			   texies_[0][i]->transform.scale.x,
+			   texies_[0][i]->transform.scale.y
+		});
+		root[kItemName_]["Result"][i]["color"] = texies_[0][i]->color;
+		root[kItemName_]["Result"][i]["TextureName"] = texies_[0][i]->textureName;
+		root[kItemName_]["Result"][i]["TextureFullPath"] = texies_[0][i]->textureFullPath;
+
+	}
+
+	}
+	else {
+		std::wstring message = L"この名前のシーンが見つかりませんでした。";
+		MessageBoxW(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), L"シーンないよぉ！", 0);
+		return;
+	}
+	
+
 
 
 	std::filesystem::path dir(kDirectoryPath_);

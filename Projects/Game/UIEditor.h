@@ -73,7 +73,7 @@ public:
 		return texStateSelect;
 	}
 
-	std::vector<Tex2DState*> GetResulrTextures() {
+	std::vector<Tex2DState*> GetResultTextures() {
 		std::vector<Tex2DState*> texStateResult;
 		for (std::unique_ptr<Tex2DState>& ptr : texies_[0]) {
 			texStateResult.push_back(ptr.get());
