@@ -27,7 +27,7 @@ public:
 
 	Vector2 TargetPositon(Vector2 move, Vector2 offset) const
 	{
-		return { pLocalPos_->localPos_.x + offset.x + move.x, pLocalPos_->localPos_.x + offset.y + move.y };
+		return  pLocalPos_->localPos_ + offset + move;
 	}
 
 
@@ -42,14 +42,14 @@ public:
 		signVec.y = SoLib::Math::Sign(velocity_.y);
 
 
-		// もし範囲外なら無効にする
+		// もし範囲外なら着地していることにする
 		if (Map::IsOutSide(TargetPositon(signVec, -halfSize)) || Map::IsOutSide(TargetPositon(signVec, halfSize)))
 		{
 			return true;
 		}
 
 
-		// for文で、横方向の大きさ分繰り返して下のブロックを調べる
+		// for文で、横方向の大きさ分繰り返して移動先のブロックを調べる
 		for (float y = 0; y < size.y; y++)
 		{
 			for (float x = 0; x < size.x; x++)
@@ -62,7 +62,7 @@ public:
 			}
 		}
 
-
+		// 範囲外に出てたらtrue、それ以外はfalse
 		return pLocalPos_->localPos_.y - 1 < 0;
 	}
 public:

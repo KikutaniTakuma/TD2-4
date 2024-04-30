@@ -45,9 +45,30 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	GlobalVariables::GetInstance()->Update();
 
 	player_->Update(deltaTime);
-	for ( auto &fallingBlock : fallingBlocks_) {
+	for (auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Update(deltaTime);
 	}
+
+	// 落下ブロックの更新
+	{
+		for (auto blockItr = fallingBlocks_.begin(); blockItr != fallingBlocks_.end();) {
+			Lamb::SafePtr fallBlock = blockItr->get();
+			Lamb::SafePtr fallingComp = fallBlock->GetComponent<FallingBlockComp>();
+
+
+			// もし着地してたら終わる
+			if (fallingComp->IsLanding()) {
+				blockItr->reset();	// オブジェクトを破棄
+				blockItr = fallingBlocks_.erase(blockItr);
+				continue;
+			}
+
+
+			// 何もなかったら追加
+			++blockItr;
+		}
+	}
+
 
 	// AABBのデータを転送
 	blockMap_->TransferBoxData();
