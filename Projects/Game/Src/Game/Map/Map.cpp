@@ -114,7 +114,7 @@ void Map::SetBlocks(Vector2 centerPos, Vector2 size, BoxType boxType)
 	for (int32_t yi = 0; yi < static_cast<int32_t>(size.y); yi++) {
 		for (int32_t xi = 0; xi < static_cast<int32_t>(size.x); xi++) {
 
-			auto &box = (*boxMap_)[static_cast<int32_t>(centerPos.y) + yi + static_cast<int32_t>(size.y) / 2][static_cast<int32_t>(centerPos.x) + xi + static_cast<int32_t>(size.x) / 2];
+			auto &box = (*boxMap_)[static_cast<int32_t>(centerPos.y) - yi + static_cast<int32_t>(size.y) / 2][static_cast<int32_t>(centerPos.x) - xi + static_cast<int32_t>(size.x) / 2];
 
 			box = boxType;
 

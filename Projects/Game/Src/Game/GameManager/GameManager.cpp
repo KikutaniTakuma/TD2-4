@@ -131,7 +131,10 @@ void GameManager::InputAction()
 
 	// SPACE を押したときに実行
 	if (input_->GetKey()->Pushed(DIK_SPACE)) {
-		playerComp->SpawnFallingBlock(); // 落下ブロックを追加
+		playerComp->SetStartPos(); // 落下開始地点を設定
+	}
+	if (input_->GetKey()->Released(DIK_SPACE)) {
+		playerComp->SpawnFallingBlock();	// 落下ブロックを追加
 	}
 
 	// プレイヤに付与する移動方向

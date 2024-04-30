@@ -22,9 +22,13 @@ public:
 
 	void MoveInput(int32_t xMove);
 
-	void SpawnFallingBlock() const;
+	void SpawnFallingBlock();
+
+	void SetStartPos();
 
 private:
+
+	int32_t startPos_;
 
 
 private:
