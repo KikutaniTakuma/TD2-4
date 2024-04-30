@@ -8,6 +8,8 @@
 void Map::Init()
 {
 	boxMap_ = std::make_unique<Block2dMap>();
+	blockStatesMap_ = std::make_unique<Map2dMap<std::unique_ptr<BlockStatus>>>();
+
 	houseList_.clear();
 
 	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
@@ -110,12 +112,25 @@ void Map::TransferBoxData()
 
 void Map::SetBlocks(Vector2 centerPos, Vector2 size, BoxType boxType)
 {
+	// 半径
+	Vector2 halfSize = Vector2{ std::floor(size.x * 0.5f), std::floor(size.y * 0.5f) };
+
+	// 中心座標をより正しい形にする
+	Vector2 calcCenterPos;
+
+	for (int32_t i = 0; i < 2; i++) {
+
+		SoLib::begin(calcCenterPos)[i] = std::floor(SoLib::begin(centerPos)[i]) + SoLib::begin(halfSize)[i] - ((SoLib::begin(size)[i] - 1.f) * 0.5f);
+
+	}
+
+
 
 	for (int32_t yi = 0; yi < static_cast<int32_t>(size.y); yi++) {
 		for (int32_t xi = 0; xi < static_cast<int32_t>(size.x); xi++) {
 
-			int32_t xPos = static_cast<int32_t>(centerPos.x) - xi + static_cast<int32_t>(size.x) / 2;
-			int32_t yPos = static_cast<int32_t>(centerPos.y) - yi + static_cast<int32_t>(size.y) / 2;
+			int32_t xPos = static_cast<int32_t>(centerPos.x) - xi + static_cast<int32_t>(halfSize.x);
+			int32_t yPos = static_cast<int32_t>(centerPos.y) - yi + static_cast<int32_t>(halfSize.y);
 
 			// 範囲外なら飛ばす
 			if (xPos < 0 or yPos < 0 or xPos >= Map::kMapX or yPos >= Map::kMapY) {
@@ -126,6 +141,20 @@ void Map::SetBlocks(Vector2 centerPos, Vector2 size, BoxType boxType)
 			// データを代入する
 			box = boxType;
 
+			// ブロックのステータスの参照
+			auto &blockState = (*blockStatesMap_)[yPos][xPos];
+			// 追加するブロックのデータ
+			auto setBlockState = std::make_unique<BlockStatus>();
+
+			// データのコピー
+			{
+				setBlockState->centerPos_ = calcCenterPos;
+				setBlockState->blockSize_ = size;
+				setBlockState->localPos_ = Vector2{ static_cast<float>(xPos), static_cast<float>(yPos) };
+			}
+
+			// データの転送
+			blockState = std::move(setBlockState);
 
 		}
 	}

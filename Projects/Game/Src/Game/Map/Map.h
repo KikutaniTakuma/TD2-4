@@ -25,6 +25,16 @@ public:
 		MatrixModelState houseModelState_;
 
 	};
+	// ブロックの情報
+	struct BlockStatus {
+		// 中心の座標
+		Vector2 centerPos_;
+		// ブロックの大きさ
+		Vector2 blockSize_;
+		// ローカル座標
+		Vector2 localPos_;
+	};
+
 
 	// ボックスに紐づいている情報
 	enum class BoxType : uint32_t {
@@ -69,6 +79,10 @@ public:
 	/// @brief 箱のデータをモデルに転送
 	void TransferBoxData();
 
+	/// @brief ブロックを設置する
+	/// @param centerPos 中心座標
+	/// @param size 直径
+	/// @param boxType ブロックのタイプ
 	void SetBlocks(Vector2 centerPos, Vector2 size, BoxType boxType);
 
 	const BoxType GetBoxType(const Vector2 localPos) const;
@@ -111,6 +125,9 @@ private:
 
 	// 箱の配列 [y][x]
 	std::unique_ptr<Block2dMap> boxMap_;
+	// ブロックの情報
+	std::unique_ptr<Map2dMap<std::unique_ptr<BlockStatus>>> blockStatesMap_;
+
 	// 拠点のリスト
 	HouseList houseList_;
 
