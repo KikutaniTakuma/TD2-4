@@ -141,6 +141,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\GameObject\Component\LocalBodyComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\ModelComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\OnBlockMoveComp.cpp" />
+    <ClCompile Include="Src\GameObject\Component\PickUpComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\PlayerComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\Projectile.cpp" />
     <ClCompile Include="Src\GameObject\Component\Rigidbody.cpp" />
@@ -195,6 +196,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\GameObject\Component\LocalBodyComp.h" />
     <ClInclude Include="Src\GameObject\Component\ModelComp.h" />
     <ClInclude Include="Src\GameObject\Component\OnBlockMoveComp.h" />
+    <ClInclude Include="Src\GameObject\Component\PickUpComp.h" />
     <ClInclude Include="Src\GameObject\Component\PlayerComp.h" />
     <ClInclude Include="Src\GameObject\Component\Projectile.h" />
     <ClInclude Include="Src\GameObject\Component\Rigidbody.h" />

@@ -33,6 +33,9 @@ public:
 		Vector2 blockSize_;
 		// ローカル座標
 		Vector2 localPos_;
+
+		int32_t GetWeight() const { return static_cast<int32_t>(blockSize_.x * blockSize_.y); }
+
 	};
 
 
@@ -58,6 +61,8 @@ public:
 
 	// 箱の配列 [y][x]
 	using Block2dMap = Map2dMap<BoxType>;
+
+	using BlockStatusMap = Map2dMap<std::unique_ptr<BlockStatus>>;
 
 public:
 	Map() = default;
@@ -100,6 +105,11 @@ public:
 	/// @return 二次元配列
 	Block2dMap *GetBlockMap() { return boxMap_.get(); }
 
+	/// @brief ブロックのステータスの二次元配列の取得
+	/// @return 二次元配列
+	BlockStatusMap *GetBlockStatusMap() { return blockStatesMap_.get(); }
+
+
 	/// @brief 地面のエディターを取得する
 	/// @return エディタを返す
 	GroundEditor *GetGroundEditor() { return groundEditor_.get(); }
@@ -135,7 +145,7 @@ private:
 	// 箱の配列 [y][x]
 	std::unique_ptr<Block2dMap> boxMap_;
 	// ブロックの情報
-	std::unique_ptr<Map2dMap<std::unique_ptr<BlockStatus>>> blockStatesMap_;
+	std::unique_ptr<BlockStatusMap> blockStatesMap_;
 
 	// 拠点のリスト
 	HouseList houseList_;
