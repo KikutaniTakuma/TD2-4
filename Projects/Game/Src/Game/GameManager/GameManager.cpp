@@ -45,6 +45,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	GlobalVariables::GetInstance()->Update();
 
 	player_->Update(deltaTime);
+	for ( auto &fallingBlock : fallingBlocks_) {
+		fallingBlock->Update(deltaTime);
+	}
 
 	// AABBのデータを転送
 	blockMap_->TransferBoxData();
@@ -54,6 +57,9 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 {
 	blockMap_->Draw(camera);
 	player_->Draw(camera);
+	for (const auto &fallingBlock : fallingBlocks_) {
+		fallingBlock->Draw(camera);
+	}
 }
 
 bool GameManager::Debug([[maybe_unused]] const char *const str)
@@ -81,9 +87,11 @@ void GameManager::AddFallingBlock(Vector2 centorPos, Vector2 size, bool hasDamag
 
 	// 落下するブロックのコンポーネント
 	Lamb::SafePtr fallingComp = addBlock->AddComponent<FallingBlockComp>();
+	Lamb::SafePtr localBodyComp = addBlock->AddComponent<LocalBodyComp>();
 
-	fallingComp->centerPos_ = centorPos;
-	fallingComp->size_ = size;
+	localBodyComp->localPos_ = centorPos;
+	localBodyComp->size_ = size;
+
 	fallingComp->hasDamage_ = hasDamage;
 	fallingComp->velocity_ = velocity;
 	fallingComp->gravity_ = gravity;
@@ -94,9 +102,12 @@ void GameManager::AddFallingBlock(Vector2 centorPos, Vector2 size, bool hasDamag
 
 void GameManager::InputAction()
 {
-	// A を押したときに実行
-	if (input_->GetGamepad()->Pushed(Gamepad::Button::A)) {
+	// プレイヤのコンポーネント
+	Lamb::SafePtr playerComp = player_->GetComponent<PlayerComp>();
 
+	// SPACE を押したときに実行
+	if (input_->GetKey()->Pushed(DIK_SPACE)) {
+		playerComp->SpawnFallingBlock(); // 落下ブロックを追加
 	}
 
 	// プレイヤに付与する移動方向
@@ -106,7 +117,7 @@ void GameManager::InputAction()
 	inputPlayer -= input_->GetKey()->Pushed(DIK_A);
 	inputPlayer += input_->GetKey()->Pushed(DIK_D);
 
-	player_->GetComponent<PlayerComp>()->MoveInput(inputPlayer);
+	playerComp->MoveInput(inputPlayer);
 
 	// ベクトルの付与
 	//player_->GetComponent<OnBlockMoveComp>()->InputMoveDirection(inputPlayer);

@@ -23,7 +23,7 @@ void PlayerComp::MoveInput(int32_t xMove)
 	pLocalPosComp_->localPos_.x = std::clamp(pLocalPosComp_->localPos_.x, 0.f, static_cast<float>(Map::kMapX - 1));
 }
 
-void PlayerComp::SpawnFallingBlock()
+void PlayerComp::SpawnFallingBlock() const
 {
 
 	// 落下ブロックの実体の追加

@@ -1,7 +1,7 @@
 #pragma once
 #include "../GameObject.h"
 #include "Utils/SafePtr/SafePtr.h"
-//#include "Rigidbody.h"
+#include "LocalBodyComp.h"
 
 class FallingBlockComp : public IComponent
 {
@@ -15,10 +15,8 @@ public:
 
 	void Update() override;
 
-	// 中心座標
-	Vector2 centerPos_{};
-	// 直径
-	Vector2 size_ = Vector2::kIdentity;
+	Lamb::SafePtr<LocalBodyComp> pLocalPos_ = nullptr;
+
 	// 速度
 	Vector2 velocity_;
 	// 重力

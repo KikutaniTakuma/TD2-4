@@ -22,9 +22,9 @@ public:
 
 	void MoveInput(int32_t xMove);
 
-private:
+	void SpawnFallingBlock() const;
 
-	void SpawnFallingBlock();
+private:
 
 
 private:
