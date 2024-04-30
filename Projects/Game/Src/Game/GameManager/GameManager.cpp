@@ -13,6 +13,7 @@
 #include "GameObject/Component/PlayerComp.h"
 #include <GameObject/Component/FallingBlockComp.h>
 #include <GameObject/Component/Rigidbody.h>
+#include <GameObject/Component/DwarfComp.h>
 
 void GameManager::Init()
 {
@@ -38,6 +39,9 @@ void GameManager::Init()
 	{
 		/*Lamb::SafePtr playerComp =*/ player_->AddComponent<PlayerComp>();
 	}
+
+	AddDwarf(Vector2::kZero);
+
 }
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
@@ -47,6 +51,10 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	player_->Update(deltaTime);
 	for (auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Update(deltaTime);
+	}
+
+	for (auto &dwarf : dwarfList_) {
+		dwarf->Update(deltaTime);
 	}
 
 	// 落下ブロックの更新
@@ -87,6 +95,9 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	for (const auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Draw(camera);
 	}
+	for (const auto &dwarf : dwarfList_) {
+		dwarf->Draw(camera);
+	}
 }
 
 bool GameManager::Debug([[maybe_unused]] const char *const str)
@@ -108,7 +119,7 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 }
 
 
-void GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, bool hasDamage, Vector2 velocity, Vector2 gravity)
+GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, bool hasDamage, Vector2 velocity, Vector2 gravity)
 {
 	std::unique_ptr<GameObject> addBlock = std::make_unique<GameObject>();
 
@@ -123,8 +134,11 @@ void GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, bool hasDamag
 	fallingComp->velocity_ = velocity;
 	fallingComp->gravity_ = gravity;
 
-
+	// 末尾に追加
 	fallingBlocks_.push_back(std::move(addBlock));
+
+	// 参照を返す
+	return fallingBlocks_.back().get();
 }
 
 void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
@@ -145,6 +159,22 @@ void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 		damageAreaList_.push_back(damage);
 
 	}
+}
+
+GameObject *GameManager::AddDwarf(Vector2 centerPos)
+{
+	// 小人の実体を構築
+	std::unique_ptr<GameObject> dwarf = std::make_unique<GameObject>();
+
+	// コンポーネントの追加
+	dwarf->AddComponent<DwarfComp>();
+	Lamb::SafePtr localBody = dwarf->GetComponent<LocalBodyComp>();
+	localBody->localPos_ = centerPos; // 座標の指定
+
+	// 末尾に追加
+	dwarfList_.push_back(std::move(dwarf));
+	// 参照を返す
+	return dwarfList_.back().get();
 }
 
 void GameManager::InputAction()

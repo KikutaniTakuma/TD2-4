@@ -132,6 +132,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp" />
     <ClCompile Include="Src\Editor\EnemyEditor\EnemyEditor.cpp" />
     <ClCompile Include="Src\Editor\ParticleEditor\ParticleEditor.cpp" />
+    <ClCompile Include="Src\GameObject\Component\DwarfComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\FallingBlockComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\FollowCameraComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\HealthComp.cpp" />
@@ -185,6 +186,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Editor\ParticleEditor\ParticleEditor.h" />
     <ClInclude Include="Src\GameObject\Component\Collider.h" />
     <ClInclude Include="Src\GameObject\Component\ComponentManager.h" />
+    <ClInclude Include="Src\GameObject\Component\DwarfComp.h" />
     <ClInclude Include="Src\GameObject\Component\FallingBlockComp.h" />
     <ClInclude Include="Src\GameObject\Component\FollowCameraComp.h" />
     <ClInclude Include="Src\GameObject\Component\HealthComp.h" />

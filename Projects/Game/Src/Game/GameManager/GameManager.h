@@ -32,6 +32,8 @@ private:
 
 public:
 
+	inline static const char *kDwarfModelName = "Resources/Cube.obj";
+
 public:
 
 	void Init();
@@ -54,9 +56,15 @@ public:
 	/// <param name="size">直径</param>
 	/// <param name="velocity">瞬間加速</param>
 	/// <param name="gravity">定期加速</param>
-	void AddFallingBlock(Vector2 centerPos, Vector2 size, bool hasDamage, Vector2 velocity, Vector2 gravity);
+	GameObject *AddFallingBlock(Vector2 centerPos, Vector2 size, bool hasDamage, Vector2 velocity, Vector2 gravity);
 
+	/// @brief ブロックが接地した時の処理
+	/// @param centerPos 中心座標
+	/// @param size 直径
+	/// @param hasDamage ダメージがあるか
 	void LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage);
+
+	GameObject *AddDwarf(Vector2 centerPos);
 
 public:
 
@@ -77,5 +85,8 @@ private:
 
 	// ダメージ判定のリスト
 	std::list<DamageArea> damageAreaList_;
+
+	// 小人のリスト
+	std::list<std::unique_ptr<GameObject>> dwarfList_;
 
 };
