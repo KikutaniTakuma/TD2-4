@@ -41,12 +41,18 @@ public:
 	void Draw(const Mat4x4& camera, const BaseScene::ID id);
 
 	/// <summary>
+	/// 設置位置描画処理
+	/// </summary>
+	void putDraw(const Mat4x4& camera);
+
+	/// <summary>
 	/// Imguiの情報
 	/// </summary>
 	void Debug(const BaseScene::ID id);
 
-	//ファイルを読み込む(走査)
-	void LoadFiles(const std::string& fileName);
+	
+	//全てのファイルを読み込む
+	void LoadFileAll();
 
 	/*シーンごとのテクスチャを取得する関数*/
 
@@ -136,8 +142,9 @@ private:
 
 	//ファイルを読み込む
 	void LoadFile(const std::string& fileName);
-	//ファイルを読み込む
-	void LoadFileAll();
+
+	void LoadFiles(const std::string& fileName);
+	
 	//ファイルが存在するか確認する(指定)
 	bool LoadChackItem(const std::string& fileName);
 

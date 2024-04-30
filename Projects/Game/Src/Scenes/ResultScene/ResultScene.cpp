@@ -6,7 +6,7 @@ BaseScene{ BaseScene::ID::Result }
 }
 
 void ResultScene::Initialize(){
-	currentCamera_->pos = Vector2{ 500.f, 300.f };
+	currentCamera_->pos = { 0.f, 0.f ,-1.0f };
 
 	/*tex_.reset(new Texture2D("./Resources/Ball.png"));
 	tex_->scale *= 30.0f;
@@ -29,6 +29,8 @@ void ResultScene::Update(){
 void ResultScene::Draw(){
 	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	//tex_->Draw(currentCamera_->GetViewOthographics());
+
+	UIEditor::GetInstance()->putDraw(currentCamera_->GetViewOthographics());
 }
 
 void ResultScene::Debug(){

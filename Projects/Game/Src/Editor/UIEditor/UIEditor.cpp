@@ -26,7 +26,7 @@ void UIEditor::Initialize(){
 	newTex_->transform.translate.y *= -1;
 	newTex_->transform.translate += Vector2(-640, 360);
 	newTex_->transform.scale = { 64,64 };
-	newTex_->color = 0xffffffff;
+	newTex_->color = 0x000000ff;
 	newTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/white2x2.png");
 	
 	//texAnim_ = std::make_unique<Tex2DAniamtor>();
@@ -71,8 +71,7 @@ void UIEditor::Update(const BaseScene::ID id){
 }
 
 void UIEditor::Draw(const Mat4x4& camera, const BaseScene::ID id){
-	tex2D_->Draw(newTex_->transform.matWorld_, Mat4x4::kIdentity, camera
-		, newTex_->textureID, newTex_->color, BlendType::kNormal);
+	
 	//texAnim_->Update();
 	//tex2D_->Draw(
 	//	Mat4x4::MakeAffin(Vector3(Lamb::ClientSize(), 1.0f), Vector3::kZero, Vector3::kZero),
@@ -91,6 +90,11 @@ void UIEditor::Draw(const Mat4x4& camera, const BaseScene::ID id){
 				, texies_[i][j]->textureID, texies_[i][j]->color, BlendType::kNormal);
 		}
 	}
+}
+
+void UIEditor::putDraw(const Mat4x4& camera){
+	tex2D_->Draw(newTex_->transform.matWorld_, Mat4x4::kIdentity, camera
+		, newTex_->textureID, newTex_->color, BlendType::kNormal);
 }
 
 void UIEditor::Debug(const BaseScene::ID id){
@@ -230,7 +234,7 @@ void UIEditor::SaveFile(const std::string& fileName){
 	json root;
 	root = json::object();
 	root[kItemName_] = json::object();
-	root[kItemName_][fileName] = json::object();
+	root[kItemName_][fileName];
 	/*
 	* 座標
 	* 大きさ

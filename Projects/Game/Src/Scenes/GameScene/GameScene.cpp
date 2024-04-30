@@ -157,7 +157,7 @@ void GameScene::Draw() {
 			blockEditor_->Draw(*currentCamera_);
 		}
 	}
-
+	UIEditor::GetInstance()->putDraw(currentCamera_->GetViewOthographics());
 #endif // _DEBUG
 
 	gameManager_->Draw(*currentCamera_);
