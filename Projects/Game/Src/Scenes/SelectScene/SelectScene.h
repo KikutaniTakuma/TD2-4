@@ -60,5 +60,9 @@ private:
 	std::unique_ptr<Tex2DState> selectTex_;
 
 	Audio* selectBGM_ = nullptr;
+
+	Audio* gameDecision_ = nullptr;
+	Audio* selectMove_ = nullptr;
+	Audio* cancel_ = nullptr;
 };
 

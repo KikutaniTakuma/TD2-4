@@ -39,4 +39,6 @@ public:
 	bool isCollision_;
 
 	Audio* titleBGM_ = nullptr;
+
+	Audio* beginGame_ = nullptr;
 };

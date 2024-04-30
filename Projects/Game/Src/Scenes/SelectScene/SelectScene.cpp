@@ -29,6 +29,11 @@ void SelectScene::Initialize() {
 	selectTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/stageNumber.png");
 
 	selectBGM_ = audioManager_->Load("./Resources/Sounds/BGM/StageSelect.mp3");
+
+	gameDecision_ = audioManager_->Load("./Resources/Sounds/SE/choice.mp3");
+	selectMove_ = audioManager_->Load("./Resources/Sounds/SE/selectMove.mp3");
+	cancel_ = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
+
 	selectBGM_->Start(0.1f, true);
 }
 
@@ -83,19 +88,27 @@ void SelectScene::Debug(){
 void SelectScene::SelectMove(){
 	if (input_->GetKey()->Pushed(DIK_A)){
 		if (selectNum_>0){
+			selectMove_->Start(0.1f, false);
 			selectNum_--;
 		}		
 	}
 	else if (input_->GetKey()->Pushed(DIK_D)) {
 		if (selectNum_ < texies_.size() - 1) {
+			selectMove_->Start(0.1f, false);
 			selectNum_++;
 		}		
 	}
 
 	if (input_->GetKey()->LongPush(DIK_LSHIFT)&& input_->GetKey()->Pushed(DIK_SPACE)){
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
+		gameDecision_->Start(0.1f, false);
 		selectBGM_->Stop();
 		sceneManager_->SceneChange(BaseScene::ID::Game);
+	}
+	if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
+		cancel_->Start(0.1f, false);
+		selectBGM_->Stop();
+		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}
 
 }

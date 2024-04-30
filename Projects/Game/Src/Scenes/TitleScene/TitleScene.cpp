@@ -18,7 +18,7 @@ void TitleScene::Initialize()
 	currentCamera_->pos = { 0.f, 0.f ,-1.0f };
 
 	titleBGM_ = audioManager_->Load("./Resources/Sounds/BGM/title.mp3");
-
+	beginGame_ = audioManager_->Load("./Resources/Sounds/SE/choice.mp3");
 	titleBGM_->Start(0.1f, true);
 	/*tex_.reset( new Texture2D( "./Resources/Ball.png" ) );
 	tex_->scale *= 30.0f;
@@ -66,6 +66,7 @@ void TitleScene::Update()
 		//tex_->pos = Vector3(mouse->GetPos()) * Mat4x4::MakeInverse(camera_->GetViewOthographicsVp());
 	}
 	if (key->Pushed(DIK_SPACE)) {
+		beginGame_->Start(0.1f, false);
 		titleBGM_->Stop();
 		sceneManager_->SceneChange(BaseScene::ID::StageSelect);
 	}
