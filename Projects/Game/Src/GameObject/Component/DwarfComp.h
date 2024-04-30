@@ -31,6 +31,12 @@ private:
 
 	void FallDown();
 
+	void ChangeMovementTarget();
+
+	void CarryBlockForHouse();
+
+	int32_t GetLocatePosEnemyHouse() const;
+
 
 	/// <summary>
 	/// 移動を行う

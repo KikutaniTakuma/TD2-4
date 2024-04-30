@@ -62,7 +62,7 @@ void DwarfComp::Update()
 		}
 
 		// 登っているブロックごとの処理
-		//ChangeMovementTarget();
+		ChangeMovementTarget();
 	}
 
 
@@ -124,4 +124,81 @@ void DwarfComp::FallDown()
 	{
 		pLocalBodyComp_->localPos_.y = 0.f;
 	}
+}
+
+void DwarfComp::ChangeMovementTarget()
+{
+	// 現在の中心座標
+	const Vector2 localPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * 0.5f;
+
+	// 自分のいるブロックのデータを取得する
+	//Map::BoxType landStatus = LocalBodyComp::pMap_->GetBoxType(localPos);
+
+	// 自分の位置が拠点の場合
+	//LocateOnHouse(landStatus);
+	// ブロックを持っていたら帰る
+	CarryBlockForHouse();
+
+	// 自由に動き回る
+	//FreeTargetMove();
+
+
+}
+// ブロックを持っていたら帰る
+void DwarfComp::CarryBlockForHouse()
+{
+	// 持っているブロックの数
+	int32_t blockCount = pPickUpComp_->GetBlockWeight();
+
+	// 拠点のどこにいるか
+	int32_t onLocatePos = GetLocatePosEnemyHouse();
+
+	// もし拠点の外で､ブロックを持っていたら
+	if (onLocatePos == -1 && blockCount > 0)
+	{
+		// 最も近い拠点のデータ
+		auto nearestHouse = LocalBodyComp::pMap_->GetNearestHouse(static_cast<int32_t>(pLocalBodyComp_->localPos_.x + 0.5f));
+
+		// 拠点のデータがあれば
+		if (nearestHouse.xPos_ != -1)
+		{
+			// 最も近い拠点の反対側
+			int32_t targetPos = SoLib::Math::Sign(nearestHouse.xPos_ - static_cast<int32_t>(pLocalBodyComp_->localPos_.x + 0.5f));
+
+			// 最も近い拠点に帰る
+			targetPos_ = Vector2{ static_cast<float> (nearestHouse.xPos_ + targetPos), 0 };
+		}
+	}
+
+}
+
+int32_t DwarfComp::GetLocatePosEnemyHouse() const
+{
+	// 拠点の横の長さ
+	constexpr int32_t houseLength = 3;
+
+	// 最も近い拠点のデータ
+	auto nearestHouse = LocalBodyComp::pMap_->GetNearestHouse(static_cast<int32_t>(pLocalBodyComp_->localPos_.x + 0.5f));
+
+	// データが存在しなかったら無効の値を入れる
+	if (nearestHouse.xPos_ == -1) { return -1; }
+
+	// 拠点の中心座標
+	int32_t centerPos = nearestHouse.xPos_;
+	// 拠点の左端
+	int32_t leftSidePos = centerPos - 1;
+
+	// 左端からの距離
+	int32_t distance = static_cast<int32_t>(pLocalBodyComp_->localPos_.x + 0.5f) - leftSidePos;
+
+	// 自分の下の左2マス以内に拠点がある場合
+	if (distance >= 0 && distance < houseLength)
+	{
+		// 距離を返す
+		return distance;
+	}
+
+	// 存在しないという値を入れる
+	return -1;
+
 }

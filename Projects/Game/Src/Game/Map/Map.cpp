@@ -194,6 +194,23 @@ void Map::AddHouse(int32_t xCenter)
 
 }
 
+Map::HouseInfo Map::GetNearestHouse(int32_t x) const
+{
+	// 最も近い拠点の参照
+	Map::HouseInfo nearestHouse = { .xPos_ = -1 };
+	// 最も近い拠点への距離
+	int32_t nearestDistance = 100;
+	for (auto &house : houseList_)
+	{
+		// 最も近い拠点への距離
+		int32_t distance = std::abs(house.xPos_ - x);
+		// 現在の拠点より近い場合は置き換える
+		if (distance < nearestDistance) { nearestDistance = distance; nearestHouse = house; }
+	}
+
+	return nearestHouse;
+}
+
 void Map::GetHouseData()
 {
 	//groundEditor_->

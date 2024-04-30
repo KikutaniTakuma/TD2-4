@@ -100,6 +100,9 @@ public:
 
 	void AddHouse(int32_t xCenter);
 
+
+	Map::HouseInfo GetNearestHouse(int32_t x) const;
+	
 public:
 	/// @brief 2次元配列の取得
 	/// @return 二次元配列
