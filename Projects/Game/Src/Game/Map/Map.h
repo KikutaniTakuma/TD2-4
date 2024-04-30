@@ -58,13 +58,13 @@ public:
 
 	void Update(const float deltaTime);
 
-	void Draw(const Camera& camera) const;
+	void Draw(const Camera &camera) const;
 
 public:
 	/// @brief デバッグ
 	/// @param str Tree名
 	/// @return 変更したか
-	bool Debug(const char* const str);
+	bool Debug(const char *const str);
 
 	/// @brief 箱のデータをモデルに転送
 	void TransferBoxData();
@@ -76,34 +76,34 @@ public:
 
 	//const HouseInfo& GetHouseInfo(const int localPosX) const;
 
-	const BoxType GetBoxType(const Vector2& localPos) const;
+	const BoxType GetBoxType(const Vector2 &localPos) const;
 
-	const BoxType GetBoxType(const Vector3& localPos) const;
+	const BoxType GetBoxType(const Vector3 &localPos) const;
 
-	bool IsOutSide(const Vector2& localPos) const;
+	bool IsOutSide(const Vector2 &localPos) const;
 
-	bool IsOutSide(const Vector3& localPos) const;
+	bool IsOutSide(const Vector3 &localPos) const;
 
-	inline void SetDraingFlag(const std::bitset<kMapY>& flag) noexcept { isFloorDrawing_ = flag; }
-	inline const std::bitset<kMapY>& GetDraingFlag() const noexcept { return isFloorDrawing_; }
+	inline void SetDraingFlag(const std::bitset<kMapY> &flag) noexcept { isFloorDrawing_ = flag; }
+	inline const std::bitset<kMapY> &GetDraingFlag() const noexcept { return isFloorDrawing_; }
 
 public:
 	/// @brief 2次元配列の取得
 	/// @return 二次元配列
-	Block2dMap* GetBlockMap() { return boxMap_.get(); }
+	Block2dMap *GetBlockMap() { return boxMap_.get(); }
 
-	Ground* GetGround() { return ground_.get(); }
+	Ground *GetGround() { return ground_.get(); }
 
 	/// @brief 拠点のリストを返す
 	/// @return 拠点のリスト
-	HouseList* GetHouseList() { return &houseList_; }
+	HouseList *GetHouseList() { return &houseList_; }
 
-	static Vector2 GetGrobalPos(int32_t x, int32_t y) noexcept
+	static Vector2 GetGrobalPos(Vector2 localPos) noexcept
 	{
-		return Vector2{ x * vBlockScale_->x, y * vBlockScale_->y } - Vector2::kXIdentity * vBlockScale_->x * ((kMapX - 1) / 2.f);
+		return Vector2{ localPos.x * vBlockScale_->x, localPos.y * vBlockScale_->y } - Vector2::kXIdentity * vBlockScale_->x * ((kMapX - 1) / 2.f);
 	}
 
-	static Vector2 LocalPos(const Vector2& gPos) noexcept
+	static Vector2 LocalPos(const Vector2 gPos) noexcept
 	{
 		return Vector2{ gPos.x / vBlockScale_->x, gPos.y / vBlockScale_->y } + Vector2::kXIdentity * vBlockScale_->x / ((kMapX - 1) / 2.f);
 	}
@@ -131,7 +131,7 @@ private:
 	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale_{ {1.f,1.f} };
 	inline static SoLib::VItem<"敵拠点の横幅", int32_t> vEnemyHouseWidth_{ 3 };
 
-	Model* model_;
+	Model *model_;
 
 	/// <summary>
 	/// モデルの情報

@@ -137,6 +137,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\GameObject\Component\HealthComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\IvyComponent.cpp" />
     <ClCompile Include="Src\GameObject\Component\IvyModel.cpp" />
+    <ClCompile Include="Src\GameObject\Component\LocalBodyComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\ModelComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\OnBlockMoveComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\PlayerComp.cpp" />
@@ -189,6 +190,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\GameObject\Component\HealthComp.h" />
     <ClInclude Include="Src\GameObject\Component\IvyComponent.h" />
     <ClInclude Include="Src\GameObject\Component\IvyModel.h" />
+    <ClInclude Include="Src\GameObject\Component\LocalBodyComp.h" />
     <ClInclude Include="Src\GameObject\Component\ModelComp.h" />
     <ClInclude Include="Src\GameObject\Component\OnBlockMoveComp.h" />
     <ClInclude Include="Src\GameObject\Component\PlayerComp.h" />

@@ -25,6 +25,10 @@ void GameManager::Init()
 	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
 	drawerManager->LoadModel("Resources/Cube.obj");
 
+	// 参照を渡す
+	LocalBodyComp::pGameManager_ = this;
+	LocalBodyComp::pMap_ = GetMap();
+
 	player_ = std::make_unique<GameObject>();
 	{
 		Lamb::SafePtr modelComp = player_->AddComponent<ModelComp>();
@@ -32,9 +36,7 @@ void GameManager::Init()
 	}
 
 	{
-		Lamb::SafePtr playerComp = player_->AddComponent<PlayerComp>();
-		// マップの参照を渡す
-		playerComp->SetMap(GetMap());
+		/*Lamb::SafePtr playerComp =*/ player_->AddComponent<PlayerComp>();
 	}
 }
 

@@ -4,6 +4,7 @@
 
 #include "Game/Map/Map.h"
 #include "Game/GameManager/GameManager.h"
+#include "LocalBodyComp.h"
 
 
 class PlayerComp : public IComponent {
@@ -17,10 +18,6 @@ public:
 
 	void Update() override;
 
-	void SetMap(Map *map);
-
-	void SetGameManager(GameManager *pGameManager);
-
 public:
 
 	void MoveInput(int32_t xMove);
@@ -32,13 +29,6 @@ private:
 
 private:
 
-	// ローカルの X座標
-	int32_t localPosX_;
-
-	// マップの参照
-	Lamb::SafePtr<Map> pMap_;
-
-	// ゲームマネージャへの参照
-	Lamb::SafePtr<GameManager> pGameManager_;
+	Lamb::SafePtr<LocalBodyComp> pLocalPosComp_ = nullptr;
 
 };

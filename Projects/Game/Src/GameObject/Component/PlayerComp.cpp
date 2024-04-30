@@ -3,44 +3,30 @@
 
 void PlayerComp::Init()
 {
-	localPosX_ = {};
+	pLocalPosComp_ = object_.AddComponent<LocalBodyComp>();
 }
 
 void PlayerComp::Start()
 {
+	pLocalPosComp_->localPos_ = Vector2{ 0,static_cast<float>(Map::kMapY) };
 }
 
 void PlayerComp::Update()
 {
-	transform_.translate = Map::GetGrobalPos(localPosX_, Map::kMapY);
+	transform_.translate = pLocalPosComp_->LocalToGlobal();
 
-}
-
-void PlayerComp::SetMap(Map *map)
-{
-	// マップのポインタを代入
-	if (map) {
-		pMap_ = map;
-	}
-}
-
-void PlayerComp::SetGameManager(GameManager *pGameManager)
-{
-	// ゲームマネージャのポインタを追加
-	if (pGameManager) {
-		pGameManager_ = pGameManager;
-	}
 }
 
 void PlayerComp::MoveInput(int32_t xMove)
 {
-	localPosX_ += xMove;
-	localPosX_ = std::clamp(localPosX_, 0, Map::kMapX - 1);
+	pLocalPosComp_->localPos_.x += xMove;
+	pLocalPosComp_->localPos_.x = std::clamp(pLocalPosComp_->localPos_.x, 0.f, static_cast<float>(Map::kMapX - 1));
 }
 
 void PlayerComp::SpawnFallingBlock()
 {
 
-	// pGameManager_->AddFallingBlock()
+	// 落下ブロックの実体の追加
+	pLocalPosComp_->pGameManager_->AddFallingBlock(pLocalPosComp_->localPos_ - Vector2::kYIdentity, Vector2::kIdentity, false, Vector2::kYIdentity * -20, Vector2::kZero);
 
 }

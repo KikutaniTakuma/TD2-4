@@ -83,7 +83,7 @@ void Map::TransferBoxData()
 				// もしすでに実在したら生成しない
 				if (not modelState) {
 					modelState = std::make_unique<MatrixModelState>();
-					modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y }, Vector3::kZero, GetGrobalPos(xi, yi));
+					modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y }, Vector3::kZero, GetGrobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) }));
 				}
 				// 色を指定する
 				modelState->color = kBoxColors_[static_cast<uint32_t>(box)];
@@ -102,7 +102,7 @@ void Map::TransferBoxData()
 	for (auto &house : houseList_) {
 
 		// 現在のモデル
-		house.houseModelState_.transMat = SoLib::Math::Affine(Vector3{ static_cast<float>(*vEnemyHouseWidth_),1,1 } + Vector3::kIdentity * 0.1f, Vector3::kZero, GetGrobalPos(house.xPos_, -1));
+		house.houseModelState_.transMat = SoLib::Math::Affine(Vector3{ static_cast<float>(*vEnemyHouseWidth_),1,1 } + Vector3::kIdentity * 0.1f, Vector3::kZero, GetGrobalPos(Vector2{ static_cast<float>(house.xPos_), -1.f }));
 
 	}
 
@@ -134,7 +134,7 @@ const Map::BoxType Map::GetBoxType(const Vector2 &localPos) const {
 	return (*boxMap_)[int(localPos.y)][int(localPos.x)];
 }
 
-const Map::BoxType Map::GetBoxType(const Vector3& localPos) const{
+const Map::BoxType Map::GetBoxType(const Vector3 &localPos) const {
 	// もしマップ外に行っていた場合虚無
 	if (IsOutSide(localPos)) {
 		return BoxType::kNone;
@@ -149,7 +149,7 @@ bool Map::IsOutSide(const Vector2 &localPos) const
 	return localPos.x < 0.f or localPos.y < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY;
 }
 
-bool Map::IsOutSide(const Vector3& localPos) const{
+bool Map::IsOutSide(const Vector3 &localPos) const {
 
 	return localPos.x < 0.f or localPos.y < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY;
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "../GameObject.h"
 #include "Utils/SafePtr/SafePtr.h"
+//#include "Rigidbody.h"
 
 class FallingBlockComp : public IComponent
 {
