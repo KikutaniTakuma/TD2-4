@@ -6,7 +6,7 @@
 #include "Utils/UtilsLib/UtilsLib.h"
 
 void EnemyEditor::Initialize() {
-	groundMap_ = GameManager::GetInstance()->GetMap()->GetGround();
+	groundMap_ = GameManager::GetInstance()->GetMap()->GetGroundEditor();
 
 	groundMapSize_ = groundMap_->GetGroundData();
 
@@ -84,7 +84,7 @@ void EnemyEditor::Debug() {
 				AllDataReset();
 			}
 
-			for (size_t x = 0; x < Ground::kMapX; x++) {
+			for (size_t x = 0; x < GroundEditor::kMapX; x++) {
 
 				isChange |= ImGui::Checkbox(("##Checkbox" + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*groundMapSize_)[x].isMultiSelect_));
 				if (ImGui::IsItemHovered()) {
@@ -168,8 +168,8 @@ void EnemyEditor::Debug() {
 
 					if (select) {
 
-						for (size_t x = 0; x < Ground::kMapX; x++) {
-							Ground::GroundInfo &num = (*groundMapSize_)[x];
+						for (size_t x = 0; x < GroundEditor::kMapX; x++) {
+							GroundEditor::GroundInfo &num = (*groundMapSize_)[x];
 
 							if (num.isMultiSelect_) {
 
@@ -261,7 +261,7 @@ bool EnemyEditor::OperationConfirmation() {
 }
 
 bool EnemyEditor::MapinPoint([[maybe_unused]] const Vector3 &point) {
-	for (size_t x = 0; x < Ground::kMapX; x++) {
+	for (size_t x = 0; x < GroundEditor::kMapX; x++) {
 		int32_t num = (*groundMapSize_)[boxPos_[0]].dwarfNum;
 		scanningOBB_->center_ = groundMap_->GetGrobalPos((int32_t)(x), -1, 0);
 		scanningOBB_->center_.z -= correction_;
@@ -332,7 +332,7 @@ void EnemyEditor::SaveFile(const std::string &fileName) {
 	root[kItemName_] = json::object();
 
 	// 3次元配列をJSONオブジェクトに変換
-	for (size_t x = 0; x < Ground::kMapX; ++x) {
+	for (size_t x = 0; x < GroundEditor::kMapX; ++x) {
 		root[kItemName_]["Num"][x] = static_cast<int>((*groundMapSize_)[x].dwarfNum);
 	}
 
@@ -517,7 +517,7 @@ void EnemyEditor::LoadFile(const std::string &fileName) {
 	assert(itGroupNum != root[kItemName_].end());
 
 	//各アイテムについて
-	for (size_t x = 0; x < Ground::kMapX; ++x) {
+	for (size_t x = 0; x < GroundEditor::kMapX; ++x) {
 		((*groundMapSize_)[x].dwarfNum) = root[kItemName_]["Num"][x];
 	}
 

@@ -97,7 +97,9 @@ public:
 	/// @return 二次元配列
 	Block2dMap *GetBlockMap() { return boxMap_.get(); }
 
-	Ground *GetGround() { return ground_.get(); }
+	/// @brief 地面のエディターを取得する
+	/// @return 
+	GroundEditor *GetGroundEditor() { return groundEditor_.get(); }
 
 	/// @brief 拠点のリストを返す
 	/// @return 拠点のリスト
@@ -146,6 +148,9 @@ private:
 	/// </summary>
 	Map2dMap<std::unique_ptr<MatrixModelState>> modelStateMap_;
 
-	//床のクラス
+	// 床のクラス
 	std::unique_ptr<Ground> ground_;
+
+	// 床のエディタークラス
+	std::unique_ptr<GroundEditor> groundEditor_;
 };

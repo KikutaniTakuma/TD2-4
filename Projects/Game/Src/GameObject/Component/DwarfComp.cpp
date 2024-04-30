@@ -8,7 +8,8 @@ void DwarfComp::Init()
 	pLocalBodyComp_->size_ = Vector2::kIdentity * 0.5f;
 
 	Lamb::SafePtr modelComp = object_.AddComponent<ModelComp>();
-	modelComp->AddBone("Body", DrawerManager::GetInstance()->GetModel(GameManager::kDwarfModelName));
+	Lamb::SafePtr bodyModel = modelComp->AddBone("Body", DrawerManager::GetInstance()->GetModel(GameManager::kDwarfModelName));
+	bodyModel->color_ = 0xFF0000FF;
 }
 
 void DwarfComp::Start()

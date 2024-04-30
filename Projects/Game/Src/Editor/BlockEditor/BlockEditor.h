@@ -67,13 +67,13 @@ private:
 
 private:
 
-	Ground* map_ = nullptr;
+	GroundEditor* map_ = nullptr;
 
-	Ground::MapSize * mapSize_ = nullptr;
+	GroundEditor::MapSize * mapSize_ = nullptr;
 
 	std::array<size_t, 3> boxPos_;
 
-	std::array<bool, Ground::kMapX> boxData_;
+	std::array<bool, GroundEditor::kMapX> boxData_;
 
 	Input* input_ = nullptr;
 

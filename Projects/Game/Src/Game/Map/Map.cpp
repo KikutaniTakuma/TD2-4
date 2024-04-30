@@ -16,8 +16,13 @@ void Map::Init()
 	drawerManager->LoadModel("Resources/Cube.obj");
 	model_ = drawerManager->GetModel("Resources/Cube.obj");
 
+	groundEditor_ = std::make_unique<GroundEditor>();
+	groundEditor_->Init();
+
 	ground_ = std::make_unique<Ground>();
 	ground_->Init();
+
+	groundEditor_->SetGround(ground_.get());
 
 }
 
@@ -35,6 +40,7 @@ void Map::Draw([[maybe_unused]] const Camera &camera) const {
 	}
 
 	ground_->Draw(camera);
+	groundEditor_->Draw(camera);
 }
 
 bool Map::Debug(const char *const str)
@@ -70,7 +76,7 @@ bool Map::Debug(const char *const str)
 
 void Map::TransferBoxData()
 {
-	ground_->TransferBoxData();
+	groundEditor_->TransferBoxData();
 
 	for (int32_t yi = 0; yi < kMapY; yi++) {
 		for (int32_t xi = 0; xi < kMapX; xi++) {

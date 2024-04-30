@@ -9,7 +9,30 @@
 #include <Drawers/Model/Model.h>
 #include <Camera/Camera.h>
 #include <bitset>
-class Ground{
+
+class Map;
+
+class Ground {
+public:
+
+private:
+
+	// 描画時のモデル
+	Model *model_;
+
+	// 床のデータ
+	MatrixModelState groundModelStates_;
+
+public:
+
+	void Init();
+
+	void Update(const float deltaTime);
+
+	void Draw(const Camera &camera) const;
+};
+
+class GroundEditor {
 public:
 
 	struct GroundInfo {
@@ -23,19 +46,19 @@ public:
 
 	inline static constexpr int32_t kMapX = 30u;
 
-	// 箱の配列 [y][z][x]
+	// 床の描画の配列 [x]
 	using MapSize = std::array<GroundInfo, kMapX>;
 
 public:
-	Ground() = default;
-	~Ground() = default;
+	GroundEditor() = default;
+	~GroundEditor() = default;
 
 
 	void Init();
 
 	void Update(const float deltaTime);
 
-	void Draw(const Camera& camera) const;
+	void Draw(const Camera &camera) const;
 
 public:
 	/// @brief デバッグ
@@ -51,12 +74,14 @@ public:
 	/// </summary>
 	void MultiReset();
 
-	const GroundInfo GetGroundInfo(const Vector3& localPos) const;
+	const GroundInfo GetGroundInfo(const Vector3 &localPos) const;
+
+	void SetGround(Ground *ground) { pGround_ = ground; }
 
 public:
 	/// @brief 3次元配列の取得
 	/// @return 三次元配列
-	MapSize* GetGroundData() { return boxMap_.get(); }
+	MapSize *GetGroundData() { return boxMap_.get(); }
 
 	static Vector3 GetGrobalPos(size_t x, size_t y, size_t z) noexcept
 	{
@@ -68,7 +93,7 @@ public:
 		return Vector3{ x * vBoxDistance_->x, y * vBoxDistance_->y, -(z * vBoxDistance_->x) } - Vector3{ vBoxDistance_->x * ((kMapX - 1) / 2.f), 0, -(vBoxDistance_->x * ((1 - 1) / 2.f)) };
 	}
 
-	static Vector3 LocalPos(const Vector3& gPos) noexcept
+	static Vector3 LocalPos(const Vector3 &gPos) noexcept
 	{
 		return Vector3{ gPos.x / vBoxDistance_->x, gPos.y / vBoxDistance_->y, -(gPos.z / vBoxDistance_->x) } + Vector3{ vBoxDistance_->x / ((kMapX - 1) / 2.f), 0, -(vBoxDistance_->x / ((1 - 1) / 2.f)) };
 	}
@@ -79,7 +104,11 @@ public:
 
 private:
 
-	// 箱の配列 [y][z][x]
+	Map *pMap_ = nullptr;
+
+	Lamb::SafePtr<Ground> pGround_ = nullptr;
+
+	// 箱の配列 [x]
 	std::unique_ptr<MapSize> boxMap_;
 	// 箱の数
 	size_t boxCount_{};
@@ -87,10 +116,13 @@ private:
 	inline static SoLib::VItem<"ブロックの間隔", Vector2> vBoxDistance_{ {1, 1} };
 	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale{ {1.f,10.0f} };
 
-	Model* model_;
+	Model *model_;
+
+
 	/// <summary>
 	/// モデルの情報
 	/// </summary>
 	std::array<std::unique_ptr<ModelState>, kMapX> modelStates_;
+
 };
 

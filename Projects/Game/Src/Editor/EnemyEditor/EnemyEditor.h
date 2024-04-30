@@ -67,9 +67,9 @@ private:
 
 private:
 
-	Ground* groundMap_ = nullptr;
+	GroundEditor* groundMap_ = nullptr;
 
-	Ground::MapSize* groundMapSize_ = nullptr;
+	GroundEditor::MapSize* groundMapSize_ = nullptr;
 
 	std::array<int32_t, 3> boxPos_{};
 
