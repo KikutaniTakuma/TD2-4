@@ -19,8 +19,8 @@ private:
 
 	friend SoLib::Singleton<GameManager>;
 	GameManager() = default;
-	GameManager(const GameManager &) = delete;
-	GameManager &operator=(const GameManager &) = delete;
+	GameManager(const GameManager&) = delete;
+	GameManager& operator=(const GameManager&) = delete;
 	~GameManager() = default;
 
 public:
@@ -31,14 +31,23 @@ public:
 
 	void Update(const float deltaTime);
 
-	void Draw(const Camera &camera) const;
+	void Draw(const Camera& camera) const;
 
 public:
 
-	bool Debug(const char *const str);
+	bool Debug(const char* const str);
 
 	// マップのデータを取得
-	Map *GetMap() { return blockMap_.get(); }
+	Map* GetMap() { return blockMap_.get(); }
+
+	/// <summary>
+	/// 落下ブロックを追加する
+	/// </summary>
+	/// <param name="centorPos">中心座標</param>
+	/// <param name="size">直径</param>
+	/// <param name="velocity">瞬間加速</param>
+	/// <param name="gravity">定期加速</param>
+	void AddFallingBlock(Vector2 centorPos, Vector2 size, bool hasDamage, Vector2 velocity, Vector2 gravity);
 
 public:
 
@@ -49,10 +58,12 @@ private:
 
 private:
 	// 入力マネージャ
-	Input *input_ = nullptr;
+	Input* input_ = nullptr;
 
 	std::unique_ptr<GameObject> player_;
 
 	std::unique_ptr<Map> blockMap_;
+
+	std::list<std::unique_ptr<GameObject>> fallingBlocks_;
 
 };

@@ -141,6 +141,9 @@
     <ClCompile Include="Src\Game\Ground\Ground.cpp">
       <Filter>Game\Ground</Filter>
     </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\FallingBlockComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -417,6 +420,9 @@
     </ClInclude>
     <ClInclude Include="Src\Game\Ground\Ground.h">
       <Filter>Game\Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\FallingBlockComp.h">
+      <Filter>GameObject\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

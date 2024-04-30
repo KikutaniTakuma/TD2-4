@@ -78,7 +78,7 @@ void SelectScene::SelectMove(){
 		}		
 	}
 
-	if (input_->GetKey()->Pushed(DIK_SPACE)&& input_->GetKey()->Pushed(DIK_LSHIFT)){
+	if (input_->GetKey()->Pushed(DIK_SPACE)/*&& input_->GetKey()->Pushed(DIK_LSHIFT)*/){
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
 		sceneManager_->SceneChange(BaseScene::ID::Game);
 	}
