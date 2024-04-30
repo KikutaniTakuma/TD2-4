@@ -83,7 +83,7 @@ void Map::TransferBoxData()
 				// もしすでに実在したら生成しない
 				if (not modelState) {
 					modelState = std::make_unique<MatrixModelState>();
-					modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y }, Vector3::kZero, GetGrobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) }));
+					modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y } *0.5f, Vector3::kZero, GetGrobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) }));
 				}
 				// 色を指定する
 				modelState->color = kBoxColors_[static_cast<uint32_t>(box)];
@@ -108,21 +108,22 @@ void Map::TransferBoxData()
 
 }
 
+void Map::SetBlocks(Vector2 centerPos, Vector2 size, BoxType boxType)
+{
 
-void Map::MultiReset() {
-	/*for (auto &house : houseList_) {
-		house.isMultiSelect_ = false;
-	}*/
+	for (int32_t yi = 0; yi < static_cast<int32_t>(size.y); yi++) {
+		for (int32_t xi = 0; xi < static_cast<int32_t>(size.x); xi++) {
+
+			auto &box = (*boxMap_)[static_cast<int32_t>(centerPos.y) + yi + static_cast<int32_t>(size.y) / 2][static_cast<int32_t>(centerPos.x) + xi + static_cast<int32_t>(size.x) / 2];
+
+			box = boxType;
+
+
+		}
+	}
+
+
 }
-
-//const Map::HouseInfo &Map::GetHouseInfo(const int localPosX) const {
-//	// もしマップ外に行っていた場合虚無
-//	if (IsOutSide({ localPosX,0 })) {
-//		return HouseInfo{};
-//	}
-//
-//	return BoxType();
-//}
 
 const Map::BoxType Map::GetBoxType(const Vector2 localPos) const {
 	// もしマップ外に行っていた場合虚無

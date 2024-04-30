@@ -69,12 +69,7 @@ public:
 	/// @brief 箱のデータをモデルに転送
 	void TransferBoxData();
 
-	/// <summary>
-	/// マルチ設定のリセット
-	/// </summary>
-	void MultiReset();
-
-	//const HouseInfo& GetHouseInfo(const int localPosX) const;
+	void SetBlocks(Vector2 centerPos, Vector2 size, BoxType boxType);
 
 	const BoxType GetBoxType(const Vector2 localPos) const;
 

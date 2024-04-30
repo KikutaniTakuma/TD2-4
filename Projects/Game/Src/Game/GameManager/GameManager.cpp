@@ -58,8 +58,11 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 			// もし着地してたら終わる
 			if (fallingComp->IsLanding()) {
-				blockItr->reset();	// オブジェクトを破棄
-				blockItr = fallingBlocks_.erase(blockItr);
+
+				// ブロックを設置
+				blockMap_->SetBlocks(fallingComp->pLocalPos_->localPos_, fallingComp->pLocalPos_->size_, Map::BoxType::kGroundBlock);
+
+				blockItr = fallingBlocks_.erase(blockItr); // オブジェクトを破棄してイテレータを変更
 				continue;
 			}
 
