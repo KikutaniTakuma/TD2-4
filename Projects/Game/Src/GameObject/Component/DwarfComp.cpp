@@ -39,12 +39,12 @@ void DwarfComp::Update()
 	}
 
 	// もし埋まってたら上に登る
-	//ClimbUp();
+	ClimbUp();
 	// 登ってない場合
 	if (isClimbing_ == false)
 	{
 		// 落ちる処理を行う
-		//FallDown();
+		FallDown();
 
 		// 一番高いブロックを探す
 		// targetPos_ = FindNearHighestBox();
@@ -74,4 +74,54 @@ void DwarfComp::Update()
 	pLocalBodyComp_->TransfarData();
 	transform_.translate.z = -1.5f;
 
+}
+
+void DwarfComp::ClimbUp()
+{
+	const Vector2 localPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * 0.5f;
+	// 現在のブロック
+	auto blockType = LocalBodyComp::pMap_->GetBoxType(localPos);
+
+	bool climbFlag = false;
+	// ブロックの中にいる場合登る
+	climbFlag |= blockType == Map::BoxType::kGroundBlock or blockType == Map::BoxType::kEnemyBlock;
+
+	// 登るフラグが立っていたら登る
+	if (climbFlag)
+	{
+		pLocalBodyComp_->localPos_.y += GetDeltaTime() * 2.f;
+		isClimbing_ = true;
+	}
+	// 折れていたら登っていない
+	else
+	{
+		isClimbing_ = false;
+	}
+}
+
+void DwarfComp::FallDown()
+{
+	const float downPower = 0.1f;
+	float afterPosY = pLocalBodyComp_->localPos_.y - downPower;
+	// 落下先の座標
+	const Vector2 downSide = Vector2{ pLocalBodyComp_->localPos_.x + 0.5f, afterPosY };
+	if (afterPosY > 0)
+	{
+		// 落下先がブロックでない場合
+		if (LocalBodyComp::pMap_->GetBoxType(downSide) == Map::BoxType::kNone)
+		{
+			// 下げる
+			pLocalBodyComp_->localPos_.y -= downPower;
+		}
+		// 足場があった場合
+		else
+		{
+			// 足場の上に強制的に置く
+			pLocalBodyComp_->localPos_.y = std::floor(downSide.y) + 1.f;
+		}
+	}
+	else
+	{
+		pLocalBodyComp_->localPos_.y = 0.f;
+	}
 }

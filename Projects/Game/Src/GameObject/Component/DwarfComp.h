@@ -27,6 +27,10 @@ public:
 
 private:
 
+	void ClimbUp();
+
+	void FallDown();
+
 
 	/// <summary>
 	/// 移動を行う
