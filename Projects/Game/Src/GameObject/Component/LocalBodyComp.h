@@ -19,7 +19,10 @@ public:
 
 	/// @brief ローカル座標をグローバル座標に変換する
 	/// @return グローバル座標
-	Vector2 LocalToGlobal() const;
+	Vector2 GetGlobalPos() const;
+
+	/// @brief データをTransformに転送する
+	void TransfarData();
 
 	// ローカル座標
 	Vector2 localPos_;

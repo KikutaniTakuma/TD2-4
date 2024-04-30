@@ -4,6 +4,7 @@
 void PlayerComp::Init()
 {
 	pLocalPosComp_ = object_.AddComponent<LocalBodyComp>();
+	pLocalPosComp_->size_ = Vector2::kIdentity;
 }
 
 void PlayerComp::Start()
@@ -13,7 +14,8 @@ void PlayerComp::Start()
 
 void PlayerComp::Update()
 {
-	transform_.translate = pLocalPosComp_->LocalToGlobal();
+
+	pLocalPosComp_->TransfarData();
 
 }
 

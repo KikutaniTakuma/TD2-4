@@ -26,5 +26,5 @@ void FallingBlockComp::Update()
 	pLocalPos_->localPos_ += velocity_ * deltaTime;
 
 	// グローバル空間に持ってくる
-	transform_.translate = pLocalPos_->LocalToGlobal();
+	pLocalPos_->TransfarData();
 }
