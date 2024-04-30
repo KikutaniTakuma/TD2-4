@@ -24,6 +24,8 @@ void Map::Init()
 
 	groundEditor_->SetGround(ground_.get());
 
+	AddHouse((Map::kMapX) / 2);
+
 }
 
 void Map::Update([[maybe_unused]] const float deltaTime) {
@@ -34,9 +36,12 @@ void Map::Draw([[maybe_unused]] const Camera &camera) const {
 	for (const auto &modelStateArr : modelStateMap_) {
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
-				model_->Draw(modelState->transMat, camera.GetViewProjection(), modelState->color, BlendType::kNormal);
+				model_->Draw(modelState->transMat, camera.GetViewProjection(), modelState->color, BlendType::kNone);
 			}
 		}
+	}
+	for (const auto &house : houseList_) {
+		model_->Draw(house.houseModelState_.transMat, camera.GetViewProjection(), house.houseModelState_.color, BlendType::kNormal);
 	}
 
 	ground_->Draw(camera);
@@ -106,13 +111,13 @@ void Map::TransferBoxData()
 		}
 	}
 
-	// 拠点のデータの転送
-	for (auto &house : houseList_) {
+	//// 拠点のデータの転送
+	//for (auto &house : houseList_) {
 
-		// 現在のモデル
-		house.houseModelState_.transMat = SoLib::Math::Affine(Vector3{ static_cast<float>(*vEnemyHouseWidth_),1,1 } + Vector3::kIdentity * 0.1f, Vector3::kZero, GetGrobalPos(Vector2{ static_cast<float>(house.xPos_), -1.f }));
+	//	// 現在のモデル
+	//	house.houseModelState_.transMat = SoLib::Math::Affine(Vector3{ static_cast<float>(*vEnemyHouseWidth_),1,1 } + Vector3::kIdentity * 0.1f, Vector3::kZero, GetGrobalPos(Vector2{ static_cast<float>(house.xPos_), -1.f }));
 
-	}
+	//}
 
 }
 
@@ -181,4 +186,15 @@ const Map::BoxType Map::GetBoxType(const Vector2 localPos) const {
 bool Map::IsOutSide(const Vector2 &localPos)
 {
 	return localPos.x < 0.f or localPos.y < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY;
+}
+
+void Map::AddHouse(int32_t xCenter)
+{
+	houseList_.push_back(HouseInfo{ .xPos_ = xCenter,.houseModelState_ = MatrixModelState{.transMat = SoLib::Math::Affine(Vector3{1.5f, 0.5f, 5.f}, Vector3::kZero, Map::GetGrobalPos(Vector2{static_cast<float>(xCenter), -1.f})), .color = 0x0000FF55} });
+
+}
+
+void Map::GetHouseData()
+{
+	//groundEditor_->
 }

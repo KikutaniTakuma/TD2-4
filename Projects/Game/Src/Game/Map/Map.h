@@ -92,13 +92,16 @@ public:
 	inline void SetDraingFlag(const std::bitset<kMapY> &flag) noexcept { isFloorDrawing_ = flag; }
 	inline const std::bitset<kMapY> &GetDraingFlag() const noexcept { return isFloorDrawing_; }
 
+
+	void AddHouse(int32_t xCenter);
+
 public:
 	/// @brief 2次元配列の取得
 	/// @return 二次元配列
 	Block2dMap *GetBlockMap() { return boxMap_.get(); }
 
 	/// @brief 地面のエディターを取得する
-	/// @return 
+	/// @return エディタを返す
 	GroundEditor *GetGroundEditor() { return groundEditor_.get(); }
 
 	/// @brief 拠点のリストを返す
@@ -122,6 +125,10 @@ public:
 	static Vector2 GetMapSize() noexcept {
 		return Vector2{ kMapX, kMapY };
 	}
+
+private:
+
+	void GetHouseData();
 
 private:
 

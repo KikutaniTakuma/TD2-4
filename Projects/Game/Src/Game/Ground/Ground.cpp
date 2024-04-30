@@ -12,7 +12,7 @@ void Ground::Init()
 	drawerManager->LoadModel("Resources/Cube.obj");
 	model_ = drawerManager->GetModel("Resources/Cube.obj");
 
-
+	// ステージの中心に設置
 	groundModelStates_.transMat = SoLib::Math::Affine(Vector3{ static_cast<float>(Map::kMapX) / 2.f ,0.5f,5.f }, Vector3::kZero, Map::GetGrobalPos(Vector2::kXIdentity * (Map::kMapX - 1) * 0.5f - Vector2::kYIdentity));
 	groundModelStates_.color = 0xFFFFFFFF;
 

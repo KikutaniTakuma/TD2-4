@@ -12,6 +12,8 @@
 
 class Map;
 
+
+// 地形の描画を行うクラス。
 class Ground {
 public:
 
