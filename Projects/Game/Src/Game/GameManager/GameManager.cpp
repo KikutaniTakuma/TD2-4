@@ -59,8 +59,11 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			// もし着地してたら終わる
 			if (fallingComp->IsLanding()) {
 
+				// ローカル座標のコンポーネント
+				const LocalBodyComp &localBodyComp = *fallingComp->pLocalPos_;
+
 				// ブロックを設置
-				blockMap_->SetBlocks(fallingComp->pLocalPos_->localPos_, fallingComp->pLocalPos_->size_, Map::BoxType::kGroundBlock);
+				LandBlock(localBodyComp.localPos_, localBodyComp.size_, fallingComp->hasDamage_);
 
 				blockItr = fallingBlocks_.erase(blockItr); // オブジェクトを破棄してイテレータを変更
 				continue;
@@ -105,7 +108,7 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 }
 
 
-void GameManager::AddFallingBlock(Vector2 centorPos, Vector2 size, bool hasDamage, Vector2 velocity, Vector2 gravity)
+void GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, bool hasDamage, Vector2 velocity, Vector2 gravity)
 {
 	std::unique_ptr<GameObject> addBlock = std::make_unique<GameObject>();
 
@@ -113,7 +116,7 @@ void GameManager::AddFallingBlock(Vector2 centorPos, Vector2 size, bool hasDamag
 	Lamb::SafePtr fallingComp = addBlock->AddComponent<FallingBlockComp>();
 	Lamb::SafePtr localBodyComp = addBlock->AddComponent<LocalBodyComp>();
 
-	localBodyComp->localPos_ = centorPos;
+	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = size;
 
 	fallingComp->hasDamage_ = hasDamage;
@@ -122,6 +125,26 @@ void GameManager::AddFallingBlock(Vector2 centorPos, Vector2 size, bool hasDamag
 
 
 	fallingBlocks_.push_back(std::move(addBlock));
+}
+
+void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
+{
+
+	// ブロックを設置
+	blockMap_->SetBlocks(centerPos, size, Map::BoxType::kGroundBlock);
+
+	// ダメージ判定があるならダメージ判定を追加
+	if (hasDamage)
+	{
+		DamageArea damage;
+		// ブロックの下側にダメージ判定を出す
+		damage.centerPos_ = centerPos - Vector2::kYIdentity * (size.y * 0.5f);
+		// ダメージの横幅を設定する
+		damage.size_.x = size.x;
+
+		damageAreaList_.push_back(damage);
+
+	}
 }
 
 void GameManager::InputAction()
