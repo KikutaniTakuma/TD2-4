@@ -76,13 +76,9 @@ public:
 
 	//const HouseInfo& GetHouseInfo(const int localPosX) const;
 
-	const BoxType GetBoxType(const Vector2 &localPos) const;
+	const BoxType GetBoxType(const Vector2 localPos) const;
 
-	const BoxType GetBoxType(const Vector3 &localPos) const;
-
-	bool IsOutSide(const Vector2 &localPos) const;
-
-	bool IsOutSide(const Vector3 &localPos) const;
+	static bool IsOutSide(const Vector2 &localPos);
 
 	inline void SetDraingFlag(const std::bitset<kMapY> &flag) noexcept { isFloorDrawing_ = flag; }
 	inline const std::bitset<kMapY> &GetDraingFlag() const noexcept { return isFloorDrawing_; }
