@@ -40,8 +40,9 @@ void GameManager::Init()
 		/*Lamb::SafePtr playerComp =*/ player_->AddComponent<PlayerComp>();
 	}
 
-	AddDwarf(Vector2::kZero);
-
+	for (float i = 0; i < 15.f; i++) {
+		AddDwarf(Vector2::kXIdentity * i);
+	}
 }
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
@@ -57,31 +58,79 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		dwarf->Update(deltaTime);
 	}
 
-	// 落下ブロックの更新
-	{
-		for (auto blockItr = fallingBlocks_.begin(); blockItr != fallingBlocks_.end();) {
-			Lamb::SafePtr fallBlock = blockItr->get();
-			Lamb::SafePtr fallingComp = fallBlock->GetComponent<FallingBlockComp>();
+
+	for (auto &block : fallingBlocks_) {
+		Lamb::SafePtr fallingComp = block->GetComponent<FallingBlockComp>();
+		Lamb::SafePtr blockBody = fallingComp->pLocalPos_;
+
+		for (auto &dwarf : dwarfList_) {
+
+			// もし死んでいたらその時点で終わり
+			if (not dwarf->GetActive()) { continue; }
+
+			Lamb::SafePtr dwarfBody = dwarf->GetComponent<LocalBodyComp>();
+
+			Lamb::SafePtr pickUpComp = dwarf->GetComponent<PickUpComp>();
+
+			for (float yDiff = 1.f; const auto & pickUpBlock : pickUpComp->GetPickUpBlockList()) {
+
+				Vector2 posDiff = dwarfBody->localPos_ - blockBody->localPos_ + Vector2::kYIdentity * (yDiff + (pickUpBlock.size_.y - 1) / 2);
+
+				Vector2 halfSize = (pickUpBlock.size_ + blockBody->size_) * 0.5f;
+
+				// ぶつかっていたら
+				if (std::abs(posDiff.x) <= halfSize.x and std::abs(posDiff.y) <= halfSize.y) {
+
+					// ブロックのデータを渡す
+					pickUpComp->AddBlock({ .size_ = blockBody->size_ });
+
+					// ブロックを破壊する
+					block->SetActive(false);
+
+					break;
+
+				}
 
 
-			// もし着地してたら終わる
-			if (fallingComp->IsLanding()) {
+				// 高さを加算
+				yDiff += pickUpBlock.size_.y;
 
-				// ローカル座標のコンポーネント
-				const LocalBodyComp &localBodyComp = *fallingComp->pLocalPos_;
-
-				// ブロックを設置
-				LandBlock(localBodyComp.localPos_, localBodyComp.size_, fallingComp->hasDamage_);
-
-				blockItr = fallingBlocks_.erase(blockItr); // オブジェクトを破棄してイテレータを変更
-				continue;
 			}
+			// ブロックが壊れてたら飛ばす
+			if (not block->GetActive()) { continue; }
+
+			Vector2 posDiff = dwarfBody->localPos_ - blockBody->localPos_;
+
+			Vector2 halfSize = (dwarfBody->size_ + blockBody->size_) * 0.5f;
+
+			//// ぶつかっていたら破壊
+			//if (std::abs(posDiff.x) <= halfSize.x and std::abs(posDiff.y) <= halfSize.y) {
+
+			//	dwarf->SetActive(false);
+
+			//	break;
+
+			//}
+
+		}
 
 
-			// 何もなかったら追加
-			++blockItr;
+
+		// もし着地してたら終わる
+		if (fallingComp->IsLanding()) {
+
+			// ローカル座標のコンポーネント
+			const LocalBodyComp &localBodyComp = *fallingComp->pLocalPos_;
+
+			// ブロックを設置
+			LandBlock(localBodyComp.localPos_, localBodyComp.size_, fallingComp->hasDamage_);
+			// 破棄するように設定する
+			block->SetActive(false);
 		}
 	}
+
+	// 落下ブロックの破棄
+	std::erase_if(fallingBlocks_, [](const auto& itr) ->bool { return not itr->GetActive(); });
 
 	// 小人の破棄
 	{
@@ -90,7 +139,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 
 			// もし死んでいたら消す
-			if (not dwarfObject->GetActive() or Input::GetInstance()->GetKey()->GetKey(DIK_P)) {
+			if (not dwarfObject->GetActive()) {
 
 				dwarfObject->GetComponent<PickUpComp>()->ThrowAllBlocks();
 
@@ -117,7 +166,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			Vector2 size = (dwarfBody->size_ + damageArea.size_) * 0.5f;
 
 			// ぶつかっていたら破壊
-			if (std::abs(posDiff.x) <= size.x or std::abs(posDiff.y) <= size.y) {
+			if (std::abs(posDiff.x) <= size.x and std::abs(posDiff.y) <= size.y) {
 
 				dwarf->SetActive(false);
 

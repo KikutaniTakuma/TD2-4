@@ -34,6 +34,8 @@ public:
 
 	void ThrowAllBlocks();
 
+	void AddBlock(PickUpBlockData blockData) { pickupBlockList_.push_back(blockData); }
+
 private:
 
 	Model *model_;

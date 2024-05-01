@@ -65,7 +65,9 @@ void DwarfComp::Update()
 		ChangeMovementTarget();
 	}
 
-
+	if (pPickUpComp_->GetBlockWeight() > 6) {
+		object_.SetActive(false);
+	}
 
 
 
@@ -253,7 +255,7 @@ void DwarfComp::LocateOnHouse()
 						break;
 					case 3:
 
-						blockSizeDiff = onLocatePos -1.f;
+						blockSizeDiff = onLocatePos - 1.f;
 
 						break;
 					}
