@@ -1,5 +1,32 @@
 {
     "UIs": {
-        "Game": null
+        "Game": [
+            {
+                "TextureFullPath": "Resources/UI/deadLine.png",
+                "TextureName": "deadLine",
+                "color": 4294967295,
+                "scale": [
+                    1280.0,
+                    60.0
+                ],
+                "translate": [
+                    0.0,
+                    270.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/rest.png",
+                "TextureName": "rest",
+                "color": 4294967295,
+                "scale": [
+                    302.0,
+                    50.0
+                ],
+                "translate": [
+                    449.0,
+                    -295.0
+                ]
+            }
+        ]
     }
 }

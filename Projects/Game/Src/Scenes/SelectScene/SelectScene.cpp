@@ -77,12 +77,12 @@ void SelectScene::Draw(){
 }
 
 void SelectScene::Debug(){
-	ImGui::Begin("セレクト画面");
+	/*ImGui::Begin("セレクト画面");
 	ImGui::DragFloat2("Transform", &selectTex_->transform.translate.x, 1.0f);
 	ImGui::DragFloat2("Scale", &selectTex_->transform.scale.x, 1.0f);
 	ImGui::DragFloat2("UVTransform", &selectTex_->uvTrnasform.translate.x, 0.01f);
 	ImGui::DragFloat2("UVScale", &selectTex_->uvTrnasform.scale.x, 0.01f);
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void SelectScene::SelectMove(){

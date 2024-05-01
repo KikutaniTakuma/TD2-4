@@ -143,6 +143,12 @@ void UIEditor::Debug(const BaseScene::ID id){
 					Vector4 color = ConvertRGBAColorToVector4(colorInt);
 					 ImGui::ColorEdit4("テクスチャの色", &color.vec.x, true);
 					 texies_[static_cast<size_t>(id)][i]->color = ConvertVector4ToRGBAColor(color);
+					 if (ImGui::Button("このテクスチャを削除する")){
+						 if (OperationConfirmation()) {
+							 texies_[static_cast<size_t>(id)].erase(texies_[static_cast<size_t>(id)].begin() + i);
+							 i--;
+						 }
+					 }
 					ImGui::TreePop();
 				}
 			}
