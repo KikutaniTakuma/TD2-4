@@ -1,6 +1,7 @@
 #include "SelectScene.h"
 #include"Drawers/DrawerManager.h"
 #include"Scenes/SelectToGame/SelectToGame.h"
+#include"Utils/Easeing/Easeing.h"
 
 SelectScene::SelectScene():
 	BaseScene{ BaseScene::ID::StageSelect }{
@@ -18,7 +19,9 @@ void SelectScene::Initialize() {
 		texies_[i] = std::make_unique<Tex2DState>();
 		texies_[i]->transform.scale = { 624.0f,368.0f };
 		texies_[i]->transform.translate = { stageInterbal * i, 0.0f ,0 };
-		texies_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/stageSelectFrame.png");		
+		texies_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/stageSelectFrame.png");
+		startPos_[i] = texies_[i]->transform.translate.x;
+		endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
 	}
 	selectTex_ = std::make_unique<Tex2DState>();
 	selectTex_->transform.scale = { 452.0f,72.0f };
@@ -38,6 +41,7 @@ void SelectScene::Initialize() {
 }
 
 void SelectScene::Finalize(){
+	selectBGM_->Stop();
 
 }
 
@@ -53,7 +57,16 @@ void SelectScene::Update(){
 	for (size_t i = 0; i < texies_.size(); i++) {
 		texies_[i]->color = 0xffffff88;
 		texies_[selectNum_]->color = 0xff0000ff;
-		texies_[i]->transform.translate.x = (stageInterbal * i) - (stageInterbal * selectNum_);
+		
+	}
+
+	
+
+	ease_.Update();
+
+	for (size_t i = 0; i < texies_.size(); i++) {
+		texies_[i]->transform.translate.x = ease_.Get(startPos_[i], endPos_[i]);
+
 		texies_[i]->transform.CalcMatrix();
 	}
 
@@ -90,24 +103,33 @@ void SelectScene::SelectMove(){
 		if (selectNum_>0){
 			selectMove_->Start(0.1f, false);
 			selectNum_--;
+			ease_.Start(false, kAddEase_, Easeing::InSine);
+			for (size_t i = 0; i < kMaxStage_; i++){
+				startPos_[i] = texies_[i]->transform.translate.x;
+				endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
+			}
+		
 		}		
 	}
 	else if (input_->GetKey()->Pushed(DIK_D)) {
 		if (selectNum_ < texies_.size() - 1) {
 			selectMove_->Start(0.1f, false);
 			selectNum_++;
+			ease_.Start(false, kAddEase_, Easeing::InSine);
+			for (size_t i = 0; i < kMaxStage_; i++) {
+				startPos_[i] = texies_[i]->transform.translate.x;
+				endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
+			}
 		}		
 	}
 
 	if (input_->GetKey()->LongPush(DIK_LSHIFT)&& input_->GetKey()->Pushed(DIK_SPACE)){
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
 		gameDecision_->Start(0.1f, false);
-		selectBGM_->Stop();
 		sceneManager_->SceneChange(BaseScene::ID::Game);
 	}
 	if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
 		cancel_->Start(0.1f, false);
-		selectBGM_->Stop();
 		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}
 

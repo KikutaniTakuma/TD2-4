@@ -357,9 +357,7 @@ void EnemyEditor::SaveFile(const std::string &fileName) {
 	//ファイルオープン失敗
 	if (ofs.fail()) {
 		std::string message = "Failed open data file for write.";
-		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
-		assert(0);
-		return;
+		throw Lamb::Error::Code<EnemyEditor>(message, __func__);
 	}
 	//ファイルにjson文字列を書き込む(インデント幅4)
 	ofs << std::setw(4) << root << std::endl;
@@ -373,9 +371,7 @@ void EnemyEditor::SaveFile(const std::string &fileName) {
 void EnemyEditor::ChackFiles() {
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "Failed open data file for write.";
-		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
-		assert(0);
-		return;
+		throw Lamb::Error::Code<EnemyEditor>(message, __func__);
 	}
 
 	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
@@ -417,9 +413,7 @@ void EnemyEditor::ChackFiles() {
 void EnemyEditor::LoadFiles(const std::string &fileName) {
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "This file path does not exist.";
-		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
-		assert(0);
-		return;
+		throw Lamb::Error::Code<EnemyEditor>(message, __func__);
 	}
 
 	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
@@ -451,9 +445,7 @@ void EnemyEditor::LoadFiles(const int32_t selectNum) {
 
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "This file path does not exist.";
-		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
-		assert(0);
-		return;
+		throw Lamb::Error::Code<EnemyEditor>(message, __func__);
 	}
 
 	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
@@ -492,9 +484,7 @@ void EnemyEditor::LoadFile(const std::string &fileName) {
 	// ファイルオープン失敗
 	if (ifs.fail()) {
 		std::string message = "Failed open data file for write.";
-		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
-		assert(0);
-		return;
+		throw Lamb::Error::Code<EnemyEditor>(message, __func__);
 	}
 
 	nlohmann::json root;
@@ -555,8 +545,8 @@ void EnemyEditor::LoadFile(const std::string &fileName) {
 
 
 #ifdef _DEBUG
-	std::string message = "File loading completed";
-	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
+	//std::string message = "File loading completed";
+	//MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
 
 #endif // _DEBUG
 
