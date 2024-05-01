@@ -37,6 +37,8 @@ private:
 
 	int32_t GetLocatePosEnemyHouse() const;
 
+	void LocateOnHouse();
+
 
 	/// <summary>
 	/// 移動を行う

@@ -131,13 +131,12 @@ void DwarfComp::ChangeMovementTarget()
 	// 現在の中心座標
 	const Vector2 localPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * 0.5f;
 
-	// 自分のいるブロックのデータを取得する
-	//Map::BoxType landStatus = LocalBodyComp::pMap_->GetBoxType(localPos);
-
-	// 自分の位置が拠点の場合
-	//LocateOnHouse(landStatus);
 	// ブロックを持っていたら帰る
 	CarryBlockForHouse();
+
+	// 自分の位置が拠点の場合
+	LocateOnHouse();
+
 
 	// 自由に動き回る
 	//FreeTargetMove();
@@ -200,5 +199,99 @@ int32_t DwarfComp::GetLocatePosEnemyHouse() const
 
 	// 存在しないという値を入れる
 	return -1;
+
+}
+void DwarfComp::LocateOnHouse()
+{
+	Lamb::SafePtr map = LocalBodyComp::pMap_;
+
+
+	// 現在の中心座標
+	const Vector2 localPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * 0.5f;
+	// 自分の位置が虚空の場合
+	if (map->GetBoxType(localPos) == Map::BoxType::kNone)
+	{
+		// 拠点の左端からの距離
+		int onLocatePos = GetLocatePosEnemyHouse();
+
+		// 拠点の上にいる場合
+		if (onLocatePos != -1)
+		{
+			// もしブロックの数が1つ以上あれば
+			if (not pPickUpComp_->GetPickUpBlockList().empty())
+			{
+				// 持っているブロックの最初のデータを取得
+				auto firstPickupData = pPickUpComp_->GetPickUpBlockList().front();
+
+				// ブロックの長さ
+				const Vector2 &blockSize = firstPickupData.size_;
+
+
+				const Vector2 halfSize = (blockSize - Vector2::kIdentity) / 2.f;
+
+				// もしブロックの長さが拠点の長さより短かったら
+				if (blockSize.x <= 3)
+				{
+
+					// 設置する中心座標
+					Vector2 leftSidePos = Vector2::kYIdentity * (std::floor(localPos.y) + (blockSize.y / 2 - 0.5f));
+
+					float blockSizeDiff = 0;
+
+					switch (static_cast<int32_t>(blockSize.x))
+					{
+					case 2:
+						if (facing_ == 1)
+						{
+							blockSizeDiff = onLocatePos - 0.5f;
+						}
+						else
+						{
+							blockSizeDiff = onLocatePos + 0.5f;
+						}
+
+						break;
+					case 3:
+
+						blockSizeDiff = -1.5f;
+
+						break;
+					}
+
+					// 中心座標を設定
+					leftSidePos.x = std::floor(localPos.x) - blockSizeDiff;
+
+
+					// 設置できるか調べる
+					bool isSetable = true;
+					// 自分の位置から､facing_の方向に加算して､その方向がすべて虚空であれば設置する
+					for (float y = 0; y < blockSize.y; y++)
+					{
+						for (float x = 0; x < blockSize.x; x++)
+						{
+							if (map->GetBoxType(leftSidePos + Vector2::kXIdentity * x + Vector2::kYIdentity * y - halfSize) != Map::BoxType::kNone)
+							{
+								isSetable = false;
+								break;
+							}
+						}
+					}
+
+					// 設置可能であれば設置する
+					if (isSetable)
+					{
+						// ブロックを配置
+						map->SetBlocks(leftSidePos, blockSize, Map::BoxType::kEnemyBlock);
+
+						// 先頭要素を削除
+						pPickUpComp_->PopFront();
+					}
+				}
+
+			}
+
+		}
+
+	}
 
 }

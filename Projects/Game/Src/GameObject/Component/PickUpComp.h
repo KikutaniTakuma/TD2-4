@@ -26,6 +26,10 @@ public:
 
 	bool PickupTargetBlock(Vector2 localPos);
 
+	const std::list<PickUpBlockData> &GetPickUpBlockList() const { return pickupBlockList_; }
+
+	void PopFront() { pickupBlockList_.pop_front(); }
+
 private:
 
 	Model *model_;
