@@ -47,6 +47,8 @@ public:
 private:
 	void Debug();
 
+	void UploadTextureData();
+
 
 private:
 	std::unique_ptr<BaseScene> scene_;
