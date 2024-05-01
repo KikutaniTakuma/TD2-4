@@ -68,6 +68,9 @@ public:
 		duration_ = duration;
 	}
 
+	void FlipUpsideDown(float singned);
+	void FlipHorizontal(float singned);
+
 private:
 	Vector3 startPos_;
 	Vector3 currentPos_;
