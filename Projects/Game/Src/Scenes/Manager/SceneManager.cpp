@@ -29,8 +29,6 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 	StringOutPutManager::GetInstance()->LoadFont("./Resources/Font/default.spritefont");
 	load_ = std::make_unique<SceneLoad>();
 
-	// テクスチャデータのアップロード
-	UploadTextureData();
 
 
 
@@ -50,6 +48,8 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 	uiEditor_->Initialize();
 	uiEditor_->LoadFileAll();
 
+	// テクスチャデータのアップロード
+	UploadTextureData();
 }
 
 void SceneManager::SceneChange(std::optional<BaseScene::ID> next) {
