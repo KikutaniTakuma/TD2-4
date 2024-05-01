@@ -151,7 +151,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 									Lamb::SafePtr ground = (*blockMap_->GetBlockStatusMap())[y][xPos + x].get();
 									float power = y + 1.f;
 
-									ground->StartShake(1.5f, direction * power);
+									ground->StartShake(1.5f, direction * -power);
 								}
 							});
 
