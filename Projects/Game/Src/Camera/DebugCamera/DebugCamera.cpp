@@ -6,7 +6,7 @@
 #undef max
 #undef min
 
-DebugCamera::DebugCamera():
+DebugCamera::DebugCamera() :
 	Camera(),
 	scaleSpeed_(0.001f),
 	rotateSpeed_(0.01f),
@@ -20,7 +20,7 @@ void DebugCamera::Update() {
 	Debug("DebugCamera");
 	Mouse* const mouse = Mouse::GetInstance();
 	KeyInput* const key = KeyInput::GetInstance();
-	
+
 	bool isOnImGui = ImGui::GetIO().WantCaptureMouse;
 	bool isShift = key->LongPush(DIK_LSHIFT) || key->LongPush(DIK_RSHIFT);
 	bool isMiddle = mouse->LongPush(Mouse::Button::Middle);
@@ -40,14 +40,13 @@ void DebugCamera::Update() {
 
 	float isSigned = mouse->GetWheelVelocity();
 	if (not (isSigned == 0.0f) && not isOnImGui) {
-		scale.z += scaleSpeed_ * isSigned;
-		scale.z = std::max(0.1f, scale.z);
+		pos += (Vector3::kZIdentity * isSigned) * Quaternion::EulerToQuaternion(rotate) * Lamb::DeltaTime();
 	}
 #endif // _DEBUG
 	Camera::Update();
 }
 
-void DebugCamera::Debug([[maybe_unused]]const std::string& guiName) {
+void DebugCamera::Debug([[maybe_unused]] const std::string& guiName) {
 #ifdef _DEBUG
 	Camera::Debug(guiName);
 	ImGui::Begin(guiName.c_str());
@@ -55,8 +54,8 @@ void DebugCamera::Debug([[maybe_unused]]const std::string& guiName) {
 		ImGui::Checkbox("カメラ回転反転", &isRotateInverse_);
 		ImGui::Checkbox("カメラ移動反転", &isTranslateInverse_);
 		ImGui::DragFloat("ズーム速度", &scaleSpeed_, 0.01f);
-		ImGui::DragFloat("回転速度", &rotateSpeed_,0.01f);
-		ImGui::DragFloat("移動速度", &translateSpeed_,0.01f);
+		ImGui::DragFloat("回転速度", &rotateSpeed_, 0.01f);
+		ImGui::DragFloat("移動速度", &translateSpeed_, 0.01f);
 		ImGui::TreePop();
 	}
 	ImGui::End();
