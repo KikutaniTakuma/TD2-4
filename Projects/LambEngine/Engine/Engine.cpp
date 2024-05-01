@@ -418,12 +418,6 @@ void Engine::FrameEnd() {
 
 	ImGuiManager::GetInstance()->End();
 
-	auto textureManager = TextureManager::GetInstance();
-	// このフレームで画像読み込みが発生していたらTextureをvramに送る
-	textureManager->UploadTextureData();
-	// dramから解放
-	textureManager->ReleaseIntermediateResource();
-
 
 	instance_->directXSwapChain_->ChangeBackBufferState();
 
