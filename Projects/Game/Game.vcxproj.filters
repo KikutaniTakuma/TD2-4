@@ -153,6 +153,9 @@
     <ClCompile Include="Src\GameObject\Component\PickUpComp.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\FlaskParticle\FlaskParticle.cpp">
+      <Filter>Game\FlaskParticle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -283,6 +286,9 @@
     </Filter>
     <Filter Include="Game\Ground">
       <UniqueIdentifier>{16c5a03b-817a-415d-bfc6-7c8d982c7707}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\FlaskParticle">
+      <UniqueIdentifier>{dfc08694-d612-484a-a60a-53e5cdcec6e7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -441,6 +447,9 @@
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\PickUpComp.h">
       <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\FlaskParticle\FlaskParticle.h">
+      <Filter>Game\FlaskParticle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
