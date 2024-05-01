@@ -246,7 +246,7 @@ void GameScene::Draw() {
 	}
 	TextureDraw();
 
-	UIEditor::GetInstance()->putDraw(currentCamera_->GetViewOthographics());
+	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
 #endif // _DEBUG
 
 	gameManager_->Draw(*currentCamera_);

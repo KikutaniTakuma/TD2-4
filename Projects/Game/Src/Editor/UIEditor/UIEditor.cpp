@@ -93,7 +93,7 @@ void UIEditor::Draw(const Mat4x4& camera, const BaseScene::ID id){
 	}
 }
 
-void UIEditor::putDraw(const Mat4x4& camera){
+void UIEditor::PutDraw(const Mat4x4& camera){
 	tex2D_->Draw(newTex_->transform.matWorld_, Mat4x4::kIdentity, camera
 		, newTex_->textureID, newTex_->color, BlendType::kNormal);
 }

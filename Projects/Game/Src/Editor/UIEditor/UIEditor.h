@@ -43,7 +43,7 @@ public:
 	/// <summary>
 	/// 設置位置描画処理
 	/// </summary>
-	void putDraw(const Mat4x4& camera);
+	void PutDraw(const Mat4x4& camera);
 
 	/// <summary>
 	/// Imguiの情報

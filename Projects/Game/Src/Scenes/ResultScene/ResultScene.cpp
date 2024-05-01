@@ -44,7 +44,7 @@ void ResultScene::Draw(){
 	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	//tex_->Draw(currentCamera_->GetViewOthographics());
 
-	UIEditor::GetInstance()->putDraw(currentCamera_->GetViewOthographics());
+	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
 }
 
 void ResultScene::Debug(){

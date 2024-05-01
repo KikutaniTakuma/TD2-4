@@ -100,7 +100,7 @@ void TitleScene::Draw(){
 	Lamb::screenout << "Capsule Test" << Lamb::endline
 		<< "Check : " << isCollision_;
 
-	UIEditor::GetInstance()->putDraw(currentCamera_->GetViewOthographics());
+	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
 }
 
 void TitleScene::Debug(){
