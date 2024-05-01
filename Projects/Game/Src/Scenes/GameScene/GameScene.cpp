@@ -142,6 +142,8 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Finalize() {
+	gameBGM_->Stop();
+
 	enemyManager_->Finalize();
 	// 実体の破棄
 	GameManager::Finalize();
