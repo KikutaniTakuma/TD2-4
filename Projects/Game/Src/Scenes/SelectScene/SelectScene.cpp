@@ -38,6 +38,7 @@ void SelectScene::Initialize() {
 }
 
 void SelectScene::Finalize(){
+	selectBGM_->Stop();
 
 }
 
@@ -102,12 +103,10 @@ void SelectScene::SelectMove(){
 	if (input_->GetKey()->LongPush(DIK_LSHIFT)&& input_->GetKey()->Pushed(DIK_SPACE)){
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
 		gameDecision_->Start(0.1f, false);
-		selectBGM_->Stop();
 		sceneManager_->SceneChange(BaseScene::ID::Game);
 	}
 	if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
 		cancel_->Start(0.1f, false);
-		selectBGM_->Stop();
 		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}
 

@@ -34,7 +34,8 @@ void TitleScene::Initialize()
 }
 
 void TitleScene::Finalize(){
-	
+	titleBGM_->Stop();
+
 }
 
 void TitleScene::Update()
@@ -67,7 +68,6 @@ void TitleScene::Update()
 	}
 	if (key->Pushed(DIK_SPACE)) {
 		beginGame_->Start(0.1f, false);
-		titleBGM_->Stop();
 		sceneManager_->SceneChange(BaseScene::ID::StageSelect);
 	}
 	
