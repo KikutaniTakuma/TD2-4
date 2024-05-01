@@ -40,7 +40,7 @@ int32_t PickUpComp::GetBlockWeight() const
 bool PickUpComp::PickupTargetBlock(Vector2 localPos)
 {
 	// 持ち上げる
-	PickUpBlockData pickUpBlockData = GameManager::GetInstance()->PickUp(localPos, GetBlockWeight());
+	auto [pickUpBlockData, center] = GameManager::GetInstance()->PickUp(localPos, GetBlockWeight());
 
 	// もし、ブロックがない場合はfalse
 	if (pickUpBlockData.GetWeight() == 0) { return false; }

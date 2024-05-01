@@ -151,7 +151,7 @@ public:
 	void AddHouse(int32_t xCenter);
 
 
-	Map::HouseInfo GetNearestHouse(int32_t x) const;
+	Map::HouseInfo *GetNearestHouse(int32_t x);
 
 
 	void ProcessEnemyHouseBlocks(std::function<void(int32_t y, int32_t x)> processBlock)

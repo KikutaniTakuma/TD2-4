@@ -138,9 +138,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 						//GameDataTransfar.blockHitAtTowerPos_.Add(Map::GetGrobalPos(pos));
 
 						// 敵拠点を取得
-						auto enemyHouse = blockMap_->GetNearestHouse(static_cast<int32_t>(pos.x));
+						Lamb::SafePtr enemyHouse = blockMap_->GetNearestHouse(static_cast<int32_t>(pos.x));
 
-						const int32_t xPos = enemyHouse.xPos_;
+						const int32_t xPos = enemyHouse->xPos_;
 						Vector2 direction = Vector2::kXIdentity * SoLib::Math::Sign(fallingComp->velocity_.x);
 
 						blockMap_->ProcessEnemyHouseBlocks([direction, xPos, this](int32_t y, int32_t x)
@@ -156,13 +156,13 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 							});
 
 						// 大きさ分のダメージを与える
-						enemyHouse.health_ -= fallingComp->GetWeight();
+						enemyHouse->health_ -= fallingComp->GetWeight();
 
 						// 体力が0を下回ったら
-						if (enemyHouse.health_ <= 0)
+						if (enemyHouse->health_ <= 0)
 						{
 							// 崩壊フラグを立てる
-							enemyHouse.damageFacing_ = SoLib::Math::Sign(static_cast<int32_t>(fallingComp->velocity_.x));
+							enemyHouse->damageFacing_ = SoLib::Math::Sign(static_cast<int32_t>(fallingComp->velocity_.x));
 
 						}
 						break;
@@ -186,6 +186,24 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 				fallingComp->velocity_.x = xMove;
 			}
 
+			// もし上に飛んでたら
+			if (fallingComp->velocity_.y > 0)
+			{
+
+				float yMove = fallingComp->velocity_.y;
+				// 上移動を消してもう一度試す
+				fallingComp->velocity_.y = 0;
+				//isOnemore = true;
+				// あたってなかったら
+				if (fallingComp->IsLanding() == false)
+				{
+					// やり直す
+					continue;
+				}
+				fallingComp->velocity_.y = yMove;
+			}
+
+			// 下側が接地していた場合
 
 			// ローカル座標のコンポーネント
 			const LocalBodyComp &localBodyComp = *fallingComp->pLocalPos_;
@@ -247,6 +265,17 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	}
 
 	damageAreaList_.clear();
+
+	for (auto &house : *blockMap_->GetHouseList())
+	{
+		// 飛ぶ方向が指定されてたら
+		if (house.health_ == 0 || house.damageFacing_ != 0)
+		{
+			BreakEnemyHouse(house.damageFacing_, house);
+			house.health_ = Map::HouseInfo::kMaxHealth_;
+			house.damageFacing_ = 0;
+		}
+	}
 
 
 	// AABBのデータを転送
@@ -342,7 +371,7 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	return dwarfList_.back().get();
 }
 
-PickUpBlockData GameManager::PickUp(Vector2 localPos, int hasBlockWeight, int maxWeight, bool isPowerful)
+std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, int hasBlockWeight, int maxWeight, bool isPowerful)
 {
 
 	// 範囲外である場合は終わる
@@ -420,7 +449,7 @@ PickUpBlockData GameManager::PickUp(Vector2 localPos, int hasBlockWeight, int ma
 	// ブロックを破壊した後のデータを返す
 	result.size_ = blockSize;
 
-	return result;
+	return { result, center };
 
 }
 
