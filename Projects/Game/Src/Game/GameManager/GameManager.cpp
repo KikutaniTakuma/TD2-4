@@ -49,6 +49,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 {
 	GlobalVariables::GetInstance()->Update();
 
+	blockMap_->Update(deltaTime);
+
 	player_->Update(deltaTime);
 	for (auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Update(deltaTime);
@@ -97,7 +99,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 			}
 			// ブロックが壊れてたら飛ばす
-			if (not block->GetActive()) { continue; }
+			if (not block->GetActive()) { break; }
 
 			Vector2 posDiff = dwarfBody->localPos_ - blockBody->localPos_;
 
@@ -115,9 +117,75 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		}
 
 
+		// ブロックが壊れてたら飛ばす
+		if (not block->GetActive()) { continue; }
 
-		// もし着地してたら終わる
+		// もし着地してたら
 		if (fallingComp->IsLanding()) {
+			// もし横に移動していたら
+			if (fallingComp->velocity_.x != 0)
+			{
+
+				// 当たっていたのが敵拠点の時の処理
+
+				// 当たった場所のリスト
+				const auto &hitPosList = fallingComp->FindLandingList();
+				for (Vector2 pos : hitPosList)
+				{
+					// もし､当たったブロックが敵拠点なら
+					if (blockMap_->GetBoxType(pos) == Map::BoxType::kEnemyBlock)
+					{
+						//GameDataTransfar.blockHitAtTowerPos_.Add(Map::GetGrobalPos(pos));
+
+						// 敵拠点を取得
+						auto enemyHouse = blockMap_->GetNearestHouse(static_cast<int32_t>(pos.x));
+
+						const int32_t xPos = enemyHouse.xPos_;
+						Vector2 direction = Vector2::kXIdentity * SoLib::Math::Sign(fallingComp->velocity_.x);
+
+						blockMap_->ProcessEnemyHouseBlocks([direction, xPos, this](int32_t y, int32_t x)
+							{
+								Vector2 blockFinder = { static_cast<float>(xPos + x), static_cast<float>(y) };
+								if (blockMap_->GetBoxType(blockFinder) == Map::BoxType::kEnemyBlock)
+								{
+									Lamb::SafePtr ground = (*blockMap_->GetBlockStatusMap())[y][xPos + x].get();
+									float power = y + 1.f;
+
+									ground->StartShake(1.5f, direction * power);
+								}
+							});
+
+						// 大きさ分のダメージを与える
+						enemyHouse.health_ -= fallingComp->GetWeight();
+
+						// 体力が0を下回ったら
+						if (enemyHouse.health_ <= 0)
+						{
+							// 崩壊フラグを立てる
+							enemyHouse.damageFacing_ = SoLib::Math::Sign(static_cast<int32_t>(fallingComp->velocity_.x));
+
+						}
+						break;
+
+					}
+				}
+
+
+				// 移動量のメモ
+				float xMove = fallingComp->velocity_.x;
+
+				// 横移動を消してもう一度試す
+				fallingComp->velocity_.x = 0;
+				//isOnemore = true;
+				// あたってなかったら
+				if (fallingComp->IsLanding() == false)
+				{
+					// やり直す
+					continue;
+				}
+				fallingComp->velocity_.x = xMove;
+			}
+
 
 			// ローカル座標のコンポーネント
 			const LocalBodyComp &localBodyComp = *fallingComp->pLocalPos_;
@@ -130,7 +198,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	}
 
 	// 落下ブロックの破棄
-	std::erase_if(fallingBlocks_, [](const auto& itr) ->bool { return not itr->GetActive(); });
+	std::erase_if(fallingBlocks_, [](const auto &itr) ->bool { return not itr->GetActive(); });
 
 	// 小人の破棄
 	{

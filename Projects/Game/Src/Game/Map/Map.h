@@ -10,6 +10,8 @@
 #include <Camera/Camera.h>
 #include <bitset>
 #include"Game/Ground/Ground.h"
+#include "SoLib/Math/Angle.h"
+#include <functional>
 
 class Map
 {
@@ -17,9 +19,17 @@ public:
 
 	// 拠点1つごとの情報
 	struct HouseInfo {
+		// 最大体力
+		static constexpr int32_t kMaxHealth_ = 7;
 
 		// x座標
 		int32_t xPos_{};
+
+		// 体力
+		int32_t health_ = kMaxHealth_;
+
+		// 倒れる方向
+		int32_t damageFacing_ = 0;
 
 		// モデルの表示情報
 		MatrixModelState houseModelState_;
@@ -34,8 +44,48 @@ public:
 		// ローカル座標
 		Vector2 localPos_;
 
+		// 描画時の差分
+		Vector2 drawOffset_{};
+		Vector2 shakeVec_;
+
+		// 振動の時間
+		float shakeTime_ = 0.f;
+		float startTime_ = 0;
+
 		int32_t GetWeight() const { return static_cast<int32_t>(blockSize_.x * blockSize_.y); }
 
+		/// @brief 振動を開始する
+		/// @param time 振動する時間
+		/// @param power 振動の方向
+		void StartShake(float time, Vector2 power)
+		{
+			startTime_ = time;
+			shakeTime_ = time;
+
+			shakeVec_ = power;
+		}
+
+		void Update(float deltaTime)
+		{
+
+			shakeTime_ -= deltaTime;
+			if (shakeTime_ <= 0)
+			{
+				shakeTime_ = 0;
+				startTime_ = 0;
+			}
+
+			Vector2 diff = {};
+
+			if (startTime_ != 0)
+			{
+				float x = shakeTime_ / startTime_;
+
+				diff += shakeVec_ * x * std::sin(4 * x * Angle::PI) / 8 * x;
+			}
+			drawOffset_ = diff;
+
+		}
 	};
 
 
@@ -102,7 +152,20 @@ public:
 
 
 	Map::HouseInfo GetNearestHouse(int32_t x) const;
-	
+
+
+	void ProcessEnemyHouseBlocks(std::function<void(int32_t y, int32_t x)> processBlock)
+	{
+		for (int yi = 0; yi < Map::kMapY; yi++)
+		{
+			for (int xi = -1; xi < 2; xi++)
+			{
+				processBlock(yi, xi);
+			}
+		}
+	}
+
+
 public:
 	/// @brief 2次元配列の取得
 	/// @return 二次元配列

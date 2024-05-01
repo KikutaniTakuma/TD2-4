@@ -30,6 +30,14 @@ void Map::Init()
 
 void Map::Update([[maybe_unused]] const float deltaTime) {
 
+	for (auto &blockStatusLine : *blockStatesMap_) {
+		for (auto &blockStatus : blockStatusLine) {
+			if (blockStatus) {
+				blockStatus->Update(deltaTime);
+			}
+		}
+	}
+
 }
 
 void Map::Draw([[maybe_unused]] const Camera &camera) const {
@@ -93,11 +101,14 @@ void Map::TransferBoxData()
 
 			// ボックスが存在する場合は実体を作成
 			if (box != BoxType::kNone and box != BoxType::kMax) {
+				// 描画先の座標
+				const Vector2 drawPos = GetGrobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) } + (*blockStatesMap_)[yi][xi]->drawOffset_);
 				// もしすでに実在したら生成しない
 				if (not modelState) {
 					modelState = std::make_unique<MatrixModelState>();
-					modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y } *0.5f, Vector3::kZero, GetGrobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) }));
+
 				}
+				modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y } *0.5f, Vector3::kZero, drawPos);
 				// 色を指定する
 				modelState->color = kBoxColors_[static_cast<uint32_t>(box)];
 			}
