@@ -139,7 +139,7 @@ void DwarfComp::ChangeMovementTarget()
 
 
 	// 自由に動き回る
-	//FreeTargetMove();
+	FreeTargetMove();
 
 
 }
@@ -234,7 +234,7 @@ void DwarfComp::LocateOnHouse()
 				{
 
 					// 設置する中心座標
-					Vector2 leftSidePos = Vector2::kYIdentity * (std::floor(localPos.y) + (blockSize.y / 2 - 0.5f));
+					Vector2 blockCenterPos = Vector2::kYIdentity * (std::floor(localPos.y) + (blockSize.y / 2 - 0.5f));
 
 					float blockSizeDiff = 0;
 
@@ -247,19 +247,19 @@ void DwarfComp::LocateOnHouse()
 						}
 						else
 						{
-							blockSizeDiff = onLocatePos + 0.5f;
+							blockSizeDiff = onLocatePos - 1.5f;
 						}
 
 						break;
 					case 3:
 
-						blockSizeDiff = -1.5f;
+						blockSizeDiff = onLocatePos -1.f;
 
 						break;
 					}
 
 					// 中心座標を設定
-					leftSidePos.x = std::floor(localPos.x) - blockSizeDiff;
+					blockCenterPos.x = std::floor(localPos.x) - blockSizeDiff;
 
 
 					// 設置できるか調べる
@@ -269,7 +269,7 @@ void DwarfComp::LocateOnHouse()
 					{
 						for (float x = 0; x < blockSize.x; x++)
 						{
-							if (map->GetBoxType(leftSidePos + Vector2::kXIdentity * x + Vector2::kYIdentity * y - halfSize) != Map::BoxType::kNone)
+							if (map->GetBoxType(blockCenterPos + Vector2::kXIdentity * x + Vector2::kYIdentity * y - halfSize) != Map::BoxType::kNone)
 							{
 								isSetable = false;
 								break;
@@ -281,7 +281,7 @@ void DwarfComp::LocateOnHouse()
 					if (isSetable)
 					{
 						// ブロックを配置
-						map->SetBlocks(leftSidePos, blockSize, Map::BoxType::kEnemyBlock);
+						map->SetBlocks(blockCenterPos, blockSize, Map::BoxType::kEnemyBlock);
 
 						// 先頭要素を削除
 						pPickUpComp_->PopFront();
@@ -292,6 +292,42 @@ void DwarfComp::LocateOnHouse()
 
 		}
 
+	}
+
+}
+
+void DwarfComp::FreeTargetMove()
+{
+	// ブロックを持っていたら終わる
+	if (pPickUpComp_->GetBlockWeight() > 0) { return; }
+
+	// ローカルの座標
+	float localX = pLocalBodyComp_->localPos_.x;
+
+	// 右端にいる場合
+	if ((Map::kMapX - 1.5f) <= localX)
+	{
+		// 左端に行くように指定
+		movementFacing_ = -1;
+	}
+	// 左端にいる場合
+	else if (0.5f >= localX)
+	{
+		// 右端に行くように指定
+		movementFacing_ = 1;
+	}
+
+
+	// 向いている方向の端に移動先を設定する
+	if (movementFacing_ == 1)
+	{
+		// 右下に移動
+		targetPos_ = Vector2::kXIdentity * ((Map::kMapX - 1));
+	}
+	else if (movementFacing_ == -1)
+	{
+		// 左下に移動
+		targetPos_ = Vector2::kZero;
 	}
 
 }

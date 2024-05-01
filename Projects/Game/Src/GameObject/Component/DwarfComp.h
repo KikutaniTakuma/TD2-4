@@ -39,6 +39,9 @@ private:
 
 	void LocateOnHouse();
 
+	void FreeTargetMove();
+
+
 
 	/// <summary>
 	/// 移動を行う
@@ -66,6 +69,8 @@ private:
 private:
 
 	int32_t facing_;
+
+	int32_t movementFacing_;
 
 	Vector2 targetPos_;
 
