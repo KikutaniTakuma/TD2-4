@@ -4,9 +4,9 @@
 
 void DwarfComp::Init()
 {
+	pLocalBodyComp_ = object_.AddComponent<LocalBodyComp>();
 	pPickUpComp_ = object_.AddComponent<PickUpComp>();
 
-	pLocalBodyComp_ = object_.AddComponent<LocalBodyComp>();
 	pLocalBodyComp_->size_ = Vector2::kIdentity * 0.5f;
 
 	Lamb::SafePtr modelComp = object_.AddComponent<ModelComp>();

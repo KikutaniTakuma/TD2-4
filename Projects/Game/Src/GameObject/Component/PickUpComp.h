@@ -1,8 +1,10 @@
 #pragma once
 #include "../GameObject.h"
 #include "Drawers/Model/Model.h"
+#include "LocalBodyComp.h"
 
 struct PickUpBlockData;
+class DwarfComp;
 
 class PickUpComp :public IComponent
 {
@@ -30,11 +32,14 @@ public:
 
 	void PopFront() { pickupBlockList_.pop_front(); }
 
+	void ThrowAllBlocks();
+
 private:
 
 	Model *model_;
 
 	std::list<PickUpBlockData> pickupBlockList_;
+	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;
 
-
+	DwarfComp *pDwarfComp_ = nullptr;
 };

@@ -83,6 +83,54 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		}
 	}
 
+	// 小人の破棄
+	{
+		for (auto dwarfItr = dwarfList_.begin(); dwarfItr != dwarfList_.end();) {
+			Lamb::SafePtr dwarfObject = dwarfItr->get();
+
+
+			// もし死んでいたら消す
+			if (not dwarfObject->GetActive() or Input::GetInstance()->GetKey()->GetKey(DIK_P)) {
+
+				dwarfObject->GetComponent<PickUpComp>()->ThrowAllBlocks();
+
+
+				dwarfItr = dwarfList_.erase(dwarfItr); // オブジェクトを破棄してイテレータを変更
+				continue;
+			}
+
+
+			// 何もなかったら次へ
+			++dwarfItr;
+		}
+	}
+
+
+	for (auto &dwarf : dwarfList_) {
+
+		Lamb::SafePtr dwarfBody = dwarf->GetComponent<LocalBodyComp>();
+
+		for (const auto &damageArea : damageAreaList_) {
+
+			Vector2 posDiff = dwarfBody->localPos_ - damageArea.centerPos_;
+
+			Vector2 size = (dwarfBody->size_ + damageArea.size_) * 0.5f;
+
+			// ぶつかっていたら破壊
+			if (std::abs(posDiff.x) <= size.x or std::abs(posDiff.y) <= size.y) {
+
+				dwarf->SetActive(false);
+
+				break;
+
+			}
+
+
+		}
+	}
+
+	damageAreaList_.clear();
+
 
 	// AABBのデータを転送
 	blockMap_->TransferBoxData();

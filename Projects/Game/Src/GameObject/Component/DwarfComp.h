@@ -25,6 +25,8 @@ public:
 
 public:
 
+	int32_t GetFacing() const { return facing_; }
+
 private:
 
 	void ClimbUp();
