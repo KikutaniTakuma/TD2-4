@@ -64,9 +64,9 @@ void GameScene::TextureInitialize(){
 		clouds_[i] = std::make_unique<Tex2DState>();
 		uint32_t num = Lamb::Random(0, 2);
 		clouds_[i]->textureName = cloudType_[num];
-		cloudsSpeed_[i] = Lamb::Random(-3.0f, -1.0f);
+		cloudsSpeed_[i] = Lamb::Random(3.0f, 1.0f);
 
-		clouds_[i]->transform.translate = { Lamb::Random(0.0f,600.0f), Lamb::Random(-50.0f,250.0f) };
+		clouds_[i]->transform.translate = { Lamb::Random(0.0f,-600.0f), Lamb::Random(-50.0f,250.0f) };
 		clouds_[i]->transform.scale = cloudScale_[clouds_[i]->textureName];
 		clouds_[i]->color = 0xffffffff;
 		clouds_[i]->textureID = DrawerManager::GetInstance()->LoadTexture(("./Resources/UI/GameMain/" + clouds_[i]->textureName).c_str());
@@ -187,7 +187,7 @@ void GameScene::Update() {
 void GameScene::TextureUpdate(){
 	for (uint32_t i = 0; i < kCloudNum_; i++) {
 		clouds_[i]->transform.translate.x += cloudsSpeed_[i];
-		if (clouds_[i]->transform.translate.x < (-700.0f) + (-clouds_[i]->transform.scale.x)){
+		if (clouds_[i]->transform.translate.x > (700.0f) + (clouds_[i]->transform.scale.x)){
 			CloudReset(i);
 		}
 		clouds_[i]->transform.CalcMatrix();
@@ -210,8 +210,8 @@ void GameScene::TextureUpdate(){
 
 void GameScene::CloudReset(const uint32_t cloudNumber){
 	clouds_[cloudNumber]->textureName = cloudType_[Lamb::Random(0, 2)];
-	clouds_[cloudNumber]->transform.translate = { 640.0f + cloudScale_[clouds_[cloudNumber]->textureName].x,Lamb::Random(-50.0f,250.0f) };
-	cloudsSpeed_[cloudNumber] = Lamb::Random(-3.0f, -1.0f);
+	clouds_[cloudNumber]->transform.translate = { -640.0f - cloudScale_[clouds_[cloudNumber]->textureName].x,Lamb::Random(-50.0f,250.0f) };
+	cloudsSpeed_[cloudNumber] = Lamb::Random(3.0f, 1.0f);
 	clouds_[cloudNumber]->transform.scale = cloudScale_[clouds_[cloudNumber]->textureName];
 	clouds_[cloudNumber]->color = 0xffffffff;
 	clouds_[cloudNumber]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/" + clouds_[cloudNumber]->textureName);
