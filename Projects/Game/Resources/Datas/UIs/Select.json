@@ -1,0 +1,45 @@
+{
+    "UIs": {
+        "Select": [
+            {
+                "TextureFullPath": "Resources/UI/enemy_popEffect.png",
+                "TextureName": "enemy_popEffect",
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0
+                ],
+                "translate": [
+                    264.0,
+                    141.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/circle.png",
+                "TextureName": "circle",
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0
+                ],
+                "translate": [
+                    488.0,
+                    220.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/uvChecker.png",
+                "TextureName": "uvChecker",
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0
+                ],
+                "translate": [
+                    452.0,
+                    -168.0
+                ]
+            }
+        ]
+    }
+}

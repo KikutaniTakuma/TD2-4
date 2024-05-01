@@ -1,0 +1,32 @@
+{
+    "UIs": {
+        "Game": [
+            {
+                "TextureFullPath": "Resources/UI/ball.png",
+                "TextureName": "ball",
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0
+                ],
+                "translate": [
+                    515.0,
+                    192.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/uvChecker.png",
+                "TextureName": "uvChecker",
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0
+                ],
+                "translate": [
+                    502.0,
+                    -31.0
+                ]
+            }
+        ]
+    }
+}

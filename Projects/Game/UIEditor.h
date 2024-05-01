@@ -73,7 +73,7 @@ public:
 		return texStateSelect;
 	}
 
-	std::vector<Tex2DState*> GetResulrTextures() {
+	std::vector<Tex2DState*> GetResultTextures() {
 		std::vector<Tex2DState*> texStateResult;
 		for (std::unique_ptr<Tex2DState>& ptr : texies_[0]) {
 			texStateResult.push_back(ptr.get());
@@ -94,6 +94,8 @@ private:
 	std::array<std::vector<std::unique_ptr<Tex2DState>>, BaseScene::kMaxScene> texies_;
 
 	std::unique_ptr<Tex2DState> newTex_;
+
+	BaseScene::ID id_;
 
 	/*色を変換する関数*/
 	Vector4 ConvertRGBAColorToVector4(uint32_t color) {
@@ -130,6 +132,8 @@ private:
 
 	//ファイルを読み込む
 	void LoadFile(const std::string& fileName);
+	//ファイルを読み込む
+	void LoadFileAll();
 	//ファイルが存在するか確認する(指定)
 	bool LoadChackItem(const std::string& fileName);
 
