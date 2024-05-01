@@ -52,3 +52,23 @@ void Tex2DAniamtor::SetAnimationNumber(uint32_t animationNumber) {
 	animationNumber_ = std::max(1u, animationNumber);
 	scale_.x = 1.0f / static_cast<float>(animationNumber_);
 }
+
+void Tex2DAniamtor::FlipUpsideDown(float singned) {
+	if (singned == 0.0f) {
+		return;
+	}
+
+	singned = singned / singned;
+
+	scale_.y *= singned;
+}
+
+void Tex2DAniamtor::FlipHorizontal(float singned) {
+	if (singned == 0.0f) {
+		return;
+	}
+
+	singned = singned / singned;
+
+	scale_.x *= singned;
+}
