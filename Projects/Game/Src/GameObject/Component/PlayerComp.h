@@ -5,6 +5,7 @@
 #include "Game/Map/Map.h"
 #include "Game/GameManager/GameManager.h"
 #include "LocalBodyComp.h"
+#include "Drawers/Model/Model.h"
 
 
 class PlayerComp : public IComponent {
@@ -18,6 +19,8 @@ public:
 
 	void Update() override;
 
+	void Draw(const Camera &camera) const override;
+
 public:
 
 	void MoveInput(int32_t xMove);
@@ -28,7 +31,9 @@ public:
 
 private:
 
-	int32_t startPos_;
+	int32_t startPos_ = -1;
+
+	Model *fallBlockModel_;
 
 
 private:
