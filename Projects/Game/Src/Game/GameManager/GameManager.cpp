@@ -14,6 +14,8 @@
 #include <GameObject/Component/FallingBlockComp.h>
 #include <GameObject/Component/Rigidbody.h>
 #include <GameObject/Component/DwarfComp.h>
+#include <GameObject/Component/SpriteComp.h>
+#include <GameObject/Component/DwarfAnimator.h>
 
 void GameManager::Init()
 {
@@ -34,9 +36,14 @@ void GameManager::Init()
 	LocalBodyComp::pMap_ = GetMap();
 
 	player_ = std::make_unique<GameObject>();
-	{
+	/*{
 		Lamb::SafePtr modelComp = player_->AddComponent<ModelComp>();
 		modelComp->AddBone("Body", drawerManager->GetModel("Resources/Cube.obj"));
+	}*/
+	{
+		Lamb::SafePtr spriteComp = player_->AddComponent<SpriteComp>();
+		spriteComp->SetTexture("./Resources/uvChecker.png");
+		spriteComp->CalcTexUv();
 	}
 
 	{
@@ -287,7 +294,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			house.damageFacing_ = 0;
 			house.isBreaked_ = true;
 		}
-		else{
+		else {
 			house.isBreaked_ = false;
 		}
 	}
@@ -392,6 +399,9 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	dwarf->AddComponent<DwarfComp>();
 	Lamb::SafePtr localBody = dwarf->GetComponent<LocalBodyComp>();
 	localBody->localPos_ = centerPos; // 座標の指定
+	localBody->drawScale_ = 1.f;
+
+	dwarf->AddComponent<DwarfAnimator>();
 
 	// 末尾に追加
 	dwarfList_.push_back(std::move(dwarf));

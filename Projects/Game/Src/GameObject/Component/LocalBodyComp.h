@@ -29,6 +29,8 @@ public:
 	// ブロックの大きさ
 	Vector2 size_;
 
+	float drawScale_ = 0.5f;
+
 private:
 
 };

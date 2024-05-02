@@ -132,6 +132,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp" />
     <ClCompile Include="Src\Editor\EnemyEditor\EnemyEditor.cpp" />
     <ClCompile Include="Src\Editor\ParticleEditor\ParticleEditor.cpp" />
+    <ClCompile Include="Src\GameObject\Component\DwarfAnimator.cpp" />
     <ClCompile Include="Src\GameObject\Component\DwarfComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\FallingBlockComp.cpp" />
     <ClCompile Include="Src\Editor\UIEditor\UIEditor.cpp" />
@@ -146,6 +147,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\GameObject\Component\PlayerComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\Projectile.cpp" />
     <ClCompile Include="Src\GameObject\Component\Rigidbody.cpp" />
+    <ClCompile Include="Src\GameObject\Component\SpriteAnimatorComp.cpp" />
+    <ClCompile Include="Src\GameObject\Component\SpriteComp.cpp" />
     <ClCompile Include="Src\GameObject\GameObject.cpp" />
     <ClCompile Include="Src\Game\BlockGauge.cpp" />
     <ClCompile Include="Src\Game\Block\Block.cpp" />
@@ -190,6 +193,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Editor\UIEditor\UIEditor.h" />
     <ClInclude Include="Src\GameObject\Component\Collider.h" />
     <ClInclude Include="Src\GameObject\Component\ComponentManager.h" />
+    <ClInclude Include="Src\GameObject\Component\DwarfAnimator.h" />
     <ClInclude Include="Src\GameObject\Component\DwarfComp.h" />
     <ClInclude Include="Src\GameObject\Component\FallingBlockComp.h" />
     <ClInclude Include="Src\GameObject\Component\FollowCameraComp.h" />
@@ -204,6 +208,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\GameObject\Component\Projectile.h" />
     <ClInclude Include="Src\GameObject\Component\Rigidbody.h" />
     <ClInclude Include="Src\GameObject\Component\SpriteComp.h" />
+    <ClInclude Include="Src\GameObject\Component\SpriteAnimatorComp.h" />
     <ClInclude Include="Src\GameObject\GameObject.h" />
     <ClInclude Include="Src\Game\BlockGauge.h" />
     <ClInclude Include="Src\Game\Block\Block.h" />

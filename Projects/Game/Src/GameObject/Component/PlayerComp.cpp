@@ -7,6 +7,7 @@ void PlayerComp::Init()
 {
 	pLocalPosComp_ = object_.AddComponent<LocalBodyComp>();
 	pLocalPosComp_->size_ = Vector2::kIdentity;
+	pLocalPosComp_->drawScale_ = 1.f;
 
 	fallBlockModel_ = DrawerManager::GetInstance()->GetModel("Resources/Cube.obj");
 }

@@ -1,6 +1,8 @@
 #include "DwarfComp.h"
 #include "ModelComp.h"
 #include <Drawers/DrawerManager.h>
+#include "SpriteComp.h"
+#include "SpriteAnimatorComp.h"
 
 void DwarfComp::Init()
 {
@@ -9,9 +11,19 @@ void DwarfComp::Init()
 
 	pLocalBodyComp_->size_ = Vector2::kIdentity * 0.5f;
 
-	Lamb::SafePtr modelComp = object_.AddComponent<ModelComp>();
+	/*Lamb::SafePtr modelComp = object_.AddComponent<ModelComp>();
 	Lamb::SafePtr bodyModel = modelComp->AddBone("Body", DrawerManager::GetInstance()->GetModel(GameManager::kDwarfModelName));
-	bodyModel->color_ = 0xFF0000FF;
+	bodyModel->color_ = 0xFF0000FF;*/
+
+	{
+		Lamb::SafePtr spriteComp = object_.AddComponent<SpriteComp>();
+		spriteComp->SetTexture("./Resources/uvChecker.png");
+
+		spriteComp->CalcTexUv();
+	}
+	{
+		Lamb::SafePtr spriteAnimComp = object_.AddComponent<SpriteAnimatorComp>();
+	}
 }
 
 void DwarfComp::Start()
