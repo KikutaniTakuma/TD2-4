@@ -129,6 +129,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 		// もし着地してたら
 		if (fallingComp->IsLanding()) {
+			// ダメージ判定がない場合、壁天井に対する検知を行う
+			if (not fallingComp->hasDamage_) {
+
 			// もし横に移動していたら
 			if (fallingComp->velocity_.x != 0)
 			{
@@ -210,6 +213,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 				fallingComp->velocity_.y = yMove;
 			}
 
+			}
 			// 下側が接地していた場合
 
 			// ローカル座標のコンポーネント
@@ -356,8 +360,6 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, bool h
 void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 {
 
-	// ブロックを設置
-	blockMap_->SetBlocks(centerPos, size, Map::BoxType::kGroundBlock);
 
 	// ダメージ判定があるならダメージ判定を追加
 	if (hasDamage)
@@ -370,6 +372,10 @@ void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 
 		damageAreaList_.push_back(damage);
 
+	}
+	else {
+		// ブロックを設置
+		blockMap_->SetBlocks(centerPos, size, Map::BoxType::kGroundBlock);
 	}
 }
 
