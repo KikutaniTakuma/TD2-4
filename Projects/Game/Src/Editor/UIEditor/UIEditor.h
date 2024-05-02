@@ -152,8 +152,10 @@ private:
 	bool OperationConfirmation();
 
 private:
-	//jsonの数値をVector3に変換する関数
 	void from_json(const json& j, Vector2& v);
+
+	//jsonの数値をVector3に変換する関数
+	void from_json(const json& j, Vector3& v);
 
 private:
 	//ファイル保存関連

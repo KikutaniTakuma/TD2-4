@@ -4,27 +4,47 @@
             {
                 "TextureFullPath": "Resources/UI/deadLine.png",
                 "TextureName": "deadLine",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
                 "color": 4294967295,
                 "scale": [
                     1280.0,
-                    60.0
+                    60.0,
+                    1.0
                 ],
                 "translate": [
                     0.0,
-                    240.0
+                    240.0,
+                    0.0
                 ]
             },
             {
                 "TextureFullPath": "Resources/UI/rest.png",
                 "TextureName": "rest",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
                 "color": 4294967295,
                 "scale": [
                     302.0,
-                    50.0
+                    50.0,
+                    1.0
                 ],
                 "translate": [
                     449.0,
-                    -200.0
+                    -200.0,
+                    -10.0
                 ]
             }
         ]
