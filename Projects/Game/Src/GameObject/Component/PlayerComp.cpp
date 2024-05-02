@@ -35,7 +35,7 @@ void PlayerComp::Draw(const Camera &camera) const
 		Vector3 pos = Map::GetGrobalPos(spawnPos) - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f);
 		Matrix affine = SoLib::Math::Affine(Vector3{ std::abs(xDiff) + 1 ,1,1 } / 2, Vector3::kZero, pos);
 
-		fallBlockModel_->Draw(affine, camera.GetViewProjection(), 0xFFFFFFFF, BlendType::kNone);
+		fallBlockModel_->Draw(affine, camera.GetViewOthographics(), 0xFFFFFFFF, BlendType::kNone);
 	}
 }
 

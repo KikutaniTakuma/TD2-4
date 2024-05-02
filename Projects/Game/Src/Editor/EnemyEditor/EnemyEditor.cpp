@@ -50,7 +50,7 @@ void EnemyEditor::Update() {
 }
 
 void EnemyEditor::Draw(const Camera &camera) {
-	obb_->Draw(camera.GetViewProjection());
+	obb_->Draw(camera.GetViewOthographics());
 }
 
 void EnemyEditor::Debug() {

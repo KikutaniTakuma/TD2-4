@@ -29,7 +29,7 @@ void Enemy::Update(){
 }
 
 void Enemy::Draw(const Camera& camera){
-	model_->Draw(transform.matWorld_, camera.GetViewProjection(), 0xffffffff, BlendType::kNormal);
+	model_->Draw(transform.matWorld_, camera.GetViewOthographics(), 0xffffffff, BlendType::kNormal);
 
 }
 

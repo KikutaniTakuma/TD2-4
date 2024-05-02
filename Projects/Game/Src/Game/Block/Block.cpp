@@ -53,7 +53,7 @@ void Block::Update(){
 }
 
 void Block::Draw(const Camera& camera){
-	model_->Draw(transform_->matWorld_, camera.GetViewProjection(), 0xffffffff, BlendType::kNormal);
+	model_->Draw(transform_->matWorld_, camera.GetViewOthographics(), 0xffffffff, BlendType::kNormal);
 }
 
 void Block::Debug(){

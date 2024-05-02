@@ -45,7 +45,7 @@ void Player::Update(){
 }
 
 void Player::Draw(const Camera& camera){
-	obb_->Draw(camera.GetViewProjection());
+	obb_->Draw(camera.GetViewOthographics());
 
 	std::list<std::unique_ptr<Block>>::iterator blockItr = blockList_.begin();
 

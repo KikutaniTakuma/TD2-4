@@ -182,7 +182,7 @@ void Camera::Debug([[maybe_unused]] const std::string &guiName) {
 	ImGui::DragFloat3("scale", &scale.x, 0.01f);
 	SoLib::ImGuiDragEuler("rotate", &rotate.x);
 	ImGui::DragFloat3("offset", &offset.x);
-	ImGui::DragFloat("drawScale", &drawScale);
+	ImGui::DragFloat("drawScale", &drawScale, 0.01f);
 	ImGui::End();
 #endif // _DEBUG
 }

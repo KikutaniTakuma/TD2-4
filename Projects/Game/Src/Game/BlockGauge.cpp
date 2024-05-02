@@ -63,7 +63,7 @@ void GaugeDrawer::Update([[maybe_unused]] float deltaTime)
 
 void GaugeDrawer::Draw(const Camera &camera) const
 {
-	pModel_->Draw(transform_.matWorld_, camera.GetViewProjection(), 0xFF00FFFF, BlendType::kNone);
+	pModel_->Draw(transform_.matWorld_, camera.GetViewOthographics(), 0xFF00FFFF, BlendType::kNone);
 }
 
 void GaugeDrawer::SetParcent(float parcent)

@@ -107,6 +107,7 @@ void GameScene::Initialize() {
 	currentCamera_->offset.z = -60.0f;
 	currentCamera_->offset.y = 8.0f;
 	currentCamera_->rotate.x = 0_deg;
+	currentCamera_->drawScale = 0.036f;
 
 	gameManager_ = GameManager::GetInstance();
 	gameManager_->Init();

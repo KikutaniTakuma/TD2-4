@@ -116,12 +116,6 @@ void UIEditor::Debug(const BaseScene::ID id){
 							setTex_->transform = newTex_->transform;
 							setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i.string().c_str());
 
-							// 読み込んだらvramへ送る
-							Lamb::SafePtr textureManager = TextureManager::GetInstance();
-							textureManager->UploadTextureData();
-							textureManager->ReleaseIntermediateResource();
-
-
 							setTex_->textureFullPath = i.string().c_str();
 							std::string result;
 

@@ -19,7 +19,7 @@ void PickUpComp::Draw(const Camera &camera) const
 
 		Vector3 pos = Vector3::kYIdentity * (1 + yDiff + (block.size_.y / 2 - 0.5f)) + transform_.translate;
 		Matrix worldMat = SoLib::Math::Affine((Vector3::kZIdentity + block.size_) * 0.5f, Vector3::kZero, pos);
-		model_->Draw(worldMat, camera.GetViewProjection(), 0xFFFFFFFF, BlendType::kNone);
+		model_->Draw(worldMat, camera.GetViewOthographics(), 0xFFFFFFFF, BlendType::kNone);
 
 		// yの値を加算する
 		yDiff += block.size_.y;

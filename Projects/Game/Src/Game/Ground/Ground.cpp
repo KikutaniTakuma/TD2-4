@@ -24,7 +24,7 @@ void Ground::Update([[maybe_unused]] const float deltaTime)
 
 void Ground::Draw(const Camera &camera) const
 {
-	model_->Draw(groundModelStates_.transMat, camera.GetViewProjection(), groundModelStates_.color, BlendType::kNone);
+	model_->Draw(groundModelStates_.transMat, camera.GetViewOthographics(), groundModelStates_.color, BlendType::kNone);
 
 }
 
@@ -56,7 +56,7 @@ void GroundEditor::Draw([[maybe_unused]] const Camera &camera) const {
 
 	for (size_t i = 0; i < modelStates_.size(); i++) {
 		if ((modelStates_[i]->color & 0xFF) != 0x00) {	// 色のアルファ色が無色でない場合は描画
-			model_->Draw(modelStates_[i]->transform.matWorld_, camera.GetViewProjection(), modelStates_[i]->color, BlendType::kNormal);
+			model_->Draw(modelStates_[i]->transform.matWorld_, camera.GetViewOthographics(), modelStates_[i]->color, BlendType::kNormal);
 		}
 	}
 

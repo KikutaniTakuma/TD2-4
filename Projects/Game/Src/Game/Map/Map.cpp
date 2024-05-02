@@ -44,12 +44,12 @@ void Map::Draw([[maybe_unused]] const Camera &camera) const {
 	for (const auto &modelStateArr : modelStateMap_) {
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
-				model_->Draw(modelState->transMat, camera.GetViewProjection(), modelState->color, BlendType::kNone);
+				model_->Draw(modelState->transMat, camera.GetViewOthographics(), modelState->color, BlendType::kNone);
 			}
 		}
 	}
 	for (const auto &house : houseList_) {
-		model_->Draw(house.houseModelState_.transMat, camera.GetViewProjection(), house.houseModelState_.color, BlendType::kNormal);
+		model_->Draw(house.houseModelState_.transMat, camera.GetViewOthographics(), house.houseModelState_.color, BlendType::kNormal);
 	}
 
 	ground_->Draw(camera);

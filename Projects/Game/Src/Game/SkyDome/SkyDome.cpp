@@ -57,7 +57,7 @@
 //		data_ = mesh_->CopyBuffer();
 //	}
 //
-//	wvpData_->viewProjectoionMat = camera.GetViewProjection();
+//	wvpData_->viewProjectoionMat = camera.GetViewOthographics();
 //
 //	auto commandlist = DirectXCommand::GetInstance()->GetCommandList();
 //

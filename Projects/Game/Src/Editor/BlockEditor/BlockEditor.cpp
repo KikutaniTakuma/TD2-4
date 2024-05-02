@@ -62,7 +62,7 @@ void BlockEditor::Update() {
 
 void BlockEditor::Draw(const Camera &camera) {
 	for (size_t i = 0; i < 3; i++) {
-		obb_[i]->Draw(camera.GetViewProjection());
+		obb_[i]->Draw(camera.GetViewOthographics());
 	}
 }
 
