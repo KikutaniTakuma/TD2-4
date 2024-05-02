@@ -1,6 +1,7 @@
 #pragma once
 #include "Game/Map/Map.h"
 #include "Utils/SafePtr/SafePtr.h"
+#include <Drawers/Texture2D/Texture2D.h>
 
 // ゲームマネージャ
 class GameManager;	// シングルトン。前方宣言なのでSafePtrは使えない。
@@ -25,6 +26,10 @@ private:
 	GameManager *pGameManager_ = nullptr;
 
 	Lamb::SafePtr<Map> pMap_ = nullptr;
+
+	Texture2D *pSpriteDrawer = nullptr;
+
+	uint32_t whiteTex_;
 
 	static Vector2 ToGrobal(const Vector2 localPos) noexcept { return Map::GetGlobalPos(localPos); }
 
