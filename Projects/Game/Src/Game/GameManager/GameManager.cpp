@@ -16,6 +16,7 @@
 #include <GameObject/Component/DwarfComp.h>
 #include <GameObject/Component/SpriteComp.h>
 #include <GameObject/Component/DwarfAnimator.h>
+#include <GameObject/Component/DwarfShakeComp.h>
 
 void GameManager::Init()
 {
@@ -411,6 +412,7 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	localBody->drawScale_ = 1.f;
 
 	dwarf->AddComponent<DwarfAnimatorComp>();
+	dwarf->AddComponent<DwarfShakeComp>();
 
 	// 末尾に追加
 	dwarfList_.push_back(std::move(dwarf));

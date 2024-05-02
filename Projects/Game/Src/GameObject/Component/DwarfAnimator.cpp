@@ -7,6 +7,8 @@ void DwarfAnimatorComp::Init()
 	pSpriteComp_ = object_.AddComponent<SpriteComp>();			// 描画を自動で行う
 	pAnimComp_ = object_.AddComponent<SpriteAnimatorComp>();	// UpdateとUV行列の転送を自動で行う
 
+	object_.GetComponent<LocalBodyComp>()->drawScale_ = 2.0f;
+
 	spriteAnimator_ = pAnimComp_->GetAnimator();
 	spriteAnimator_->SetDuration(0.25f);
 	spriteAnimator_->SetLoopAnimation(true);
