@@ -2,7 +2,7 @@
 
 Vector2 LocalBodyComp::GetGlobalPos() const
 {
-	return Map::GetGrobalPos(localPos_);
+	return Map::GetGlobalPos(localPos_);
 }
 
 void LocalBodyComp::TransfarData()

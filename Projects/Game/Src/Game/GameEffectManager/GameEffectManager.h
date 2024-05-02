@@ -6,6 +6,7 @@
 class GameManager;	// シングルトン。前方宣言なのでSafePtrは使えない。
 
 class GameEffectManager {
+	friend GameManager;
 public:
 	GameEffectManager() = default;
 	~GameEffectManager() = default;
@@ -22,5 +23,18 @@ private:
 	GameManager *pGameManager_ = nullptr;
 
 	Lamb::SafePtr<Map> pMap_ = nullptr;
+
+	static Vector2 ToGrobal(const Vector2 localPos) noexcept { return Map::GetGlobalPos(localPos); }
+
+	// ↓ 自動的に追加、破棄を行う。
+
+	// 破壊されたブロックのローカル座標
+	std::list<Vector2> blockBreakPos_;
+
+	// 小人が死んだ時のローカル座標
+	std::list<Vector2> dwarfDeadPos_;
+
+	// 落下ブロックの予測
+	std::list<Vector2> fallingBlocks_;
 
 };

@@ -14,7 +14,7 @@ void PlayerComp::Init()
 
 void PlayerComp::Start()
 {
-	pLocalPosComp_->localPos_ = Vector2{ 0,static_cast<float>(Map::kMapY) };
+	pLocalPosComp_->localPos_ = Vector2{ 0, static_cast<float>(Map::kMapY) };
 }
 
 void PlayerComp::Update()
@@ -33,7 +33,7 @@ void PlayerComp::Draw(const Camera &camera) const
 
 		const Vector2 spawnPos{ static_cast<float>(startPos_), pLocalPosComp_->localPos_.y };
 
-		Vector3 pos = Map::GetGrobalPos(spawnPos) - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f);
+		Vector3 pos = Map::GetGlobalPos(spawnPos) - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f);
 		Matrix affine = SoLib::Math::Affine(Vector3{ std::abs(xDiff) + 1 ,1,1 } / 2, Vector3::kZero, pos);
 
 		fallBlockModel_->Draw(affine, camera.GetViewOthographics(), 0xFFFFFFFF, BlendType::kNone);
