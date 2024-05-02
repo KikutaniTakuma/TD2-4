@@ -23,4 +23,6 @@ private:
 	Lamb::SafePtr<PickUpComp> pPickUpComp_ = nullptr;
 	Lamb::SafePtr<SpriteComp> pSpriteComp_ = nullptr;
 
+	Vector2 shakePower_{ 0.15f,0.15f };
+
 };
