@@ -190,6 +190,7 @@ public:
 	/// </summary>
 	/// <param name="emitterPos">Emitterの位置</param>
 	void ParticleStart(const Vector3& pos);
+	void ParticleStart(const Vector3& pos, const Vector3& size);
 
 	/// <summary>
 	/// パーティクル停止関数
@@ -235,6 +236,7 @@ public:
 
 public:
 	Vector3 emitterPos;
+	Vector3 emitterSize;
 
 private:
 	std::deque<Setting> settings_;

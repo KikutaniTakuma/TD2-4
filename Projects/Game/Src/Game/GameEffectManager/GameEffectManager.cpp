@@ -26,9 +26,15 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 		if (particle == particles_.end()) {
 			break;
 		}
-		(*particle)->emitterPos.x = blockPos.first.x;
-		(*particle)->emitterPos.y = blockPos.first.y;
-		(*particle)->ParticleStart();
+		Vector3 emitterpos = ToGrobal(blockPos.first);
+		emitterpos.z = -10.0f;
+		(*particle)->ParticleStart(emitterpos);
+	}
+
+	for (auto& i : particles_) {
+		if (i->GetIsParticleStart()) {
+			i->Update();
+		}
 	}
 }
 
