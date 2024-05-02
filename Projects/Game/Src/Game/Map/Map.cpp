@@ -102,7 +102,7 @@ void Map::TransferBoxData()
 			// ボックスが存在する場合は実体を作成
 			if (box != BoxType::kNone and box != BoxType::kMax) {
 				// 描画先の座標
-				const Vector2 drawPos = GetGrobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) } + (*blockStatesMap_)[yi][xi]->drawOffset_);
+				const Vector2 drawPos = GetGlobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) } + (*blockStatesMap_)[yi][xi]->drawOffset_);
 				// もしすでに実在したら生成しない
 				if (not modelState) {
 					modelState = std::make_unique<MatrixModelState>();
@@ -201,7 +201,7 @@ bool Map::IsOutSide(const Vector2 &localPos)
 
 void Map::AddHouse(int32_t xCenter)
 {
-	houseList_.push_back(HouseInfo{ .xPos_ = xCenter,.houseModelState_ = MatrixModelState{.transMat = SoLib::Math::Affine(Vector3{1.5f, 0.5f, 5.f}, Vector3::kZero, Map::GetGrobalPos(Vector2{static_cast<float>(xCenter), -1.f})), .color = 0x0000FF55} });
+	houseList_.push_back(HouseInfo{ .xPos_ = xCenter,.houseModelState_ = MatrixModelState{.transMat = SoLib::Math::Affine(Vector3{1.5f, 0.5f, 5.f}, Vector3::kZero, Map::GetGlobalPos(Vector2{static_cast<float>(xCenter), -1.f})), .color = 0x0000FF55} });
 
 }
 
