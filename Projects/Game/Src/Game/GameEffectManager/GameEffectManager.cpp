@@ -22,26 +22,28 @@ void GameEffectManager::Init()
 
 void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 {
-	for (auto particle = particles_.begin(); const auto & blockPos : blockBreakPos_) {
+	for (auto particle = particles_.begin(); const auto & blockPosAndSize : blockBreakPos_) {
 		if (particle == particles_.end()) {
 			break;
 		}
-		(*particle)->emitterPos.x = blockPos.x;
-		(*particle)->emitterPos.y = blockPos.y;
-		(*particle)->ParticleStart();
+		Vector3 emitterpos = ToGrobal(blockPosAndSize.first);
+		emitterpos.z = -10.0f;
+		(*particle)->ParticleStart(emitterpos, blockPosAndSize.second);
+	}
+
+	for (auto& i : particles_) {
+		i->Update();
 	}
 }
 
 void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
 {
 	for (auto& i : particles_) {
-		if (i->GetIsParticleStart()) {
-			i->Draw(
-				camera.rotate,
-				camera.GetViewOthographics(),
-				BlendType::kNormal
-			);
-		}
+		i->Draw(
+			camera.rotate,
+			camera.GetViewOthographics(),
+			BlendType::kNormal
+		);
 	}
 	if (fallingBlock_.first != -1) {
 		Vector2 centerPos{};

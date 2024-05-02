@@ -38,7 +38,7 @@ private:
 	// ↓ 自動的に追加、破棄を行う。
 
 	// 破壊されたブロックのローカル座標
-	std::list<Vector2> blockBreakPos_;
+	std::list<std::pair<Vector2, Vector2>> blockBreakPos_;	// 中心, 直径
 
 	// 小人が死んだ時のローカル座標
 	std::list<Vector2> dwarfDeadPos_;

@@ -7,7 +7,7 @@ void FallingBlockComp::Init()
 	pLocalPos_ = object_.AddComponent<LocalBodyComp>();
 
 	Lamb::SafePtr modelComp = object_.AddComponent<ModelComp>();
-	modelComp->AddBone("Body", DrawerManager::GetInstance()->GetModel("Resources/Cube.obj"));
+	modelComp->AddBone("Body", DrawerManager::GetInstance()->GetModel("Resources/Cube.obj"))->color_ = 0xF58498FF;
 }
 
 void FallingBlockComp::Start()

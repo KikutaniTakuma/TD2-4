@@ -32,8 +32,6 @@ public:
 
 private:
 
-	// エネルギーの量
-	float energy_;
 
 	SoLib::VItem<"エネルギーの最大値", float> vMaxEnergy_ = 100;
 
@@ -41,6 +39,8 @@ private:
 
 	SoLib::VItem<"ブロックの最大量", int32_t> vMaxBlocks_ = 6;
 
+	// エネルギーの量
+	float energy_ = *vMaxEnergy_;
 
 	// 描画用
 	std::unique_ptr<GaugeDrawer> gaugeDrawer_;

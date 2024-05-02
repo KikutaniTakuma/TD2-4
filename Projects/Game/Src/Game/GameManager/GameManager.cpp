@@ -391,7 +391,7 @@ void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 		damageAreaList_.push_back(damage);
 
 		// 演出用にデータを渡す
-		gameEffectManager_->blockBreakPos_.push_back(centerPos);
+		gameEffectManager_->blockBreakPos_.push_back({ centerPos,size });
 
 	}
 	else {
