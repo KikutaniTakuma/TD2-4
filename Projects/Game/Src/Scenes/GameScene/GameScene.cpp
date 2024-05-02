@@ -88,11 +88,11 @@ void GameScene::TextureInitialize(){
 	keyTex_->color = 0xffffffff;
 	keyTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/makeBolckMove.png");
 
-	backGround_ = std::make_unique<Tex2DState>();
+	/*backGround_ = std::make_unique<Tex2DState>();
 	backGround_->transform.scale = { 1280.0f,720.0f };
 	backGround_->transform.translate = { 0.0f, 10.0f ,0 };
 	backGround_->color = 0xffffffff;
-	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/gameBackGround.png");
+	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/gameBackGround.png");*/
 
 	
 }
@@ -204,7 +204,7 @@ void GameScene::TextureUpdate(){
 	keyTex_->transform.CalcMatrix();
 	keyTex_->uvTrnasform.CalcMatrix();
 
-	backGround_->transform.CalcMatrix();
+	//backGround_->transform.CalcMatrix();
 
 }
 
@@ -227,8 +227,8 @@ void GameScene::Draw() {
 	enemyManager_->Draw(*currentCamera_);
 
 #ifdef _DEBUG
-	tex2D_->Draw(backGround_->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
-		, backGround_->textureID, backGround_->color, BlendType::kNormal);
+	/*tex2D_->Draw(backGround_->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
+		, backGround_->textureID, backGround_->color, BlendType::kNormal);*/
 
 	for (uint32_t i = 0; i < kCloudNum_; i++) {
 		tex2D_->Draw(clouds_[i]->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
