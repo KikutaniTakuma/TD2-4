@@ -64,3 +64,7 @@ void Tex2DAniamtor::FlipHorizontal(bool isSingned) {
 		scale_.x *= -1.0f;
 	}
 }
+
+void Tex2DAniamtor::SetVerticalSize(float ySize) {
+	scale_.y = ySize;
+}
