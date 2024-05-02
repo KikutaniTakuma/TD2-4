@@ -153,6 +153,9 @@
     <ClCompile Include="Src\GameObject\Component\PickUpComp.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\BlockGauge.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -441,6 +444,9 @@
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\PickUpComp.h">
       <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\BlockGauge.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
