@@ -15,6 +15,9 @@ public:
 	Tex2DAniamtor& operator=(Tex2DAniamtor&&) = default;
 
 public:
+	/// <summary>
+	/// 更新処理
+	/// </summary>
 	void Update();
 
 public:
@@ -64,12 +67,25 @@ public:
 		isLoop_ = isLoop;
 	}
 
+	/// <summary>
+	/// 次の画像に行くまでの時間
+	/// </summary>
+	/// <param name="duration">秒数</param>
 	void SetDuration(float duration) {
 		duration_ = duration;
 	}
 
-	void FlipUpsideDown(float singned);
-	void FlipHorizontal(float singned);
+	/// <summary>
+	/// 上下反転
+	/// </summary>
+	/// <param name="isSingned">trueなら反転</param>
+	void FlipUpsideDown(bool isSingned);
+
+	/// <summary>
+	/// 左右反転
+	/// </summary>
+	/// <param name="isSingned">trueなら反転</param>
+	void FlipHorizontal(bool isSingned);
 
 private:
 	Vector3 startPos_;

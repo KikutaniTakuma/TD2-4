@@ -5,7 +5,7 @@ void Tex2DAniamtor::Update() {
 
 	if ((duration_ * static_cast<float>(currentAnimationNumber_) < animationTime_)) {
 		currentAnimationNumber_++;
-		currentPos_.x += scale_.x;
+		currentPos_.x += std::abs(scale_.x);
 	}
 
 	if (isActive_) {
@@ -53,22 +53,14 @@ void Tex2DAniamtor::SetAnimationNumber(uint32_t animationNumber) {
 	scale_.x = 1.0f / static_cast<float>(animationNumber_);
 }
 
-void Tex2DAniamtor::FlipUpsideDown(float singned) {
-	if (singned == 0.0f) {
-		return;
+void Tex2DAniamtor::FlipUpsideDown(bool isSingned) {
+	if ((isSingned and 0.0f < scale_.y) or (not isSingned and scale_.y < 0.0f)) {
+		scale_.y *= -1.0f;
 	}
-
-	singned = singned / singned;
-
-	scale_.y *= singned;
 }
 
-void Tex2DAniamtor::FlipHorizontal(float singned) {
-	if (singned == 0.0f) {
-		return;
+void Tex2DAniamtor::FlipHorizontal(bool isSingned) {
+	if ((isSingned and 0.0f < scale_.x) or (not isSingned and scale_.x < 0.0f)) {
+		scale_.x *= -1.0f;
 	}
-
-	singned = singned / singned;
-
-	scale_.x *= singned;
 }
