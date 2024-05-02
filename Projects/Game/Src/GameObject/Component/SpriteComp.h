@@ -29,7 +29,9 @@ public:
 
 public:
 
-	Transform uvTransform_;
+	SimpleTransform uvTransform_;
+
+	Mat4x4 uvMatrix_;
 
 	// スプライト
 	inline static Lamb::SafePtr<Texture2D> pTexture_ = nullptr;

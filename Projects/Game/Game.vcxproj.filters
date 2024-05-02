@@ -162,6 +162,12 @@
     <ClCompile Include="Src\GameObject\Component\SpriteComp.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\SpriteAnimatorComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\DwarfAnimator.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -461,6 +467,12 @@
       <Filter>Game\Manager\EffectManager</Filter>
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\SpriteComp.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\SpriteAnimatorComp.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\DwarfAnimator.h">
       <Filter>GameObject\Component</Filter>
     </ClInclude>
   </ItemGroup>

@@ -15,6 +15,7 @@
 #include <GameObject/Component/Rigidbody.h>
 #include <GameObject/Component/DwarfComp.h>
 #include <GameObject/Component/SpriteComp.h>
+#include <GameObject/Component/DwarfAnimator.h>
 
 void GameManager::Init()
 {
@@ -42,6 +43,7 @@ void GameManager::Init()
 	{
 		Lamb::SafePtr spriteComp = player_->AddComponent<SpriteComp>();
 		spriteComp->SetTexture("./Resources/uvChecker.png");
+		spriteComp->CalcTexUv();
 	}
 
 	{
@@ -397,6 +399,9 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	dwarf->AddComponent<DwarfComp>();
 	Lamb::SafePtr localBody = dwarf->GetComponent<LocalBodyComp>();
 	localBody->localPos_ = centerPos; // 座標の指定
+	localBody->drawScale_ = 1.f;
+
+	dwarf->AddComponent<DwarfAnimator>();
 
 	// 末尾に追加
 	dwarfList_.push_back(std::move(dwarf));

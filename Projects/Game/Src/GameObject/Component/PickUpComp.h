@@ -11,6 +11,7 @@ class PickUpComp :public IComponent
 public:
 
 	inline static const char *const kModelName_ = "Resources/Cube.obj";
+	static constexpr int32_t kMaxWeight_ = 6;
 
 public:
 	using IComponent::IComponent;

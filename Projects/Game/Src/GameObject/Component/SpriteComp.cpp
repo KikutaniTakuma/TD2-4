@@ -12,12 +12,11 @@ void SpriteComp::Init()
 
 void SpriteComp::Update()
 {
-	CalcTexUv();
 }
 
 void SpriteComp::Draw(const Camera &camera) const
 {
-	pTexture_->Draw(transform_.matWorld_, uvTransform_.matWorld_, camera.GetViewOthographics(), textureID_, color_, blendType_);
+	pTexture_->Draw(transform_.matWorld_, uvMatrix_, camera.GetViewOthographics(), textureID_, color_, blendType_);
 }
 
 void SpriteComp::SetTexture(uint32_t textureID)
@@ -32,7 +31,7 @@ void SpriteComp::SetTexture(const std::string &filePath)
 
 void SpriteComp::CalcTexUv()
 {
-	uvTransform_.CalcMatrix();
+	uvMatrix_ = uvTransform_.MakeAffine();
 
 }
 
