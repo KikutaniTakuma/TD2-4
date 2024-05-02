@@ -52,7 +52,7 @@ void PlayerComp::SetStartPos()
 
 int32_t PlayerComp::GetMaxBlockWidth() const
 {
-	return std::min(pBlockGauge_->GetBlockCount(), kMaxWidth_);
+	return std::min(pBlockGauge_->GetBlockCount(), kMaxWidth_ - 1);
 }
 
 void PlayerComp::SetGauge(BlockGauge *pBlockGauge)
