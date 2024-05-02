@@ -443,6 +443,18 @@ void Particle::ParticleStart(const Vector3& pos) {
 	}
 }
 
+void Particle::ParticleStart(const Vector3& pos, const Vector3& size)
+{
+	if (!settings_.empty()) {
+		currentParticleIndex_ = 0;
+		emitterPos = pos;
+		emitterSize = size;
+		settings_[currentSettingIndex_].isValid_ = false;
+		settings_[currentSettingIndex_].isValid_.Update();
+		settings_[currentParticleIndex_].isValid_ = true;
+	}
+}
+
 void Particle::ParticleStop()
 {
 	settings_[currentSettingIndex_].isValid_ = false;
@@ -462,6 +474,7 @@ void Particle::Update() {
 
 	if (settings_[currentSettingIndex_].isValid_) {
 		settings_[currentSettingIndex_].emitter_.pos_ = emitterPos;
+		settings_[currentSettingIndex_].emitter_.size_ = emitterSize;
 	}
 
 	// 有効になった瞬間始めた瞬間を保存
