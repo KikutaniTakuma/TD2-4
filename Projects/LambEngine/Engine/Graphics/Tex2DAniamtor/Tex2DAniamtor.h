@@ -78,14 +78,14 @@ public:
 	/// <summary>
 	/// 上下反転
 	/// </summary>
-	/// <param name="singned">-1.0f か 1.0f 入れる</param>
-	void FlipUpsideDown(float singned);
+	/// <param name="isSingned">trueなら反転</param>
+	void FlipUpsideDown(bool isSingned);
 
 	/// <summary>
 	/// 左右反転
 	/// </summary>
-	/// <param name="singned">-1.0f か 1.0f 入れる</param>
-	void FlipHorizontal(float singned);
+	/// <param name="isSingned">trueなら反転</param>
+	void FlipHorizontal(bool isSingned);
 
 private:
 	Vector3 startPos_;
