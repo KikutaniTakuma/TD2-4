@@ -35,6 +35,8 @@ public:
 
 	void SetGauge(BlockGauge *pBlockGauge);
 
+	std::pair<int32_t, int32_t> GetFutureBlockPos() const;
+
 private:
 
 	int32_t startPos_ = -1;
@@ -44,6 +46,8 @@ private:
 	inline static constexpr int32_t kMaxWidth_ = 3;
 
 private:
+
+
 
 	Lamb::SafePtr<BlockGauge> pBlockGauge_ = nullptr;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Game/Map/Map.h"
 #include "Utils/SafePtr/SafePtr.h"
+#include <Drawers/Texture2D/Texture2D.h>
 
 #include "Drawers/Particle/Particle.h"
 
@@ -19,12 +20,18 @@ public:
 
 	void Draw(const Camera &camera) const;
 
+	void Clear();
+
 private:
 
 	// ゲームマネージャの参照。
 	GameManager *pGameManager_ = nullptr;
 
 	Lamb::SafePtr<Map> pMap_ = nullptr;
+
+	Texture2D *pSpriteDrawer = nullptr;
+
+	uint32_t whiteTex_;
 
 	static Vector2 ToGrobal(const Vector2 localPos) noexcept { return Map::GetGlobalPos(localPos); }
 
@@ -37,7 +44,7 @@ private:
 	std::list<Vector2> dwarfDeadPos_;
 
 	// 落下ブロックの予測
-	std::list<Vector2> fallingBlocks_;
+	std::pair<int32_t, int32_t> fallingBlock_;	// -1なら無効
 
 
 	std::vector<std::unique_ptr<Particle>> particles_;
