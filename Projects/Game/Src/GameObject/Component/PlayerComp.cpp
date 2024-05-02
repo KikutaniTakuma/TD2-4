@@ -63,6 +63,20 @@ void PlayerComp::SetGauge(BlockGauge *pBlockGauge)
 	pBlockGauge_ = pBlockGauge;
 }
 
+std::pair<int32_t, int32_t> PlayerComp::GetFutureBlockPos() const
+{
+	std::pair<int32_t, int32_t> result{ -1,-1 };
+	// もしブロックを設置してなかったら飛ばす
+	if (startPos_ != -1) {
+		int32_t xDiff = startPos_ - static_cast<int32_t>(pLocalPosComp_->localPos_.x);
+		xDiff = std::min(std::abs(xDiff), GetMaxBlockWidth() - 1) * SoLib::Math::Sign(xDiff);
+
+		result.first = startPos_;
+		result.second = startPos_ - xDiff;
+	}
+	return result;
+}
+
 void PlayerComp::SpawnFallingBlock()
 {
 	if (startPos_ != -1) {

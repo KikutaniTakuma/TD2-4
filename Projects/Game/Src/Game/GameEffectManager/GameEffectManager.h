@@ -17,6 +17,8 @@ public:
 
 	void Draw(const Camera &camera) const;
 
+	void Clear();
+
 private:
 
 	// ゲームマネージャの参照。
@@ -35,6 +37,6 @@ private:
 	std::list<Vector2> dwarfDeadPos_;
 
 	// 落下ブロックの予測
-	std::list<Vector2> fallingBlocks_;
+	std::pair<int32_t, int32_t> fallingBlock_;	// -1なら無効
 
 };
