@@ -14,6 +14,7 @@
 #include "GameObject/GameObject.h"
 #include <Drawers/Model/Model.h>
 #include <Game/CollisionManager/AABB/AABB.h>
+#include <Game/GameEffectManager/GameEffectManager.h>
 
 // ダメージ判定
 struct DamageArea {
@@ -134,5 +135,7 @@ private:
 
 	// 小人のリスト
 	std::list<std::unique_ptr<GameObject>> dwarfList_;
+
+	std::unique_ptr<GameEffectManager> gameEffectManager_ = nullptr;
 
 };

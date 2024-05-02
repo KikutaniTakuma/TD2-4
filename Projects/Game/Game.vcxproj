@@ -159,6 +159,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Game\CollisionManager\Sphere\Sphere.cpp" />
     <ClCompile Include="Src\Game\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Src\Game\Enemy\Enemy.cpp" />
+    <ClCompile Include="Src\Game\GameEffectManager\GameEffectManager.cpp" />
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp" />
     <ClCompile Include="Src\Game\Ground\Ground.cpp" />
     <ClCompile Include="Src\Game\Map\Map.cpp" />
@@ -215,6 +216,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\CollisionManager\Sphere\Sphere.h" />
     <ClInclude Include="Src\Game\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Src\Game\Enemy\Enemy.h" />
+    <ClInclude Include="Src\Game\GameEffectManager\GameEffectManager.h" />
     <ClInclude Include="Src\Game\GameManager\GameManager.h" />
     <ClInclude Include="Src\Game\Ground\Ground.h" />
     <ClInclude Include="Src\Game\Map\Map.h" />

@@ -47,6 +47,9 @@ void GameManager::Init()
 	for (float i = 0; i < 15.f; i++) {
 		AddDwarf(Vector2::kXIdentity * i);
 	}
+
+	gameEffectManager_ = std::make_unique<GameEffectManager>();
+	gameEffectManager_->Init();
 }
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
@@ -287,6 +290,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	blockGauge_->Update(deltaTime);
 
+	gameEffectManager_->Update(deltaTime);
+
 	// AABBのデータを転送
 	blockMap_->TransferBoxData();
 }
@@ -302,6 +307,8 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 		dwarf->Draw(camera);
 	}
 	blockGauge_->Draw(camera);
+
+	gameEffectManager_->Draw(camera);
 
 }
 

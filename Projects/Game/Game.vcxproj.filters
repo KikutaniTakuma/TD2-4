@@ -156,6 +156,9 @@
     <ClCompile Include="Src\Game\BlockGauge.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\GameEffectManager\GameEffectManager.cpp">
+      <Filter>Game\Manager\EffectManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -286,6 +289,9 @@
     </Filter>
     <Filter Include="Game\Ground">
       <UniqueIdentifier>{16c5a03b-817a-415d-bfc6-7c8d982c7707}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\EffectManager">
+      <UniqueIdentifier>{c0884d13-d4c2-4801-8536-c9b6c2c2199e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -447,6 +453,9 @@
     </ClInclude>
     <ClInclude Include="Src\Game\BlockGauge.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\GameEffectManager\GameEffectManager.h">
+      <Filter>Game\Manager\EffectManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
