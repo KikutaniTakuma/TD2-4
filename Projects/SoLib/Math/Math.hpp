@@ -31,6 +31,13 @@ namespace SoLib {
 
 		Vector3 EulerToDirection(const SoLib::Math::Euler &euler);
 
+		inline int32_t Sign(int32_t value) {
+			return value == 0 ? 0 : value > 0 ? 1 : -1;	// 0なら0を返し、 0より大きかったら1を返す。マイナスなら-1を返す。
+		}
+		inline float Sign(float value) {
+			return value == 0.f ? 0.f : value > 0.f ? 1.f : -1.f;	// 0なら0を返し、 0より大きかったら1を返す。マイナスなら-1を返す。
+		}
+
 	}
 
 }

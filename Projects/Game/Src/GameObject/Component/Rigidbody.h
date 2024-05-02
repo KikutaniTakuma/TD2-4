@@ -27,12 +27,6 @@ public:
 
 	const Vector3 &GetVelocity() const { return velocity_; }
 
-	bool GetIsGround() const { return isGround_; }
-	void SetIsGround(const bool isGround) { isGround_ = isGround; }
-
-	const Vector3 &GetMaxSpeed() const { return maxSpeed_; }
-	void SetMaxSpeed(const Vector3 &hoge) { maxSpeed_ = hoge; }
-
 	bool hasCollider_ = false;
 	float radius_ = 1.f;
 
@@ -44,7 +38,7 @@ private:
 
 	Vector3 beforePos_;
 
-	Vector3 maxSpeed_{ -1.f,-1.f,-1.f };	// 負数である場合は処理しない
+	// Vector3 maxSpeed_{ -1.f,-1.f,-1.f };	// 負数である場合は処理しない
 
-	bool isGround_ = false;
+	// bool isGround_ = false;
 };

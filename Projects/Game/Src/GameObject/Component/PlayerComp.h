@@ -1,5 +1,12 @@
 #pragma once
 #include "../GameObject.h"
+#include "Utils/SafePtr/SafePtr.h"
+
+#include "Game/Map/Map.h"
+#include "Game/GameManager/GameManager.h"
+#include "LocalBodyComp.h"
+#include "Drawers/Model/Model.h"
+
 
 class PlayerComp : public IComponent {
 public:
@@ -12,8 +19,32 @@ public:
 
 	void Update() override;
 
+	void Draw(const Camera &camera) const override;
+
+public:
+
+	void MoveInput(int32_t xMove);
+
+	void SpawnFallingBlock();
+
+	void SetStartPos();
+
+	int32_t GetMaxBlockWidth() const;
+
+	void SetGauge(BlockGauge *pBlockGauge);
+
 private:
 
-	
+	int32_t startPos_ = -1;
+
+	Model *fallBlockModel_;
+
+	inline static constexpr int32_t kMaxWidth_ = 3;
+
+private:
+
+	Lamb::SafePtr<BlockGauge> pBlockGauge_ = nullptr;
+
+	Lamb::SafePtr<LocalBodyComp> pLocalPosComp_ = nullptr;
 
 };

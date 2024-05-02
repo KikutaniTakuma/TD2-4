@@ -7,7 +7,7 @@
 
 void BlockEditor::Initialize() {
 
-	map_ = GameManager::GetInstance()->GetMap()->GetGround();
+	map_ = GameManager::GetInstance()->GetMap()->GetGroundEditor();
 
 	mapSize_ = map_->GetGroundData();
 
@@ -99,7 +99,7 @@ void BlockEditor::Debug() {
 					AllDataReset();
 				}
 
-				for (size_t x = 0; x < Ground::kMapX; x++) {
+				for (size_t x = 0; x < GroundEditor::kMapX; x++) {
 					isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(0) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool&>((*mapSize_)[x].isMultiSelect_));
 					if (ImGui::IsItemHovered()) {
 						for (size_t i = 0; i < 3; i++) {
@@ -218,7 +218,7 @@ bool BlockEditor::OperationConfirmation() {
 
 bool BlockEditor::MapinPoint(const Vector3 &point) {
 	//for (size_t z = 0; z < Map::kMapZ; z++) {
-	for (int32_t x = 0; x < Ground::kMapX; x++) {
+	for (int32_t x = 0; x < GroundEditor::kMapX; x++) {
 		if (x == 0 || x == 29)
 			continue;
 		scanningOBB_->center_ = map_->GetGrobalPos(static_cast<int32_t>(x), static_cast<int32_t>(-1), 0);
@@ -440,7 +440,7 @@ void BlockEditor::LoadFile(const std::string &fileName) {
 	assert(itGroup != root.end());
 
 	//各アイテムについて
-	for (size_t x = 0; x < Ground::kMapX; ++x) {
+	for (size_t x = 0; x < GroundEditor::kMapX; ++x) {
 		((*mapSize_)[x].isConstruction) = root["boxes"][x];
 	}
 

@@ -29,12 +29,12 @@
 class GameScene : public BaseScene {
 public:
 	GameScene();
-	GameScene(const GameScene &) = delete;
-	GameScene(GameScene &&) = delete;
+	GameScene(const GameScene&) = delete;
+	GameScene(GameScene&&) = delete;
 	~GameScene() = default;
 
-	GameScene &operator=(const GameScene &) = delete;
-	GameScene &operator=(GameScene &&) = delete;
+	GameScene& operator=(const GameScene&) = delete;
+	GameScene& operator=(GameScene&&) = delete;
 
 public:
 	void Initialize() override;
@@ -61,7 +61,7 @@ private:
 
 
 
-	GameManager *gameManager_ = nullptr;
+	GameManager* gameManager_ = nullptr;
 
 	// std::unique_ptr<Player> player_;
 
