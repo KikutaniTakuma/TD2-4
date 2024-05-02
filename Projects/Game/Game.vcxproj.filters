@@ -159,6 +159,9 @@
     <ClCompile Include="Src\Game\GameEffectManager\GameEffectManager.cpp">
       <Filter>Game\Manager\EffectManager</Filter>
     </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\SpriteComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">

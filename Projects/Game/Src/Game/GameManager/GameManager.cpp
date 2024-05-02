@@ -14,6 +14,7 @@
 #include <GameObject/Component/FallingBlockComp.h>
 #include <GameObject/Component/Rigidbody.h>
 #include <GameObject/Component/DwarfComp.h>
+#include <GameObject/Component/SpriteComp.h>
 
 void GameManager::Init()
 {
@@ -34,9 +35,13 @@ void GameManager::Init()
 	LocalBodyComp::pMap_ = GetMap();
 
 	player_ = std::make_unique<GameObject>();
-	{
+	/*{
 		Lamb::SafePtr modelComp = player_->AddComponent<ModelComp>();
 		modelComp->AddBone("Body", drawerManager->GetModel("Resources/Cube.obj"));
+	}*/
+	{
+		Lamb::SafePtr spriteComp = player_->AddComponent<SpriteComp>();
+		spriteComp->SetTexture("./Resources/uvChecker.png");
 	}
 
 	{
@@ -287,7 +292,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			house.damageFacing_ = 0;
 			house.isBreaked_ = true;
 		}
-		else{
+		else {
 			house.isBreaked_ = false;
 		}
 	}

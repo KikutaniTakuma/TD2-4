@@ -146,6 +146,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\GameObject\Component\PlayerComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\Projectile.cpp" />
     <ClCompile Include="Src\GameObject\Component\Rigidbody.cpp" />
+    <ClCompile Include="Src\GameObject\Component\SpriteComp.cpp" />
     <ClCompile Include="Src\GameObject\GameObject.cpp" />
     <ClCompile Include="Src\Game\BlockGauge.cpp" />
     <ClCompile Include="Src\Game\Block\Block.cpp" />
