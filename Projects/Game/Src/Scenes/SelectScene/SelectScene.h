@@ -64,6 +64,8 @@ private:
 
 	std::unique_ptr<Tex2DState> selectTex_;
 
+	Vector2 shakePower_;
+
 	Easeing ease_;
 
 	Audio* selectBGM_ = nullptr;

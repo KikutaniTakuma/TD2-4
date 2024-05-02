@@ -14,6 +14,7 @@ void SelectScene::Initialize() {
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
 
 	currentCamera_->pos = { 0.0f, 0.0f , -1.0f };
+	shakePower_ = { 20.0f,20.0f };
 
 	for (size_t i = 0; i < texies_.size(); i++) {
 		texies_[i] = std::make_unique<Tex2DState>();
@@ -50,6 +51,7 @@ void SelectScene::Update(){
 	SelectToGame::GetInstance()->Debug();
 
 	currentCamera_->Debug("カメラ");
+	currentCamera_->Shake(2.0f);
 	currentCamera_->Update();
 
 	SelectMove();
@@ -90,12 +92,11 @@ void SelectScene::Draw(){
 }
 
 void SelectScene::Debug(){
-	/*ImGui::Begin("セレクト画面");
-	ImGui::DragFloat2("Transform", &selectTex_->transform.translate.x, 1.0f);
-	ImGui::DragFloat2("Scale", &selectTex_->transform.scale.x, 1.0f);
-	ImGui::DragFloat2("UVTransform", &selectTex_->uvTrnasform.translate.x, 0.01f);
-	ImGui::DragFloat2("UVScale", &selectTex_->uvTrnasform.scale.x, 0.01f);
-	ImGui::End();*/
+	ImGui::Begin("セレクト画面");
+	if (ImGui::Button("シェイクテスト")){
+		currentCamera_->BeginShake(shakePower_);
+	}
+	ImGui::End();
 }
 
 void SelectScene::SelectMove(){
