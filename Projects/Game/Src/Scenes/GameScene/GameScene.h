@@ -59,7 +59,7 @@ private:
 private:
 	//class Water *water_ = nullptr;
 
-
+	
 
 	GameManager* gameManager_ = nullptr;
 
