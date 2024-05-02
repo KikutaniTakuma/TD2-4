@@ -15,7 +15,7 @@ void DwarfComp::Init()
 	Lamb::SafePtr bodyModel = modelComp->AddBone("Body", DrawerManager::GetInstance()->GetModel(GameManager::kDwarfModelName));
 	bodyModel->color_ = 0xFF0000FF;*/
 
-	{
+	/*{
 		Lamb::SafePtr spriteComp = object_.AddComponent<SpriteComp>();
 		spriteComp->SetTexture("./Resources/uvChecker.png");
 
@@ -23,7 +23,7 @@ void DwarfComp::Init()
 	}
 	{
 		Lamb::SafePtr spriteAnimComp = object_.AddComponent<SpriteAnimatorComp>();
-	}
+	}*/
 }
 
 void DwarfComp::Start()
