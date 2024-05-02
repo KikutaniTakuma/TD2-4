@@ -7,6 +7,8 @@
 #include <cmath>
 #include<LambEngine/Utils/Random/Random.h>
 
+#include "Utils/EngineInfo/EngineInfo.h"
+
 #include "../SoLib/SoLib/SoLib_ImGui.h"
 
 Camera::Camera() noexcept :
@@ -159,17 +161,17 @@ void Camera::Shake(const float time){
 		pos = shakeBasePos_ + shakeVec;
 		
 		if (shakePower_.y > 0) {
-			shakePower_.y -= (shakePowerBase_.y / (time * 60.0f));
+			shakePower_.y -= (shakePowerBase_.y / time) * Lamb::DeltaTime();
 		}
 		else if (shakePower_.y < 0) {
-			shakePower_.y += (shakePowerBase_.y / (time * 60.0f));
+			shakePower_.y += (shakePowerBase_.y / time) * Lamb::DeltaTime();
 		}
 
 		if (shakePower_.x > 0) {
-			shakePower_.x -= (shakePowerBase_.x / (time * 60.0f));
+			shakePower_.x -= (shakePowerBase_.x / time) * Lamb::DeltaTime();
 		}
 		else if (shakePower_.x < 0) {
-			shakePower_.x += (shakePowerBase_.x / (time * 60.0f));
+			shakePower_.x += (shakePowerBase_.x / time) * Lamb::DeltaTime();
 		}
 
 	}
