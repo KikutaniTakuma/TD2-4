@@ -13,6 +13,8 @@ public:
 	// 移動の減少値
 	inline static const float kMovementResistance_ = 0.1f;
 
+	inline static const float kMovementMul_ = 0.5f;
+
 public:
 	using IComponent::IComponent;
 	~DwarfComp() = default;
@@ -26,6 +28,8 @@ public:
 public:
 
 	int32_t GetFacing() const { return facing_; }
+
+	bool IsClimbing() const { return isClimbing_; }
 
 private:
 

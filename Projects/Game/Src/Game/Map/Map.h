@@ -189,7 +189,7 @@ public:
 	/// @return 拠点のリスト
 	HouseList *GetHouseList() { return &houseList_; }
 
-	static Vector2 GetGrobalPos(Vector2 localPos) noexcept
+	static Vector2 GetGlobalPos(Vector2 localPos) noexcept
 	{
 		return Vector2{ localPos.x * vBlockScale_->x, localPos.y * vBlockScale_->y } - Vector2::kXIdentity * vBlockScale_->x * ((kMapX - 1) / 2.f);
 	}
