@@ -51,7 +51,7 @@ void SelectScene::Update(){
 	SelectToGame::GetInstance()->Debug();
 
 	currentCamera_->Debug("カメラ");
-	currentCamera_->Shake(2.0f);
+	currentCamera_->Shake(1.0f);
 	currentCamera_->Update();
 
 	SelectMove();

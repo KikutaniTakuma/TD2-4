@@ -444,6 +444,8 @@ void UIEditor::LoadFile(const std::string& fileName){
 		setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i["TextureFullPath"]);
 		setTex_->textureFullPath = i["TextureFullPath"];
 		setTex_->textureName = i["TextureName"];
+		
+
 		texies_[static_cast<size_t>(id_)].emplace_back(std::move(setTex_));
 
 	}
@@ -502,6 +504,10 @@ void UIEditor::LoadFileAll(){
 			setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i["TextureFullPath"]);
 			setTex_->textureFullPath = i["TextureFullPath"];
 			setTex_->textureName = i["TextureName"];
+
+			if (setTex_->textureName == "rest") {
+				setTex_->transform.translate.z = -10.0f;
+			}
 			texies_[static_cast<size_t>(scene.first)].emplace_back(std::move(setTex_));
 
 		}

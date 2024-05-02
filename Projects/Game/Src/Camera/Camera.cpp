@@ -119,10 +119,10 @@ void Camera::VerticalShake(const float time){
 		pos.y = shakeBasePos_.y + shakePower_.y;
 		shakePower_.y *= -1.0f;
 		if (shakePower_.y>0){
-			shakePower_.y -= (shakePowerBase_.y / (time * 60.0f));
+			shakePower_.y -= (shakePowerBase_.y / time) * Lamb::DeltaTime();
 		}
 		else if (shakePower_.y < 0) {
-			shakePower_.y += (shakePowerBase_.y / (time * 60.0f));
+			shakePower_.y += (shakePowerBase_.y / time) * Lamb::DeltaTime();
 		}
 
 	}
@@ -138,10 +138,10 @@ void Camera::HorizontalShake(const float time){
 		pos.x = shakeBasePos_.x + shakePower_.x;
 		shakePower_.x *= -1.0f;
 		if (shakePower_.x > 0) {
-			shakePower_.x -= (shakePowerBase_.x / (time * 60.0f));
+			shakePower_.x -= (shakePowerBase_.x / time) * Lamb::DeltaTime();
 		}
 		else if (shakePower_.x < 0) {
-			shakePower_.x += (shakePowerBase_.x / (time * 60.0f));
+			shakePower_.x += (shakePowerBase_.x / time) * Lamb::DeltaTime();
 		}
 
 	}
