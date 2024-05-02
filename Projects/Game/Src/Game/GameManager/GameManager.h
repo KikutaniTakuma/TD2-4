@@ -87,6 +87,7 @@ public:
 	/// @return [ 持ちあげたブロック, ブロックの中心座標 ]
 	std::pair<PickUpBlockData, Vector2> PickUp(Vector2 localPos, int hasBlockWeight, int maxWeight = 6, bool isPowerful = false);
 
+	GameEffectManager *GetGameEffect() { return gameEffectManager_.get(); }
 
 public:
 
@@ -98,7 +99,7 @@ private:
 	void BreakEnemyHouse(int32_t facing, Map::HouseInfo enemyHouse)
 	{
 		static const Vector2  kTowerBaseThrowSpeed_ = { 0.5f, 2.f };
-		static const Vector2 kTowerMultipleSpeed_ = { 3.f, 1.f };
+		static const Vector2 kTowerMultipleSpeed_ = { 1.5f, 1.f };
 		static const Vector2 kTowerGravityPower_ = { 0.f, -15.f };
 
 		if (facing != 0)
