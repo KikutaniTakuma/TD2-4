@@ -16,7 +16,9 @@
 #include "Utils/Random/Random.h"
 
 GameScene::GameScene() :
-	BaseScene(BaseScene::ID::Game)
+	BaseScene(BaseScene::ID::Game),
+	texCamera_(std::make_unique<Camera>()),
+	currentTexCamera_(texCamera_.get())
 {}
 
 void GameScene::TextureInitialize(){
@@ -28,7 +30,7 @@ void GameScene::TextureInitialize(){
 	std::unique_ptr<Tex2DState> spaceTex_, keyTex_;*/
 	dwarfNumTex_ = std::make_unique<Tex2DState>();
 	dwarfNumTex_->transform.scale = { 64.0f,64.0f };
-	dwarfNumTex_->transform.translate = { 510.0f, -292.0f ,0 };
+	dwarfNumTex_->transform.translate = { 510.0f, -200.0f ,0 };
 	dwarfNumTex_->uvTrnasform.translate = { 0.f, 0.01f };
 	dwarfNumTex_->uvTrnasform.scale.x = { 0.1f };
 	dwarfNumTex_->color = 0xffffffff;
@@ -36,7 +38,7 @@ void GameScene::TextureInitialize(){
 
 	dwarfTenNumTex_ = std::make_unique<Tex2DState>();
 	dwarfTenNumTex_->transform.scale = { 64.0f,64.0f };
-	dwarfTenNumTex_->transform.translate = { 442.0f, -292.0f ,0 };
+	dwarfTenNumTex_->transform.translate = { 442.0f, -200.0f ,0 };
 	dwarfTenNumTex_->uvTrnasform.translate = { 0.f, 0.01f };
 	dwarfTenNumTex_->uvTrnasform.scale.x = { 0.1f };
 	dwarfTenNumTex_->color = 0xffffffff;
@@ -74,7 +76,7 @@ void GameScene::TextureInitialize(){
 
 	spaceTex_ = std::make_unique<Tex2DState>();
 	spaceTex_->transform.scale = { 164.0f,96.0f };
-	spaceTex_->transform.translate = { -500.0f, -290.0f ,0 };
+	spaceTex_->transform.translate = { -500.0f, -175.0f ,0 };
 	spaceTex_->uvTrnasform.translate = { 0.f, 0.0f };
 	spaceTex_->uvTrnasform.scale.x = { 0.5f };
 	spaceTex_->color = 0xffffffff;
@@ -82,17 +84,17 @@ void GameScene::TextureInitialize(){
 
 	keyTex_ = std::make_unique<Tex2DState>();
 	keyTex_->transform.scale = { 128.0f,96.0f };
-	keyTex_->transform.translate = { -340.0f, -290.0f ,0 };
+	keyTex_->transform.translate = { -514.0f, -292.0f ,0 };
 	keyTex_->uvTrnasform.translate = { 0.f, 0.00f };
 	keyTex_->uvTrnasform.scale.x = { 0.2f };
 	keyTex_->color = 0xffffffff;
 	keyTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/makeBolckMove.png");
 
-	/*backGround_ = std::make_unique<Tex2DState>();
+	backGround_ = std::make_unique<Tex2DState>();
 	backGround_->transform.scale = { 1280.0f,720.0f };
 	backGround_->transform.translate = { 0.0f, 10.0f ,0 };
 	backGround_->color = 0xffffffff;
-	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/gameBackGround.png");*/
+	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/gameBackGround.png");
 
 	
 }
@@ -108,6 +110,14 @@ void GameScene::Initialize() {
 	currentCamera_->offset.y = 8.0f;
 	currentCamera_->rotate.x = 0_deg;
 	currentCamera_->drawScale = 0.036f;
+
+	currentTexCamera_->farClip = 3000.0f;
+	currentTexCamera_->pos.y = 10.0f;
+	currentTexCamera_->pos.z = -70.0f;
+	currentTexCamera_->offset.z = -60.0f;
+	currentTexCamera_->offset.y = 8.0f;
+	currentTexCamera_->rotate.x = 0_deg;
+	currentTexCamera_->drawScale = 1.0f;
 
 	gameManager_ = GameManager::GetInstance();
 	gameManager_->Init();
@@ -158,6 +168,10 @@ void GameScene::Update() {
 	
 	currentCamera_->Update();
 
+	currentTexCamera_->Debug("UIカメラ");
+
+	currentTexCamera_->Update();
+
 	Debug();
 
 	enemyManager_->Update();
@@ -205,7 +219,7 @@ void GameScene::TextureUpdate(){
 	keyTex_->transform.CalcMatrix();
 	keyTex_->uvTrnasform.CalcMatrix();
 
-	//backGround_->transform.CalcMatrix();
+	backGround_->transform.CalcMatrix();
 
 }
 
@@ -228,15 +242,17 @@ void GameScene::Draw() {
 	enemyManager_->Draw(*currentCamera_);
 
 #ifdef _DEBUG
-	/*tex2D_->Draw(backGround_->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
-		, backGround_->textureID, backGround_->color, BlendType::kNormal);*/
+	tex2D_->Draw(backGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+		, backGround_->textureID, backGround_->color, BlendType::kNormal);
 
 	for (uint32_t i = 0; i < kCloudNum_; i++) {
-		tex2D_->Draw(clouds_[i]->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
+		tex2D_->Draw(clouds_[i]->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, clouds_[i]->textureID, clouds_[i]->color, BlendType::kNormal);
 	}
 
-	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
+	gameManager_->Draw(*currentCamera_);
+
+	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	if (editorMode_) {
 		if (enemyMode_) {
 			enemyEditor_->Draw(*currentCamera_);
@@ -247,10 +263,9 @@ void GameScene::Draw() {
 	}
 	TextureDraw();
 
-	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
+	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
 #endif // _DEBUG
 
-	gameManager_->Draw(*currentCamera_);
 
 	Lamb::screenout << "Water and cloud scene" << Lamb::endline
 		<< "Press space to change ""Model scene""";
@@ -261,16 +276,16 @@ void GameScene::TextureDraw(){
 
 	
 
-	tex2D_->Draw(dwarfNumTex_->transform.matWorld_, dwarfNumTex_->uvTrnasform.matWorld_, currentCamera_->GetViewOthographics()
+	tex2D_->Draw(dwarfNumTex_->transform.matWorld_, dwarfNumTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, dwarfNumTex_->textureID, dwarfNumTex_->color, BlendType::kNormal);
 
-	tex2D_->Draw(dwarfTenNumTex_->transform.matWorld_, dwarfTenNumTex_->uvTrnasform.matWorld_, currentCamera_->GetViewOthographics()
+	tex2D_->Draw(dwarfTenNumTex_->transform.matWorld_, dwarfTenNumTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, dwarfTenNumTex_->textureID, dwarfTenNumTex_->color, BlendType::kNormal);
 
-	tex2D_->Draw(spaceTex_->transform.matWorld_, spaceTex_->uvTrnasform.matWorld_, currentCamera_->GetViewOthographics()
+	tex2D_->Draw(spaceTex_->transform.matWorld_, spaceTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, spaceTex_->textureID, spaceTex_->color, BlendType::kNormal);
 
-	tex2D_->Draw(keyTex_->transform.matWorld_, keyTex_->uvTrnasform.matWorld_, currentCamera_->GetViewOthographics()
+	tex2D_->Draw(keyTex_->transform.matWorld_, keyTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, keyTex_->textureID, keyTex_->color, BlendType::kNormal);
 }
 
