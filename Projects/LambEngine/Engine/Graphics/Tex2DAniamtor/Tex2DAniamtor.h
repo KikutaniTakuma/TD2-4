@@ -58,6 +58,11 @@ public:
 		startPos_ = startPos;
 	}
 
+	void SetVerticalPos(float yPos) {
+		startPos_.y = yPos;
+		currentPos_.y = yPos;
+	}
+
 	/// <summary>
 	/// <para>アニメーションをループさせるか</para>
 	/// <para>isFullAnimationがfalseの場合、設定されたindexのアニメーションでループする</para>
@@ -86,6 +91,8 @@ public:
 	/// </summary>
 	/// <param name="isSingned">trueなら反転</param>
 	void FlipHorizontal(bool isSingned);
+
+	void SetVerticalSize(float ySize);
 
 private:
 	Vector3 startPos_;
