@@ -8,11 +8,11 @@
 #include "SpriteComp.h"			// 小人自体のスプライトのコンポーネント
 #include "SpriteAnimatorComp.h"	// スプライトに紐づいたアニメーションのコンポーネント
 
-class DwarfAnimator : public IComponent
+class DwarfAnimatorComp : public IComponent
 {
 public:
 	using IComponent::IComponent;
-	~DwarfAnimator() = default;
+	~DwarfAnimatorComp() = default;
 
 	void Init() override;
 
@@ -24,5 +24,7 @@ private:
 	Lamb::SafePtr<PickUpComp> pPickUpComp_ = nullptr;
 	Lamb::SafePtr<SpriteComp> pSpriteComp_ = nullptr;
 	Lamb::SafePtr<SpriteAnimatorComp> pAnimComp_ = nullptr;
+
+	Lamb::SafePtr<Tex2DAniamtor> spriteAnimator_ = nullptr;
 
 };
