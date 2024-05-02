@@ -59,9 +59,7 @@ private:
 private:
 	//class Water *water_ = nullptr;
 
-	std::unique_ptr<Camera> texCamera_;
-
-	Lamb::SafePtr<Camera> currentTexCamera_;
+	
 
 	GameManager* gameManager_ = nullptr;
 

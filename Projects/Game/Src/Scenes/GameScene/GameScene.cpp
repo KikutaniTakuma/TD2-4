@@ -16,9 +16,7 @@
 #include "Utils/Random/Random.h"
 
 GameScene::GameScene() :
-	BaseScene(BaseScene::ID::Game),
-	texCamera_(std::make_unique<Camera>()),
-	currentTexCamera_(texCamera_.get())
+	BaseScene(BaseScene::ID::Game)	
 {}
 
 void GameScene::TextureInitialize(){
@@ -30,7 +28,7 @@ void GameScene::TextureInitialize(){
 	std::unique_ptr<Tex2DState> spaceTex_, keyTex_;*/
 	dwarfNumTex_ = std::make_unique<Tex2DState>();
 	dwarfNumTex_->transform.scale = { 64.0f,64.0f };
-	dwarfNumTex_->transform.translate = { 510.0f, -200.0f ,0 };
+	dwarfNumTex_->transform.translate = { 510.0f, -200.0f ,-10 };
 	dwarfNumTex_->uvTrnasform.translate = { 0.f, 0.01f };
 	dwarfNumTex_->uvTrnasform.scale.x = { 0.1f };
 	dwarfNumTex_->color = 0xffffffff;
@@ -38,7 +36,7 @@ void GameScene::TextureInitialize(){
 
 	dwarfTenNumTex_ = std::make_unique<Tex2DState>();
 	dwarfTenNumTex_->transform.scale = { 64.0f,64.0f };
-	dwarfTenNumTex_->transform.translate = { 442.0f, -200.0f ,0 };
+	dwarfTenNumTex_->transform.translate = { 442.0f, -200.0f ,-10 };
 	dwarfTenNumTex_->uvTrnasform.translate = { 0.f, 0.01f };
 	dwarfTenNumTex_->uvTrnasform.scale.x = { 0.1f };
 	dwarfTenNumTex_->color = 0xffffffff;
@@ -76,7 +74,7 @@ void GameScene::TextureInitialize(){
 
 	spaceTex_ = std::make_unique<Tex2DState>();
 	spaceTex_->transform.scale = { 164.0f,96.0f };
-	spaceTex_->transform.translate = { -500.0f, -175.0f ,0 };
+	spaceTex_->transform.translate = { -500.0f, -175.0f ,-10 };
 	spaceTex_->uvTrnasform.translate = { 0.f, 0.0f };
 	spaceTex_->uvTrnasform.scale.x = { 0.5f };
 	spaceTex_->color = 0xffffffff;
@@ -84,7 +82,7 @@ void GameScene::TextureInitialize(){
 
 	keyTex_ = std::make_unique<Tex2DState>();
 	keyTex_->transform.scale = { 128.0f,96.0f };
-	keyTex_->transform.translate = { -514.0f, -292.0f ,0 };
+	keyTex_->transform.translate = { -514.0f, -292.0f ,-10 };
 	keyTex_->uvTrnasform.translate = { 0.f, 0.00f };
 	keyTex_->uvTrnasform.scale.x = { 0.2f };
 	keyTex_->color = 0xffffffff;
