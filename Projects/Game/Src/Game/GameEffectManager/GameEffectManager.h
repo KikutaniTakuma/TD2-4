@@ -2,6 +2,8 @@
 #include "Game/Map/Map.h"
 #include "Utils/SafePtr/SafePtr.h"
 
+#include "Drawers/Particle/Particle.h"
+
 // ゲームマネージャ
 class GameManager;	// シングルトン。前方宣言なのでSafePtrは使えない。
 
@@ -37,4 +39,6 @@ private:
 	// 落下ブロックの予測
 	std::list<Vector2> fallingBlocks_;
 
+
+	std::vector<std::unique_ptr<Particle>> particles_;
 };
