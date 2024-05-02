@@ -149,7 +149,7 @@ void Camera::HorizontalShake(const float time){
 
 void Camera::Shake(const float time){
 	if (isShake_) {
-		if (shakePower_.Length() < 0.01f) {
+		if (shakePower_.Length() < 0.1f) {
 			isShake_ = false;
 			return;
 		}

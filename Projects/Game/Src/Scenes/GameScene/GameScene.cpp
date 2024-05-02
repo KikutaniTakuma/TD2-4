@@ -189,7 +189,8 @@ void GameScene::Update() {
 
 	for (auto& house : *gameManager_->GetMap()->GetHouseList()) {
 		if (house.IsBreaked()){
-			currentCamera_->BeginShake(shakePower_);
+ 			currentCamera_->BeginShake(shakePower_);
+			break;
 		}
 	}
 	//player_->AllTrade();
