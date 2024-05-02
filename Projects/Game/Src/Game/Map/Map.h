@@ -13,7 +13,7 @@
 #include "SoLib/Math/Angle.h"
 #include <functional>
 
-class Map{
+class Map {
 public:
 
 	// 拠点1つごとの情報
@@ -32,6 +32,10 @@ public:
 
 		// モデルの表示情報
 		MatrixModelState houseModelState_;
+
+		/// @brief 塔が壊れたか
+		/// @return 壊れたらtrue
+		bool IsBreaked() const { return damageFacing_ != 0; }
 
 	};
 	// ブロックの情報
