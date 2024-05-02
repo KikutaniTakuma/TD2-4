@@ -29,8 +29,9 @@ public:
 
 public:
 
-	SimpleTransform uvTransform_;
+	Transform offsetTransform_;
 
+	SimpleTransform uvTransform_;
 	Mat4x4 uvMatrix_;
 
 	// スプライト
