@@ -3,6 +3,8 @@
 #include "Utils/SafePtr/SafePtr.h"
 #include <Drawers/Texture2D/Texture2D.h>
 
+#include "Drawers/Particle/Particle.h"
+
 // ゲームマネージャ
 class GameManager;	// シングルトン。前方宣言なのでSafePtrは使えない。
 
@@ -44,4 +46,6 @@ private:
 	// 落下ブロックの予測
 	std::pair<int32_t, int32_t> fallingBlock_;	// -1なら無効
 
+
+	std::vector<std::unique_ptr<Particle>> particles_;
 };
