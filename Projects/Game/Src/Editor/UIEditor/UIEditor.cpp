@@ -257,65 +257,105 @@ void UIEditor::SaveFile(const std::string& fileName){
 		for (size_t i = 0; i < texies_[1].size(); i++) {
 		root[kItemName_]["Title"][i]["translate"] = json::array({
 			   texies_[1][i]->transform.translate.x,
-			   texies_[1][i]->transform.translate.y
+			   texies_[1][i]->transform.translate.y,
+			   texies_[1][i]->transform.translate.z
 			});
 		root[kItemName_]["Title"][i]["scale"] = json::array({
 			   texies_[1][i]->transform.scale.x,
-			   texies_[1][i]->transform.scale.y
+			   texies_[1][i]->transform.scale.y,
+			   texies_[1][i]->transform.scale.z
 			});
-		root[kItemName_]["Title"][i]["color"] = texies_[1][i]->color;
-		root[kItemName_]["Title"][i]["TextureName"] = texies_[1][i]->textureName;
-		root[kItemName_]["Title"][i]["TextureFullPath"] = texies_[1][i]->textureFullPath;
-	}
+		root[kItemName_]["Title"][i]["UVTranslate"] = json::array({
+			   texies_[1][i]->uvTrnasform.translate.x,
+			   texies_[1][i]->uvTrnasform.translate.y
+			});
+		root[kItemName_]["Title"][i]["UVScale"] = json::array({
+			   texies_[1][i]->uvTrnasform.scale.x,
+			   texies_[1][i]->uvTrnasform.scale.y
+			});
+			root[kItemName_]["Title"][i]["color"] = texies_[1][i]->color;
+			root[kItemName_]["Title"][i]["TextureName"] = texies_[1][i]->textureName;
+			root[kItemName_]["Title"][i]["TextureFullPath"] = texies_[1][i]->textureFullPath;
+		}
 
 	}
 	else if (sceneName_[BaseScene::ID::Game] == fileName){
 		for (size_t i = 0; i < texies_[3].size(); i++) {
-		root[kItemName_]["Game"][i]["translate"] = json::array({
-			   texies_[3][i]->transform.translate.x,
-			   texies_[3][i]->transform.translate.y
-			});
-		root[kItemName_]["Game"][i]["scale"] = json::array({
-			   texies_[3][i]->transform.scale.x,
-			   texies_[3][i]->transform.scale.y
-			});
-		root[kItemName_]["Game"][i]["color"] = texies_[3][i]->color;
-		root[kItemName_]["Game"][i]["TextureName"] = texies_[3][i]->textureName;
-		root[kItemName_]["Game"][i]["TextureFullPath"] = texies_[3][i]->textureFullPath;
-	}
+			root[kItemName_]["Game"][i]["translate"] = json::array({
+				   texies_[3][i]->transform.translate.x,
+				   texies_[3][i]->transform.translate.y,
+				   texies_[3][i]->transform.translate.z
+				});
+			root[kItemName_]["Game"][i]["scale"] = json::array({
+				   texies_[3][i]->transform.scale.x,
+				   texies_[3][i]->transform.scale.y,
+				   texies_[3][i]->transform.scale.z
+				});
+			root[kItemName_]["Game"][i]["UVTranslate"] = json::array({
+				   texies_[3][i]->uvTrnasform.translate.x,
+				   texies_[3][i]->uvTrnasform.translate.y
+				});
+			root[kItemName_]["Game"][i]["UVScale"] = json::array({
+				   texies_[3][i]->uvTrnasform.scale.x,
+				   texies_[3][i]->uvTrnasform.scale.y
+				});
+			root[kItemName_]["Game"][i]["color"] = texies_[3][i]->color;
+			root[kItemName_]["Game"][i]["TextureName"] = texies_[3][i]->textureName;
+			root[kItemName_]["Game"][i]["TextureFullPath"] = texies_[3][i]->textureFullPath;
+		}
 
 	}
 	else if (sceneName_[BaseScene::ID::StageSelect] == fileName){
 		for (size_t i = 0; i < texies_[2].size(); i++) {
-		root[kItemName_]["Select"][i]["translate"] = json::array({
-			   texies_[2][i]->transform.translate.x,
-			   texies_[2][i]->transform.translate.y
-			});
-		root[kItemName_]["Select"][i]["scale"] = json::array({
-			   texies_[2][i]->transform.scale.x,
-			   texies_[2][i]->transform.scale.y
-			});
-		root[kItemName_]["Select"][i]["color"] = texies_[2][i]->color;
-		root[kItemName_]["Select"][i]["TextureName"] = texies_[2][i]->textureName;
-		root[kItemName_]["Select"][i]["TextureFullPath"] = texies_[2][i]->textureFullPath;
-	}
+			root[kItemName_]["Select"][i]["translate"] = json::array({
+				   texies_[2][i]->transform.translate.x,
+				   texies_[2][i]->transform.translate.y,
+				   texies_[2][i]->transform.translate.z
+				});
+			root[kItemName_]["Select"][i]["scale"] = json::array({
+				   texies_[2][i]->transform.scale.x,
+				   texies_[2][i]->transform.scale.y,
+				   texies_[2][i]->transform.scale.z
+				});
+			root[kItemName_]["Select"][i]["UVTranslate"] = json::array({
+				   texies_[2][i]->uvTrnasform.translate.x,
+				   texies_[2][i]->uvTrnasform.translate.y
+				});
+			root[kItemName_]["Select"][i]["UVScale"] = json::array({
+				   texies_[2][i]->uvTrnasform.scale.x,
+				   texies_[2][i]->uvTrnasform.scale.y
+				});
+			root[kItemName_]["Select"][i]["color"] = texies_[2][i]->color;
+			root[kItemName_]["Select"][i]["TextureName"] = texies_[2][i]->textureName;
+			root[kItemName_]["Select"][i]["TextureFullPath"] = texies_[2][i]->textureFullPath;
+		}
 
 	}
 	else if (sceneName_[BaseScene::ID::Result] == fileName){
 		for (size_t i = 0; i < texies_[0].size(); i++) {
-		root[kItemName_]["Result"][i]["translate"] = json::array({
-			   texies_[0][i]->transform.translate.x,
-			   texies_[0][i]->transform.translate.y
-		});
-		root[kItemName_]["Result"][i]["scale"] = json::array({
-			   texies_[0][i]->transform.scale.x,
-			   texies_[0][i]->transform.scale.y
-		});
-		root[kItemName_]["Result"][i]["color"] = texies_[0][i]->color;
-		root[kItemName_]["Result"][i]["TextureName"] = texies_[0][i]->textureName;
-		root[kItemName_]["Result"][i]["TextureFullPath"] = texies_[0][i]->textureFullPath;
+			root[kItemName_]["Result"][i]["translate"] = json::array({
+				   texies_[0][i]->transform.translate.x,
+				   texies_[0][i]->transform.translate.y,
+				   texies_[0][i]->transform.translate.z
+				});
+			root[kItemName_]["Result"][i]["scale"] = json::array({
+				   texies_[0][i]->transform.scale.x,
+				   texies_[0][i]->transform.scale.y,
+				   texies_[0][i]->transform.scale.z
+				});
+			root[kItemName_]["Result"][i]["UVTranslate"] = json::array({
+				   texies_[0][i]->uvTrnasform.translate.x,
+				   texies_[0][i]->uvTrnasform.translate.y
+				});
+			root[kItemName_]["Result"][i]["UVScale"] = json::array({
+				   texies_[0][i]->uvTrnasform.scale.x,
+				   texies_[0][i]->uvTrnasform.scale.y
+				});
+			root[kItemName_]["Result"][i]["color"] = texies_[0][i]->color;
+			root[kItemName_]["Result"][i]["TextureName"] = texies_[0][i]->textureName;
+			root[kItemName_]["Result"][i]["TextureFullPath"] = texies_[0][i]->textureFullPath;
 
-	}
+		}
 
 	}
 	else {
@@ -434,13 +474,17 @@ void UIEditor::LoadFile(const std::string& fileName){
 
 	for (const auto& i : root[kItemName_][sceneName_[id_].c_str()]) {
 		std::unique_ptr<Tex2DState> setTex_ = std::make_unique<Tex2DState>();
-		Vector2 pos;
-		Vector2 scale;
+		Vector3 pos, scale;
+		Vector2 UVpos, UVscale;
 		from_json(i["scale"], scale);
 		from_json(i["translate"], pos);
+		from_json(i["UVScale"], UVscale);
+		from_json(i["UVTranslate"], UVpos);
 		setTex_->color = i["color"];
 		setTex_->transform.scale = scale;
 		setTex_->transform.translate = pos;
+		setTex_->uvTrnasform.scale = UVscale;
+		setTex_->uvTrnasform.translate = UVpos;
 		setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i["TextureFullPath"]);
 		setTex_->textureFullPath = i["TextureFullPath"];
 		setTex_->textureName = i["TextureName"];
@@ -494,13 +538,17 @@ void UIEditor::LoadFileAll(){
 
 		for (const auto& i : root[kItemName_][scene.second.c_str()]) {
 			std::unique_ptr<Tex2DState> setTex_ = std::make_unique<Tex2DState>();
-			Vector2 pos;
-			Vector2 scale;
+			Vector3 pos,scale;
+			Vector2 UVpos, UVscale;
 			from_json(i["scale"], scale);
 			from_json(i["translate"], pos);
+			from_json(i["UVScale"], UVscale);
+			from_json(i["UVTranslate"], UVpos);
 			setTex_->color = i["color"];
 			setTex_->transform.scale = scale;
 			setTex_->transform.translate = pos;
+			setTex_->uvTrnasform.scale = UVscale;
+			setTex_->uvTrnasform.translate = UVpos;
 			setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i["TextureFullPath"]);
 			setTex_->textureFullPath = i["TextureFullPath"];
 			setTex_->textureName = i["TextureName"];
@@ -568,7 +616,13 @@ bool UIEditor::OperationConfirmation(){
 	}
 }
 
-void UIEditor::from_json(const json& j, Vector2& v){
+void UIEditor::from_json(const json& j, Vector2& v) {
 	v.x = j.at(0).get<float>();
 	v.y = j.at(1).get<float>();
+}
+
+void UIEditor::from_json(const json& j, Vector3& v){
+	v.x = j.at(0).get<float>();
+	v.y = j.at(1).get<float>();
+	v.z = j.at(2).get<float>();
 }
