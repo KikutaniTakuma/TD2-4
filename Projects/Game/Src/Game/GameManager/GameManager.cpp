@@ -132,86 +132,86 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			// ダメージ判定がない場合、壁天井に対する検知を行う
 			if (not fallingComp->hasDamage_) {
 
-			// もし横に移動していたら
-			if (fallingComp->velocity_.x != 0)
-			{
-
-				// 当たっていたのが敵拠点の時の処理
-
-				// 当たった場所のリスト
-				const auto &hitPosList = fallingComp->FindLandingList();
-				for (Vector2 pos : hitPosList)
+				// もし横に移動していたら
+				if (fallingComp->velocity_.x != 0)
 				{
-					// もし､当たったブロックが敵拠点なら
-					if (blockMap_->GetBoxType(pos) == Map::BoxType::kEnemyBlock)
+
+					// 当たっていたのが敵拠点の時の処理
+
+					// 当たった場所のリスト
+					const auto &hitPosList = fallingComp->FindLandingList();
+					for (Vector2 pos : hitPosList)
 					{
-						//GameDataTransfar.blockHitAtTowerPos_.Add(Map::GetGrobalPos(pos));
-
-						// 敵拠点を取得
-						Lamb::SafePtr enemyHouse = blockMap_->GetNearestHouse(static_cast<int32_t>(pos.x));
-
-						const int32_t xPos = enemyHouse->xPos_;
-						Vector2 direction = Vector2::kXIdentity * SoLib::Math::Sign(fallingComp->velocity_.x);
-
-						blockMap_->ProcessEnemyHouseBlocks([direction, xPos, this](int32_t y, int32_t x)
-							{
-								Vector2 blockFinder = { static_cast<float>(xPos + x), static_cast<float>(y) };
-								if (blockMap_->GetBoxType(blockFinder) == Map::BoxType::kEnemyBlock)
-								{
-									Lamb::SafePtr ground = (*blockMap_->GetBlockStatusMap())[y][xPos + x].get();
-									float power = y + 1.f;
-
-									ground->StartShake(1.5f, direction * -power);
-								}
-							});
-
-						// 大きさ分のダメージを与える
-						enemyHouse->health_ -= fallingComp->GetWeight();
-
-						// 体力が0を下回ったら
-						if (enemyHouse->health_ <= 0)
+						// もし､当たったブロックが敵拠点なら
+						if (blockMap_->GetBoxType(pos) == Map::BoxType::kEnemyBlock)
 						{
-							// 崩壊フラグを立てる
-							enemyHouse->damageFacing_ = SoLib::Math::Sign(static_cast<int32_t>(fallingComp->velocity_.x));
+							//GameDataTransfar.blockHitAtTowerPos_.Add(Map::GetGrobalPos(pos));
+
+							// 敵拠点を取得
+							Lamb::SafePtr enemyHouse = blockMap_->GetNearestHouse(static_cast<int32_t>(pos.x));
+
+							const int32_t xPos = enemyHouse->xPos_;
+							Vector2 direction = Vector2::kXIdentity * SoLib::Math::Sign(fallingComp->velocity_.x);
+
+							blockMap_->ProcessEnemyHouseBlocks([direction, xPos, this](int32_t y, int32_t x)
+								{
+									Vector2 blockFinder = { static_cast<float>(xPos + x), static_cast<float>(y) };
+									if (blockMap_->GetBoxType(blockFinder) == Map::BoxType::kEnemyBlock)
+									{
+										Lamb::SafePtr ground = (*blockMap_->GetBlockStatusMap())[y][xPos + x].get();
+										float power = y + 1.f;
+
+										ground->StartShake(1.5f, direction * -power);
+									}
+								});
+
+							// 大きさ分のダメージを与える
+							enemyHouse->health_ -= fallingComp->GetWeight();
+
+							// 体力が0を下回ったら
+							if (enemyHouse->health_ <= 0)
+							{
+								// 崩壊フラグを立てる
+								enemyHouse->damageFacing_ = SoLib::Math::Sign(static_cast<int32_t>(fallingComp->velocity_.x));
+
+							}
+							break;
 
 						}
-						break;
-
 					}
+
+
+					// 移動量のメモ
+					float xMove = fallingComp->velocity_.x;
+
+					// 横移動を消してもう一度試す
+					fallingComp->velocity_.x = 0;
+					//isOnemore = true;
+					// あたってなかったら
+					if (fallingComp->IsLanding() == false)
+					{
+						// やり直す
+						continue;
+					}
+					fallingComp->velocity_.x = xMove;
 				}
 
-
-				// 移動量のメモ
-				float xMove = fallingComp->velocity_.x;
-
-				// 横移動を消してもう一度試す
-				fallingComp->velocity_.x = 0;
-				//isOnemore = true;
-				// あたってなかったら
-				if (fallingComp->IsLanding() == false)
+				// もし上に飛んでたら
+				if (fallingComp->velocity_.y > 0)
 				{
-					// やり直す
-					continue;
-				}
-				fallingComp->velocity_.x = xMove;
-			}
 
-			// もし上に飛んでたら
-			if (fallingComp->velocity_.y > 0)
-			{
-
-				float yMove = fallingComp->velocity_.y;
-				// 上移動を消してもう一度試す
-				fallingComp->velocity_.y = 0;
-				//isOnemore = true;
-				// あたってなかったら
-				if (fallingComp->IsLanding() == false)
-				{
-					// やり直す
-					continue;
+					float yMove = fallingComp->velocity_.y;
+					// 上移動を消してもう一度試す
+					fallingComp->velocity_.y = 0;
+					//isOnemore = true;
+					// あたってなかったら
+					if (fallingComp->IsLanding() == false)
+					{
+						// やり直す
+						continue;
+					}
+					fallingComp->velocity_.y = yMove;
 				}
-				fallingComp->velocity_.y = yMove;
-			}
 
 			}
 			// 下側が接地していた場合
@@ -285,6 +285,10 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			BreakEnemyHouse(house.damageFacing_, house);
 			house.health_ = Map::HouseInfo::kMaxHealth_;
 			house.damageFacing_ = 0;
+			house.isBreaked_ = true;
+		}
+		else{
+			house.isBreaked_ = false;
 		}
 	}
 	// ボタンを押していない間はゲージを回復する

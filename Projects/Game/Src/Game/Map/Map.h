@@ -33,9 +33,11 @@ public:
 		// モデルの表示情報
 		MatrixModelState houseModelState_;
 
+		bool isBreaked_ = false;
+
 		/// @brief 塔が壊れたか
 		/// @return 壊れたらtrue
-		bool IsBreaked() const { return damageFacing_ != 0; }
+		bool IsBreaked() const { return isBreaked_; }
 
 	};
 	// ブロックの情報
