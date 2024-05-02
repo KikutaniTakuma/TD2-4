@@ -61,7 +61,9 @@ void SelectScene::Update(){
 		texies_[selectNum_]->color = 0xff0000ff;
 		
 	}
-
+	if (coolTime_!=0){
+		coolTime_--;
+	}
 	
 
 	ease_.Update();
@@ -100,8 +102,9 @@ void SelectScene::Debug(){
 }
 
 void SelectScene::SelectMove(){
-	if (input_->GetKey()->Pushed(DIK_A)){
-		if (selectNum_>0){
+	if (input_->GetKey()->LongPush(DIK_A)) {
+		if (selectNum_>0 && coolTime_ == 0){
+			coolTime_ = kCoolTime_;
 			selectMove_->Start(0.1f, false);
 			selectNum_--;
 			ease_.Start(false, kAddEase_, Easeing::InSine);
@@ -112,8 +115,9 @@ void SelectScene::SelectMove(){
 		
 		}		
 	}
-	else if (input_->GetKey()->Pushed(DIK_D)) {
-		if (selectNum_ < texies_.size() - 1) {
+	else if (input_->GetKey()->LongPush(DIK_D)) {
+		if (selectNum_ < texies_.size() - 1 && coolTime_ == 0) {
+			coolTime_ = kCoolTime_;
 			selectMove_->Start(0.1f, false);
 			selectNum_++;
 			ease_.Start(false, kAddEase_, Easeing::InSine);

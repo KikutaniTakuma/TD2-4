@@ -67,6 +67,10 @@ private:
 	Vector2 shakePower_;
 
 	Easeing ease_;
+	
+	const uint32_t kCoolTime_ = 20;
+
+	uint32_t coolTime_;
 
 	Audio* selectBGM_ = nullptr;
 
