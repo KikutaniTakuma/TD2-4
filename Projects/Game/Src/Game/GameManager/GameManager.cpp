@@ -401,7 +401,7 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	localBody->localPos_ = centerPos; // 座標の指定
 	localBody->drawScale_ = 1.f;
 
-	dwarf->AddComponent<DwarfAnimator>();
+	dwarf->AddComponent<DwarfAnimatorComp>();
 
 	// 末尾に追加
 	dwarfList_.push_back(std::move(dwarf));
