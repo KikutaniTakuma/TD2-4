@@ -82,11 +82,9 @@ void DwarfComp::Update()
 	}
 
 
-
-
 	// データの転送
 	pLocalBodyComp_->TransfarData();
-	transform_.translate.z = -3.f;
+	transform_.translate.z = -3.f - 0.1f * pPickUpComp_->GetBlockWeight();
 
 }
 
