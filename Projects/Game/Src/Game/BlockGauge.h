@@ -7,7 +7,31 @@
 #include "Utils/SafePtr/SafePtr.h"
 #include "SoLib/Containers/VItem.h"
 
-class GaugeDrawer;
+class GaugeDrawer {
+public:
+	GaugeDrawer() = default;
+	~GaugeDrawer() = default;
+
+	void Init();
+
+	void Update(float deltaTime);
+
+	void Draw(const Camera& camera) const;
+
+	void SetParcent(float parcent);
+
+	SoLib::VItem<"ゲージ描画の中心座標", Vector3> vCentorPos_ = Vector3{ 15.f,23.f,0.f };
+
+private:
+
+
+	inline static const char* const kModelName_ = "Resources/Cube.obj";
+
+	Model* pModel_ = nullptr;
+
+	Transform transform_;
+
+};
 
 class BlockGauge {
 public:
@@ -47,28 +71,3 @@ private:
 
 };
 
-class GaugeDrawer {
-public:
-	GaugeDrawer() = default;
-	~GaugeDrawer() = default;
-
-	void Init();
-
-	void Update(float deltaTime);
-
-	void Draw(const Camera &camera) const;
-
-	void SetParcent(float parcent);
-
-	SoLib::VItem<"ゲージ描画の中心座標", Vector3> vCentorPos_ = Vector3{ 15.f,23.f,0.f };
-
-private:
-
-
-	inline static const char *const kModelName_ = "Resources/Cube.obj";
-
-	Model *pModel_ = nullptr;
-
-	Transform transform_;
-
-};

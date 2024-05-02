@@ -148,6 +148,7 @@ void GameScene::Initialize() {
 
 	gameBGM_->Start(0.1f, true);
 	
+	shakePower_ = { 3.0f,3.0f };
 }
 
 void GameScene::Finalize() {
@@ -163,7 +164,7 @@ void GameScene::Update() {
 	const float deltaTime = Lamb::DeltaTime();
 
 	currentCamera_->Debug("カメラ");
-	
+	currentCamera_->Shake(1.0f);
 	currentCamera_->Update();
 
 	currentTexCamera_->Debug("UIカメラ");
@@ -185,6 +186,12 @@ void GameScene::Update() {
 
 	TextureUpdate();
 
+
+	for (auto& house : *gameManager_->GetMap()->GetHouseList()) {
+		if (house.IsBreaked()){
+			currentCamera_->BeginShake(shakePower_);
+		}
+	}
 	//player_->AllTrade();
 
 	if (input_->GetKey()->LongPush(DIK_RETURN)&&input_->GetKey()->Pushed(DIK_BACKSPACE)) {

@@ -63,6 +63,8 @@ private:
 
 	GameManager* gameManager_ = nullptr;
 
+	Vector2 shakePower_;
+
 	// std::unique_ptr<Player> player_;
 
 	CollisionManager* collisionManager_ = nullptr;

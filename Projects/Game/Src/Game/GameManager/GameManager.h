@@ -59,6 +59,8 @@ public:
 
 	bool Debug(const char *const str);
 
+	
+
 	// マップのデータを取得
 	Map *GetMap() { return blockMap_.get(); }
 
