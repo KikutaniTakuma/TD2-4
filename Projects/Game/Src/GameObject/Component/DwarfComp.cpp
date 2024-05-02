@@ -86,7 +86,7 @@ void DwarfComp::Update()
 
 	// データの転送
 	pLocalBodyComp_->TransfarData();
-	transform_.translate.z = -1.5f;
+	transform_.translate.z = -3.f;
 
 }
 
