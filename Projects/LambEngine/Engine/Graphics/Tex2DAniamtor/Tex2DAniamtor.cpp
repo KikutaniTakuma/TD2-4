@@ -5,7 +5,7 @@ void Tex2DAniamtor::Update() {
 
 	if ((duration_ * static_cast<float>(currentAnimationNumber_) < animationTime_)) {
 		currentAnimationNumber_++;
-		currentPos_.x += scale_.x;
+		currentPos_.x += std::abs(scale_.x);
 	}
 
 	if (isActive_) {
