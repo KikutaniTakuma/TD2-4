@@ -29,6 +29,8 @@ public:
 
 	void SetStartPos();
 
+	/// @brief 接地できる横幅の最大値を取得する
+	/// @return 横幅
 	int32_t GetMaxBlockWidth() const;
 
 	void SetGauge(BlockGauge *pBlockGauge);

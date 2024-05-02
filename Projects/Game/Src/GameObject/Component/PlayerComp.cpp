@@ -28,7 +28,7 @@ void PlayerComp::Draw(const Camera &camera) const
 
 	if (startPos_ != -1) {
 		float xDiff = startPos_ - pLocalPosComp_->localPos_.x;
-		xDiff = std::min(std::abs(xDiff), static_cast<float>(GetMaxBlockWidth())) * SoLib::Math::Sign(xDiff);
+		xDiff = std::min(std::abs(xDiff), static_cast<float>(GetMaxBlockWidth() - 1)) * SoLib::Math::Sign(xDiff);
 
 		const Vector2 spawnPos{ static_cast<float>(startPos_), pLocalPosComp_->localPos_.y };
 
@@ -47,12 +47,14 @@ void PlayerComp::MoveInput(int32_t xMove)
 
 void PlayerComp::SetStartPos()
 {
-	startPos_ = static_cast<int32_t>(pLocalPosComp_->localPos_.x);
+	if (GetMaxBlockWidth() > 0) {
+		startPos_ = static_cast<int32_t>(pLocalPosComp_->localPos_.x);
+	}
 }
 
 int32_t PlayerComp::GetMaxBlockWidth() const
 {
-	return std::min(pBlockGauge_->GetBlockCount(), kMaxWidth_ - 1);
+	return std::min(pBlockGauge_->GetBlockCount(), kMaxWidth_);
 }
 
 void PlayerComp::SetGauge(BlockGauge *pBlockGauge)
@@ -62,18 +64,19 @@ void PlayerComp::SetGauge(BlockGauge *pBlockGauge)
 
 void PlayerComp::SpawnFallingBlock()
 {
+	if (startPos_ != -1) {
+		int32_t xDiff = startPos_ - static_cast<int32_t>(pLocalPosComp_->localPos_.x);
+		xDiff = std::min(std::abs(xDiff), GetMaxBlockWidth() - 1) * SoLib::Math::Sign(xDiff);
 
-	int32_t xDiff = startPos_ - static_cast<int32_t>(pLocalPosComp_->localPos_.x);
-	xDiff = std::min(std::abs(xDiff), GetMaxBlockWidth()) * SoLib::Math::Sign(xDiff);
-
-	const Vector2 spawnPos{ static_cast<float>(startPos_), pLocalPosComp_->localPos_.y };
+		const Vector2 spawnPos{ static_cast<float>(startPos_), pLocalPosComp_->localPos_.y };
 
 
-	// 落下ブロックの実体の追加
-	pLocalPosComp_->pGameManager_->AddFallingBlock(spawnPos - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f), Vector2::kIdentity + Vector2::kXIdentity * static_cast<float>(std::abs(xDiff)), false, Vector2::kYIdentity * -20, Vector2::kZero);
+		// 落下ブロックの実体の追加
+		pLocalPosComp_->pGameManager_->AddFallingBlock(spawnPos - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f), Vector2::kIdentity + Vector2::kXIdentity * static_cast<float>(std::abs(xDiff)), false, Vector2::kYIdentity * -20, Vector2::kZero);
 
-	// 使用量を減らす
-	pBlockGauge_->UseBlockEnergy(std::abs(xDiff));
+		// 使用量を減らす
+		pBlockGauge_->UseBlockEnergy(std::abs(xDiff) + 1);
 
-	startPos_ = -1;
+		startPos_ = -1;
+	}
 }
