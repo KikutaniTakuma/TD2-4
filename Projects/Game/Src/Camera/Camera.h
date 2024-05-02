@@ -47,6 +47,26 @@ public:
 	/// <param name="worldMat">カメラの親のワールド行列</param>
 	void Update(const Mat4x4& worldMat);
 
+	void BeginShake(const Vector2& power);
+	
+	/// <summary>
+	/// 縦方向のシェイク
+	/// </summary>
+	/// <param name="time">シェイクする時間(秒)</param>
+	void VerticalShake(const float time);
+
+	/// <summary>
+	/// 横方向のシェイク
+	/// </summary>
+	// <param name="time">シェイクする時間(秒)</param>
+	void HorizontalShake(const float time);
+
+	/// <summary>
+	/// 横方向のシェイク
+	/// </summary>
+	// <param name="time">シェイクする時間(秒)</param>
+	void Shake(const float time);
+
 	/// <summary>
 	/// ビュー行列取得
 	/// </summary>
@@ -127,6 +147,18 @@ public:
 
 protected:
 	Vector3 worldPos_;
+
+private:
+
+	bool isShake_;
+
+	static constexpr float kMinusPower_ = 0.5f;
+
+	Vector2 shakePower_;
+
+	Vector2 shakePowerBase_;
+
+	Vector2 shakeBasePos_;
 
 protected:
 	static constexpr float kNearClip_ = 0.1f;

@@ -37,4 +37,8 @@ public:
 	std::unique_ptr<Texture2D> sphere_;
 	std::unique_ptr<Texture2D> sphere2_;
 	bool isCollision_;
+
+	Audio* titleBGM_ = nullptr;
+
+	Audio* beginGame_ = nullptr;
 };

@@ -29,14 +29,21 @@ public:
 
 	void SetStartPos();
 
+	int32_t GetMaxBlockWidth() const;
+
+	void SetGauge(BlockGauge *pBlockGauge);
+
 private:
 
 	int32_t startPos_ = -1;
 
 	Model *fallBlockModel_;
 
+	inline static constexpr int32_t kMaxWidth_ = 3;
 
 private:
+
+	Lamb::SafePtr<BlockGauge> pBlockGauge_ = nullptr;
 
 	Lamb::SafePtr<LocalBodyComp> pLocalPosComp_ = nullptr;
 

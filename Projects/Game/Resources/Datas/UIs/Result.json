@@ -1,0 +1,45 @@
+{
+    "UIs": {
+        "Result": [
+            {
+                "TextureFullPath": "Resources/UI/backGround.png",
+                "TextureName": "backGround",
+                "color": 4294967295,
+                "scale": [
+                    1280.0,
+                    720.0
+                ],
+                "translate": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/Result/resultUi.png",
+                "TextureName": "resultUi",
+                "color": 4294967295,
+                "scale": [
+                    420.0,
+                    144.0
+                ],
+                "translate": [
+                    -411.0,
+                    282.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/Result\\flask.png",
+                "TextureName": "Result\\flask",
+                "color": 4294967295,
+                "scale": [
+                    272.0,
+                    464.0
+                ],
+                "translate": [
+                    0.0,
+                    0.0
+                ]
+            }
+        ]
+    }
+}

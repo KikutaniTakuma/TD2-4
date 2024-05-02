@@ -9,10 +9,12 @@
 
 #include "../LambEngine/Input/Input.h"
 #include "Game/Map/Map.h"
+#include "Game/BlockGauge.h"
 
 #include "GameObject/GameObject.h"
 #include <Drawers/Model/Model.h>
 #include <Game/CollisionManager/AABB/AABB.h>
+#include <Game/GameEffectManager/GameEffectManager.h>
 
 // ダメージ判定
 struct DamageArea {
@@ -77,6 +79,12 @@ public:
 
 	GameObject *AddDwarf(Vector2 centerPos);
 
+	/// @brief 指定した座標のブロックを持ち上げる
+	/// @param localPos 指定先
+	/// @param hasBlockWeight すでに持っているブロックの重さ
+	/// @param maxWeight 持つことのできる上限値
+	/// @param isPowerful 上にブロックがあっても持ち上げるか
+	/// @return [ 持ちあげたブロック, ブロックの中心座標 ]
 	std::pair<PickUpBlockData, Vector2> PickUp(Vector2 localPos, int hasBlockWeight, int maxWeight = 6, bool isPowerful = false);
 
 
@@ -114,6 +122,8 @@ private:
 	// 入力マネージャ
 	Input *input_ = nullptr;
 
+	std::unique_ptr<BlockGauge> blockGauge_ = nullptr;
+
 	std::unique_ptr<GameObject> player_;
 
 	std::unique_ptr<Map> blockMap_;
@@ -125,5 +135,7 @@ private:
 
 	// 小人のリスト
 	std::list<std::unique_ptr<GameObject>> dwarfList_;
+
+	std::unique_ptr<GameEffectManager> gameEffectManager_ = nullptr;
 
 };

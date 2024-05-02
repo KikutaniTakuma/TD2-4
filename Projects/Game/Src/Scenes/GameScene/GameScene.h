@@ -45,7 +45,18 @@ public:
 
 	void Draw() override;
 
-public:
+private:
+	void TextureInitialize();
+
+	void TextureUpdate();
+
+	void CloudReset(const uint32_t cloudNumber);
+
+	void TextureDraw();
+
+	void Debug();
+
+private:
 	//class Water *water_ = nullptr;
 
 
@@ -70,4 +81,31 @@ public:
 	std::unique_ptr<EnemyEditor> enemyEditor_;
 
 	EnemyManager* enemyManager_ = nullptr;
+
+	Texture2D* tex2D_ = nullptr;
+
+	Audio* gameBGM_ = nullptr;
+
+	//一の位
+	std::unique_ptr<Tex2DState> dwarfNumTex_;
+	//十の位
+	std::unique_ptr<Tex2DState> dwarfTenNumTex_;
+
+	static const uint32_t kCloudNum_ = 8;
+
+	//雲
+	std::array<std::unique_ptr<Tex2DState>, kCloudNum_> clouds_;
+
+	std::array<float, kCloudNum_> cloudsSpeed_;
+
+	std::unordered_map<std::string, Vector2> cloudScale_;
+
+	std::array<std::string, 3> cloudType_;
+	//操作UI
+	std::unique_ptr<Tex2DState> spaceTex_, keyTex_;
+
+	std::unique_ptr<Tex2DState> backGround_;
+
+
+
 };

@@ -13,8 +13,7 @@
 #include "SoLib/Math/Angle.h"
 #include <functional>
 
-class Map
-{
+class Map{
 public:
 
 	// 拠点1つごとの情報

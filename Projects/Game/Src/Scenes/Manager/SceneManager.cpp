@@ -46,6 +46,7 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 
 	uiEditor_ = UIEditor::GetInstance();
 	uiEditor_->Initialize();
+	uiEditor_->LoadFileAll();
 
 	// テクスチャデータのアップロード
 	UploadTextureData();

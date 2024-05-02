@@ -18,6 +18,9 @@
 void GameManager::Init()
 {
 
+	blockGauge_ = std::make_unique<BlockGauge>();
+	blockGauge_->Init();
+
 	input_ = Input::GetInstance();
 
 	blockMap_ = std::make_unique<Map>();
@@ -37,12 +40,16 @@ void GameManager::Init()
 	}
 
 	{
-		/*Lamb::SafePtr playerComp =*/ player_->AddComponent<PlayerComp>();
+		Lamb::SafePtr playerComp = player_->AddComponent<PlayerComp>();
+		playerComp->SetGauge(blockGauge_.get());
 	}
 
 	for (float i = 0; i < 15.f; i++) {
 		AddDwarf(Vector2::kXIdentity * i);
 	}
+
+	gameEffectManager_ = std::make_unique<GameEffectManager>();
+	gameEffectManager_->Init();
 }
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
@@ -276,7 +283,14 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			house.damageFacing_ = 0;
 		}
 	}
+	// ボタンを押していない間はゲージを回復する
+	if (not Input::GetInstance()->GetKey()->GetKey(DIK_SPACE)) {
+		blockGauge_->EnergyRecovery(deltaTime);
+	}
 
+	blockGauge_->Update(deltaTime);
+
+	gameEffectManager_->Update(deltaTime);
 
 	// AABBのデータを転送
 	blockMap_->TransferBoxData();
@@ -292,6 +306,10 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	for (const auto &dwarf : dwarfList_) {
 		dwarf->Draw(camera);
 	}
+	blockGauge_->Draw(camera);
+
+	gameEffectManager_->Draw(camera);
+
 }
 
 bool GameManager::Debug([[maybe_unused]] const char *const str)

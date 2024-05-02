@@ -64,6 +64,8 @@ protected:
 
 	StringOutPutManager* stringOutPutManager_;
 
+	class UIEditor* uiEditor_;
+
 	BaseScene::ID sceneID_;
 
 private:

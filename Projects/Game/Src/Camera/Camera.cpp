@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <numbers>
 #include <cmath>
+#include<LambEngine/Utils/Random/Random.h>
 
 #include "../SoLib/SoLib/SoLib_ImGui.h"
 
@@ -89,6 +90,89 @@ void Camera::Update(const Mat4x4& worldMat) {
 
 
 	viewOthograohicsVp_ = viewOthograohics_ * Mat4x4::MakeViewPort(0.0f, 0.0f, clientSize.x, clientSize.y, 0.0f, 1.0f);
+}
+
+void Camera::BeginShake(const Vector2& power){
+	if (!isShake_){
+		isShake_ = true;
+		shakePower_ = power;
+		shakePowerBase_ = power;
+		shakeBasePos_ = Vector2{ pos.x,pos.y };
+	}
+
+	if (isShake_) {
+		isShake_ = true;
+		shakePower_ = power;
+		shakePowerBase_ = power;
+	}
+	
+}
+
+void Camera::VerticalShake(const float time){
+	if (isShake_){
+		if (shakePower_.y < 0.01f && shakePower_.y > -0.01f) {
+			isShake_ = false;
+			return;
+		}
+		pos.y = shakeBasePos_.y + shakePower_.y;
+		shakePower_.y *= -1.0f;
+		if (shakePower_.y>0){
+			shakePower_.y -= (shakePowerBase_.y / (time * 60.0f));
+		}
+		else if (shakePower_.y < 0) {
+			shakePower_.y += (shakePowerBase_.y / (time * 60.0f));
+		}
+
+	}
+
+}
+
+void Camera::HorizontalShake(const float time){
+	if (isShake_) {
+		if (shakePower_.x < 0.01f && shakePower_.x > -0.01f) {
+			isShake_ = false;
+			return;
+		}
+		pos.x = shakeBasePos_.x + shakePower_.x;
+		shakePower_.x *= -1.0f;
+		if (shakePower_.x > 0) {
+			shakePower_.x -= (shakePowerBase_.x / (time * 60.0f));
+		}
+		else if (shakePower_.x < 0) {
+			shakePower_.x += (shakePowerBase_.x / (time * 60.0f));
+		}
+
+	}
+}
+
+void Camera::Shake(const float time){
+	if (isShake_) {
+		if (shakePower_.Length() < 0.01f) {
+			isShake_ = false;
+			return;
+		}
+		Vector2 shakeVec;
+
+		shakeVec.x = Lamb::Random(-shakePower_.x, shakePower_.x);
+		shakeVec.y = Lamb::Random(-shakePower_.y, shakePower_.y);
+
+		pos = shakeBasePos_ + shakeVec;
+		
+		if (shakePower_.y > 0) {
+			shakePower_.y -= (shakePowerBase_.y / (time * 60.0f));
+		}
+		else if (shakePower_.y < 0) {
+			shakePower_.y += (shakePowerBase_.y / (time * 60.0f));
+		}
+
+		if (shakePower_.x > 0) {
+			shakePower_.x -= (shakePowerBase_.x / (time * 60.0f));
+		}
+		else if (shakePower_.x < 0) {
+			shakePower_.x += (shakePowerBase_.x / (time * 60.0f));
+		}
+
+	}
 }
 
 void Camera::Debug([[maybe_unused]] const std::string &guiName) {

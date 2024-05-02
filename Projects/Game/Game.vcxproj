@@ -134,6 +134,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Editor\ParticleEditor\ParticleEditor.cpp" />
     <ClCompile Include="Src\GameObject\Component\DwarfComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\FallingBlockComp.cpp" />
+    <ClCompile Include="Src\Editor\UIEditor\UIEditor.cpp" />
     <ClCompile Include="Src\GameObject\Component\FollowCameraComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\HealthComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\IvyComponent.cpp" />
@@ -146,6 +147,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\GameObject\Component\Projectile.cpp" />
     <ClCompile Include="Src\GameObject\Component\Rigidbody.cpp" />
     <ClCompile Include="Src\GameObject\GameObject.cpp" />
+    <ClCompile Include="Src\Game\BlockGauge.cpp" />
     <ClCompile Include="Src\Game\Block\Block.cpp" />
     <ClCompile Include="Src\Game\Cloud\Cloud.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\AABB\AABB.cpp" />
@@ -157,6 +159,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Game\CollisionManager\Sphere\Sphere.cpp" />
     <ClCompile Include="Src\Game\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Src\Game\Enemy\Enemy.cpp" />
+    <ClCompile Include="Src\Game\GameEffectManager\GameEffectManager.cpp" />
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp" />
     <ClCompile Include="Src\Game\Ground\Ground.cpp" />
     <ClCompile Include="Src\Game\Map\Map.cpp" />
@@ -177,7 +180,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Scenes\SubMenu\SubMenu.cpp" />
     <ClCompile Include="Src\Scenes\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Src\World\World.cpp" />
-    <ClCompile Include="UIEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Camera\Camera.h" />
@@ -185,6 +187,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Editor\BlockEditor\BlockEditor.h" />
     <ClInclude Include="Src\Editor\EnemyEditor\EnemyEditor.h" />
     <ClInclude Include="Src\Editor\ParticleEditor\ParticleEditor.h" />
+    <ClInclude Include="Src\Editor\UIEditor\UIEditor.h" />
     <ClInclude Include="Src\GameObject\Component\Collider.h" />
     <ClInclude Include="Src\GameObject\Component\ComponentManager.h" />
     <ClInclude Include="Src\GameObject\Component\DwarfComp.h" />
@@ -201,6 +204,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\GameObject\Component\Projectile.h" />
     <ClInclude Include="Src\GameObject\Component\Rigidbody.h" />
     <ClInclude Include="Src\GameObject\GameObject.h" />
+    <ClInclude Include="Src\Game\BlockGauge.h" />
     <ClInclude Include="Src\Game\Block\Block.h" />
     <ClInclude Include="Src\Game\Cloud\Cloud.h" />
     <ClInclude Include="Src\Game\CollisionManager\AABB\AABB.h" />
@@ -212,6 +216,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\CollisionManager\Sphere\Sphere.h" />
     <ClInclude Include="Src\Game\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Src\Game\Enemy\Enemy.h" />
+    <ClInclude Include="Src\Game\GameEffectManager\GameEffectManager.h" />
     <ClInclude Include="Src\Game\GameManager\GameManager.h" />
     <ClInclude Include="Src\Game\Ground\Ground.h" />
     <ClInclude Include="Src\Game\Map\Map.h" />
@@ -231,7 +236,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Scenes\SubMenu\SubMenu.h" />
     <ClInclude Include="Src\Scenes\TitleScene\TitleScene.h" />
     <ClInclude Include="Src\World\World.h" />
-    <ClInclude Include="UIEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LambEngine\Lamb.vcxproj">

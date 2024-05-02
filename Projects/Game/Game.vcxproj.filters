@@ -132,7 +132,7 @@
     <ClCompile Include="Src\Scenes\SelectToGame\SelectToGame.cpp">
       <Filter>Scenes\SelectToGame</Filter>
     </ClCompile>
-    <ClCompile Include="UIEditor.cpp">
+    <ClCompile Include="Src\Editor\UIEditor\UIEditor.cpp">
       <Filter>Editor\UIEditor</Filter>
     </ClCompile>
     <ClCompile Include="Src\GameObject\Component\PlayerComp.cpp">
@@ -152,6 +152,12 @@
     </ClCompile>
     <ClCompile Include="Src\GameObject\Component\PickUpComp.cpp">
       <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\BlockGauge.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\GameEffectManager\GameEffectManager.cpp">
+      <Filter>Game\Manager\EffectManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +289,9 @@
     </Filter>
     <Filter Include="Game\Ground">
       <UniqueIdentifier>{16c5a03b-817a-415d-bfc6-7c8d982c7707}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\EffectManager">
+      <UniqueIdentifier>{c0884d13-d4c2-4801-8536-c9b6c2c2199e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -421,7 +430,7 @@
     <ClInclude Include="Src\Scenes\SelectToGame\SelectToGame.h">
       <Filter>Scenes\SelectToGame</Filter>
     </ClInclude>
-    <ClInclude Include="UIEditor.h">
+    <ClInclude Include="Src\Editor\UIEditor\UIEditor.h">
       <Filter>Editor\UIEditor</Filter>
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\PlayerComp.h">
@@ -441,6 +450,12 @@
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\PickUpComp.h">
       <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\BlockGauge.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\GameEffectManager\GameEffectManager.h">
+      <Filter>Game\Manager\EffectManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

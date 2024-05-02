@@ -40,7 +40,7 @@ public:
 	void SetClearFlag(int x) { isStageClear_[x] = true; }
 
 	void ClearFlagReset() {
-		for (int i = 0; i < maxStage_ - 1; i++) {
+		for (int i = 0; i < kMaxStage_ - 1; i++) {
 			isStageClear_[i] = false;
 		}
 	}
@@ -48,15 +48,30 @@ private:
 	//ステージセレクト用の変数
 	int32_t selectNum_;
 	int32_t oldSelectNum_ = 0;
-	static constexpr int32_t maxStage_ = 10;
+	static constexpr int32_t kMaxStage_ = 10;
 
-	std::array <bool,maxStage_> isStageClear_;
+	std::array <bool, kMaxStage_> isStageClear_;
 
-	const float stageInterbal = 100.0f;
+	const float stageInterbal = 700.0f;
 
 	Texture2D* tex2D_;
-	std::array<std::unique_ptr<Tex2DState>,maxStage_> texies_;
+	std::array<std::unique_ptr<Tex2DState>, kMaxStage_> texies_;
+
+	std::array<float, kMaxStage_> startPos_;
+	std::array<float, kMaxStage_> endPos_;
+	std::array<float, kMaxStage_> easeT_;
+	const float kAddEase_ = 0.2f;
 
 	std::unique_ptr<Tex2DState> selectTex_;
+
+	Vector2 shakePower_;
+
+	Easeing ease_;
+
+	Audio* selectBGM_ = nullptr;
+
+	Audio* gameDecision_ = nullptr;
+	Audio* selectMove_ = nullptr;
+	Audio* cancel_ = nullptr;
 };
 
