@@ -26,8 +26,8 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 		if (particle == particles_.end()) {
 			break;
 		}
-		(*particle)->emitterPos.x = blockPos.x;
-		(*particle)->emitterPos.y = blockPos.y;
+		(*particle)->emitterPos.x = blockPos.first.x;
+		(*particle)->emitterPos.y = blockPos.first.y;
 		(*particle)->ParticleStart();
 	}
 }
