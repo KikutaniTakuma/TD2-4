@@ -245,7 +245,7 @@ void GameScene::Draw() {
 
 	// player_->Draw(*currentCamera_);
 
-	enemyManager_->Draw(*currentCamera_);
+	//enemyManager_->Draw(*currentCamera_);
 
 #ifdef _DEBUG
 	tex2D_->Draw(backGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()

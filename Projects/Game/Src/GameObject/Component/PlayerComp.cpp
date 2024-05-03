@@ -33,10 +33,10 @@ void PlayerComp::Draw(const Camera &camera) const
 
 		const Vector2 spawnPos{ static_cast<float>(startPos_), pLocalPosComp_->localPos_.y };
 
-		Vector3 pos = Map::GetGlobalPos(spawnPos) - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f);
+		Vector3 pos = { Map::GetGlobalPos(spawnPos) - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f), -1.f };
 		Matrix affine = SoLib::Math::Affine(Vector3{ std::abs(xDiff) + 1 ,1,1 } / 2, Vector3::kZero, pos);
 
-		fallBlockModel_->Draw(affine, camera.GetViewOthographics(), 0xFFFFFFFF, BlendType::kNone);
+		fallBlockModel_->Draw(affine, camera.GetViewOthographics(), 0xF58498FF, BlendType::kNone);
 	}
 }
 
@@ -61,6 +61,20 @@ int32_t PlayerComp::GetMaxBlockWidth() const
 void PlayerComp::SetGauge(BlockGauge *pBlockGauge)
 {
 	pBlockGauge_ = pBlockGauge;
+}
+
+std::pair<int32_t, int32_t> PlayerComp::GetFutureBlockPos() const
+{
+	std::pair<int32_t, int32_t> result{ -1,-1 };
+	// もしブロックを設置してなかったら飛ばす
+	if (startPos_ != -1) {
+		int32_t xDiff = startPos_ - static_cast<int32_t>(pLocalPosComp_->localPos_.x);
+		xDiff = std::min(std::abs(xDiff), GetMaxBlockWidth() - 1) * SoLib::Math::Sign(xDiff);
+
+		result.first = startPos_;
+		result.second = startPos_ - xDiff;
+	}
+	return result;
 }
 
 void PlayerComp::SpawnFallingBlock()

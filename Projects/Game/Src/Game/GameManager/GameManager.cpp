@@ -62,6 +62,9 @@ void GameManager::Init()
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
 {
+	// 演出用のデータの破棄
+	gameEffectManager_->Clear();
+
 	GlobalVariables::GetInstance()->Update();
 
 	blockMap_->Update(deltaTime);
@@ -247,7 +250,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			if (not dwarfObject->GetActive()) {
 
 				dwarfObject->GetComponent<PickUpComp>()->ThrowAllBlocks();
-
+				// 描画用にデータを渡す
+				gameEffectManager_->dwarfDeadPos_.push_back(dwarfObject->GetComponent<LocalBodyComp>()->localPos_);
 
 				dwarfItr = dwarfList_.erase(dwarfItr); // オブジェクトを破棄してイテレータを変更
 				continue;
@@ -305,6 +309,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	}
 
 	blockGauge_->Update(deltaTime);
+
+	gameEffectManager_->fallingBlock_ = player_->GetComponent<PlayerComp>()->GetFutureBlockPos();
 
 	gameEffectManager_->Update(deltaTime);
 
@@ -383,6 +389,9 @@ void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 		damage.size_.x = size.x;
 
 		damageAreaList_.push_back(damage);
+
+		// 演出用にデータを渡す
+		gameEffectManager_->blockBreakPos_.push_back({ centerPos,size });
 
 	}
 	else {

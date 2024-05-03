@@ -4,12 +4,22 @@
             {
                 "TextureFullPath": "Resources/UI/backGround.png",
                 "TextureName": "backGround",
+                "UVScale": [
+                    2.0,
+                    2.0
+                ],
+                "UVTranslate": [
+                    49.0,
+                    0.0
+                ],
                 "color": 4294967295,
                 "scale": [
                     1280.0,
-                    720.0
+                    720.0,
+                    1.0
                 ],
                 "translate": [
+                    0.0,
                     0.0,
                     0.0
                 ]
@@ -17,27 +27,47 @@
             {
                 "TextureFullPath": "Resources/UI/stageSelectUi.png",
                 "TextureName": "stageSelectUi",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
                 "color": 4294967295,
                 "scale": [
                     816.0,
-                    144.0
+                    144.0,
+                    1.0
                 ],
                 "translate": [
                     0.0,
-                    282.0
+                    282.0,
+                    0.0
                 ]
             },
             {
                 "TextureFullPath": "Resources/UI/decision.png",
                 "TextureName": "decision",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
                 "color": 4294967295,
                 "scale": [
                     320.0,
-                    112.0
+                    112.0,
+                    1.0
                 ],
                 "translate": [
                     -455.0,
-                    -270.0
+                    -270.0,
+                    0.0
                 ]
             }
         ]

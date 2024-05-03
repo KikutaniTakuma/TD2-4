@@ -108,7 +108,7 @@ void Map::TransferBoxData()
 					modelState = std::make_unique<MatrixModelState>();
 
 				}
-				modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y } *0.5f, Vector3::kZero, drawPos);
+				modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y } *0.5f, Vector3::kZero, { drawPos, -1.f });
 				// 色を指定する
 				modelState->color = kBoxColors_[static_cast<uint32_t>(box)];
 			}
@@ -205,10 +205,10 @@ void Map::AddHouse(int32_t xCenter)
 
 }
 
-Map::HouseInfo* Map::GetNearestHouse(int32_t x)
+Map::HouseInfo *Map::GetNearestHouse(int32_t x)
 {
 	// 最も近い拠点の参照
-	Map::HouseInfo* nearestHouse = nullptr;
+	Map::HouseInfo *nearestHouse = nullptr;
 	// 最も近い拠点への距離
 	int32_t nearestDistance = 100;
 	for (auto &house : houseList_)

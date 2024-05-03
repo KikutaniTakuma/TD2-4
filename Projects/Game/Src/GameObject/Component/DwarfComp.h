@@ -4,6 +4,8 @@
 #include "LocalBodyComp.h"
 #include "PickUpComp.h"
 #include "SoLib/Math/Math.hpp"
+#include "AudioManager/AudioManager.h"
+
 
 class DwarfComp : public IComponent
 {
@@ -13,7 +15,7 @@ public:
 	// 移動の減少値
 	inline static const float kMovementResistance_ = 0.1f;
 
-	inline static const float kMovementMul_ = 0.5f;
+	inline static const float kMovementMul_ = 2.5f;
 
 public:
 	using IComponent::IComponent;
@@ -60,7 +62,7 @@ private:
 		if (target == -Vector2::kIdentity) { return false; }
 
 		float xMove = target.x - pLocalBodyComp_->localPos_.x;
-		pLocalBodyComp_->localPos_.x += std::clamp(xMove, -1.f, 1.f) * 5.f * GetDeltaTime() * (kMovementSpeed_ - kMovementResistance_ * pPickUpComp_->GetBlockWeight());
+		pLocalBodyComp_->localPos_.x += std::clamp(xMove, -1.f, 1.f) * kMovementMul_ * GetDeltaTime() * (kMovementSpeed_ - kMovementResistance_ * pPickUpComp_->GetBlockWeight());
 
 		// 移動距離が有効なら
 		if (xMove != 0)
@@ -84,5 +86,7 @@ private:
 
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;
 	Lamb::SafePtr<PickUpComp> pPickUpComp_ = nullptr;
+
+	Audio* killSE_ = nullptr;
 
 };
