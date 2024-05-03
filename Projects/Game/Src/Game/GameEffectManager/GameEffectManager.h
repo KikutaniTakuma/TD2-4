@@ -47,5 +47,6 @@ private:
 	std::pair<int32_t, int32_t> fallingBlock_;	// -1なら無効
 
 
-	std::vector<std::unique_ptr<Particle>> particles_;
+	std::vector<std::unique_ptr<Particle>> blockBreakParticles_;
+	std::vector<std::unique_ptr<Particle>> enemyDeathParticles_;
 };

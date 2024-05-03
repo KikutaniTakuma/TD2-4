@@ -7,11 +7,17 @@ void GameEffectManager::Init()
 	pGameManager_ = GameManager::GetInstance();
 	pMap_ = pGameManager_->GetMap();
 
-	particles_.resize(20);
-	for (auto& i : particles_) {
+	blockBreakParticles_.resize(20);
+	for (auto& i : blockBreakParticles_) {
 		i = std::make_unique<Particle>();
 
 		i->LoadSettingDirectory("Block-Break");
+	}
+	enemyDeathParticles_.resize(20);
+	for (auto& i : enemyDeathParticles_) {
+		i = std::make_unique<Particle>();
+
+		i->LoadSettingDirectory("Tiny-death");
 	}
 
 	pSpriteDrawer = DrawerManager::GetInstance()->GetTexture2D();
@@ -22,23 +28,42 @@ void GameEffectManager::Init()
 
 void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 {
-	for (auto particle = particles_.begin(); const auto & blockPosAndSize : blockBreakPos_) {
-		if (particle == particles_.end()) {
+	for (auto particle = blockBreakParticles_.begin(); const auto & blockPosAndSize : blockBreakPos_) {
+		if (particle == blockBreakParticles_.end()) {
 			break;
 		}
 		Vector3 emitterpos = ToGrobal(blockPosAndSize.first);
 		emitterpos.z = -10.0f;
 		(*particle)->ParticleStart(emitterpos, blockPosAndSize.second);
 	}
+	for (auto particle = enemyDeathParticles_.begin(); const auto & deadPos : dwarfDeadPos_) {
+		if (particle == enemyDeathParticles_.end()) {
+			break;
+		}
+		Vector3 emitterpos = ToGrobal(deadPos);
+		emitterpos.z = -20.0f;
+		(*particle)->ParticleStart(emitterpos);
+	}
 
-	for (auto& i : particles_) {
+	for (auto& i : blockBreakParticles_) {
+		i->Update();
+	}
+
+	for (auto& i : enemyDeathParticles_) {
 		i->Update();
 	}
 }
 
 void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
 {
-	for (auto& i : particles_) {
+	for (auto& i : blockBreakParticles_) {
+		i->Draw(
+			camera.rotate,
+			camera.GetViewOthographics(),
+			BlendType::kNormal
+		);
+	}
+	for (auto& i : enemyDeathParticles_) {
 		i->Draw(
 			camera.rotate,
 			camera.GetViewOthographics(),

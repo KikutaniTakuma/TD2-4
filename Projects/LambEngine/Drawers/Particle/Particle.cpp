@@ -427,6 +427,7 @@ void Particle::ParticleStart() {
 	if (!settings_.empty()) {
 		currentParticleIndex_ = 0;
 		emitterPos = settings_[currentParticleIndex_].emitter_.pos_;
+		emitterSize = settings_[currentParticleIndex_].emitter_.size_;
 		settings_[currentSettingIndex_].isValid_ = false;
 		settings_[currentSettingIndex_].isValid_.Update();
 		settings_[currentParticleIndex_].isValid_ = true;
@@ -437,6 +438,7 @@ void Particle::ParticleStart(const Vector3& pos) {
 	if (!settings_.empty()) {
 		currentParticleIndex_ = 0;
 		emitterPos = pos;
+		emitterSize = settings_[currentParticleIndex_].emitter_.size_;
 		settings_[currentSettingIndex_].isValid_ = false;
 		settings_[currentSettingIndex_].isValid_.Update();
 		settings_[currentParticleIndex_].isValid_ = true;
@@ -717,6 +719,7 @@ void Particle::Debug(const std::string& guiName) {
 			ImGui::DragFloat3("pos", &settings_[i].emitter_.pos_.x, 0.01f);
 			emitterPos = settings_[i].emitter_.pos_;
 			ImGui::DragFloat3("size", &settings_[i].emitter_.size_.x, 0.01f);
+			emitterSize = settings_[i].emitter_.size_;
 			int32_t type = static_cast<int32_t>(settings_[i].emitter_.type_);
 			ImGui::SliderInt("type", &type, 0, 1);
 			settings_[i].emitter_.type_ = static_cast<decltype(settings_[i].emitter_.type_)>(type);
