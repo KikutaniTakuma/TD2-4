@@ -4,6 +4,8 @@
 #include "LocalBodyComp.h"
 #include "PickUpComp.h"
 #include "SoLib/Math/Math.hpp"
+#include "AudioManager/AudioManager.h"
+
 
 class DwarfComp : public IComponent
 {
@@ -84,5 +86,7 @@ private:
 
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;
 	Lamb::SafePtr<PickUpComp> pPickUpComp_ = nullptr;
+
+	Audio* killSE_ = nullptr;
 
 };

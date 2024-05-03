@@ -24,6 +24,11 @@ void DwarfComp::Init()
 	{
 		Lamb::SafePtr spriteAnimComp = object_.AddComponent<SpriteAnimatorComp>();
 	}*/
+
+	killSE_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/dwarfKill.mp3");
+
+
+	
 }
 
 void DwarfComp::Start()
@@ -79,6 +84,7 @@ void DwarfComp::Update()
 
 	if (pPickUpComp_->GetBlockWeight() > 6) {
 		object_.SetActive(false);
+		killSE_->Start(0.2f, false);
 	}
 
 
