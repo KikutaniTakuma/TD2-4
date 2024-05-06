@@ -42,10 +42,10 @@ public:
 	};
 	// ブロックの情報
 	struct BlockStatus {
-		// 中心の座標
-		Vector2 centerPos_;
-		// ブロックの大きさ
-		Vector2 blockSize_;
+		//// 中心の座標
+		//Vector2 centerPos_;
+		//// ブロックの大きさ
+		//Vector2 blockSize_;
 		// ローカル座標
 		Vector2 localPos_;
 
@@ -57,7 +57,7 @@ public:
 		float shakeTime_ = 0.f;
 		float startTime_ = 0;
 
-		int32_t GetWeight() const { return static_cast<int32_t>(blockSize_.x * blockSize_.y); }
+		// int32_t GetWeight() const { return static_cast<int32_t>(blockSize_.x * blockSize_.y); }
 
 		/// @brief 振動を開始する
 		/// @param time 振動する時間

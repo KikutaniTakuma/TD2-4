@@ -1,6 +1,7 @@
 #pragma once
 #include"Game/EnemyManager/EnemyManager.h"
 #include"Game/GameManager/GameManager.h"
+#include <Game/CollisionManager/Obb/Obb.h>
 class EnemyEditor{
 public:
 	/// <summary>

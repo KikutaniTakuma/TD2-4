@@ -155,8 +155,8 @@ void Map::SetBlocks(Vector2 centerPos, Vector2 size, BoxType boxType)
 
 			// データのコピー
 			{
-				setBlockState->centerPos_ = calcCenterPos;
-				setBlockState->blockSize_ = size;
+				/*setBlockState->centerPos_ = calcCenterPos;
+				setBlockState->blockSize_ = size;*/
 				setBlockState->localPos_ = Vector2{ static_cast<float>(xPos), static_cast<float>(yPos) };
 			}
 

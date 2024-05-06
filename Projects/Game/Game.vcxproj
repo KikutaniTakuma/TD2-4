@@ -152,7 +152,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\GameObject\Component\SpriteComp.cpp" />
     <ClCompile Include="Src\GameObject\GameObject.cpp" />
     <ClCompile Include="Src\Game\BlockGauge.cpp" />
-    <ClCompile Include="Src\Game\Block\Block.cpp" />
     <ClCompile Include="Src\Game\Cloud\Cloud.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\AABB\AABB.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Capsule\Capsule.cpp" />
@@ -162,12 +161,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Game\CollisionManager\Plane\Plane.cpp" />
     <ClCompile Include="Src\Game\CollisionManager\Sphere\Sphere.cpp" />
     <ClCompile Include="Src\Game\EnemyManager\EnemyManager.cpp" />
-    <ClCompile Include="Src\Game\Enemy\Enemy.cpp" />
     <ClCompile Include="Src\Game\GameEffectManager\GameEffectManager.cpp" />
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp" />
     <ClCompile Include="Src\Game\Ground\Ground.cpp" />
     <ClCompile Include="Src\Game\Map\Map.cpp" />
-    <ClCompile Include="Src\Game\Player\Player.cpp" />
     <ClCompile Include="Src\Game\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Src\Game\Water\Water.cpp" />
     <ClCompile Include="Src\GlobalVariables\GlobalVariables.cpp" />
@@ -213,7 +210,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\GameObject\Component\SpriteAnimatorComp.h" />
     <ClInclude Include="Src\GameObject\GameObject.h" />
     <ClInclude Include="Src\Game\BlockGauge.h" />
-    <ClInclude Include="Src\Game\Block\Block.h" />
     <ClInclude Include="Src\Game\Cloud\Cloud.h" />
     <ClInclude Include="Src\Game\CollisionManager\AABB\AABB.h" />
     <ClInclude Include="Src\Game\CollisionManager\Capsule\Capsule.h" />
@@ -223,12 +219,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\CollisionManager\Plane\Plane.h" />
     <ClInclude Include="Src\Game\CollisionManager\Sphere\Sphere.h" />
     <ClInclude Include="Src\Game\EnemyManager\EnemyManager.h" />
-    <ClInclude Include="Src\Game\Enemy\Enemy.h" />
     <ClInclude Include="Src\Game\GameEffectManager\GameEffectManager.h" />
     <ClInclude Include="Src\Game\GameManager\GameManager.h" />
     <ClInclude Include="Src\Game\Ground\Ground.h" />
     <ClInclude Include="Src\Game\Map\Map.h" />
-    <ClInclude Include="Src\Game\Player\Player.h" />
     <ClInclude Include="Src\Game\SkyDome\SkyDome.h" />
     <ClInclude Include="Src\Game\Water\Water.h" />
     <ClInclude Include="Src\GlobalVariables\GlobalVariables.h" />

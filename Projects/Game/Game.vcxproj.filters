@@ -108,15 +108,6 @@
     <ClCompile Include="Src\Game\Map\Map.cpp">
       <Filter>Game\Map</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Game\Player\Player.cpp">
-      <Filter>Game\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Game\Block\Block.cpp">
-      <Filter>Game\Block</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Game\Enemy\Enemy.cpp">
-      <Filter>Game\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Game\EnemyManager\EnemyManager.cpp">
       <Filter>Game\Manager\EnemyManager</Filter>
     </ClCompile>
@@ -245,9 +236,6 @@
     <Filter Include="Game\Block">
       <UniqueIdentifier>{44033f75-5a14-455e-b909-6200bd5aecc5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Player">
-      <UniqueIdentifier>{9d9be9c4-6bcc-4354-8e0d-bd65a0029eed}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Manager">
       <UniqueIdentifier>{5662ba70-c48f-49ac-92ac-c349d16563d8}</UniqueIdentifier>
     </Filter>
@@ -280,9 +268,6 @@
     </Filter>
     <Filter Include="Game\Manager\EnemyManager">
       <UniqueIdentifier>{b8bb4175-b5f3-466e-95fb-e2bf95f84093}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Enemy">
-      <UniqueIdentifier>{b275312c-2f59-418a-9e86-b8f0b4b29ec6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Editor\EnemyEditor">
       <UniqueIdentifier>{4ec1fc64-92ec-4948-9170-fb1b17ea103a}</UniqueIdentifier>
@@ -417,15 +402,6 @@
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\OnBlockMoveComp.h">
       <Filter>GameObject\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Game\Player\Player.h">
-      <Filter>Game\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Game\Block\Block.h">
-      <Filter>Game\Block</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Game\Enemy\Enemy.h">
-      <Filter>Game\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\EnemyManager\EnemyManager.h">
       <Filter>Game\Manager\EnemyManager</Filter>
