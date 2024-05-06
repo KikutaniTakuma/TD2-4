@@ -94,18 +94,6 @@ public:
 		}
 	};
 
-
-	// ボックスに紐づいている情報
-	enum class BoxType : uint32_t {
-		kNone,			// 虚空
-		kGroundBlock,	// プレイヤ側のブロック
-		kEnemyBlock,    // 敵側のブロック
-
-		kMax,           // 最大値
-	};
-
-	//inline static const std::array<uint32_t, static_cast<uint32_t>(BoxType::kMax)> kBoxColors_{ 0x00000000, 0xF58498FF, 0xFF0000FF };
-
 	inline static constexpr int32_t kMapX = 30u, kMapY = 20u;
 
 	// 拠点のリスト
