@@ -457,5 +457,8 @@
     <ClInclude Include="Src\GameObject\Component\DwarfShakeComp.h">
       <Filter>GameObject\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>Game\Block</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

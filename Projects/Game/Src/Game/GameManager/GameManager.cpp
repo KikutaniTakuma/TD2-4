@@ -396,7 +396,7 @@ void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 	}
 	else {
 		// ブロックを設置
-		blockMap_->SetBlocks(centerPos, size, Map::BoxType::kGroundBlock);
+		blockMap_->SetBlocks(centerPos, size, Block::BlockType::kRed);
 	}
 }
 
@@ -426,7 +426,7 @@ std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, [[mayb
 	// 範囲外である場合は終わる
 	if (Map::IsOutSide(localPos)) { return {}; }
 	// ブロックが存在しない場合は終わる
-	if (blockMap_->GetBoxType(localPos) == Map::BoxType::kNone) { return {}; }
+	if (blockMap_->GetBoxType(localPos) == Block::BlockType::kNone) { return {}; }
 
 	// ブロックのデータを取得する
 	Lamb::SafePtr groundBlock = (*blockMap_->GetBlockStatusMap())[static_cast<int32_t>(localPos.y)][static_cast<int32_t>(localPos.x)].get();

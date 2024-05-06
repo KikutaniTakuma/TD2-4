@@ -28,7 +28,7 @@ void DwarfComp::Init()
 	killSE_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/dwarfKill.mp3");
 
 
-	
+
 }
 
 void DwarfComp::Start()
@@ -46,7 +46,7 @@ void DwarfComp::Update()
 		Vector2 downPos = localPos - Vector2::kYIdentity;
 
 		// 足元にブロックがあるなら
-		if (LocalBodyComp::pMap_->GetBoxType(downPos) == Map::BoxType::kGroundBlock)
+		if (LocalBodyComp::pMap_->GetBoxType(downPos) != Block::BlockType::kNone)
 		{
 			// 持ち上げる
 			pPickUpComp_->PickupTargetBlock(downPos);
@@ -102,7 +102,7 @@ void DwarfComp::ClimbUp()
 
 	bool climbFlag = false;
 	// ブロックの中にいる場合登る
-	climbFlag |= blockType == Map::BoxType::kGroundBlock or blockType == Map::BoxType::kEnemyBlock;
+	climbFlag |= static_cast<bool>(blockType);
 
 	// 登るフラグが立っていたら登る
 	if (climbFlag)
@@ -126,7 +126,7 @@ void DwarfComp::FallDown()
 	if (afterPosY > 0)
 	{
 		// 落下先がブロックでない場合
-		if (LocalBodyComp::pMap_->GetBoxType(downSide) == Map::BoxType::kNone)
+		if (LocalBodyComp::pMap_->GetBoxType(downSide) == Block::BlockType::kNone)
 		{
 			// 下げる
 			pLocalBodyComp_->localPos_.y -= downPower;
@@ -227,7 +227,7 @@ void DwarfComp::LocateOnHouse()
 	// 現在の中心座標
 	const Vector2 localPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * 0.5f;
 	// 自分の位置が虚空の場合
-	if (map->GetBoxType(localPos) == Map::BoxType::kNone)
+	if (map->GetBoxType(localPos) == Block::BlockType::kNone)
 	{
 		// 拠点の左端からの距離
 		int onLocatePos = GetLocatePosEnemyHouse();
@@ -287,7 +287,7 @@ void DwarfComp::LocateOnHouse()
 					{
 						for (float x = 0; x < blockSize.x; x++)
 						{
-							if (map->GetBoxType(blockCenterPos + Vector2::kXIdentity * x + Vector2::kYIdentity * y - halfSize) != Map::BoxType::kNone)
+							if (map->GetBoxType(blockCenterPos + Vector2::kXIdentity * x + Vector2::kYIdentity * y - halfSize) != Block::BlockType::kNone)
 							{
 								isSetable = false;
 								break;
@@ -299,7 +299,7 @@ void DwarfComp::LocateOnHouse()
 					if (isSetable)
 					{
 						// ブロックを配置
-						map->SetBlocks(blockCenterPos, blockSize, Map::BoxType::kEnemyBlock);
+						//map->SetBlocks(blockCenterPos, blockSize, Map::BoxType::kEnemyBlock);
 
 						// 先頭要素を削除
 						pPickUpComp_->PopFront();

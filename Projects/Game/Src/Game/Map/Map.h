@@ -12,6 +12,7 @@
 #include"Game/Ground/Ground.h"
 #include "SoLib/Math/Angle.h"
 #include <functional>
+#include <Game/Block.h>
 
 class Map {
 public:
@@ -103,7 +104,7 @@ public:
 		kMax,           // 最大値
 	};
 
-	inline static const std::array<uint32_t, static_cast<uint32_t>(BoxType::kMax)> kBoxColors_{ 0x00000000, 0xF58498FF, 0xFF0000FF };
+	//inline static const std::array<uint32_t, static_cast<uint32_t>(BoxType::kMax)> kBoxColors_{ 0x00000000, 0xF58498FF, 0xFF0000FF };
 
 	inline static constexpr int32_t kMapX = 30u, kMapY = 20u;
 
@@ -115,7 +116,7 @@ public:
 	using Map2dMap = std::array<std::array<T, kMapX>, kMapY>;
 
 	// 箱の配列 [y][x]
-	using Block2dMap = Map2dMap<BoxType>;
+	using Block2dMap = Map2dMap<Block>;
 
 	using BlockStatusMap = Map2dMap<std::unique_ptr<BlockStatus>>;
 
@@ -143,9 +144,9 @@ public:
 	/// @param centerPos 中心座標
 	/// @param size 直径
 	/// @param boxType ブロックのタイプ
-	void SetBlocks(Vector2 centerPos, Vector2 size, BoxType boxType);
+	void SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType);
 
-	const BoxType GetBoxType(const Vector2 localPos) const;
+	const Block::BlockType GetBoxType(const Vector2 localPos) const;
 
 	static bool IsOutSide(const Vector2 &localPos);
 

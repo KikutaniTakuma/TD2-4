@@ -79,13 +79,13 @@ void Map::TransferBoxData()
 	for (int32_t yi = 0; yi < kMapY; yi++) {
 		for (int32_t xi = 0; xi < kMapX; xi++) {
 			// ボックスの状態
-			const BoxType box = (*boxMap_)[yi][xi];
+			const auto &box = (*boxMap_)[yi][xi];
 
 			// モデルのデータ
 			auto &modelState = modelStateMap_[yi][xi];
 
 			// ボックスが存在する場合は実体を作成
-			if (box != BoxType::kNone and box != BoxType::kMax) {
+			if (box) {
 				// 描画先の座標
 				const Vector2 drawPos = GetGlobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) } + (*blockStatesMap_)[yi][xi]->drawOffset_);
 				// もしすでに実在したら生成しない
@@ -95,7 +95,7 @@ void Map::TransferBoxData()
 				}
 				modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y } *0.5f, Vector3::kZero, { drawPos, -1.f });
 				// 色を指定する
-				modelState->color = kBoxColors_[static_cast<uint32_t>(box)];
+				modelState->color = Block::kBlockColor_[static_cast<uint32_t>(box)];
 			}
 			// もしボックスが存在しない場合は
 			else {
@@ -117,7 +117,7 @@ void Map::TransferBoxData()
 
 }
 
-void Map::SetBlocks(Vector2 centerPos, Vector2 size, BoxType boxType)
+void Map::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType)
 {
 	// 半径
 	Vector2 halfSize = Vector2{ std::floor(size.x * 0.5f), std::floor(size.y * 0.5f) };
@@ -146,7 +146,7 @@ void Map::SetBlocks(Vector2 centerPos, Vector2 size, BoxType boxType)
 			// 参照を取得する
 			auto &box = (*boxMap_)[yPos][xPos];
 			// データを代入する
-			box = boxType;
+			box.SetBlockType(boxType);
 
 			// ブロックのステータスの参照
 			auto &blockState = (*blockStatesMap_)[yPos][xPos];
@@ -169,14 +169,14 @@ void Map::SetBlocks(Vector2 centerPos, Vector2 size, BoxType boxType)
 
 }
 
-const Map::BoxType Map::GetBoxType(const Vector2 localPos) const {
+const Block::BlockType Map::GetBoxType(const Vector2 localPos) const {
 	// もしマップ外に行っていた場合虚無
 	if (IsOutSide(localPos)) {
-		return BoxType::kNone;
+		return Block::BlockType::kNone;
 	}
 
 	// ブロックのデータを返す
-	return (*boxMap_)[int(localPos.y)][int(localPos.x)];
+	return (*boxMap_)[int(localPos.y)][int(localPos.x)].GetBlockType();
 }
 
 bool Map::IsOutSide(const Vector2 &localPos)
