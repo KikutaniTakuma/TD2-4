@@ -149,15 +149,6 @@ public:
 
 	static bool IsOutSide(const Vector2 &localPos);
 
-	inline void SetDraingFlag(const std::bitset<kMapY> &flag) noexcept { isFloorDrawing_ = flag; }
-	inline const std::bitset<kMapY> &GetDraingFlag() const noexcept { return isFloorDrawing_; }
-
-
-	void AddHouse(int32_t xCenter);
-
-
-	Map::HouseInfo *GetNearestHouse(int32_t x);
-
 
 	void ProcessEnemyHouseBlocks(std::function<void(int32_t y, int32_t x)> processBlock)
 	{
@@ -180,15 +171,6 @@ public:
 	/// @return 二次元配列
 	BlockStatusMap *GetBlockStatusMap() { return blockStatesMap_.get(); }
 
-
-	/// @brief 地面のエディターを取得する
-	/// @return エディタを返す
-	GroundEditor *GetGroundEditor() { return groundEditor_.get(); }
-
-	/// @brief 拠点のリストを返す
-	/// @return 拠点のリスト
-	HouseList *GetHouseList() { return &houseList_; }
-
 	static Vector2 GetGlobalPos(Vector2 localPos) noexcept
 	{
 		return Vector2{ localPos.x * vBlockScale_->x, localPos.y * vBlockScale_->y } - Vector2::kXIdentity * vBlockScale_->x * ((kMapX - 1) / 2.f);
@@ -209,8 +191,6 @@ public:
 
 private:
 
-	void GetHouseData();
-
 private:
 
 	// 箱の配列 [y][x]
@@ -219,12 +199,7 @@ private:
 	std::unique_ptr<BlockStatusMap> blockStatesMap_;
 
 	// 拠点のリスト
-	HouseList houseList_;
-
-	// 箱の数
-	size_t boxCount_{};
-
-	std::bitset<kMapY> isFloorDrawing_{ 0b1 };
+	//HouseList houseList_;
 
 	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale_{ {1.f,1.f} };
 	inline static SoLib::VItem<"敵拠点の横幅", int32_t> vEnemyHouseWidth_{ 3 };
@@ -238,7 +213,4 @@ private:
 
 	// 床のクラス
 	std::unique_ptr<Ground> ground_;
-
-	// 床のエディタークラス
-	std::unique_ptr<GroundEditor> groundEditor_;
 };

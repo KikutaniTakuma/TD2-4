@@ -10,21 +10,12 @@ void Map::Init()
 	boxMap_ = std::make_unique<Block2dMap>();
 	blockStatesMap_ = std::make_unique<Map2dMap<std::unique_ptr<BlockStatus>>>();
 
-	houseList_.clear();
-
 	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
 	drawerManager->LoadModel("Resources/Cube.obj");
 	model_ = drawerManager->GetModel("Resources/Cube.obj");
 
-	groundEditor_ = std::make_unique<GroundEditor>();
-	groundEditor_->Init();
-
 	ground_ = std::make_unique<Ground>();
 	ground_->Init();
-
-	groundEditor_->SetGround(ground_.get());
-
-	AddHouse((Map::kMapX) / 2);
 
 }
 
@@ -48,12 +39,7 @@ void Map::Draw([[maybe_unused]] const Camera &camera) const {
 			}
 		}
 	}
-	for (const auto &house : houseList_) {
-		model_->Draw(house.houseModelState_.transMat, camera.GetViewOthographics(), house.houseModelState_.color, BlendType::kNormal);
-	}
-
 	ground_->Draw(camera);
-	groundEditor_->Draw(camera);
 }
 
 bool Map::Debug(const char *const str)
@@ -89,7 +75,6 @@ bool Map::Debug(const char *const str)
 
 void Map::TransferBoxData()
 {
-	groundEditor_->TransferBoxData();
 
 	for (int32_t yi = 0; yi < kMapY; yi++) {
 		for (int32_t xi = 0; xi < kMapX; xi++) {
@@ -197,32 +182,4 @@ const Map::BoxType Map::GetBoxType(const Vector2 localPos) const {
 bool Map::IsOutSide(const Vector2 &localPos)
 {
 	return localPos.x < 0.f or localPos.y < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY;
-}
-
-void Map::AddHouse(int32_t xCenter)
-{
-	houseList_.push_back(HouseInfo{ .xPos_ = xCenter,.houseModelState_ = MatrixModelState{.transMat = SoLib::Math::Affine(Vector3{1.5f, 0.5f, 5.f}, Vector3::kZero, Map::GetGlobalPos(Vector2{static_cast<float>(xCenter), -1.f})), .color = 0x0000FF55} });
-
-}
-
-Map::HouseInfo *Map::GetNearestHouse(int32_t x)
-{
-	// 最も近い拠点の参照
-	Map::HouseInfo *nearestHouse = nullptr;
-	// 最も近い拠点への距離
-	int32_t nearestDistance = 100;
-	for (auto &house : houseList_)
-	{
-		// 最も近い拠点への距離
-		int32_t distance = std::abs(house.xPos_ - x);
-		// 現在の拠点より近い場合は置き換える
-		if (distance < nearestDistance) { nearestDistance = distance; nearestHouse = &house; }
-	}
-
-	return nearestHouse;
-}
-
-void Map::GetHouseData()
-{
-	//groundEditor_->
 }

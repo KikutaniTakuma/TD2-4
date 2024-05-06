@@ -72,17 +72,17 @@ private:
 	/*std::unique_ptr<SkyDome> skydome_ = nullptr;
 	class Cloud *cloud_ = nullptr;*/
 
-	bool editorMode_ = false;
+	//bool editorMode_ = false;
 
-	bool enemyMode_ = false;
+	//bool enemyMode_ = false;
 
 	const float editorCameraPosZ_ = -42.0f;
 
-	std::unique_ptr<BlockEditor> blockEditor_;
+	//std::unique_ptr<BlockEditor> blockEditor_;
 
-	std::unique_ptr<EnemyEditor> enemyEditor_;
+	//std::unique_ptr<EnemyEditor> enemyEditor_;
 
-	EnemyManager* enemyManager_ = nullptr;
+	//EnemyManager* enemyManager_ = nullptr;
 
 	Texture2D* tex2D_ = nullptr;
 

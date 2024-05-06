@@ -6,7 +6,7 @@
 #include "Utils/UtilsLib/UtilsLib.h"
 
 void EnemyEditor::Initialize() {
-	groundMap_ = GameManager::GetInstance()->GetMap()->GetGroundEditor();
+	//groundMap_ = GameManager::GetInstance()->GetMap()->GetGroundEditor();
 
 	groundMapSize_ = groundMap_->GetGroundData();
 

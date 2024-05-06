@@ -7,7 +7,7 @@
 
 void BlockEditor::Initialize() {
 
-	map_ = GameManager::GetInstance()->GetMap()->GetGroundEditor();
+	//map_ = GameManager::GetInstance()->GetMap()->GetGroundEditor();
 
 	mapSize_ = map_->GetGroundData();
 

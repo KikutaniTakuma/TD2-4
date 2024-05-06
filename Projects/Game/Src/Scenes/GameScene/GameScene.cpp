@@ -126,20 +126,20 @@ void GameScene::Initialize() {
 	// player_ = std::make_unique<Player>();
 	// player_->Initialize();
 
-	blockEditor_ = std::make_unique<BlockEditor>();
-	blockEditor_->Initialize();
+	//blockEditor_ = std::make_unique<BlockEditor>();
+	//blockEditor_->Initialize();
 
 
-	enemyManager_ = EnemyManager::GetInstance();
-	enemyManager_->Initialize();
+	//enemyManager_ = EnemyManager::GetInstance();
+	//enemyManager_->Initialize();
 
-	enemyEditor_ = std::make_unique<EnemyEditor>();
-	enemyEditor_->Initialize();
+	//enemyEditor_ = std::make_unique<EnemyEditor>();
+	//enemyEditor_->Initialize();
 
-	blockEditor_->LoadFiles(SelectToGame::GetInstance()->GetSelect());
-	enemyEditor_->LoadFiles(SelectToGame::GetInstance()->GetSelect());
+	//blockEditor_->LoadFiles(SelectToGame::GetInstance()->GetSelect());
+	//enemyEditor_->LoadFiles(SelectToGame::GetInstance()->GetSelect());
 
-	enemyMode_ = false;
+	//enemyMode_ = false;
 
 	TextureInitialize();
 
@@ -154,7 +154,7 @@ void GameScene::Initialize() {
 void GameScene::Finalize() {
 	gameBGM_->Stop();
 
-	enemyManager_->Finalize();
+	//enemyManager_->Finalize();
 	// 実体の破棄
 	GameManager::Finalize();
 }
@@ -173,8 +173,8 @@ void GameScene::Update() {
 
 	Debug();
 
-	enemyManager_->Update();
-	enemyManager_->Debug();
+	//enemyManager_->Update();
+	//enemyManager_->Debug();
 
 	gameManager_->InputAction();
 	gameManager_->Update(deltaTime);
@@ -187,12 +187,12 @@ void GameScene::Update() {
 	TextureUpdate();
 
 
-	for (auto& house : *gameManager_->GetMap()->GetHouseList()) {
-		if (house.IsBreaked()){
- 			currentCamera_->BeginShake(shakePower_);
-			break;
-		}
-	}
+	//for (auto& house : *gameManager_->GetMap()->GetHouseList()) {
+	//	if (house.IsBreaked()){
+ //			currentCamera_->BeginShake(shakePower_);
+	//		break;
+	//	}
+	//}
 	//player_->AllTrade();
 
 	if (input_->GetKey()->LongPush(DIK_RETURN)&&input_->GetKey()->Pushed(DIK_BACKSPACE)) {
@@ -259,14 +259,14 @@ void GameScene::Draw() {
 	gameManager_->Draw(*currentCamera_);
 
 	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
-	if (editorMode_) {
+	/*if (editorMode_) {
 		if (enemyMode_) {
 			enemyEditor_->Draw(*currentCamera_);
 		}
 		else {
 			blockEditor_->Draw(*currentCamera_);
 		}
-	}
+	}*/
 	TextureDraw();
 
 	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
@@ -331,11 +331,11 @@ void GameScene::Debug(){
 
 
 	ImGui::Begin("モード変更");
-	ImGui::Checkbox("エディターモード", &editorMode_);
-	ImGui::Checkbox("エネミーモード", &enemyMode_);
+	//ImGui::Checkbox("エディターモード", &editorMode_);
+	//ImGui::Checkbox("エネミーモード", &enemyMode_);
 	//ImGui::DragFloat("エディター時のカメラの距離", &editorCameraPosZ_, 1.0f, -100.0f, 0.0f);
 	ImGui::End();
-	if (input_->GetKey()->Pushed(DIK_E) && input_->GetKey()->LongPush(DIK_LSHIFT)) {
+	/*if (input_->GetKey()->Pushed(DIK_E) && input_->GetKey()->LongPush(DIK_LSHIFT)) {
 		if (!editorMode_)
 			editorMode_ = true;
 		else if (editorMode_)
@@ -362,7 +362,7 @@ void GameScene::Debug(){
 			blockEditor_->Update();
 		}
 
-	}
+	}*/
 
 #endif // _DEBUG
 }
