@@ -68,6 +68,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	GlobalVariables::GetInstance()->Update();
 
 	blockMap_->Update(deltaTime);
+	BlockMapDropDown();
 
 	player_->Update(deltaTime);
 	for (auto &fallingBlock : fallingBlocks_) {
@@ -97,165 +98,6 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		}
 
 	}
-
-
-	//for (auto &block : fallingBlocks_) {
-	//	Lamb::SafePtr fallingComp = block->GetComponent<FallingBlockComp>();
-	//	Lamb::SafePtr blockBody = fallingComp->pLocalPos_;
-
-	//	for (auto &dwarf : dwarfList_) {
-
-	//		// もし死んでいたらその時点で終わり
-	//		if (not dwarf->GetActive()) { continue; }
-
-	//		Lamb::SafePtr dwarfBody = dwarf->GetComponent<LocalBodyComp>();
-
-	//		Lamb::SafePtr pickUpComp = dwarf->GetComponent<PickUpComp>();
-
-	//		for (float yDiff = 1.f; const auto & pickUpBlock : pickUpComp->GetPickUpBlockList()) {
-
-	//			Vector2 posDiff = dwarfBody->localPos_ - blockBody->localPos_ + Vector2::kYIdentity * (yDiff + (pickUpBlock.size_.y - 1) / 2);
-
-	//			Vector2 halfSize = (pickUpBlock.size_ + blockBody->size_) * 0.5f;
-
-	//			// ぶつかっていたら
-	//			if (std::abs(posDiff.x) <= halfSize.x and std::abs(posDiff.y) <= halfSize.y) {
-
-	//				// ブロックのデータを渡す
-	//				pickUpComp->AddBlock({ .size_ = blockBody->size_ });
-
-	//				// ブロックを破壊する
-	//				block->SetActive(false);
-
-	//				break;
-
-	//			}
-
-
-	//			// 高さを加算
-	//			yDiff += pickUpBlock.size_.y;
-
-	//		}
-	//		// ブロックが壊れてたら飛ばす
-	//		if (not block->GetActive()) { break; }
-
-	//		Vector2 posDiff = dwarfBody->localPos_ - blockBody->localPos_;
-
-	//		Vector2 halfSize = (dwarfBody->size_ + blockBody->size_) * 0.5f;
-
-	//		//// ぶつかっていたら破壊
-	//		//if (std::abs(posDiff.x) <= halfSize.x and std::abs(posDiff.y) <= halfSize.y) {
-
-	//		//	dwarf->SetActive(false);
-
-	//		//	break;
-
-	//		//}
-
-	//	}
-
-
-	//	// ブロックが壊れてたら飛ばす
-	//	if (not block->GetActive()) { continue; }
-
-	//	// もし着地してたら
-	//	if (fallingComp->IsLanding()) {
-	//		// ダメージ判定がない場合、壁天井に対する検知を行う
-	//		if (not fallingComp->hasDamage_) {
-
-	//			// もし横に移動していたら
-	//			if (fallingComp->velocity_.x != 0)
-	//			{
-
-	//				// 当たっていたのが敵拠点の時の処理
-
-	//				// 当たった場所のリスト
-	//				const auto &hitPosList = fallingComp->FindLandingList();
-	//				for (Vector2 pos : hitPosList)
-	//				{
-	//					// もし､当たったブロックが敵拠点なら
-	//					if (blockMap_->GetBoxType(pos) == Map::BoxType::kEnemyBlock)
-	//					{
-	//						//GameDataTransfar.blockHitAtTowerPos_.Add(Map::GetGrobalPos(pos));
-
-	//						// 敵拠点を取得
-	//						Lamb::SafePtr enemyHouse = blockMap_->GetNearestHouse(static_cast<int32_t>(pos.x));
-
-	//						const int32_t xPos = enemyHouse->xPos_;
-	//						Vector2 direction = Vector2::kXIdentity * SoLib::Math::Sign(fallingComp->velocity_.x);
-
-	//						blockMap_->ProcessEnemyHouseBlocks([direction, xPos, this](int32_t y, int32_t x)
-	//							{
-	//								Vector2 blockFinder = { static_cast<float>(xPos + x), static_cast<float>(y) };
-	//								if (blockMap_->GetBoxType(blockFinder) == Map::BoxType::kEnemyBlock)
-	//								{
-	//									Lamb::SafePtr ground = (*blockMap_->GetBlockStatusMap())[y][xPos + x].get();
-	//									float power = y + 1.f;
-
-	//									ground->StartShake(1.5f, direction * -power);
-	//								}
-	//							});
-
-	//						// 大きさ分のダメージを与える
-	//						enemyHouse->health_ -= fallingComp->GetWeight();
-
-	//						// 体力が0を下回ったら
-	//						if (enemyHouse->health_ <= 0)
-	//						{
-	//							// 崩壊フラグを立てる
-	//							enemyHouse->damageFacing_ = SoLib::Math::Sign(static_cast<int32_t>(fallingComp->velocity_.x));
-
-	//						}
-	//						break;
-
-	//					}
-	//				}
-
-
-	//				// 移動量のメモ
-	//				float xMove = fallingComp->velocity_.x;
-
-	//				// 横移動を消してもう一度試す
-	//				fallingComp->velocity_.x = 0;
-	//				//isOnemore = true;
-	//				// あたってなかったら
-	//				if (fallingComp->IsLanding() == false)
-	//				{
-	//					// やり直す
-	//					continue;
-	//				}
-	//				fallingComp->velocity_.x = xMove;
-	//			}
-
-	//			// もし上に飛んでたら
-	//			if (fallingComp->velocity_.y > 0)
-	//			{
-
-	//				float yMove = fallingComp->velocity_.y;
-	//				// 上移動を消してもう一度試す
-	//				fallingComp->velocity_.y = 0;
-	//				//isOnemore = true;
-	//				// あたってなかったら
-	//				if (fallingComp->IsLanding() == false)
-	//				{
-	//					// やり直す
-	//					continue;
-	//				}
-	//				fallingComp->velocity_.y = yMove;
-	//			}
-
-	//		}
-	//		// 下側が接地していた場合
-
-	//		// ローカル座標のコンポーネント
-	//		const LocalBodyComp &localBodyComp = *fallingComp->pLocalPos_;
-
-	//		// ブロックを設置
-	//		LandBlock(localBodyComp.localPos_, localBodyComp.size_, fallingComp->hasDamage_);
-	//		// 破棄するように設定する
-	//		block->SetActive(false);
-	//	}
-	//}
 
 	// 落下ブロックの破棄
 	std::erase_if(fallingBlocks_, [](const auto &itr) ->bool { return not itr->GetActive(); });
@@ -309,20 +151,6 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	damageAreaList_.clear();
 
-	//for (auto &house : *blockMap_->GetHouseList())
-	//{
-	//	// 飛ぶ方向が指定されてたら
-	//	if (house.health_ == 0 || house.damageFacing_ != 0)
-	//	{
-	//		BreakEnemyHouse(house.damageFacing_, house);
-	//		house.health_ = Map::HouseInfo::kMaxHealth_;
-	//		house.damageFacing_ = 0;
-	//		house.isBreaked_ = true;
-	//	}
-	//	else {
-	//		house.isBreaked_ = false;
-	//	}
-	//}
 	// ボタンを押していない間はゲージを回復する
 	if (not Input::GetInstance()->GetKey()->GetKey(DIK_SPACE)) {
 		blockGauge_->EnergyRecovery(deltaTime);
@@ -546,5 +374,40 @@ void GameManager::InputAction()
 
 	// ベクトルの付与
 	//player_->GetComponent<OnBlockMoveComp>()->InputMoveDirection(inputPlayer);
+
+}
+
+void GameManager::BlockMapDropDown()
+{
+	Vector2 localPos = {};
+	// ブロックの二次元配列
+	auto &blMap = *blockMap_->GetBlockMap();
+
+	// ブロックが着地しているか
+	std::bitset<BlockMap::kMapX> isFloatBlock{};
+
+	for (auto &blockLine : blMap) {
+		uint32_t index = 0;
+		localPos.x = 0;
+		for (auto &block : blockLine) {
+
+			// もしそこが虚空であればフラグを立てる
+			if (not block) {
+				isFloatBlock[index] = true;
+			}
+			// 接地していない場合、虚空にして落下させる
+			else if (isFloatBlock[index]) {
+				block.SetBlockType(Block::BlockType::kNone);
+				AddFallingBlock(localPos, Vector2::kIdentity, false, Vector2::kYIdentity * -10, Vector2::kZero);
+			}
+
+
+			// 最後に加算
+			index++;
+			localPos.x++;
+		}
+		localPos.y++;
+	}
+
 
 }

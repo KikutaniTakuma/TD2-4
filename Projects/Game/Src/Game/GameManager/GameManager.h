@@ -86,6 +86,8 @@ public:
 
 private:
 
+	void BlockMapDropDown();
+
 	//void BreakEnemyHouse(int32_t facing, Map::HouseInfo enemyHouse)
 	//{
 	//	static const Vector2  kTowerBaseThrowSpeed_ = { 0.5f, 2.f };
