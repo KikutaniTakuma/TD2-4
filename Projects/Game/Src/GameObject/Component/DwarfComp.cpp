@@ -98,7 +98,7 @@ void DwarfComp::ClimbUp()
 {
 	const Vector2 localPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * 0.5f;
 	// 現在のブロック
-	auto blockType = LocalBodyComp::pMap_->GetBoxType(localPos);
+	auto blockType = LocalBodyComp::pMap_->GetBlockType(localPos);
 
 	bool climbFlag = false;
 	// ブロックの中にいる場合登る
@@ -126,7 +126,7 @@ void DwarfComp::FallDown()
 	if (afterPosY > 0)
 	{
 		// 落下先がブロックでない場合
-		if (LocalBodyComp::pMap_->GetBoxType(downSide) == Block::BlockType::kNone)
+		if (LocalBodyComp::pMap_->GetBlockType(downSide) == Block::BlockType::kNone)
 		{
 			// 下げる
 			pLocalBodyComp_->localPos_.y -= downPower;

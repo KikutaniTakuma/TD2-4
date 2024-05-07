@@ -98,7 +98,7 @@
     <ClCompile Include="Src\Game\CollisionManager\AABB\AABB.cpp">
       <Filter>Game\Manager\CollisionManager\AABB</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Game\Map\Map.cpp" />
+    <ClCompile Include="Src\Game\Map\BlockMap.cpp" />
     <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp">
       <Filter>Editor\BlockEditor</Filter>
     </ClCompile>

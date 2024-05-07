@@ -169,7 +169,7 @@ void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxTy
 
 }
 
-const Block::BlockType BlockMap::GetBoxType(const Vector2 localPos) const {
+const Block::BlockType BlockMap::GetBlockType(const Vector2 localPos) const {
 	// もしマップ外に行っていた場合虚無
 	if (IsOutSide(localPos)) {
 		return Block::BlockType::kNone;
@@ -179,7 +179,79 @@ const Block::BlockType BlockMap::GetBoxType(const Vector2 localPos) const {
 	return (*boxMap_)[int(localPos.y)][int(localPos.x)].GetBlockType();
 }
 
-bool BlockMap::IsOutSide(const Vector2 &localPos)
+const Block::BlockType BlockMap::GetBlockType(const POINTS localPos) const {
+	// もしマップ外に行っていた場合虚無
+	if (IsOutSide(localPos)) {
+		return Block::BlockType::kNone;
+	}
+
+	// ブロックのデータを返す
+	return (*boxMap_)[int(localPos.y)][int(localPos.x)].GetBlockType();
+}
+
+bool BlockMap::IsOutSide(const Vector2 localPos)
 {
 	return localPos.x < 0.f or localPos.y < 0.f or localPos.x >= BlockMap::kMapX or localPos.y >= BlockMap::kMapY;
+}
+
+bool BlockMap::IsOutSide(const POINTS localPos)
+{
+	return localPos.x < 0 or localPos.y < 0 or localPos.x >= BlockMap::kMapX or localPos.y >= BlockMap::kMapY;
+}
+
+uint32_t BlockMap::BreakChainBlocks(POINTS localPos)
+{
+	uint32_t result = 0;
+
+	auto &&chainBlockMap = FindChainBlocks(localPos);
+
+	for (const auto &breakLine : chainBlockMap) {
+		for (uint32_t x = 0; x < kMapX; x++) {
+			//breakLine[x];
+		}
+		result += static_cast<uint32_t>(breakLine.count());
+	}
+
+
+	return result;
+}
+
+std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BlockMap::FindChainBlocks(POINTS localPos, std::array<std::bitset<kMapX>, kMapY> &&result) const
+{
+	static constexpr std::array<POINTS, 4u> kMoveDir {
+		{
+			{-1, 0},
+			{ 1,0 },
+			{ 0,-1 },
+			{ 0,1 }
+		}
+	};
+
+	// 今のブロックのタイプ
+	const Block::BlockType localType = GetBlockType(localPos);
+	// もし虚空なら終わる
+	if (localType == Block::BlockType::kNone) {
+		return std::move(result);
+	}
+	result[localPos.y][localPos.x] = true;
+
+	// 上下左右に移動してみる
+	for (const POINTS moveDir : kMoveDir) {
+		// 移動先の座標
+		POINTS targetPos;
+		targetPos.x = localPos.x + moveDir.x;
+		targetPos.y = localPos.y + moveDir.y;
+
+		// 移動先の情報
+		const Block::BlockType targetType = GetBlockType(targetPos);
+
+		// 移動先のブロックが現在と一致してたら
+		if (targetType == localType and result[targetPos.y][targetPos.x] == false) {
+			result = FindChainBlocks(targetPos, std::move(result));
+		}
+
+	}
+
+
+	return std::move(result);
 }

@@ -103,9 +103,13 @@ public:
 	/// @param boxType ブロックのタイプ
 	void SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType);
 
-	const Block::BlockType GetBoxType(const Vector2 localPos) const;
+	const Block::BlockType GetBlockType(const Vector2 localPos) const;
+	const Block::BlockType GetBlockType(const POINTS localPos) const;
 
-	static bool IsOutSide(const Vector2 &localPos);
+	static bool IsOutSide(const Vector2 localPos);
+	static bool IsOutSide(const POINTS localPos);
+
+	uint32_t BreakChainBlocks(POINTS localPos);
 
 
 	void ProcessEnemyHouseBlocks(std::function<void(int32_t y, int32_t x)> processBlock)
@@ -149,6 +153,8 @@ public:
 
 private:
 
+	std::array<std::bitset<kMapX>, kMapY> &&FindChainBlocks(POINTS localPos, std::array<std::bitset<kMapX>, kMapY> &&result = {}) const;
+
 private:
 
 	// 箱の配列 [y][x]
@@ -159,7 +165,7 @@ private:
 	// 拠点のリスト
 	//HouseList houseList_;
 
-	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale_{ {1.f,1.f} };
+	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale_{ {1.f, 1.f} };
 	inline static SoLib::VItem<"敵拠点の横幅", int32_t> vEnemyHouseWidth_{ 3 };
 
 	Model *model_;

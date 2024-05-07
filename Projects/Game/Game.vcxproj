@@ -164,7 +164,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Game\GameEffectManager\GameEffectManager.cpp" />
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp" />
     <ClCompile Include="Src\Game\Ground\Ground.cpp" />
-    <ClCompile Include="Src\Game\Map\Map.cpp" />
+    <ClCompile Include="Src\Game\Map\BlockMap.cpp" />
     <ClCompile Include="Src\Game\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Src\Game\Water\Water.cpp" />
     <ClCompile Include="Src\GlobalVariables\GlobalVariables.cpp" />

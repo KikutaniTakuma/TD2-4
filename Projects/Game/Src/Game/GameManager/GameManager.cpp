@@ -68,6 +68,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	GlobalVariables::GetInstance()->Update();
 
 	blockMap_->Update(deltaTime);
+
+	blockMap_->BreakChainBlocks({ 0,0 });
+
 	// 浮いているブロックを落とす
 	BlockMapDropDown();
 
