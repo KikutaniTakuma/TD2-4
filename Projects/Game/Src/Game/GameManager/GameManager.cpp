@@ -201,7 +201,7 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 }
 
 
-GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, bool hasDamage, Vector2 velocity, Vector2 gravity)
+GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity)
 {
 	std::unique_ptr<GameObject> addBlock = std::make_unique<GameObject>();
 
@@ -212,7 +212,7 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, bool h
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = size;
 
-	fallingComp->hasDamage_ = hasDamage;
+	fallingComp->blockType_ = blockType;
 	fallingComp->velocity_ = velocity;
 	fallingComp->gravity_ = gravity;
 
@@ -395,10 +395,10 @@ void GameManager::BlockMapDropDown()
 			if (not block) {
 				isFloatBlock[index] = true;
 			}
-			// 接地していない場合、虚空にして落下させる
+			// そこにブロックがあり、接地していない場合は虚空にして落下させる
 			else if (isFloatBlock[index]) {
+				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -10, Vector2::kZero);
 				block.SetBlockType(Block::BlockType::kNone);
-				AddFallingBlock(localPos, Vector2::kIdentity, false, Vector2::kYIdentity * -10, Vector2::kZero);
 			}
 
 

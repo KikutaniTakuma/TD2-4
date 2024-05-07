@@ -65,7 +65,7 @@ void PlayerComp::SetGauge(BlockGauge *pBlockGauge)
 
 std::pair<int32_t, int32_t> PlayerComp::GetFutureBlockPos() const
 {
-	std::pair<int32_t, int32_t> result{ -1,-1 };
+	std::pair<int32_t, int32_t> result{ -1, -1 };
 	// もしブロックを設置してなかったら飛ばす
 	if (startPos_ != -1) {
 		int32_t xDiff = startPos_ - static_cast<int32_t>(pLocalPosComp_->localPos_.x);
@@ -87,7 +87,7 @@ void PlayerComp::SpawnFallingBlock()
 
 
 		// 落下ブロックの実体の追加
-		pLocalPosComp_->pGameManager_->AddFallingBlock(spawnPos - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f), Vector2::kIdentity + Vector2::kXIdentity * static_cast<float>(std::abs(xDiff)), false, Vector2::kYIdentity * -10, Vector2::kZero);
+		pLocalPosComp_->pGameManager_->AddFallingBlock(spawnPos - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f), Vector2::kIdentity + Vector2::kXIdentity * static_cast<float>(std::abs(xDiff)), Block::BlockType::kRed, Vector2::kYIdentity * -10, Vector2::kZero);
 
 		// 使用量を減らす
 		pBlockGauge_->UseBlockEnergy(std::abs(xDiff) + 1);
