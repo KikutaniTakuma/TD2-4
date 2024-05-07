@@ -68,6 +68,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	GlobalVariables::GetInstance()->Update();
 
 	blockMap_->Update(deltaTime);
+	// 浮いているブロックを落とす
 	BlockMapDropDown();
 
 	player_->Update(deltaTime);
@@ -84,12 +85,6 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		Lamb::SafePtr fallComp = fallingBlock->GetComponent<FallingBlockComp>();
 		// 落下しているブロックの座標
 		Lamb::SafePtr blockBody = fallComp->pLocalPos_;
-
-		//// 中心座標
-		//Vector2 localCenter = blockBody->localPos_ + Vector2::kIdentity * 0.5f;
-
-		//// 下の座標
-		//Vector2 localDownPos = localCenter + Vector2{0, blockBody->size_.y / 2};
 
 		// もしブロックがあったら
 		if (fallComp->IsLanding()) {
@@ -399,6 +394,7 @@ void GameManager::BlockMapDropDown()
 			else if (isFloatBlock[index]) {
 				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -10, Vector2::kZero);
 				block.SetBlockType(Block::BlockType::kNone);
+				blockMap_->GetBlockStatusMap()->at(static_cast<int32_t>(localPos.y)).at(static_cast<int32_t>(localPos.x)).reset();
 			}
 
 
