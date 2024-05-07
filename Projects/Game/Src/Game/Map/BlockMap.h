@@ -111,6 +111,8 @@ public:
 
 	uint32_t BreakChainBlocks(POINTS localPos);
 
+	void BreakBlock(POINTS localPos);
+
 
 	void ProcessEnemyHouseBlocks(std::function<void(int32_t y, int32_t x)> processBlock)
 	{
@@ -127,7 +129,7 @@ public:
 public:
 	/// @brief 2次元配列の取得
 	/// @return 二次元配列
-	Block2dMap *GetBlockMap() { return boxMap_.get(); }
+	Block2dMap *GetBlockMap() { return blockMap_.get(); }
 
 	/// @brief ブロックのステータスの二次元配列の取得
 	/// @return 二次元配列
@@ -158,7 +160,7 @@ private:
 private:
 
 	// 箱の配列 [y][x]
-	std::unique_ptr<Block2dMap> boxMap_;
+	std::unique_ptr<Block2dMap> blockMap_;
 	// ブロックの情報
 	std::unique_ptr<BlockStatusMap> blockStatesMap_;
 

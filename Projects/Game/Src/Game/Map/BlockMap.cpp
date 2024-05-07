@@ -7,7 +7,7 @@
 
 void BlockMap::Init()
 {
-	boxMap_ = std::make_unique<Block2dMap>();
+	blockMap_ = std::make_unique<Block2dMap>();
 	blockStatesMap_ = std::make_unique<Map2dMap<std::unique_ptr<BlockStatus>>>();
 
 	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
@@ -55,7 +55,7 @@ bool BlockMap::Debug(const char *const str)
 			//if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
 				//for (size_t z = 0; z < kMapZ; z++) {
 			for (size_t x = 0; x < kMapX; x++) {
-				isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(y) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*boxMap_)[y][x]));
+				isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(y) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*blockMap_)[y][x]));
 				if (x != 9) {
 					ImGui::SameLine();
 				}
@@ -79,7 +79,7 @@ void BlockMap::TransferBoxData()
 	for (int32_t yi = 0; yi < kMapY; yi++) {
 		for (int32_t xi = 0; xi < kMapX; xi++) {
 			// ボックスの状態
-			const auto &box = (*boxMap_)[yi][xi];
+			const auto &box = (*blockMap_)[yi][xi];
 
 			// モデルのデータ
 			auto &modelState = modelStateMap_[yi][xi];
@@ -144,7 +144,7 @@ void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxTy
 				continue;
 			}
 			// 参照を取得する
-			auto &box = (*boxMap_)[yPos][xPos];
+			auto &box = (*blockMap_)[yPos][xPos];
 			// データを代入する
 			box.SetBlockType(boxType);
 
@@ -176,7 +176,7 @@ const Block::BlockType BlockMap::GetBlockType(const Vector2 localPos) const {
 	}
 
 	// ブロックのデータを返す
-	return (*boxMap_)[int(localPos.y)][int(localPos.x)].GetBlockType();
+	return (*blockMap_)[int(localPos.y)][int(localPos.x)].GetBlockType();
 }
 
 const Block::BlockType BlockMap::GetBlockType(const POINTS localPos) const {
@@ -186,7 +186,7 @@ const Block::BlockType BlockMap::GetBlockType(const POINTS localPos) const {
 	}
 
 	// ブロックのデータを返す
-	return (*boxMap_)[int(localPos.y)][int(localPos.x)].GetBlockType();
+	return (*blockMap_)[int(localPos.y)][int(localPos.x)].GetBlockType();
 }
 
 bool BlockMap::IsOutSide(const Vector2 localPos)
@@ -203,17 +203,34 @@ uint32_t BlockMap::BreakChainBlocks(POINTS localPos)
 {
 	uint32_t result = 0;
 
-	auto &&chainBlockMap = FindChainBlocks(localPos);
+	const auto &&chainBlockMap = FindChainBlocks(localPos);
 
-	for (const auto &breakLine : chainBlockMap) {
-		for (uint32_t x = 0; x < kMapX; x++) {
-			//breakLine[x];
+	POINTS targetPos{};
+
+	for (targetPos.y = 0; targetPos.y < kMapY; targetPos.y++) {
+		const auto &breakLine = chainBlockMap[targetPos.y];
+		for (targetPos.x = 0; targetPos.x < kMapX; targetPos.x++) {
+			if (breakLine[targetPos.x]) {
+				BreakBlock(targetPos);
+			}
 		}
 		result += static_cast<uint32_t>(breakLine.count());
 	}
 
 
 	return result;
+}
+
+void BlockMap::BreakBlock(POINTS localPos)
+{
+	if (IsOutSide(localPos)) { return; }
+	auto &targetBlock = blockMap_->at(localPos.y).at(localPos.x);
+	// ブロックがあるなら破壊
+	if (targetBlock) {
+		targetBlock.SetBlockType(Block::BlockType::kNone);
+		blockStatesMap_->at(localPos.y).at(localPos.x).reset();
+
+	}
 }
 
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BlockMap::FindChainBlocks(POINTS localPos, std::array<std::bitset<kMapX>, kMapY> &&result) const
