@@ -22,18 +22,6 @@ struct DamageArea {
 	Vector2 size_;
 };
 
-// 持ち上げたブロックのデータ
-struct PickUpBlockData {
-
-	// 直径
-	Vector2 size_;
-
-	/// @brief 重さを取得する
-	/// @return ブロックの重さ
-	int32_t GetWeight() const { return static_cast<int32_t>(size_.x * size_.y); }
-};
-
-
 class GameManager : public SoLib::Singleton<GameManager> {
 private:
 
@@ -87,7 +75,7 @@ public:
 	/// @param maxWeight 持つことのできる上限値
 	/// @param isPowerful 上にブロックがあっても持ち上げるか
 	/// @return [ 持ちあげたブロック, ブロックの中心座標 ]
-	std::pair<PickUpBlockData, Vector2> PickUp(Vector2 localPos, int hasBlockWeight, int maxWeight = 6, bool isPowerful = false);
+	//std::pair<PickUpBlockData, Vector2> PickUp(Vector2 localPos, int hasBlockWeight, int maxWeight = 6, bool isPowerful = false);
 
 	GameEffectManager *GetGameEffect() { return gameEffectManager_.get(); }
 

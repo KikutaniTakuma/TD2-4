@@ -33,6 +33,8 @@ public:
 
 	bool IsLanding() const;
 
+	Block::BlockType blockType_ = Block::BlockType::kRed;
+
 public:
 
 	// ローカル座標コンポーネント

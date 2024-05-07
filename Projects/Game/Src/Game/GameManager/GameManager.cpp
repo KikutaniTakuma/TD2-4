@@ -78,6 +78,26 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		dwarf->Update(deltaTime);
 	}
 
+	for (auto &fallingBlock : fallingBlocks_) {
+		// 落下しているブロックのコンポーネント
+		Lamb::SafePtr fallComp = fallingBlock->GetComponent<FallingBlockComp>();
+		// 落下しているブロックの座標
+		Lamb::SafePtr blockBody = fallComp->pLocalPos_;
+
+		//// 中心座標
+		//Vector2 localCenter = blockBody->localPos_ + Vector2::kIdentity * 0.5f;
+
+		//// 下の座標
+		//Vector2 localDownPos = localCenter + Vector2{0, blockBody->size_.y / 2};
+
+		// もしブロックがあったら
+		if (fallComp->IsLanding()) {
+			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_);
+			fallingBlock->SetActive(false);
+		}
+
+	}
+
 
 	//for (auto &block : fallingBlocks_) {
 	//	Lamb::SafePtr fallingComp = block->GetComponent<FallingBlockComp>();
@@ -419,88 +439,88 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	// 参照を返す
 	return dwarfList_.back().get();
 }
-
-std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, [[maybe_unused]] int hasBlockWeight, [[maybe_unused]] int maxWeight, [[maybe_unused]] bool isPowerful)
-{
-
-	// 範囲外である場合は終わる
-	if (BlockMap::IsOutSide(localPos)) { return {}; }
-	// ブロックが存在しない場合は終わる
-	if (blockMap_->GetBoxType(localPos) == Block::BlockType::kNone) { return {}; }
-
-	// ブロックのデータを取得する
-	Lamb::SafePtr groundBlock = (*blockMap_->GetBlockStatusMap())[static_cast<int32_t>(localPos.y)][static_cast<int32_t>(localPos.x)].get();
-
-	// もしそのデータが無い場合は終わる
-	if (groundBlock == nullptr) { return {}; }
-
-	// そのブロックの重さが上限値を超えてたら終わる
-	//if (hasBlockWeight + groundBlock->GetWeight() > maxWeight) { return {}; }
-
-	// ブロックのデータを取得する
-	// 中心座標を取得する
-	//Vector2 center = groundBlock->centerPos_;
-	//// ブロックの大きさを取得する
-	//Vector2 blockSize = groundBlock->blockSize_;
-
-
-	//// ブロックのデータをもとに、連結しているブロックを破壊する
-
-	//// 左下の座標を取得する
-	//Vector2 leftDownPos = center - (blockSize - Vector2::kIdentity) / 2.f;
-
-	//// 左上の座標
-	//Vector2 leftTopPos = leftDownPos + Vector2::kYIdentity * (blockSize.y - 1);
-
-
-	//// 左下からfor文で上にブロックがあるか調べる
-	//for (int x = 0; x < blockSize.x; x++)
-	//{
-	//	// 1つ上の調べるブロックの座標
-	//	Vector2 targetPos = Vector2{ leftTopPos.x + x, leftTopPos.y + 1 };
-	//	bool isExistsBlock = false;
-
-	//	// ブロックが存在したらフラグを立てる
-	//	isExistsBlock = blockMap_->GetBoxType(targetPos) == Map::BoxType::kGroundBlock;
-	//	// 上が虚空なら存在しない
-	//	isExistsBlock &= Map::IsOutSide(targetPos) == false;
-
-	//	// 存在したら
-	//	if (isExistsBlock && isPowerful == false)   // なおかつ､上にブロックがあっても持ち上げるフラグが折れていたら
-	//	{
-	//		// 持ち上げずに終わる
-	//		return {};
-	//	}
-
-	//}
-
-	//// 左下からfor文で破棄して、その座標のデータを壊す
-	//for (int yi = 0; yi < blockSize.y; yi++)
-	//{
-	//	for (int xi = 0; xi < blockSize.x; xi++)
-	//	{
-	//		// 壊す先のブロックの座標
-	//		Vector2 breakPos = { leftDownPos.x + xi, leftDownPos.y + yi };
-
-	//		int32_t yPos = static_cast<int32_t>(breakPos.y);
-	//		int32_t xPos = static_cast<int32_t>(breakPos.x);
-
-	//		// データを壊す
-	//		blockMap_->GetBlockMap()->at(yPos).at(xPos) = Map::BoxType::kNone;
-	//		blockMap_->GetBlockStatusMap()->at(yPos).at(xPos).reset();
-	//	}
-	//}
-
-
-
-	// 返すブロックのデータ
-	PickUpBlockData result = {};
-	// ブロックを破壊した後のデータを返す
-	result.size_ = Vector2::kZero;
-
-	return { result,  Vector2::kZero };
-
-}
+//
+//std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, [[maybe_unused]] int hasBlockWeight, [[maybe_unused]] int maxWeight, [[maybe_unused]] bool isPowerful)
+//{
+//
+//	// 範囲外である場合は終わる
+//	if (BlockMap::IsOutSide(localPos)) { return {}; }
+//	// ブロックが存在しない場合は終わる
+//	if (blockMap_->GetBoxType(localPos) == Block::BlockType::kNone) { return {}; }
+//
+//	// ブロックのデータを取得する
+//	Lamb::SafePtr groundBlock = (*blockMap_->GetBlockStatusMap())[static_cast<int32_t>(localPos.y)][static_cast<int32_t>(localPos.x)].get();
+//
+//	// もしそのデータが無い場合は終わる
+//	if (groundBlock == nullptr) { return {}; }
+//
+//	// そのブロックの重さが上限値を超えてたら終わる
+//	//if (hasBlockWeight + groundBlock->GetWeight() > maxWeight) { return {}; }
+//
+//	// ブロックのデータを取得する
+//	// 中心座標を取得する
+//	//Vector2 center = groundBlock->centerPos_;
+//	//// ブロックの大きさを取得する
+//	//Vector2 blockSize = groundBlock->blockSize_;
+//
+//
+//	//// ブロックのデータをもとに、連結しているブロックを破壊する
+//
+//	//// 左下の座標を取得する
+//	//Vector2 leftDownPos = center - (blockSize - Vector2::kIdentity) / 2.f;
+//
+//	//// 左上の座標
+//	//Vector2 leftTopPos = leftDownPos + Vector2::kYIdentity * (blockSize.y - 1);
+//
+//
+//	//// 左下からfor文で上にブロックがあるか調べる
+//	//for (int x = 0; x < blockSize.x; x++)
+//	//{
+//	//	// 1つ上の調べるブロックの座標
+//	//	Vector2 targetPos = Vector2{ leftTopPos.x + x, leftTopPos.y + 1 };
+//	//	bool isExistsBlock = false;
+//
+//	//	// ブロックが存在したらフラグを立てる
+//	//	isExistsBlock = blockMap_->GetBoxType(targetPos) == Map::BoxType::kGroundBlock;
+//	//	// 上が虚空なら存在しない
+//	//	isExistsBlock &= Map::IsOutSide(targetPos) == false;
+//
+//	//	// 存在したら
+//	//	if (isExistsBlock && isPowerful == false)   // なおかつ､上にブロックがあっても持ち上げるフラグが折れていたら
+//	//	{
+//	//		// 持ち上げずに終わる
+//	//		return {};
+//	//	}
+//
+//	//}
+//
+//	//// 左下からfor文で破棄して、その座標のデータを壊す
+//	//for (int yi = 0; yi < blockSize.y; yi++)
+//	//{
+//	//	for (int xi = 0; xi < blockSize.x; xi++)
+//	//	{
+//	//		// 壊す先のブロックの座標
+//	//		Vector2 breakPos = { leftDownPos.x + xi, leftDownPos.y + yi };
+//
+//	//		int32_t yPos = static_cast<int32_t>(breakPos.y);
+//	//		int32_t xPos = static_cast<int32_t>(breakPos.x);
+//
+//	//		// データを壊す
+//	//		blockMap_->GetBlockMap()->at(yPos).at(xPos) = Map::BoxType::kNone;
+//	//		blockMap_->GetBlockStatusMap()->at(yPos).at(xPos).reset();
+//	//	}
+//	//}
+//
+//
+//
+//	// 返すブロックのデータ
+//	PickUpBlockData result = {};
+//	// ブロックを破壊した後のデータを返す
+//	result.size_ = Vector2::kZero;
+//
+//	return { result,  Vector2::kZero };
+//
+//}
 
 void GameManager::InputAction()
 {
