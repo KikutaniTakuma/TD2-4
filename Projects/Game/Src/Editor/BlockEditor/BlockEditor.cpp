@@ -191,7 +191,7 @@ void BlockEditor::DataReset() {
 void BlockEditor::FloorReset() {
 	if (OperationConfirmation()) {
 		//for (size_t z = 0; z < Map::kMapZ; ++z) {
-		for (size_t x = 0; x < Map::kMapX; ++x) {
+		for (size_t x = 0; x < BlockMap::kMapX; ++x) {
 		}
 		//}		
 	}
@@ -278,7 +278,7 @@ void BlockEditor::SaveFile(const std::string &fileName) {
 
 	 //3次元配列をJSONオブジェクトに変換
 	
-	for (size_t x = 0; x < Map::kMapX; ++x) {
+	for (size_t x = 0; x < BlockMap::kMapX; ++x) {
 		root["boxes"][x] = ((*mapSize_)[x].isConstruction);
 	}
 		

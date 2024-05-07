@@ -8,7 +8,7 @@
 #include <cstdint>
 
 #include "../LambEngine/Input/Input.h"
-#include "Game/Map/Map.h"
+#include "Game/Map/BlockMap.h"
 #include "Game/BlockGauge.h"
 
 #include "GameObject/GameObject.h"
@@ -62,7 +62,7 @@ public:
 	
 
 	// マップのデータを取得
-	Map *GetMap() { return blockMap_.get(); }
+	BlockMap *GetMap() { return blockMap_.get(); }
 
 	/// <summary>
 	/// 落下ブロックを追加する
@@ -129,7 +129,7 @@ private:
 
 	std::unique_ptr<GameObject> player_;
 
-	std::unique_ptr<Map> blockMap_;
+	std::unique_ptr<BlockMap> blockMap_;
 
 	std::list<std::unique_ptr<GameObject>> fallingBlocks_;
 

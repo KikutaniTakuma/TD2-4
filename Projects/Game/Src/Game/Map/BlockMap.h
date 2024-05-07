@@ -14,39 +14,11 @@
 #include <functional>
 #include <Game/Block.h>
 
-class Map {
+class BlockMap {
 public:
 
-	// 拠点1つごとの情報
-	struct HouseInfo {
-		// 最大体力
-		static constexpr int32_t kMaxHealth_ = 7;
-
-		// x座標
-		int32_t xPos_{};
-
-		// 体力
-		int32_t health_ = kMaxHealth_;
-
-		// 倒れる方向
-		int32_t damageFacing_ = 0;
-
-		// モデルの表示情報
-		MatrixModelState houseModelState_;
-
-		bool isBreaked_ = false;
-
-		/// @brief 塔が壊れたか
-		/// @return 壊れたらtrue
-		bool IsBreaked() const { return isBreaked_; }
-
-	};
 	// ブロックの情報
 	struct BlockStatus {
-		//// 中心の座標
-		//Vector2 centerPos_;
-		//// ブロックの大きさ
-		//Vector2 blockSize_;
 		// ローカル座標
 		Vector2 localPos_;
 
@@ -96,9 +68,6 @@ public:
 
 	inline static constexpr int32_t kMapX = 30u, kMapY = 20u;
 
-	// 拠点のリスト
-	using HouseList = std::list<HouseInfo>;
-
 	// マップの配列 [y][x]
 	template<SoLib::IsRealType T>
 	using Map2dMap = std::array<std::array<T, kMapX>, kMapY>;
@@ -109,8 +78,8 @@ public:
 	using BlockStatusMap = Map2dMap<std::unique_ptr<BlockStatus>>;
 
 public:
-	Map() = default;
-	~Map() = default;
+	BlockMap() = default;
+	~BlockMap() = default;
 
 
 	void Init();
@@ -141,7 +110,7 @@ public:
 
 	void ProcessEnemyHouseBlocks(std::function<void(int32_t y, int32_t x)> processBlock)
 	{
-		for (int yi = 0; yi < Map::kMapY; yi++)
+		for (int yi = 0; yi < BlockMap::kMapY; yi++)
 		{
 			for (int xi = -1; xi < 2; xi++)
 			{

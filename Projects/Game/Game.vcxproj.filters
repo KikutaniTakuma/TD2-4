@@ -394,7 +394,7 @@
     <ClInclude Include="Src\Game\CollisionManager\AABB\AABB.h">
       <Filter>Game\Manager\CollisionManager\AABB</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Game\Map\Map.h">
+    <ClInclude Include="Src\Game\Map\BlockMap.h">
       <Filter>Game\Map</Filter>
     </ClInclude>
     <ClInclude Include="Src\Editor\BlockEditor\BlockEditor.h">

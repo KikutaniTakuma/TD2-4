@@ -10,7 +10,7 @@
 #include <Camera/Camera.h>
 #include <bitset>
 
-class Map;
+class BlockMap;
 
 
 // 地形の描画を行うクラス。
@@ -106,7 +106,7 @@ public:
 
 private:
 
-	Map *pMap_ = nullptr;
+	BlockMap *pMap_ = nullptr;
 
 	Lamb::SafePtr<Ground> pGround_ = nullptr;
 

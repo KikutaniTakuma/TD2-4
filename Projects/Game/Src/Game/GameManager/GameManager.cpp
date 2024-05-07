@@ -26,7 +26,7 @@ void GameManager::Init()
 
 	input_ = Input::GetInstance();
 
-	blockMap_ = std::make_unique<Map>();
+	blockMap_ = std::make_unique<BlockMap>();
 	blockMap_->Init();
 
 	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
@@ -424,7 +424,7 @@ std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, [[mayb
 {
 
 	// 範囲外である場合は終わる
-	if (Map::IsOutSide(localPos)) { return {}; }
+	if (BlockMap::IsOutSide(localPos)) { return {}; }
 	// ブロックが存在しない場合は終わる
 	if (blockMap_->GetBoxType(localPos) == Block::BlockType::kNone) { return {}; }
 

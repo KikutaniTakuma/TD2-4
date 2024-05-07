@@ -61,9 +61,9 @@ public:
 
 	void ListReset();
 private:
-	Map* map_ = nullptr;
+	BlockMap* map_ = nullptr;
 
-	Map::Block2dMap * mapSize_ = nullptr;
+	BlockMap::Block2dMap * mapSize_ = nullptr;
 
 	Input* input_ = nullptr;
 

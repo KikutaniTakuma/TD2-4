@@ -2,7 +2,7 @@
 #include "../GameObject.h"
 #include "Utils/SafePtr/SafePtr.h"
 
-#include "Game/Map/Map.h"
+#include "Game/Map/BlockMap.h"
 #include "Game/GameManager/GameManager.h"
 
 class LocalBodyComp : public IComponent
@@ -12,7 +12,7 @@ public:
 	~LocalBodyComp() = default;
 
 	// マップの参照
-	inline static Lamb::SafePtr<Map> pMap_;
+	inline static Lamb::SafePtr<BlockMap> pMap_;
 
 	// ゲームマネージャへの参照
 	inline static Lamb::SafePtr<GameManager> pGameManager_;

@@ -1,11 +1,11 @@
-#include "Map.h"
+#include "BlockMap.h"
 
 #include "../SoLib/SoLib/SoLib_Traits.h"
 #include <imgui.h>
 #include"Drawers/DrawerManager.h"
 #include "SoLib/Math/Math.hpp"
 
-void Map::Init()
+void BlockMap::Init()
 {
 	boxMap_ = std::make_unique<Block2dMap>();
 	blockStatesMap_ = std::make_unique<Map2dMap<std::unique_ptr<BlockStatus>>>();
@@ -19,7 +19,7 @@ void Map::Init()
 
 }
 
-void Map::Update([[maybe_unused]] const float deltaTime) {
+void BlockMap::Update([[maybe_unused]] const float deltaTime) {
 
 	for (auto &blockStatusLine : *blockStatesMap_) {
 		for (auto &blockStatus : blockStatusLine) {
@@ -31,7 +31,7 @@ void Map::Update([[maybe_unused]] const float deltaTime) {
 
 }
 
-void Map::Draw([[maybe_unused]] const Camera &camera) const {
+void BlockMap::Draw([[maybe_unused]] const Camera &camera) const {
 	for (const auto &modelStateArr : modelStateMap_) {
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
@@ -42,7 +42,7 @@ void Map::Draw([[maybe_unused]] const Camera &camera) const {
 	ground_->Draw(camera);
 }
 
-bool Map::Debug(const char *const str)
+bool BlockMap::Debug(const char *const str)
 {
 	bool isChange = false;
 
@@ -73,7 +73,7 @@ bool Map::Debug(const char *const str)
 	return isChange;
 }
 
-void Map::TransferBoxData()
+void BlockMap::TransferBoxData()
 {
 
 	for (int32_t yi = 0; yi < kMapY; yi++) {
@@ -117,7 +117,7 @@ void Map::TransferBoxData()
 
 }
 
-void Map::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType)
+void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType)
 {
 	// 半径
 	Vector2 halfSize = Vector2{ std::floor(size.x * 0.5f), std::floor(size.y * 0.5f) };
@@ -140,7 +140,7 @@ void Map::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType)
 			int32_t yPos = static_cast<int32_t>(centerPos.y) - yi + static_cast<int32_t>(halfSize.y);
 
 			// 範囲外なら飛ばす
-			if (xPos < 0 or yPos < 0 or xPos >= Map::kMapX or yPos >= Map::kMapY) {
+			if (xPos < 0 or yPos < 0 or xPos >= BlockMap::kMapX or yPos >= BlockMap::kMapY) {
 				continue;
 			}
 			// 参照を取得する
@@ -169,7 +169,7 @@ void Map::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType)
 
 }
 
-const Block::BlockType Map::GetBoxType(const Vector2 localPos) const {
+const Block::BlockType BlockMap::GetBoxType(const Vector2 localPos) const {
 	// もしマップ外に行っていた場合虚無
 	if (IsOutSide(localPos)) {
 		return Block::BlockType::kNone;
@@ -179,7 +179,7 @@ const Block::BlockType Map::GetBoxType(const Vector2 localPos) const {
 	return (*boxMap_)[int(localPos.y)][int(localPos.x)].GetBlockType();
 }
 
-bool Map::IsOutSide(const Vector2 &localPos)
+bool BlockMap::IsOutSide(const Vector2 &localPos)
 {
-	return localPos.x < 0.f or localPos.y < 0.f or localPos.x >= Map::kMapX or localPos.y >= Map::kMapY;
+	return localPos.x < 0.f or localPos.y < 0.f or localPos.x >= BlockMap::kMapX or localPos.y >= BlockMap::kMapY;
 }

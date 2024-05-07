@@ -2,7 +2,7 @@
 #include "../GameObject.h"
 #include "Utils/SafePtr/SafePtr.h"
 
-#include "Game/Map/Map.h"
+#include "Game/Map/BlockMap.h"
 #include "Game/GameManager/GameManager.h"
 #include "LocalBodyComp.h"
 #include "Drawers/Model/Model.h"

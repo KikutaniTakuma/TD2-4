@@ -1,5 +1,5 @@
 #pragma once
-#include "Game/Map/Map.h"
+#include "Game/Map/BlockMap.h"
 #include "Utils/SafePtr/SafePtr.h"
 #include <Drawers/Texture2D/Texture2D.h>
 
@@ -27,13 +27,13 @@ private:
 	// ゲームマネージャの参照。
 	GameManager *pGameManager_ = nullptr;
 
-	Lamb::SafePtr<Map> pMap_ = nullptr;
+	Lamb::SafePtr<BlockMap> pMap_ = nullptr;
 
 	Texture2D *pSpriteDrawer = nullptr;
 
 	uint32_t whiteTex_;
 
-	static Vector2 ToGrobal(const Vector2 localPos) noexcept { return Map::GetGlobalPos(localPos); }
+	static Vector2 ToGrobal(const Vector2 localPos) noexcept { return BlockMap::GetGlobalPos(localPos); }
 
 	// ↓ 自動的に追加、破棄を行う。
 

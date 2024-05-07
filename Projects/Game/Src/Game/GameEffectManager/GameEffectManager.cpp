@@ -48,7 +48,7 @@ void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
 	if (fallingBlock_.first != -1) {
 		Vector2 centerPos{};
 		centerPos.x = std::lerp(static_cast<float>(fallingBlock_.first), static_cast<float>(fallingBlock_.second), 0.5f);
-		centerPos.y = std::lerp(0.f, static_cast<float>(Map::kMapY), 0.5f);
+		centerPos.y = std::lerp(0.f, static_cast<float>(BlockMap::kMapY), 0.5f);
 
 		// グローバル座標に変換
 		centerPos = ToGrobal(centerPos);

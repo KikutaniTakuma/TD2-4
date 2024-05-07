@@ -235,7 +235,7 @@ void EnemyEditor::DataReset() {
 void EnemyEditor::FloorReset() {
 	if (OperationConfirmation()) {
 		//for (size_t z = 0; z < Map::kMapZ; ++z) {
-		for (size_t x = 0; x < Map::kMapX; ++x) {
+		for (size_t x = 0; x < BlockMap::kMapX; ++x) {
 		}
 		//}
 	}

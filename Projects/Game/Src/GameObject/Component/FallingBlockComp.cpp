@@ -72,7 +72,7 @@ bool FallingBlockComp::IsLanding() const
 
 
 	// もし範囲外なら着地していることにする
-	if (Map::IsOutSide(TargetPositon(signVec, -halfOffset)) || Map::IsOutSide(TargetPositon(signVec, halfOffset)))
+	if (BlockMap::IsOutSide(TargetPositon(signVec, -halfOffset)) || BlockMap::IsOutSide(TargetPositon(signVec, halfOffset)))
 	{
 		return true;
 	}
