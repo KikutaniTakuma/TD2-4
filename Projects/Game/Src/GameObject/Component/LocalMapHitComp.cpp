@@ -14,6 +14,7 @@ void LocalMapHitComp::Init()
 
 void LocalMapHitComp::Update()
 {
+	Vector2 hitNormal = {};
 	Vector2 velocity = pRigidbody_->GetVelocity();
 
 	const Vector2 centor = pLocalBodyComp_->localPos_ + Vector2::kIdentity * 0.5f;
@@ -24,16 +25,27 @@ void LocalMapHitComp::Update()
 	[[maybe_unused]] const Vector2 leftTop = { leftDown.x, rightTop.y };
 	[[maybe_unused]] const Vector2 rightDown = { rightTop.x, leftDown.y };
 
-	// 左下が画面外だったら
+	// 左が画面外だったら
 	if (leftDown.x < 0) {
 		pLocalBodyComp_->localPos_.x = 0 - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
 		velocity.x = 0;
+		hitNormal.x = 1.f;
 	}
-	// 右上が画面外だったら
+	// 右が画面外だったら
 	else if (rightDown.x >= static_cast<float>(BlockMap::kMapX)) {
 		pLocalBodyComp_->localPos_.x = BlockMap::kMapX - 0.5f - pLocalBodyComp_->size_.x * 0.5f;
 		velocity.x = 0;
+		hitNormal.x = -1.f;
 	}
+	// 下が画面外だったら
+	if (rightDown.y < 0) {
+		pLocalBodyComp_->localPos_.y = 0 - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
+		velocity.y = 0;
+		hitNormal.y = 1.f;
+	}
+
+	// 接触した法線を返す
+	hitNormal_ = hitNormal.Normalize();
 
 	pRigidbody_->SetVelocity(velocity);
 

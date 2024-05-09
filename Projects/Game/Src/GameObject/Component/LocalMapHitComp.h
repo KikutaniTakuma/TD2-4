@@ -12,6 +12,8 @@ public:
 
 	void Update() override;
 
+	Vector2 hitNormal_;
+
 private:
 
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;

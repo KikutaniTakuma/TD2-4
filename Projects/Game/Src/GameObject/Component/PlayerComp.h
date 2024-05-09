@@ -2,7 +2,7 @@
 #include "../GameObject.h"
 #include "LocalBodyComp.h"
 #include "LocalRigidbody.h"
-#include "LocalRigidbody.h"
+#include "LocalMapHitComp.h"
 
 class PlayerComp : public IComponent {
 public:
@@ -17,6 +17,7 @@ public:
 private:
 	void Input();
 
+	Lamb::SafePtr<LocalMapHitComp> pHitMapComp_ = nullptr;
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;
 	Lamb::SafePtr<LocalRigidbody> pLocalRigidbody_ = nullptr;
 
