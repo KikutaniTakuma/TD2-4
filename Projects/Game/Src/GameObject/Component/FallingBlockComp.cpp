@@ -12,7 +12,8 @@ void FallingBlockComp::Init()
 
 void FallingBlockComp::Start()
 {
-
+	Lamb::SafePtr modelComp = object_.GetComponent<ModelComp>();
+	modelComp->GetBone("Body")->color_ = blockType_.GetColor();
 }
 
 void FallingBlockComp::Update()

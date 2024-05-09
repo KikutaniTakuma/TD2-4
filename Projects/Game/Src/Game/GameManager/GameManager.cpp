@@ -36,19 +36,19 @@ void GameManager::Init()
 	LocalBodyComp::pGameManager_ = this;
 	LocalBodyComp::pMap_ = GetMap();
 
-	player_ = std::make_unique<GameObject>();
+	spawner_ = std::make_unique<GameObject>();
 	/*{
 		Lamb::SafePtr modelComp = player_->AddComponent<ModelComp>();
 		modelComp->AddBone("Body", drawerManager->GetModel("Resources/Cube.obj"));
 	}*/
 	{
-		Lamb::SafePtr spriteComp = player_->AddComponent<SpriteComp>();
+		Lamb::SafePtr spriteComp = spawner_->AddComponent<SpriteComp>();
 		spriteComp->SetTexture("./Resources/uvChecker.png");
 		spriteComp->CalcTexUv();
 	}
 
 	{
-		Lamb::SafePtr playerComp = player_->AddComponent<FallingBlockSpawnerComp>();
+		Lamb::SafePtr playerComp = spawner_->AddComponent<FallingBlockSpawnerComp>();
 		playerComp->SetGauge(blockGauge_.get());
 	}
 
@@ -74,7 +74,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	// 浮いているブロックを落とす
 	BlockMapDropDown();
 
-	player_->Update(deltaTime);
+	spawner_->Update(deltaTime);
 	for (auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Update(deltaTime);
 	}
@@ -91,7 +91,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 		// もしブロックがあったら
 		if (fallComp->IsLanding()) {
-			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_);
+			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType());
 			fallingBlock->SetActive(false);
 		}
 
@@ -156,7 +156,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	blockGauge_->Update(deltaTime);
 
-	gameEffectManager_->fallingBlock_ = player_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
+	gameEffectManager_->fallingBlock_ = spawner_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
 
 	gameEffectManager_->Update(deltaTime);
 
@@ -167,7 +167,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 {
 	blockMap_->Draw(camera);
-	player_->Draw(camera);
+	spawner_->Draw(camera);
 	for (const auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Draw(camera);
 	}
@@ -350,28 +350,35 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 
 void GameManager::InputAction()
 {
-	// プレイヤのコンポーネント
-	Lamb::SafePtr playerComp = player_->GetComponent<FallingBlockSpawnerComp>();
+	{
+		// スポナーのコンポーネント
+		Lamb::SafePtr spawnerComp = spawner_->GetComponent<FallingBlockSpawnerComp>();
+		Lamb::SafePtr key = input_->GetKey();
 
-	// SPACE を押したときに実行
-	if (input_->GetKey()->Pushed(DIK_SPACE)) {
-		playerComp->SetStartPos(); // 落下開始地点を設定
+		// DIK_DOWN を押したときに実行
+		if (key->Pushed(DIK_DOWN)) {
+			spawnerComp->SetStartPos(); // 落下開始地点を設定
+		}
+		if (key->Released(DIK_DOWN)) {
+			spawnerComp->SpawnFallingBlock();	// 落下ブロックを追加
+		}
+
+		if (key->Pushed(DIK_UP)) {
+			spawnerComp->fallBlockType_ = static_cast<Block::BlockType>(static_cast<uint32_t>(spawnerComp->fallBlockType_.GetBlockType()) + 1);
+			if (not spawnerComp->fallBlockType_) {
+				spawnerComp->fallBlockType_ = Block::BlockType::kRed;
+			}
+		}
+
+		// スポナーに付与する移動方向
+		int32_t inputSpawner{};
+
+		// 横方向の移動
+		inputSpawner -= key->Pushed(DIK_LEFT);
+		inputSpawner += key->Pushed(DIK_RIGHT);
+
+		spawnerComp->MoveInput(inputSpawner);
 	}
-	if (input_->GetKey()->Released(DIK_SPACE)) {
-		playerComp->SpawnFallingBlock();	// 落下ブロックを追加
-	}
-
-	// プレイヤに付与する移動方向
-	int32_t inputPlayer{};
-
-	// 横方向の移動
-	inputPlayer -= input_->GetKey()->Pushed(DIK_A);
-	inputPlayer += input_->GetKey()->Pushed(DIK_D);
-
-	playerComp->MoveInput(inputPlayer);
-
-	// ベクトルの付与
-	//player_->GetComponent<OnBlockMoveComp>()->InputMoveDirection(inputPlayer);
 
 }
 

@@ -37,6 +37,9 @@ public:
 
 	std::pair<int32_t, int32_t> GetFutureBlockPos() const;
 
+
+	Block fallBlockType_;
+
 private:
 
 	int32_t startPos_ = -1;
@@ -44,6 +47,7 @@ private:
 	Model *fallBlockModel_;
 
 	inline static constexpr int32_t kMaxWidth_ = 3;
+
 
 private:
 

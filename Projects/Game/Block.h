@@ -28,14 +28,18 @@ public:
 	};
 
 public:
-	Block() = default;
+	Block(BlockType type = BlockType::kNone) : blockType_(type) {}
 	~Block() = default;
+
+	Block &operator=(const BlockType type) { blockType_ = type; return *this; }
 
 	operator bool() const { return blockType_ != BlockType::kNone and blockType_ != BlockType::kMax; }
 
 	const BlockType GetBlockType() const { return blockType_; }
 
 	void SetBlockType(const BlockType type) { blockType_ = type; }
+
+	uint32_t GetColor() const { return kBlockColor_[static_cast<uint32_t>(blockType_)]; }
 
 private:
 	// ブロックの状態

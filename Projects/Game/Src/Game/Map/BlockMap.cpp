@@ -95,7 +95,7 @@ void BlockMap::TransferBoxData()
 				}
 				modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y } *0.5f, Vector3::kZero, { drawPos, -1.f });
 				// 色を指定する
-				modelState->color = Block::kBlockColor_[static_cast<uint32_t>(box)];
+				modelState->color = box.GetColor();
 			}
 			// もしボックスが存在しない場合は
 			else {
@@ -235,7 +235,7 @@ void BlockMap::BreakBlock(POINTS localPos)
 
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BlockMap::FindChainBlocks(POINTS localPos, std::array<std::bitset<kMapX>, kMapY> &&result) const
 {
-	static constexpr std::array<POINTS, 4u> kMoveDir {
+	static constexpr std::array<POINTS, 4u> kMoveDir{
 		{
 			{-1, 0},
 			{ 1,0 },

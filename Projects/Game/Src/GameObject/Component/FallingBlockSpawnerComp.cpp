@@ -10,6 +10,8 @@ void FallingBlockSpawnerComp::Init()
 	pLocalPosComp_->drawScale_ = 1.f;
 
 	fallBlockModel_ = DrawerManager::GetInstance()->GetModel("Resources/Cube.obj");
+
+	fallBlockType_.SetBlockType(Block::BlockType::kRed);
 }
 
 void FallingBlockSpawnerComp::Start()
@@ -36,7 +38,7 @@ void FallingBlockSpawnerComp::Draw(const Camera &camera) const
 		Vector3 pos = { BlockMap::GetGlobalPos(spawnPos) - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f), -1.f };
 		Matrix affine = SoLib::Math::Affine(Vector3{ std::abs(xDiff) + 1 ,1,1 } / 2, Vector3::kZero, pos);
 
-		fallBlockModel_->Draw(affine, camera.GetViewOthographics(), 0xF58498FF, BlendType::kNone);
+		fallBlockModel_->Draw(affine, camera.GetViewOthographics(), fallBlockType_.GetColor(), BlendType::kNone);
 	}
 }
 
@@ -87,7 +89,7 @@ void FallingBlockSpawnerComp::SpawnFallingBlock()
 
 
 		// 落下ブロックの実体の追加
-		pLocalPosComp_->pGameManager_->AddFallingBlock(spawnPos - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f), Vector2::kIdentity + Vector2::kXIdentity * static_cast<float>(std::abs(xDiff)), Block::BlockType::kRed, Vector2::kYIdentity * -10, Vector2::kZero);
+		pLocalPosComp_->pGameManager_->AddFallingBlock(spawnPos - Vector2::kYIdentity - Vector2::kXIdentity * (xDiff * 0.5f), Vector2::kIdentity + Vector2::kXIdentity * static_cast<float>(std::abs(xDiff)), fallBlockType_.GetBlockType(), Vector2::kYIdentity * -10, Vector2::kZero);
 
 		// 使用量を減らす
 		pBlockGauge_->UseBlockEnergy(std::abs(xDiff) + 1);

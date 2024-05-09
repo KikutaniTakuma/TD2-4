@@ -47,7 +47,7 @@ public:
 
 	bool Debug(const char *const str);
 
-	
+
 
 	// マップのデータを取得
 	BlockMap *GetMap() { return blockMap_.get(); }
@@ -116,6 +116,8 @@ private:
 	Input *input_ = nullptr;
 
 	std::unique_ptr<BlockGauge> blockGauge_ = nullptr;
+
+	std::unique_ptr<GameObject> spawner_;
 
 	std::unique_ptr<GameObject> player_;
 

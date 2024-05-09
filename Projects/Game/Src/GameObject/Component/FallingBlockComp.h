@@ -33,7 +33,7 @@ public:
 
 	bool IsLanding() const;
 
-	Block::BlockType blockType_ = Block::BlockType::kRed;
+	Block blockType_ = Block::BlockType::kRed;
 
 public:
 
