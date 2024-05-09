@@ -19,6 +19,8 @@ void LocalMapHitComp::Update()
 
 	const Vector2 centor = pLocalBodyComp_->localPos_ + Vector2::kIdentity * 0.5f;
 
+	const Vector2 centorDown = centor + Vector2{0, pLocalBodyComp_->size_.y * -0.5f};
+
 	const Vector2 leftDown = centor - pLocalBodyComp_->size_ * 0.5f;
 	const Vector2 rightTop = centor + pLocalBodyComp_->size_ * 0.5f;
 
@@ -44,11 +46,25 @@ void LocalMapHitComp::Update()
 		hitNormal.y = 1.f;
 	}
 
+	if (pBlockMap_->GetBlockType(leftDown) != Block::BlockType::kNone) {
+		if (pBlockMap_->GetBlockType(leftDown + Vector2::kYIdentity) != Block::BlockType::kNone) {
+			pLocalBodyComp_->localPos_.x = leftDown.x - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
+			velocity.x = 0;
+			hitNormal.x = 1.f;
+		}
+	}
+
+	if (pBlockMap_->GetBlockType(centorDown) != Block::BlockType::kNone) {
+		pLocalBodyComp_->localPos_.y = std::ceil(centorDown.y) - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
+		velocity.y = 0;
+		hitNormal.y = 1.f;
+	}
+
+
 	// 接触した法線を返す
 	hitNormal_ = hitNormal.Normalize();
 
 	pRigidbody_->SetVelocity(velocity);
 
 
-	//pBlockMap_->GetBlockType(leftDown);
 }
