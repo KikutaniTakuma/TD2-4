@@ -14,15 +14,11 @@ Animator::Animator():
 	isLoop_(false)
 {}
 
-// 警告の誤検知
-#pragma warning(push)
-#pragma warning(disable:4702)
 void Animator::Load(const std::string& fileName) {
 	Lamb::SafePtr animationManager = AnimationManager::GetInstance();
 	animationManager->LoadAniamtions(fileName);
 	animations_ = animationManager->GetAnimations(fileName);
 }
-#pragma warning(pop)
 
 void Animator::Update(const Mesh* const mesh) {
 	Animation& currentAnimation = animations_->data[currentAnimationIndex_];

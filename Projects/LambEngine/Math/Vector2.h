@@ -44,7 +44,7 @@ public:
 /// メンバ関数
 /// </summary>
 public:
-	[[noreturn]] void Rotate(float rad) noexcept;
+	void Rotate(float rad) noexcept;
 
 	[[nodiscard]] float Cross(const Vector2& right) const noexcept;
 	[[nodiscard]] float Dot(const Vector2& right) const noexcept;
