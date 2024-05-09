@@ -17,6 +17,7 @@
 #include <GameObject/Component/SpriteComp.h>
 #include <GameObject/Component/DwarfAnimator.h>
 #include <GameObject/Component/DwarfShakeComp.h>
+#include <GameObject/Component/PlayerComp.h>
 
 void GameManager::Init()
 {
@@ -52,6 +53,9 @@ void GameManager::Init()
 		playerComp->SetGauge(blockGauge_.get());
 	}
 
+	player_ = std::make_unique<GameObject>();
+	player_->AddComponent<PlayerComp>();
+
 	for (float i = 0; i < 15.f; i++) {
 		AddDwarf(Vector2::kXIdentity * i);
 	}
@@ -73,6 +77,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	// 浮いているブロックを落とす
 	BlockMapDropDown();
+
+	player_->Update(deltaTime);
 
 	spawner_->Update(deltaTime);
 	for (auto &fallingBlock : fallingBlocks_) {
@@ -167,6 +173,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 {
 	blockMap_->Draw(camera);
+	player_->Draw(camera);
 	spawner_->Draw(camera);
 	for (const auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Draw(camera);
