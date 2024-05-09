@@ -1,9 +1,9 @@
-#include "PlayerComp.h"
+#include "FallingBlockSpawnerComp.h"
 #include <Drawers/DrawerManager.h>
 #include <SoLib/Math/Math.hpp>
 
 
-void PlayerComp::Init()
+void FallingBlockSpawnerComp::Init()
 {
 	pLocalPosComp_ = object_.AddComponent<LocalBodyComp>();
 	pLocalPosComp_->size_ = Vector2::kIdentity;
@@ -12,19 +12,19 @@ void PlayerComp::Init()
 	fallBlockModel_ = DrawerManager::GetInstance()->GetModel("Resources/Cube.obj");
 }
 
-void PlayerComp::Start()
+void FallingBlockSpawnerComp::Start()
 {
 	pLocalPosComp_->localPos_ = Vector2{ 0, static_cast<float>(BlockMap::kMapY) };
 }
 
-void PlayerComp::Update()
+void FallingBlockSpawnerComp::Update()
 {
 
 	pLocalPosComp_->TransfarData();
 
 }
 
-void PlayerComp::Draw(const Camera &camera) const
+void FallingBlockSpawnerComp::Draw(const Camera &camera) const
 {
 
 	if (startPos_ != -1) {
@@ -40,30 +40,30 @@ void PlayerComp::Draw(const Camera &camera) const
 	}
 }
 
-void PlayerComp::MoveInput(int32_t xMove)
+void FallingBlockSpawnerComp::MoveInput(int32_t xMove)
 {
 	pLocalPosComp_->localPos_.x += xMove;
 	pLocalPosComp_->localPos_.x = std::clamp(pLocalPosComp_->localPos_.x, 0.f, static_cast<float>(BlockMap::kMapX - 1));
 }
 
-void PlayerComp::SetStartPos()
+void FallingBlockSpawnerComp::SetStartPos()
 {
 	if (GetMaxBlockWidth() > 0) {
 		startPos_ = static_cast<int32_t>(pLocalPosComp_->localPos_.x);
 	}
 }
 
-int32_t PlayerComp::GetMaxBlockWidth() const
+int32_t FallingBlockSpawnerComp::GetMaxBlockWidth() const
 {
 	return std::min(pBlockGauge_->GetBlockCount(), kMaxWidth_);
 }
 
-void PlayerComp::SetGauge(BlockGauge *pBlockGauge)
+void FallingBlockSpawnerComp::SetGauge(BlockGauge *pBlockGauge)
 {
 	pBlockGauge_ = pBlockGauge;
 }
 
-std::pair<int32_t, int32_t> PlayerComp::GetFutureBlockPos() const
+std::pair<int32_t, int32_t> FallingBlockSpawnerComp::GetFutureBlockPos() const
 {
 	std::pair<int32_t, int32_t> result{ -1, -1 };
 	// もしブロックを設置してなかったら飛ばす
@@ -77,7 +77,7 @@ std::pair<int32_t, int32_t> PlayerComp::GetFutureBlockPos() const
 	return result;
 }
 
-void PlayerComp::SpawnFallingBlock()
+void FallingBlockSpawnerComp::SpawnFallingBlock()
 {
 	if (startPos_ != -1) {
 		int32_t xDiff = startPos_ - static_cast<int32_t>(pLocalPosComp_->localPos_.x);

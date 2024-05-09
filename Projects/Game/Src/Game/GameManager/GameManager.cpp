@@ -10,7 +10,7 @@
 #include <GameObject/Component/ModelComp.h>
 #include "Utils/SafePtr/SafePtr.h"
 #include "Drawers/DrawerManager.h"
-#include "GameObject/Component/PlayerComp.h"
+#include "GameObject/Component/FallingBlockSpawnerComp.h"
 #include <GameObject/Component/FallingBlockComp.h>
 #include <GameObject/Component/Rigidbody.h>
 #include <GameObject/Component/DwarfComp.h>
@@ -48,7 +48,7 @@ void GameManager::Init()
 	}
 
 	{
-		Lamb::SafePtr playerComp = player_->AddComponent<PlayerComp>();
+		Lamb::SafePtr playerComp = player_->AddComponent<FallingBlockSpawnerComp>();
 		playerComp->SetGauge(blockGauge_.get());
 	}
 
@@ -156,7 +156,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	blockGauge_->Update(deltaTime);
 
-	gameEffectManager_->fallingBlock_ = player_->GetComponent<PlayerComp>()->GetFutureBlockPos();
+	gameEffectManager_->fallingBlock_ = player_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
 
 	gameEffectManager_->Update(deltaTime);
 
@@ -351,7 +351,7 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 void GameManager::InputAction()
 {
 	// プレイヤのコンポーネント
-	Lamb::SafePtr playerComp = player_->GetComponent<PlayerComp>();
+	Lamb::SafePtr playerComp = player_->GetComponent<FallingBlockSpawnerComp>();
 
 	// SPACE を押したときに実行
 	if (input_->GetKey()->Pushed(DIK_SPACE)) {

@@ -8,10 +8,10 @@
 #include "Drawers/Model/Model.h"
 
 
-class PlayerComp : public IComponent {
+class FallingBlockSpawnerComp : public IComponent {
 public:
 	using IComponent::IComponent;
-	~PlayerComp() = default;
+	~FallingBlockSpawnerComp() = default;
 
 	void Init() override;
 
