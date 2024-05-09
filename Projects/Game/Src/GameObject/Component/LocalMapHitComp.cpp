@@ -19,45 +19,59 @@ void LocalMapHitComp::Update()
 
 	const Vector2 centor = pLocalBodyComp_->localPos_ + Vector2::kIdentity * 0.5f;
 
-	const Vector2 centorDown = centor + Vector2{0, pLocalBodyComp_->size_.y * -0.5f};
+	const Vector2 centorDown = centor + Vector2{ 0, +pLocalBodyComp_->size_.y * -0.5f };
+	const Vector2 centorTop = centor + Vector2{ 0, -pLocalBodyComp_->size_.y * -0.5f };
+	const Vector2 centorLeft = centor + Vector2{ +pLocalBodyComp_->size_.x * -0.5f, 0 };
+	const Vector2 centorRight = centor + Vector2{ -pLocalBodyComp_->size_.x * -0.5f, 0 };
 
-	const Vector2 leftDown = centor - pLocalBodyComp_->size_ * 0.5f;
-	const Vector2 rightTop = centor + pLocalBodyComp_->size_ * 0.5f;
+	//const Vector2 leftDown = centor - pLocalBodyComp_->size_ * 0.5f;
+	//const Vector2 rightTop = centor + pLocalBodyComp_->size_ * 0.5f;
 
-	[[maybe_unused]] const Vector2 leftTop = { leftDown.x, rightTop.y };
-	[[maybe_unused]] const Vector2 rightDown = { rightTop.x, leftDown.y };
+	//[[maybe_unused]] const Vector2 leftTop = { leftDown.x, rightTop.y };
+	//[[maybe_unused]] const Vector2 rightDown = { rightTop.x, leftDown.y };
 
 	// 左が画面外だったら
-	if (leftDown.x < 0) {
+	if (centorLeft.x < 0) {
 		pLocalBodyComp_->localPos_.x = 0 - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
 		velocity.x = 0;
 		hitNormal.x = 1.f;
 	}
 	// 右が画面外だったら
-	else if (rightDown.x >= static_cast<float>(BlockMap::kMapX)) {
+	else if (centorRight.x >= static_cast<float>(BlockMap::kMapX)) {
 		pLocalBodyComp_->localPos_.x = BlockMap::kMapX - 0.5f - pLocalBodyComp_->size_.x * 0.5f;
 		velocity.x = 0;
 		hitNormal.x = -1.f;
 	}
 	// 下が画面外だったら
-	if (rightDown.y < 0) {
+	if (centorDown.y < 0) {
 		pLocalBodyComp_->localPos_.y = 0 - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
 		velocity.y = 0;
 		hitNormal.y = 1.f;
 	}
 
-	if (pBlockMap_->GetBlockType(leftDown) != Block::BlockType::kNone) {
-		if (pBlockMap_->GetBlockType(leftDown + Vector2::kYIdentity) != Block::BlockType::kNone) {
-			pLocalBodyComp_->localPos_.x = leftDown.x - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
-			velocity.x = 0;
-			hitNormal.x = 1.f;
-		}
-	}
+
 
 	if (pBlockMap_->GetBlockType(centorDown) != Block::BlockType::kNone) {
 		pLocalBodyComp_->localPos_.y = std::ceil(centorDown.y) - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
 		velocity.y = 0;
 		hitNormal.y = 1.f;
+	}
+
+	if (pBlockMap_->GetBlockType(centorTop) != Block::BlockType::kNone) {
+		pLocalBodyComp_->localPos_.y = std::floor(centorTop.y) - 0.5f - pLocalBodyComp_->size_.y * 0.5f;
+		velocity.y = 0;
+		hitNormal.y = -1.f;
+	}
+
+	if (pBlockMap_->GetBlockType(centorLeft) != Block::BlockType::kNone) {
+		pLocalBodyComp_->localPos_.x = std::ceil(centorLeft.x) - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
+		velocity.x = 0;
+		hitNormal.x = 1.f;
+	}
+	if (pBlockMap_->GetBlockType(centorRight) != Block::BlockType::kNone) {
+		pLocalBodyComp_->localPos_.x = std::floor(centorRight.x) - 0.5f - pLocalBodyComp_->size_.x * 0.5f;
+		velocity.x = 0;
+		hitNormal.x = -1.f;
 	}
 
 
