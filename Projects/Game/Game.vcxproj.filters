@@ -164,6 +164,9 @@
     <ClCompile Include="Src\GameObject\Component\LocalRigidbody.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\LocalMapHitComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -466,6 +469,9 @@
       <Filter>GameObject\Component</Filter>
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\LocalRigidbody.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\LocalMapHitComp.h">
       <Filter>GameObject\Component</Filter>
     </ClInclude>
   </ItemGroup>

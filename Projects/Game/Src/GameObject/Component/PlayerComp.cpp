@@ -2,6 +2,7 @@
 #include "../LambEngine/Input/Input.h"
 #include "Utils/SafePtr/SafePtr.h"
 #include "SpriteComp.h"
+#include "LocalMapHitComp.h"
 
 void PlayerComp::Init()
 {
@@ -10,6 +11,7 @@ void PlayerComp::Init()
 	pLocalBodyComp_->drawScale_ = 1.f;
 
 	pLocalRigidbody_ = object_.AddComponent<LocalRigidbody>();
+	object_.AddComponent<LocalMapHitComp>();
 
 	Lamb::SafePtr spriteComp = object_.AddComponent<SpriteComp>();
 	spriteComp->SetTexture("./Resources/uvChecker.png");
