@@ -9,6 +9,8 @@ void PlayerComp::Init()
 	pLocalBodyComp_->size_ = Vector2::kIdentity;
 	pLocalBodyComp_->drawScale_ = 1.f;
 
+	pLocalRigidbody_ = object_.AddComponent<LocalRigidbody>();
+
 	Lamb::SafePtr spriteComp = object_.AddComponent<SpriteComp>();
 	spriteComp->SetTexture("./Resources/uvChecker.png");
 	spriteComp->CalcTexUv();
@@ -16,6 +18,11 @@ void PlayerComp::Init()
 
 void PlayerComp::Update()
 {
+	//// 横移動速度を無くす
+	//Vector2 velocity = pLocalRigidbody_->GetVelocity();
+	//velocity.x = 0.f;
+	//pLocalRigidbody_->SetVelocity(velocity);
+
 	Input();
 	pLocalBodyComp_->TransfarData();
 }
@@ -24,11 +31,15 @@ void PlayerComp::Input()
 {
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 
+	Vector2 velocity = pLocalRigidbody_->GetVelocity();
+
+	constexpr float moveSpeed = 10.f;
+
 	if (key->GetKey(DIK_A)) {
-		pLocalBodyComp_->localPos_.x -= 1;
+		pLocalRigidbody_->ApplyContinuousForce(-Vector2::kXIdentity * moveSpeed);
 	}
 	if (key->GetKey(DIK_D)) {
-		pLocalBodyComp_->localPos_.x += 1;
+		pLocalRigidbody_->ApplyContinuousForce(+Vector2::kXIdentity * moveSpeed);
 	}
 
 
