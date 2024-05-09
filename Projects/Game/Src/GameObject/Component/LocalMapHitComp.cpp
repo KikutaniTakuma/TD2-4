@@ -34,8 +34,8 @@ void LocalMapHitComp::Update()
 	const Vector2 centorLeft = centor + Vector2{ pLocalBodyComp_->size_.x * -0.5f, 0 };
 	const Vector2 centorRight = centor + Vector2{ pLocalBodyComp_->size_.x * +0.5f, 0 };
 
-	std::array<float, 3u> xPos{ centor.x + pLocalBodyComp_->size_.x * -0.5f, centor.x + pLocalBodyComp_->size_.x * +0.5f };
-	std::array<float, 3u> yPos{ centor.y + pLocalBodyComp_->size_.y * -0.5f, centor.y + pLocalBodyComp_->size_.y * +0.5f };
+	std::array<float, 2u> xPos{ centor.x + pLocalBodyComp_->size_.x * -0.5f, centor.x + pLocalBodyComp_->size_.x * +0.5f };
+	std::array<float, 2u> yPos{ centor.y + pLocalBodyComp_->size_.y * -0.5f, centor.y + pLocalBodyComp_->size_.y * +0.5f };
 
 	//const Vector2 leftDown = centor - pLocalBodyComp_->size_ * 0.5f;
 	//const Vector2 rightTop = centor + pLocalBodyComp_->size_ * 0.5f;
@@ -102,11 +102,6 @@ void LocalMapHitComp::Update()
 	}
 	{ // 横方向
 		{	// 左方向
-			if (pBlockMap_->GetBlockType(centorLeft) != Block::BlockType::kNone) {
-				pLocalBodyComp_->localPos_.x = std::ceil(centorLeft.x) - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
-				velocity.x = 0;
-				hitNormal.x = 1.f;
-			}
 			if (pBlockMap_->GetBlockType(centorLeft) != Block::BlockType::kNone) {
 				pLocalBodyComp_->localPos_.x = std::ceil(centorLeft.x) - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
 				velocity.x = 0;
