@@ -31,7 +31,7 @@ void Audio::Unload() {
 
 void Audio::Load(const std::string& fileName) {
 	if (!std::filesystem::exists(std::filesystem::path{ fileName })) {
-		throw Lamb::Error::Code<Audio>(("This file is not found -> " + fileName), __func__);
+		throw Lamb::Error::Code<Audio>(("This file is not found -> " + fileName), ErrorPlace);
 	}
 	
 	if (isLoad_) {
@@ -41,7 +41,7 @@ void Audio::Load(const std::string& fileName) {
 	auto extension = std::filesystem::path(fileName).extension();
 
 	if (extension != ".wav" and extension != ".mp3") {
-		throw Lamb::Error::Code<Audio>(("This file is not supported (only ""mp3"" or ""wav"" file) -> " + fileName), __func__);
+		throw Lamb::Error::Code<Audio>(("This file is not supported (only ""mp3"" or ""wav"" file) -> " + fileName), ErrorPlace);
 	}
 
 	Lamb::SafePtr<IMFSourceReader> pMFSourceReader;
@@ -107,7 +107,7 @@ void Audio::Load(const std::string& fileName) {
 
 	HRESULT hr = AudioManager::GetInstance()->xAudio2_->CreateSourceVoice(&pSourceVoice_, &wfet_);
 	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<Audio>("CreateSourceVoice() failed", "Load()");
+		throw Lamb::Error::Code<Audio>("CreateSourceVoice() failed", ErrorPlace);
 	}
 
 	isLoad_ = true;
@@ -134,13 +134,13 @@ void Audio::Start(float volume, bool isLoop) {
 		buf.LoopCount = isLoop_ ? XAUDIO2_LOOP_INFINITE : 0;
 
 		if (!SUCCEEDED(hr)) {
-			throw Lamb::Error::Code<Audio>("SubmitSourceBuffer() failed", __func__);
+			throw Lamb::Error::Code<Audio>("SubmitSourceBuffer() failed", ErrorPlace);
 		}
 		hr = pSourceVoice_->SubmitSourceBuffer(&buf);
 	}
 	hr = pSourceVoice_->Start();
 	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<Audio>("function is something error", __func__);
+		throw Lamb::Error::Code<Audio>("function is something error", ErrorPlace);
 	}
 	pSourceVoice_->SetVolume(volume_);
 

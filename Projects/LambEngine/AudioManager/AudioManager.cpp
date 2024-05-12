@@ -26,13 +26,13 @@ AudioManager::AudioManager() :
 	HRESULT hr = XAudio2Create(xAudio2_.GetAddressOf(), 0u, XAUDIO2_DEFAULT_PROCESSOR);
 	assert(SUCCEEDED(hr));
 	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<AudioManager>("XAudio2Create()", "Constructor");
+		throw Lamb::Error::Code<AudioManager>("XAudio2Create()", ErrorPlace);
 	}
 
 	hr = xAudio2_->CreateMasteringVoice(&masterVoice_);
 	assert(SUCCEEDED(hr));
 	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<AudioManager>("CreateMasteringVoicey()", "Constructor");
+		throw Lamb::Error::Code<AudioManager>("CreateMasteringVoicey()", ErrorPlace);
 	}
 
 	Lamb::AddLog("Initialize AudioManager succeeded");
@@ -44,7 +44,7 @@ AudioManager::~AudioManager() {
 
 Audio* const AudioManager::Load(const std::string& fileName) {
 	if (!std::filesystem::exists(std::filesystem::path(fileName))) {
-		throw Lamb::Error::Code<AudioManager>("There is not this file -> " + fileName, __func__);
+		throw Lamb::Error::Code<AudioManager>("There is not this file -> " + fileName, ErrorPlace);
 	}
 
 

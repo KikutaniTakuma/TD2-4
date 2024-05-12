@@ -66,7 +66,7 @@ void CbvSrvUavHeap::Use(uint32_t handleIndex, UINT rootParmIndex) {
 
 uint32_t CbvSrvUavHeap::CreateView(Descriptor& buffer) {
 	if (currentHandleIndex_ >= heapSize_) {
-		throw Lamb::Error::Code<CbvSrvUavHeap>("Over Heap Size", __func__);
+		throw Lamb::Error::Code<CbvSrvUavHeap>("Over Heap Size", ErrorPlace);
 	}
 
 	if (bookingHandle_.empty()) {
@@ -87,7 +87,7 @@ uint32_t CbvSrvUavHeap::CreateView(Descriptor& buffer) {
 uint32_t CbvSrvUavHeap::CreateView(Texture& tex)
 {
 	if (kMaxTextureHadle_ <= currentTextureHeapIndex_) {
-		throw Lamb::Error::Code<CbvSrvUavHeap>("Over Heap Size", __func__);
+		throw Lamb::Error::Code<CbvSrvUavHeap>("Over Heap Size", ErrorPlace);
 	}
 
 	if (releaseTextureHeapIndex_.empty()) {

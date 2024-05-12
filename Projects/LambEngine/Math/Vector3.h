@@ -80,13 +80,13 @@ public:
 		return std::data(*this);
 	}
 	[[nodiscard]] auto end() noexcept {
-		return std::data(*this) + 3;
+		return std::data(*this) + size();
 	}
 	[[nodiscard]] auto cbegin() const noexcept {
 		return std::data(*this);
 	}
 	[[nodiscard]] auto cend() const noexcept {
-		return std::data(*this) + 3;
+		return std::data(*this) + size();
 	}
 	[[nodiscard]] auto rbegin() noexcept {
 		return std::make_reverse_iterator(end());
@@ -99,6 +99,14 @@ public:
 	}
 	[[nodiscard]] auto crend() const noexcept {
 		return std::make_reverse_iterator(cbegin());
+	}
+
+	[[nodiscard]] constexpr size_t size() const {
+		return 3llu;
+	}
+
+	[[nodiscard]] constexpr bool empty() const {
+		return false;
 	}
 
 
@@ -164,6 +172,12 @@ struct Segment {
 	Vector3 diff;
 };
 
+/// <summary>
+/// ベクトル1をベクトル2に投影する関数
+/// </summary>
+/// <param name="vec1">投影するベクトル</param>
+/// <param name="vec2">投影先のベクトル</param>
+/// <returns>正射影ベクトル</returns>
 [[nodiscard]] Vector3 Project(const Vector3& vec1, const Vector3& vec2);
 
 [[nodiscard]] Vector3 ClosestPoint(const Vector3& point, const Segment& segment);

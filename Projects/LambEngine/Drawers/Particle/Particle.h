@@ -234,6 +234,8 @@ public:
 
 	void Resize(uint32_t index);
 
+	void SetParticleScale(float particleScale);
+
 public:
 	Vector3 emitterPos;
 	Vector3 emitterSize;
@@ -248,6 +250,8 @@ private:
 	uint32_t currentParticleIndex_;
 
 	std::vector<WorldTransForm> wtfs_;
+
+	float particleScale_;
 
 	const class Texture* tex_;
 	bool isLoad_;

@@ -49,7 +49,7 @@
 //			);
 //		}
 //		else {
-//			throw Lamb::Error::Code<decltype(*this)>("something Error", __func__);
+//			throw Lamb::Error::Code<decltype(*this)>("something Error", ErrorPlace);
 //		}
 //	}
 //

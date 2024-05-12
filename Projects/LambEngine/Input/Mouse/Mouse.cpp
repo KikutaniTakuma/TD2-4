@@ -10,7 +10,7 @@ Mouse* Mouse::instance_ = nullptr;
 void Mouse::Initialize(IDirectInput8* input) {
 	instance_ = new Mouse(input);
 	if (!instance_) {
-		throw Lamb::Error::Code<Mouse>("instance failed", __func__);
+		throw Lamb::Error::Code<Mouse>("instance failed", ErrorPlace);
 	}
 }
 
@@ -31,19 +31,19 @@ Mouse::Mouse(IDirectInput8* input) :
 	HRESULT hr = input->CreateDevice(GUID_SysMouse, mouse_.GetAddressOf(), NULL);
 	assert(SUCCEEDED(hr));
 	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<Mouse>("CreateDevice failed", "Constructor");
+		throw Lamb::Error::Code<Mouse>("CreateDevice failed", ErrorPlace);
 	}
 
 	hr = mouse_->SetDataFormat(&c_dfDIMouse2);
 	assert(SUCCEEDED(hr));
 	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<Mouse>("SetDataFormat failed", "Constructor");
+		throw Lamb::Error::Code<Mouse>("SetDataFormat failed", ErrorPlace);
 	}
 
 	hr = mouse_->SetCooperativeLevel(WindowFactory::GetInstance()->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(hr));
 	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<Mouse>("SetCooperativeLevel failed", "Constructor");
+		throw Lamb::Error::Code<Mouse>("SetCooperativeLevel failed", ErrorPlace);
 	}
 
 	initalizeSucceeded_ = true;

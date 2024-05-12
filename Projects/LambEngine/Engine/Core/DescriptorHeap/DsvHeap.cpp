@@ -52,7 +52,7 @@ void DsvHeap::CreateHeapHandles() {
 
 uint32_t DsvHeap::CreateView(DepthBuffer& depthStencilBuffer) {
 	if (currentHandleIndex_ >= heapSize_) {
-		throw Lamb::Error::Code<DsvHeap>("Over HeapSize", __func__);
+		throw Lamb::Error::Code<DsvHeap>("Over HeapSize", ErrorPlace);
 	}
 
 	if (bookingHandle_.empty()) {

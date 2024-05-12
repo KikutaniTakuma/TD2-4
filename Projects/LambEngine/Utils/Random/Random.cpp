@@ -4,25 +4,6 @@ namespace Lamb {
 	std::random_device seed;
 	std::mt19937_64 rnd(seed());
 
-	float Random(float min, float max) {
-		if (max < min) {
-			std::swap(min, max);
-		}
-		std::uniform_real_distribution<float> dist{ min, max };
-
-		return static_cast<float>(dist(rnd));
-	}
-
-	double Random(double min, double max) {
-		if (max < min) {
-			std::swap(min, max);
-		}
-		std::uniform_real_distribution<double> dist{ min, max };
-
-		return static_cast<double>(dist(rnd));
-	}
-
-
 	Vector2 Random(const Vector2& min, const Vector2& max) {
 		Vector2 result;
 		result.x = Random(min.x, max.x);

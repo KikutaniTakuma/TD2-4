@@ -109,7 +109,7 @@ void Line::Debug([[maybe_unused]]const std::string& guiName) {
 void Line::Draw(const Mat4x4& viewProjection) {
 	assert(indexCount_ < kDrawMaxNumber_);
 	if (!(indexCount_ < kDrawMaxNumber_)) {
-		Lamb::Error::Code<Line>("Over Draw index", __func__);
+		Lamb::Error::Code<Line>("Over Draw index", ErrorPlace);
 	}
 
 	auto&& colorFloat = UintToVector4(color);
@@ -129,7 +129,7 @@ void Line::Draw(const Mat4x4& viewProjection) {
 void Line::Draw(const Vector3& start, const Vector3& end, const Mat4x4& viewProjection, uint32_t color = std::numeric_limits<uint32_t>::max()) {
 	assert(indexCount_ < kDrawMaxNumber_);
 	if (!(indexCount_ < kDrawMaxNumber_)) {
-		throw Lamb::Error::Code<Line>("Over Draw index", __func__);
+		throw Lamb::Error::Code<Line>("Over Draw index", ErrorPlace);
 	}
 
 	auto&& colorFloat = UintToVector4(color);

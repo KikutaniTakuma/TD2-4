@@ -44,7 +44,7 @@ namespace SoLib {
 
 			bool Load(const std::string &filePath) {
 				if (!std::filesystem::exists(filePath)) {
-					throw Lamb::Error::Code<File>("this file is not exist -> " + filePath, __func__);
+					throw Lamb::Error::Code<File>("this file is not exist -> " + filePath, ErrorPlace);
 				}
 				std::ifstream file(filePath);
 				if (not file) {					

@@ -111,7 +111,7 @@ void Animator::SetLoopAnimation(bool isLoop) {
 
 Vector3 Animator::CalaclateValue(const AnimationCurve<Vector3>& animationCurve, float time) {
 	if (animationCurve.keyFrames.empty()) {
-		throw Lamb::Error::Code<Animator>("keyFrams is empty", __func__);
+		throw Lamb::Error::Code<Animator>("keyFrams is empty", ErrorPlace);
 	}
 	if (animationCurve.keyFrames.size() == 1 or time < animationCurve.keyFrames.front().time) {
 		return animationCurve.keyFrames.front().value;
@@ -130,7 +130,7 @@ Vector3 Animator::CalaclateValue(const AnimationCurve<Vector3>& animationCurve, 
 
 Quaternion Animator::CalaclateValue(const AnimationCurve<Quaternion>& animationCurve, float time) {
 	if (animationCurve.keyFrames.empty()) {
-		throw Lamb::Error::Code<Animator>("keyFrams is empty", __func__);
+		throw Lamb::Error::Code<Animator>("keyFrams is empty", ErrorPlace);
 	}
 	if (animationCurve.keyFrames.size() == 1 or time < animationCurve.keyFrames.front().time) {
 		return animationCurve.keyFrames.front().value;

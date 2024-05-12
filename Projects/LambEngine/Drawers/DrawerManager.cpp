@@ -49,7 +49,7 @@ void DrawerManager::LoadModel(const std::string& fileName) {
 Model* const DrawerManager::GetModel(const std::string& fileName)
 {
 	if (not models_[fileName]) {
-		throw Lamb::Error::Code<DrawerManager>("this model is not loaded -> " + fileName, __func__);
+		throw Lamb::Error::Code<DrawerManager>("this model is not loaded -> " + fileName, ErrorPlace);
 	}
 
 	return models_[fileName].get();
