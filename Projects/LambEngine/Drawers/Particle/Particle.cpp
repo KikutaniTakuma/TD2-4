@@ -140,8 +140,8 @@ void Particle::LoadSettingDirectory(const std::string& directoryName) {
 	settings_.clear();
 	datas_.clear();
 
+	dataDirectoryName_ = directoryName;
 	const std::filesystem::path kDirectoryPath = "./Resources/Datas/Particles/" + directoryName + "/";
-	dataDirectoryName_ = kDirectoryPath.string();
 
 	if (!std::filesystem::exists(kDirectoryPath)) {
 		std::filesystem::create_directories(kDirectoryPath);
@@ -163,7 +163,7 @@ void Particle::LoadSettingDirectory(const std::string& directoryName) {
 		LopadSettingFile(filePath.string());
 	}
 
-	std::ifstream file{ dataDirectoryName_ + "otherSetting.txt" };
+	std::ifstream file{ kDirectoryPath.string() + "otherSetting.txt"};
 
 	if (!file.fail()) {
 		std::string lineBuf;
@@ -339,7 +339,7 @@ void Particle::SaveSettingFile(const std::string& groupName) {
 		}
 	}
 
-	const std::filesystem::path kDirectoryPath = dataDirectoryName_;
+	const std::filesystem::path kDirectoryPath = "./Resources/Datas/Particles/" + dataDirectoryName_ + "/";
 
 	if (!std::filesystem::exists(kDirectoryPath)) {
 		std::filesystem::create_directory(kDirectoryPath);
@@ -400,7 +400,7 @@ void Particle::BackUpSettingFile(const std::string& groupName) {
 		}
 	}
 
-	const std::filesystem::path kDirectoryPath = dataDirectoryName_ + "BackUp/";
+	const std::filesystem::path kDirectoryPath = "./Resources/Datas/Particles/" + dataDirectoryName_ + "/" + "BackUp/";
 
 	if (!std::filesystem::exists(kDirectoryPath)) {
 		std::filesystem::create_directory(kDirectoryPath);
@@ -918,6 +918,42 @@ void Particle::Debug(const std::string& guiName) {
 	}
 	ImGui::EndMenuBar();
 
+	if (ImGui::TreeNode("パーティクルスケール")) {
+		ImGui::DragFloat("パーティクルスケール", &particleScale_, 0.01f, -10.0f, 10.0f);
+		if (ImGui::Button("適用")) {
+			ParticleStop();
+
+			for (auto i = 0llu; i < settings_.size(); i++) {
+				const auto groupName = ("setting" + std::to_string(i));
+
+				settings_[i].emitter_.size_ *= particleScale_;
+				settings_[i].emitter_.circleSize_ *= particleScale_;
+				settings_[i].emitter_.circleSize_ *= particleScale_;
+
+				// 大きさ
+				settings_[i].size_.first *= particleScale_;
+				settings_[i].size_.second *= particleScale_;
+				settings_[i].sizeSecond_.first *= particleScale_;
+				settings_[i].sizeSecond_.second *= particleScale_;
+
+				// 速度
+				settings_[i].velocity_.first *= particleScale_;
+				settings_[i].velocity_.second *= particleScale_;
+				settings_[i].velocitySecond_.first *= particleScale_;
+				settings_[i].velocitySecond_.second *= particleScale_;
+			}
+
+			MessageBoxA(
+				WindowFactory::GetInstance()->GetHwnd(),
+				"Apply success", "Particle",
+				MB_OK | MB_ICONINFORMATION
+			);
+
+			particleScale_ = 1.0f;
+		}
+
+		ImGui::TreePop();
+	}
 	ImGui::Checkbox("isBillboard", &isBillboard_);
 	ImGui::Checkbox("isYBillboard", &isYBillboard_);
 	ImGui::Checkbox("isLoop", isLoop_.data());
@@ -971,7 +1007,7 @@ void Particle::Debug(const std::string& guiName) {
 			SaveSettingFile(("setting" + std::to_string(i)).c_str());
 		}
 
-		std::ofstream file{ dataDirectoryName_+"otherSetting.txt"};
+		std::ofstream file{ "./Resources/Datas/Particles/" + dataDirectoryName_ + "/" +"otherSetting.txt"};
 
 		if (!file.fail() && isLoad_) {
 			file << static_cast<bool>(isLoop_) << std::endl
