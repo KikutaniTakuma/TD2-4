@@ -167,6 +167,9 @@
     <ClCompile Include="Src\GameObject\Component\LocalMapHitComp.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\PlayerBlockPickerComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -473,6 +476,9 @@
     </ClInclude>
     <ClInclude Include="Src\Game\Block\Block.h">
       <Filter>Game\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\PlayerBlockPickerComp.h">
+      <Filter>GameObject\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
