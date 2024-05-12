@@ -19,6 +19,7 @@ private:
 
 	inline static Lamb::SafePtr<Texture2D> pTexture_ = nullptr;
 	inline static uint32_t texID_ = 0;
+	Mat4x4 affine_;
 
 	Block pickingBlock_ = Block::BlockType::kNone;
 

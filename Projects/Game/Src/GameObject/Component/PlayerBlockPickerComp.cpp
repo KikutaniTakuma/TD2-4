@@ -15,14 +15,14 @@ void PleyerBlockPickerComp::Init()
 
 void PleyerBlockPickerComp::Update()
 {
+	affine_ = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { pLocalBodyComp_->GetGlobalPos() + Vector2::kYIdentity, -5.f });
 }
 
 void PleyerBlockPickerComp::Draw([[maybe_unused]] const Camera &camera) const
 {
 	// もしブロックを持っていたら
 	if (pickingBlock_) {
-		Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { pLocalBodyComp_->GetGlobalPos() + Vector2::kYIdentity, -5.f });
-		pTexture_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), texID_, pickingBlock_.GetColor(), BlendType::kNone);
+		pTexture_->Draw(affine_, Mat4x4::kIdentity, camera.GetViewOthographics(), texID_, pickingBlock_.GetColor(), BlendType::kNone);
 	}
 }
 
@@ -30,7 +30,7 @@ void PleyerBlockPickerComp::PickUp(int32_t facing)
 {
 	// ブロックを持っていない場合
 	if (not pickingBlock_) {
-		Vector2 targetPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * static_cast<float>(facing);
+		Vector2 targetPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * static_cast<float>(facing) + Vector2::kIdentity * 0.5f;
 
 		auto block = pBlockMap_->GetBlockType(targetPos);
 
