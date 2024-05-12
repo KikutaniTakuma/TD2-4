@@ -41,6 +41,12 @@ public:
 	[[nodiscard]] Vector4 operator-(const Vector4& right) const noexcept;
 	Vector4& operator-=(const Vector4& right) noexcept;
 
+	[[nodiscard]] Vector4 operator*(const Vector4& right) const noexcept;
+	Vector4& operator*=(const Vector4& right) noexcept;
+
+	[[nodiscard]] Vector4 operator/(const Vector4& right) const noexcept;
+	Vector4& operator/=(const Vector4& right) noexcept;
+
 	[[nodiscard]] Vector4 operator*(float scalar) const noexcept;
 	Vector4& operator*=(float scalar) noexcept;
 	[[nodiscard]] Vector4 operator/(float scalar) const noexcept;
