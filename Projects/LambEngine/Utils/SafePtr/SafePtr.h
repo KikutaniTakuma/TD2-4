@@ -69,30 +69,30 @@ namespace Lamb {
 		}
 
 		T* operator->()  {
-			NullPointerException(__func__);
+			NullPointerException(ErrorPlace);
 			return ptr_;
 		}
 		const T* operator->() const  {
-			NullPointerException(__func__);
+			NullPointerException(ErrorPlace);
 			return ptr_;
 		}
 
 		T& operator*()  {
-			NullPointerException(__func__);
+			NullPointerException(ErrorPlace);
 			return *ptr_;
 		}
 
 		const T& operator*() const  {
-			NullPointerException(__func__);
+			NullPointerException(ErrorPlace);
 			return *ptr_;
 		}
 
 		T& operator[](size_t index)  {
-			NullPointerException(__func__);
+			NullPointerException(ErrorPlace);
 			return (ptr_[index]);
 		}
 		const T& operator[](size_t index) const  {
-			NullPointerException(__func__);
+			NullPointerException(ErrorPlace);
 			return (ptr_[index]);
 		}
 
@@ -169,9 +169,13 @@ namespace Lamb {
 		/// </summary>
 		/// <param name="funcName">関数名</param>
 		template<class Name = SafePtr<T>>
-		inline void NullPointerException(const std::string& funcName) const {
+		inline void NullPointerException(
+			const std::string& funcName,
+			const std::string& sourceFileName,
+			uint32_t codeLineNumber
+		) const {
 			if (not ptr_) {
-				throw Lamb::Error::Code<Name>("NullPointerException", funcName);
+				throw Lamb::Error::Code<Name>("NullPointerException", funcName, sourceFileName, codeLineNumber);
 			}
 		}
 

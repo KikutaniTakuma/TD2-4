@@ -8,7 +8,7 @@ Lamb::SafePtr<AnimationManager> AnimationManager::instance_ = nullptr;
 
 void AnimationManager::Initialize() {
 	if (instance_) {
-		throw Lamb::Error::Code<AnimationManager>("Already created", __func__);
+		throw Lamb::Error::Code<AnimationManager>("Already created", ErrorPlace);
 	}
 
 	instance_.reset(new AnimationManager());
@@ -36,7 +36,7 @@ void AnimationManager::LoadAniamtions(const std::string& fileName) {
 Animations* const AnimationManager::GetAnimations(const std::string& fileName)
 {
 	if (not animationData_[fileName]) {
-		throw Lamb::Error::Code<AnimationManager>("this file does not load -> " + fileName, __func__);
+		throw Lamb::Error::Code<AnimationManager>("this file does not load -> " + fileName, ErrorPlace);
 	}
 	return animationData_[fileName].get();
 }

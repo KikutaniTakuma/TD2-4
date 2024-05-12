@@ -71,7 +71,7 @@ void RtvHeap::CreateBackBuffer(
 		HRESULT hr = swapChain->GetBuffer(i, IID_PPV_ARGS(backBuffer[i].GetAddressOf()));
 
 		if (!SUCCEEDED(hr)) {
-			throw Lamb::Error::Code<RtvHeap>("GetBuffer() Failed", __func__);
+			throw Lamb::Error::Code<RtvHeap>("GetBuffer() Failed", ErrorPlace);
 		}
 
 		device->CreateRenderTargetView(backBuffer[i].Get(), &rtvDesc, heapHandles_[i].first);
@@ -118,7 +118,7 @@ void RtvHeap::ClearRenderTargetView(uint32_t handle, const Vector4& clearColor) 
 
 uint32_t RtvHeap::CreateView(class RenderTarget& peraRender) {
 	if (currentHandleIndex_ >= heapSize_) {
-		throw Lamb::Error::Code<RtvHeap>("Over HeapSize", __func__);
+		throw Lamb::Error::Code<RtvHeap>("Over HeapSize", ErrorPlace);
 	}
 
 	if (bookingHandle_.empty()) {

@@ -271,7 +271,7 @@ Quaternion Mat4x4::GetRotate() {
 	Quaternion result;
 	result.quaternion.w = std::sqrt(1.0f + rotateMat[0][0] + rotateMat[1][1] + rotateMat[2][2]) * 0.5f;
 	if (result.quaternion.w == 0.0f) {
-		throw Lamb::Error::Code<Mat4x4>("w is 0.0f", __func__);
+		throw Lamb::Error::Code<Mat4x4>("w is 0.0f", ErrorPlace);
 	}
 	float w = 1.0f / (result.quaternion.w * 4.0f);
 	result.quaternion.x = (rotateMat[1][2] - rotateMat[2][1]) * w;

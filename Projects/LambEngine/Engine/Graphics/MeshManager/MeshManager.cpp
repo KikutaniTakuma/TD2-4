@@ -19,7 +19,7 @@ void MeshManager::Initialize() {
 		Lamb::AddLog("Initialize MeshManager succeeded");
 	}
 	else {
-		throw Lamb::Error::Code<MeshManager>("instance is nullptr", __func__);
+		throw Lamb::Error::Code<MeshManager>("instance is nullptr", ErrorPlace);
 	}
 }
 void MeshManager::Finalize() {

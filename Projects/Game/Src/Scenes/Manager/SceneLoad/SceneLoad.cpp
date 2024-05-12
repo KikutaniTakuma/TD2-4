@@ -43,7 +43,7 @@ SceneLoad::SceneLoad() :
 			Lamb::AddLog("CoInitializeEx succeeded");
 		}
 		else {
-			throw Lamb::Error::Code<Engine>("CoInitializeEx failed", __func__);
+			throw Lamb::Error::Code<Engine>("CoInitializeEx failed", ErrorPlace);
 		}
 
 		std::unique_lock<std::mutex> uniqueLock(mtx_);

@@ -297,7 +297,7 @@ void BlockEditor::SaveFile(const std::string &fileName) {
 	//ファイルオープン失敗
 	if (ofs.fail()) {
 		std::string message = "Failed open data file for write.";
-		throw Lamb::Error::Code<BlockEditor>(message, __func__);
+		throw Lamb::Error::Code<BlockEditor>(message, ErrorPlace);
 	}
 	//ファイルにjson文字列を書き込む(インデント幅4)
 	ofs << std::setw(4) << root << std::endl;
@@ -311,7 +311,7 @@ void BlockEditor::SaveFile(const std::string &fileName) {
 void BlockEditor::ChackFiles() {
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "Failed open data file for write.";
-		throw Lamb::Error::Code<BlockEditor>(message, __func__);
+		throw Lamb::Error::Code<BlockEditor>(message, ErrorPlace);
 	}
 
 	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
@@ -353,7 +353,7 @@ void BlockEditor::ChackFiles() {
 void BlockEditor::LoadFiles(const std::string &fileName) {
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "This file path does not exist.";
-		throw Lamb::Error::Code<BlockEditor>(message, __func__);
+		throw Lamb::Error::Code<BlockEditor>(message, ErrorPlace);
 	}
 
 	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
@@ -385,7 +385,7 @@ void BlockEditor::LoadFiles(const int32_t selectNum) {
 
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "This file path does not exist.";
-		throw Lamb::Error::Code<BlockEditor>(message, __func__);
+		throw Lamb::Error::Code<BlockEditor>(message, ErrorPlace);
 	}
 
 	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
@@ -424,7 +424,7 @@ void BlockEditor::LoadFile(const std::string &fileName) {
 	// ファイルオープン失敗
 	if (ifs.fail()) {
 		std::string message = "Failed open data file for write.";
-		throw Lamb::Error::Code<BlockEditor>(message, __func__);
+		throw Lamb::Error::Code<BlockEditor>(message, ErrorPlace);
 	}
 
 	nlohmann::json root;

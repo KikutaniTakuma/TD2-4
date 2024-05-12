@@ -112,7 +112,7 @@ void RootSignature::Create(D3D12_ROOT_PARAMETER* rootParamater, size_t rootParam
 	Lamb::LambPtr<ID3DBlob> errorBlob;
 	HRESULT  hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, signatureBlob.GetAddressOf(), errorBlob.GetAddressOf());
 	if (FAILED(hr)) {
-		throw Lamb::Error::Code<RootSignature>(reinterpret_cast<char*>(errorBlob->GetBufferPointer()), __func__);
+		throw Lamb::Error::Code<RootSignature>(reinterpret_cast<char*>(errorBlob->GetBufferPointer()), ErrorPlace);
 	}
 	// バイナリをもとに生成
 	if (rootSignature_) {
@@ -122,7 +122,7 @@ void RootSignature::Create(D3D12_ROOT_PARAMETER* rootParamater, size_t rootParam
 	hr = device->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), IID_PPV_ARGS(rootSignature_.GetAddressOf()));
 	assert(SUCCEEDED(hr));
 	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<RootSignature>("CreateRootSignature failed", __func__);
+		throw Lamb::Error::Code<RootSignature>("CreateRootSignature failed", ErrorPlace);
 	}
 }
 

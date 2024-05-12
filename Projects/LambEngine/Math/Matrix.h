@@ -104,7 +104,7 @@ public:
 public:
 	[[nodiscard]] constexpr width_reference operator[](size_t index) {
 		if (height <= index) {
-			OutOfRange(__func__);
+			OutOfRange(ErrorPlace);
 		}
 
 		return matrix_[index];
@@ -112,7 +112,7 @@ public:
 
 	[[nodiscard]] constexpr width_const_reference operator[](size_t index) const {
 		if (height <= index) {
-			OutOfRange(__func__);
+			OutOfRange(ErrorPlace);
 		}
 		return matrix_[index];
 	}
@@ -223,7 +223,7 @@ public:
 
 	[[nodiscard]] constexpr width_reference at(size_t index) {
 		if (height <= index) {
-			OutOfRange(__func__);
+			OutOfRange(ErrorPlace);
 		}
 
 		return matrix_.at(index);
@@ -231,7 +231,7 @@ public:
 
 	[[nodiscard]] constexpr width_const_reference at(size_t index) const {
 		if (height <= index) {
-			OutOfRange(__func__);
+			OutOfRange(ErrorPlace);
 		}
 		return matrix_.at(index);
 	}
@@ -379,8 +379,12 @@ public:
 	}
 
 private:
-	void OutOfRange(const std::string& funcName) const {
-		throw Lamb::Error::Code<Matrix>("out of range", funcName);
+	void OutOfRange(
+		const std::string& funcName,
+		const std::string& sourceFileName,
+		uint32_t codeLineNumber
+	) const {
+		throw Lamb::Error::Code<Matrix>("out of range", funcName, sourceFileName, codeLineNumber);
 	}
 
 	/// <summary>

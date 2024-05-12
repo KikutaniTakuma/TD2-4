@@ -30,7 +30,7 @@ Input::Input():
 		Lamb::AddLog("DirectInput8Create succeeded");
 	}
 	else {
-		throw Lamb::Error::Code<Input>("DirectInput8Create() Failed", "InitializeInput");
+		throw Lamb::Error::Code<Input>("DirectInput8Create() Failed", "InitializeInput", __FILE__, __LINE__);
 	}
 
 	KeyInput::Initialize(directInput_.Get());

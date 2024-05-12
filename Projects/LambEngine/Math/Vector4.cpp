@@ -100,6 +100,38 @@ Vector4& Vector4::operator-=(const Vector4& right) noexcept {
 	return *this;
 }
 
+Vector4 Vector4::operator*(const Vector4& right) const noexcept {
+	Vector4 result;
+
+	for (size_t i = 0; i < result.m.size(); i++) {
+		result.m[i] = m[i] * right.m[i];
+	}
+
+	return result;
+}
+
+Vector4& Vector4::operator*=(const Vector4& right) noexcept {
+	*this = *this * right;
+
+	return *this;
+}
+
+Vector4 Vector4::operator/(const Vector4& right) const noexcept {
+	Vector4 result;
+
+	for (size_t i = 0; i < result.m.size(); i++) {
+		result.m[i] = m[i] / right.m[i];
+	}
+
+	return result;
+}
+
+Vector4& Vector4::operator/=(const Vector4& right) noexcept {
+	*this = *this / right;
+
+	return *this;
+}
+
 Vector4 Vector4::operator*(float scalar) const noexcept {
 	Vector4 result;
 

@@ -77,7 +77,7 @@
 //void SkyDome::SetTexture(Texture* const tex)
 //{
 //	if (!tex_) {
-//		throw Lamb::Error::Code<SkyDome>("tex is nullptr", __func__);
+//		throw Lamb::Error::Code<SkyDome>("tex is nullptr", ErrorPlace);
 //	}
 //	tex_ = tex;
 //}
