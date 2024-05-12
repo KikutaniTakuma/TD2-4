@@ -27,7 +27,8 @@ Particle::Particle() :
 	currentSettingIndex_(0u),
 	currentParticleIndex_(0u),
 	isClose_{false},
-	particleScale_(1.0f)
+	particleScale_(1.0f),
+	allParticleColor_(Vector4::kIdentity)
 {
 
 	wtfs_.resize(1);
@@ -657,7 +658,7 @@ void Particle::Draw(
 					Mat4x4::kIdentity,
 					viewProjection,
 					tex_->GetHandleUINT(),
-					wtfs_[i].color_,
+					(wtfs_[i].color_ * allParticleColor_).GetColorRGBA(),
 					blend
 				);
 			}
@@ -1050,4 +1051,8 @@ void Particle::Resize(uint32_t index) {
 
 void Particle::SetParticleScale(float particleScale) {
 	particleScale_ = std::clamp(particleScale, -10.0f, 10.0f);
+}
+
+void Particle::SetParticleAllColor(uint32_t color) {
+	allParticleColor_ = color;
 }

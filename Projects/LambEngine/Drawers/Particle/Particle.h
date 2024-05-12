@@ -38,7 +38,7 @@ private:
 		Vector3 rotateStart_;
 		Vector3 rotateSecond_;
 		Vector3 pos_;
-		uint32_t color_;
+		Vector4 color_;
 		
 		Vector3 movePos_;
 		Vector3 movePosSecond_;
@@ -236,6 +236,8 @@ public:
 
 	void SetParticleScale(float particleScale);
 
+	void SetParticleAllColor(uint32_t color);
+
 public:
 	Vector3 emitterPos;
 	Vector3 emitterSize;
@@ -252,6 +254,7 @@ private:
 	std::vector<WorldTransForm> wtfs_;
 
 	float particleScale_;
+	Vector4 allParticleColor_;
 
 	const class Texture* tex_;
 	bool isLoad_;
