@@ -42,7 +42,7 @@ IDxcBlob* const ShaderManager::LoadVertexShader(const std::string& fileName) {
 	auto itr = vertexShader_.find(fileName);
 	if (itr == vertexShader_.end()) {
 		Lamb::SafePtr shader = shaderFactory_->CompileShader(ConvertString(fileName), L"vs_6_0");
-		shader.NullPointerException<ShaderManager>(__func__);
+		shader.NullPointerException<ShaderManager>(ErrorPlace);
 		vertexShader_.insert(std::make_pair(fileName, shader.get()));
 	}
 	return vertexShader_[fileName].Get();
@@ -55,7 +55,7 @@ IDxcBlob* const ShaderManager::LoadHullShader(const std::string& fileName) {
 	auto itr = hullShader_.find(fileName);
 	if (itr == hullShader_.end()) {
 		Lamb::SafePtr shader = shaderFactory_->CompileShader(ConvertString(fileName), L"hs_6_0");
-		shader.NullPointerException<ShaderManager>(__func__);
+		shader.NullPointerException<ShaderManager>(ErrorPlace);
 		hullShader_.insert(std::make_pair(fileName, shader.get()));
 	}
 
@@ -69,7 +69,7 @@ IDxcBlob* const ShaderManager::LoadDomainShader(const std::string& fileName) {
 	auto itr = domainShader_.find(fileName);
 	if (itr == domainShader_.end()) {
 		Lamb::SafePtr shader = shaderFactory_->CompileShader(ConvertString(fileName), L"ds_6_0");
-		shader.NullPointerException<ShaderManager>(__func__);
+		shader.NullPointerException<ShaderManager>(ErrorPlace);
 		domainShader_.insert(std::make_pair(fileName, shader.get()));
 	}
 	return domainShader_[fileName].Get();
@@ -82,7 +82,7 @@ IDxcBlob* const ShaderManager::LoadGeometoryShader(const std::string& fileName) 
 	auto itr = geometoryShader_.find(fileName);
 	if (itr == geometoryShader_.end()) {
 		Lamb::SafePtr shader = shaderFactory_->CompileShader(ConvertString(fileName), L"gs_6_0");
-		shader.NullPointerException<ShaderManager>(__func__);
+		shader.NullPointerException<ShaderManager>(ErrorPlace);
 		geometoryShader_.insert(std::make_pair(fileName, shader.get()));
 	}
 	return geometoryShader_[fileName].Get();
@@ -95,7 +95,7 @@ IDxcBlob* const ShaderManager::LoadPixelShader(const std::string& fileName) {
 	auto itr = pixelShader_.find(fileName);
 	if (itr == pixelShader_.end()) {
 		Lamb::SafePtr shader = shaderFactory_->CompileShader(ConvertString(fileName), L"ps_6_0");
-		shader.NullPointerException<ShaderManager>(__func__);
+		shader.NullPointerException<ShaderManager>(ErrorPlace);
 		pixelShader_.insert(std::make_pair(fileName, shader.get()));
 	}
 	return pixelShader_[fileName].Get();

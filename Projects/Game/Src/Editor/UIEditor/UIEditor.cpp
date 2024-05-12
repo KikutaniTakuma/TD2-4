@@ -211,7 +211,7 @@ void UIEditor::Debug(const BaseScene::ID id){
 void UIEditor::LoadFiles(const std::string& fileName){
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "This file path does not exist.";
-		throw Lamb::Error::Code<UIEditor>(message, __func__);
+		throw Lamb::Error::Code<UIEditor>(message, ErrorPlace);
 	}
 
 	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
@@ -380,7 +380,7 @@ void UIEditor::SaveFile(const std::string& fileName){
 	//ファイルオープン失敗
 	if (ofs.fail()) {
 		std::string message = "Failed open data file for write.";
-		throw Lamb::Error::Code<UIEditor>(message, __func__);
+		throw Lamb::Error::Code<UIEditor>(message, ErrorPlace);
 	}
 	//ファイルにjson文字列を書き込む(インデント幅4)
 	ofs << std::setw(4) << root << std::endl;
@@ -394,7 +394,7 @@ void UIEditor::SaveFile(const std::string& fileName){
 void UIEditor::ChackFiles(){
 	if (!std::filesystem::exists(kDirectoryName_)) {
 		std::string message = "Failed open data file for write.";
-		throw Lamb::Error::Code<UIEditor>(message, __func__);
+		throw Lamb::Error::Code<UIEditor>(message, ErrorPlace);
 	}
 
 	std::filesystem::directory_iterator dir_it(kDirectoryPath_);
@@ -445,7 +445,7 @@ void UIEditor::LoadFile(const std::string& fileName){
 	// ファイルオープン失敗
 	if (ifs.fail()) {
 		std::string message = "Failed open data file for write.";
-		throw Lamb::Error::Code<UIEditor>(message, __func__);
+		throw Lamb::Error::Code<UIEditor>(message, ErrorPlace);
 	}
 
 	nlohmann::json root;
@@ -519,7 +519,7 @@ void UIEditor::LoadFileAll(){
 		// ファイルオープン失敗
 		if (ifs.fail()) {
 			std::string message = "Failed open data file for write.";
-			throw Lamb::Error::Code<UIEditor>(message, __func__);
+			throw Lamb::Error::Code<UIEditor>(message, ErrorPlace);
 		}
 
 		nlohmann::json root;

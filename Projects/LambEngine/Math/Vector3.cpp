@@ -84,7 +84,7 @@ Vector3 Vector3::operator*(const Mat4x4& mat) const {
 	Matrix<float, 1, 4>&& vec = Matrix<float, 1, 4>::vector_type{ x,y,z,1.0f };
 	const Matrix<float, 1, 4>&& tmpResult = vec * mat;
 	if (tmpResult.back().back() == 0.0f) {
-		throw Lamb::Error::Code<Vector3>("Vector3 * Matrix4x4 : w = 0.0f", __func__);
+		throw Lamb::Error::Code<Vector3>("Vector3 * Matrix4x4 : w = 0.0f", ErrorPlace);
 	}
 	float&& w = 1.0f / tmpResult.back().back();
 	result.x = tmpResult[0][0] * w;
@@ -94,14 +94,14 @@ Vector3 Vector3::operator*(const Mat4x4& mat) const {
 	return result;
 }
 
-Vector3 operator*(const Mat4x4& left, const Vector3& right) {
+[[nodiscard]] Vector3 operator*(const Mat4x4& left, const Vector3& right) {
 	Vector3 result;
 	Matrix<float, 4, 1>&& tmp = Matrix<float, 4, 1>::vector_type{ right.x,right.y, right.z, 1.0f };
 
 	const Matrix<float, 4, 1>&& tmpResult = left * tmp;
 
 	if (tmpResult.back().back() == 0.0f) {
-		throw Lamb::Error::Code<Vector3>("Matrix4x4 * Vector3 : w = 0.0f", __func__);
+		throw Lamb::Error::Code<Vector3>("Matrix4x4 * Vector3 : w = 0.0f", ErrorPlace);
 	}
 
 	for (size_t i = 0; i < tmpResult.HeightSize() - 1; i++) {
@@ -147,15 +147,15 @@ bool Vector3::operator!=(const Vector3& right) const noexcept {
 }
 
 float& Vector3::operator[](size_t index) {
-	if (3llu <= index) {
-		throw Lamb::Error::Code<Vector3>("index is over", __func__);
+	if (size() <= index) {
+		throw Lamb::Error::Code<Vector3>("index is over", ErrorPlace);
 	}
 	return data()[index];
 }
 
 const float& Vector3::operator[](size_t index) const {
-	if (3llu <= index) {
-		throw Lamb::Error::Code<Vector3>("index is over", __func__);
+	if (size() <= index) {
+		throw Lamb::Error::Code<Vector3>("index is over", ErrorPlace);
 	}
 	return data()[index];
 }

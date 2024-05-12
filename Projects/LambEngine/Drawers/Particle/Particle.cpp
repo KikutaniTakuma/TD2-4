@@ -1,4 +1,7 @@
 #include "Particle.h"
+
+#include "Math/Quaternion.h"
+
 #include "Engine/Graphics/TextureManager/TextureManager.h"
 #include "imgui.h"
 #include "Utils/EngineInfo/EngineInfo.h"
@@ -23,7 +26,8 @@ Particle::Particle() :
 	settings_(),
 	currentSettingIndex_(0u),
 	currentParticleIndex_(0u),
-	isClose_{false}
+	isClose_{false},
+	particleScale_(1.0f)
 {
 
 	wtfs_.resize(1);
@@ -474,7 +478,7 @@ void Particle::Update() {
 
 	if (settings_[currentSettingIndex_].isValid_) {
 		settings_[currentSettingIndex_].emitter_.pos_ = emitterPos;
-		settings_[currentSettingIndex_].emitter_.size_ = emitterSize;
+		settings_[currentSettingIndex_].emitter_.size_ = emitterSize * particleScale_;
 	}
 
 	// 有効になった瞬間始めた瞬間を保存
@@ -524,29 +528,29 @@ void Particle::Update() {
 					maxPos.x += settings_[currentSettingIndex_].emitter_.circleSize_;
 					pos = Lamb::Random(settings_[currentSettingIndex_].emitter_.pos_, maxPos);
 					posRotate = Lamb::Random(settings_[currentSettingIndex_].emitter_.rotate_.first, settings_[currentSettingIndex_].emitter_.rotate_.second);
-					pos *= Mat4x4::MakeAffin(Vector3::kIdentity, posRotate, Vector3::kZero);
+					pos *= Quaternion::EulerToQuaternion(posRotate);
 					break;
 				}
 
 				// 大きさランダム
-				Vector2 size = Lamb::Random(settings_[currentSettingIndex_].size_.first, settings_[currentSettingIndex_].size_.second);
+				Vector2 size = Lamb::Random(settings_[currentSettingIndex_].size_.first, settings_[currentSettingIndex_].size_.second) * particleScale_;
 				if (settings_[currentSettingIndex_].isSameHW_) {
 					size.y = size.x;
 				}
-				Vector2 sizeSecond = Lamb::Random(settings_[currentSettingIndex_].sizeSecond_.first, settings_[currentSettingIndex_].sizeSecond_.second);
+				Vector2 sizeSecond = Lamb::Random(settings_[currentSettingIndex_].sizeSecond_.first, settings_[currentSettingIndex_].sizeSecond_.second) * particleScale_;
 				if (settings_[currentSettingIndex_].isSameHW_) {
 					sizeSecond.y = sizeSecond.x;
 				}
 
 				// 速度ランダム
-				Vector3 velocity = Lamb::Random(settings_[currentSettingIndex_].velocity_.first, settings_[currentSettingIndex_].velocity_.second);
-				Vector3 velocitySecond = Lamb::Random(settings_[currentSettingIndex_].velocitySecond_.first, settings_[currentSettingIndex_].velocitySecond_.second);
+				Vector3 velocity = Lamb::Random(settings_[currentSettingIndex_].velocity_.first, settings_[currentSettingIndex_].velocity_.second) * particleScale_;
+				Vector3 velocitySecond = Lamb::Random(settings_[currentSettingIndex_].velocitySecond_.first, settings_[currentSettingIndex_].velocitySecond_.second) * particleScale_;
 
 				// 移動方向ランダム
 				Vector3 moveRotate = Lamb::Random(settings_[currentSettingIndex_].moveRotate_.first, settings_[currentSettingIndex_].moveRotate_.second);
 
 				// 速度回転
-				velocity *= Mat4x4::MakeAffin(Vector3::kIdentity, moveRotate, Vector3::kZero);
+				velocity *= Quaternion::EulerToQuaternion(moveRotate);
 
 				// 回転
 				Vector3 rotate = Lamb::Random(settings_[currentSettingIndex_].rotate_.first, settings_[currentSettingIndex_].rotate_.second);
@@ -1006,4 +1010,8 @@ void Particle::Debug(const std::string& guiName) {
 
 void Particle::Resize(uint32_t index) {
 	wtfs_.resize(index);
+}
+
+void Particle::SetParticleScale(float particleScale) {
+	particleScale_ = std::clamp(particleScale, -10.0f, 10.0f);
 }

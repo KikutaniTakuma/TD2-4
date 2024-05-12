@@ -81,7 +81,7 @@ void Engine::Debug::InitializeDebugLayer() {
 		Lamb::AddLog("InitializeDebugLayer succeeded");
 	}
 	else {
-		throw Lamb::Error::Code<Engine::Debug>("D3D12GetDebugInterface failed", __func__);
+		throw Lamb::Error::Code<Engine::Debug>("D3D12GetDebugInterface failed", ErrorPlace);
 	}
 }
 
@@ -96,7 +96,7 @@ Engine* Engine::instance_ = nullptr;
 void Engine::Initialize(const std::string& windowName, const Vector2& windowSize, float fpsLimit, bool isFullscreen) {
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<Engine>("CoInitializeEx failed", __func__);
+		throw Lamb::Error::Code<Engine>("CoInitializeEx failed", ErrorPlace);
 	}
 	else {
 		Lamb::AddLog("CoInitializeEx succeeded");

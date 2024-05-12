@@ -40,7 +40,7 @@ StringOutPutManager::StringOutPutManager():
 void StringOutPutManager::LoadFont(const std::string& fontName) {
 	static ID3D12Device* device = DirectXDevice::GetInstance()->GetDevice();
 	if (!std::filesystem::exists(std::filesystem::path(fontName))) {
-		throw Lamb::Error::Code<StringOutPutManager>("This file is not exist -> " + fontName, __func__);
+		throw Lamb::Error::Code<StringOutPutManager>("This file is not exist -> " + fontName, ErrorPlace);
 	}
 
 	// もしロード済みなら早期リターン
