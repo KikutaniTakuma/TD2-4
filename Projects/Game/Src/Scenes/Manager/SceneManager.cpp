@@ -15,6 +15,7 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 
 
 	fade_ = std::make_unique<Fade>();
+	fadeCamera_.pos.x = -10.0f;
 	fadeCamera_.Update();
 
 	frameInfo_ = FrameInfo::GetInstance();
