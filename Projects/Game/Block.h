@@ -15,6 +15,8 @@ public:
 		kYellow,
 		kPurple,
 
+		kDamage,
+
 		kMax
 	};
 
@@ -24,7 +26,8 @@ public:
 		0x0000FFFF,
 		0x00FF00FF,
 		0x00FFFFFF,
-		0xFF00FFFF
+		0xFF00FFFF,
+		0xFFFFFFFF,
 	};
 
 public:
