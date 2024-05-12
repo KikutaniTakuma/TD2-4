@@ -46,7 +46,7 @@ void PlayerComp::Input()
 	}
 
 	if (pHitMapComp_->hitNormal_.y > 0 && key->Pushed(DIK_SPACE)) {
-		pLocalRigidbody_->ApplyInstantForce(Vector2::kYIdentity * 20.f);
+		pLocalRigidbody_->ApplyInstantForce(Vector2::kYIdentity * 15.f);
 	}
 
 

@@ -62,31 +62,6 @@ void LocalMapHitComp::Update()
 		hitNormal.y = 1.f;
 	}
 
-	//std::pair<uint32_t, float> hitVertexProcess = { 0,10.f };
-
-	//for (uint32_t i = 0; i < 4u; i++) {
-	//	Vector2 targetPos = { xBeforePos[i % 2], yBeforePos[i / 2] };
-
-	//	const Vector2 absMoveVec = { std::abs(moveVec.x), std::abs(moveVec.y) };
-
-	//	// その座標から、velocityの方向に伸ばして、最初にブロックになった距離を求める
-
-	//	//Segment moveSegment{ .origin = targetPos, .diff = moveVec };
-
-	//	Vector2 hitPos;
-
-	//	for (int32_t yi = 0; yi < static_cast<int32_t>(std::ceil(absMoveVec.y)); yi++) {
-	//		for (int32_t xi = 0; xi < static_cast<int32_t>(std::ceil(absMoveVec.x)); xi++) {
-
-
-	//		}
-	//	}
-
-
-
-	//}
-
-
 
 	{	// 縦方向
 		if (velocity.y < 0) {	// 下方向
