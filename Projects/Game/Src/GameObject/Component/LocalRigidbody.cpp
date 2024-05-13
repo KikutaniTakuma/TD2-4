@@ -14,8 +14,6 @@ void LocalRigidbody::Update()
 
 	beforePos_ = pLocalBodyComp_->localPos_;
 
-	acceleration_ -= velocity_ * (deltaTime * friction_);
-
 	velocity_ += acceleration_;
 
 	pLocalBodyComp_->localPos_ += velocity_ * deltaTime;

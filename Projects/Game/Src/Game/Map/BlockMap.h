@@ -12,7 +12,7 @@
 #include"Game/Ground/Ground.h"
 #include "SoLib/Math/Angle.h"
 #include <functional>
-#include <Game/Block.h>
+#include <Game/Block/Block.h>
 
 class BlockMap {
 public:

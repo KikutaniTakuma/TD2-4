@@ -167,6 +167,9 @@
     <ClCompile Include="Src\GameObject\Component\LocalMapHitComp.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\PlayerBlockPickerComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -459,9 +462,6 @@
     <ClInclude Include="Src\GameObject\Component\DwarfShakeComp.h">
       <Filter>GameObject\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Block.h">
-      <Filter>Game\Block</Filter>
-    </ClInclude>
     <ClInclude Include="Src\GameObject\Component\PlayerComp.h">
       <Filter>GameObject\Component</Filter>
     </ClInclude>
@@ -472,6 +472,12 @@
       <Filter>GameObject\Component</Filter>
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\LocalMapHitComp.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Block\Block.h">
+      <Filter>Game\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\PlayerBlockPickerComp.h">
       <Filter>GameObject\Component</Filter>
     </ClInclude>
   </ItemGroup>
