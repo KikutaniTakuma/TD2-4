@@ -163,7 +163,7 @@ Vector4& Vector4::operator/=(float scalar) noexcept {
 Vector4 Vector4::operator*(const Mat4x4& mat) const noexcept {
 	Vector4 result;
 
-	result.m128 = DirectX::XMVector3Transform(this->m128, mat.GetXMMatrix());
+	result.m128 = DirectX::XMVector4Transform(this->m128, mat.GetXMMatrix());
 
 	return result;
 }
