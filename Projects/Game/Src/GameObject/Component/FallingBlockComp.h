@@ -3,6 +3,8 @@
 #include "Utils/SafePtr/SafePtr.h"
 #include "LocalBodyComp.h"
 #include "SoLib/Math/Math.hpp"
+#include "LocalRigidbody.h"
+#include "LocalMapHitComp.h"
 
 class FallingBlockComp : public IComponent
 {
@@ -39,9 +41,9 @@ public:
 
 	// ローカル座標コンポーネント
 	Lamb::SafePtr<LocalBodyComp> pLocalPos_ = nullptr;
+	Lamb::SafePtr<LocalRigidbody> pRigidbody_ = nullptr;
+	Lamb::SafePtr<LocalMapHitComp> pHitMapComp_ = nullptr;
 
-	// 速度
-	Vector2 velocity_;
 	// 重力
 	Vector2 gravity_;
 	// ダメージがあるか
