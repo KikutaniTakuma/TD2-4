@@ -50,10 +50,8 @@ void Camera::Update() {
 	viewProjecctionVp_ = viewProjecction_ * Mat4x4::MakeViewPort(0.0f, 0.0f, clientSize.x, clientSize.y, 0.0f, 1.0f);
 
 	othograohics_ = Mat4x4::MakeOrthographic(
-		-clientSize.x * 0.5f * drawScale,
-		clientSize.y * 0.5f * drawScale,
-		clientSize.x * 0.5f * drawScale,
-		-clientSize.y * 0.5f * drawScale,
+		clientSize.x * drawScale,
+		clientSize.y * drawScale,
 		kNearClip_, farClip);
 	viewOthograohics_ = view_ * othograohics_;
 
@@ -83,10 +81,8 @@ void Camera::Update(const Mat4x4& worldMat) {
 	viewProjecctionVp_ = viewProjecction_ * Mat4x4::MakeViewPort(0.0f, 0.0f, clientSize.x, clientSize.y, 0.0f, 1.0f);
 
 	othograohics_= Mat4x4::MakeOrthographic(
-		-clientSize.x * 0.5f * drawScale,
-		clientSize.y * 0.5f * drawScale,
-		clientSize.x * 0.5f * drawScale,
-		-clientSize.y * 0.5f * drawScale,
+		clientSize.x * drawScale,
+		clientSize.y * drawScale,
 		kNearClip_, farClip);
 	viewOthograohics_ = view_ * othograohics_;
 

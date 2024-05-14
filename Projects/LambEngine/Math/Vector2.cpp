@@ -151,6 +151,20 @@ float Vector2::GetRad() const noexcept {
 	return std::atan2(y, x);
 }
 
+float& Vector2::at(size_t index) {
+	if (size() <= index) {
+		throw Lamb::Error::Code<Vector2>("index is over", ErrorPlace);
+	}
+	return data()[index];
+}
+
+const float& Vector2::at(size_t index) const {
+	if (size() <= index) {
+		throw Lamb::Error::Code<Vector2>("index is over", ErrorPlace);
+	}
+	return data()[index];
+}
+
 Vector2 Vector2::Lerp(const Vector2& start, const Vector2& end, float easeSpd) {
 	Vector2 result;
 

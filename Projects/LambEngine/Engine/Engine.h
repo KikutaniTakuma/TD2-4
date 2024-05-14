@@ -8,11 +8,6 @@
 #include <memory>
 #include <unordered_map>
 
-class Vector2;
-class Vector3;
-class Vector4;
-class Mat4x4;
-
 /// <summary>
 /// 各種マネージャーやDirectX12関連、ウィンドウ関連の初期化と解放を担う
 /// </summary>
@@ -36,7 +31,7 @@ public:
 	/// <param name="isFullscreen">フルスクリーンモードか否か</param>
 	static void Initialize(
 		const std::string& windowName, 
-		const Vector2& windowSize, 
+		const class Vector2& windowSize, 
 		float fpsLimit = 60.0f, 
 		bool isFullscreen = false
 	);
