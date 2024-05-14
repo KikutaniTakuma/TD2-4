@@ -378,6 +378,7 @@ void TitleScene::Debug(){
 	ImGui::DragFloat("第二区間のテクスチャの動く速度", &moveSpeeds_[1], 0.001f, 0.001f, 0.2f);
 	ImGui::DragFloat("第三区間のテクスチャの動く速度", &moveSpeeds_[2], 0.001f, 0.001f, 0.2f);
 	ImGui::DragFloat2("第二点の位置関係", secondPointPos_.data(), 1.0f);
+	ImGui::DragFloat2("第三点の位置関係", thirdPointPos_.data(), 1.0f);
 	ImGui::Text("ControlPointsの数 = %d", ControlPoints_.size());
 	ImGui::Text("今の最大サイズ = %d", lines_.size());
 	ImGui::Text("線の合計本数 = %d", (ControlPoints_.size() - 1) * 8);
