@@ -18,6 +18,7 @@
 #include <GameObject/Component/DwarfAnimator.h>
 #include <GameObject/Component/DwarfShakeComp.h>
 #include <GameObject/Component/PlayerComp.h>
+#include <GameObject/Component/PlayerBulletComp.h>
 
 void GameManager::Init()
 {
@@ -228,6 +229,7 @@ GameObject *GameManager::AddPlayerBullet(Vector2 centerPos, Vector2 velocity)
 {
 	std::unique_ptr<GameObject> bullet = std::make_unique<GameObject>();
 
+	bullet->AddComponent<PlayerBulletComp>();
 	Lamb::SafePtr localBodyComp = bullet->AddComponent<LocalBodyComp>();
 
 	localBodyComp->localPos_ = centerPos;
