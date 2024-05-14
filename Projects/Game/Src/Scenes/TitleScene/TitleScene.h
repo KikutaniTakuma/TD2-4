@@ -64,6 +64,8 @@ public:
 
 	Vector2 secondPointPos_ = { 50.0f,100.0f };
 
+	Vector2 thirdPointPos_ = { 100.0f,50.0f };
+
 	Vector2 controlPoint_[4] = {
 		{100.0f + minusPos_.x,100.0f + minusPos_.y},
 		{400.0f + minusPos_.x,400.0f + minusPos_.y},

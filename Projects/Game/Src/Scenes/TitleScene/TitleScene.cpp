@@ -260,7 +260,14 @@ void TitleScene::SetControlPoint(){
 		ControlPoints_[1] = ControlPoints_[0] + Vector2(secondPointPos_.x, secondPointPos_.y);
 	}
 
-	ControlPoints_[2] = (ControlPoints_[1] + ControlPoints_[3]) / 2.0f;
+	if (ControlPoints_[0].x < ControlPoints_[3].x) {
+		ControlPoints_[2] = ((ControlPoints_[1] + ControlPoints_[3]) / 2.0f) + Vector2(-thirdPointPos_.x, thirdPointPos_.y);
+	}
+	else {
+		ControlPoints_[2] = ((ControlPoints_[1] + ControlPoints_[3]) / 2.0f) + Vector2(thirdPointPos_.x, thirdPointPos_.y);
+	}
+
+	
 }
 
 void TitleScene::Debug(){
