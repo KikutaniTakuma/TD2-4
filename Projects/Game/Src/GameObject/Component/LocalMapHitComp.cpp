@@ -32,9 +32,9 @@ void LocalMapHitComp::Update()
 	const Vector2 centorDown = centor + Vector2{ 0, pLocalBodyComp_->size_.y * -0.5f };
 	const Vector2 centorTop = centor + Vector2{ 0, pLocalBodyComp_->size_.y * +0.5f };
 	const Vector2 centorLeft = centor + Vector2{ pLocalBodyComp_->size_.x * -0.5f, 0 };
-	const Vector2 centorRight = centor + Vector2{ pLocalBodyComp_->size_.x * +0.5f, 0 };
+	const Vector2 centorRight = centor + Vector2{ pLocalBodyComp_->size_.x * +0.5f - 0.01f, 0 };
 
-	std::array<float, 2u> xPos{ centor.x + pLocalBodyComp_->size_.x * -0.5f, centor.x + pLocalBodyComp_->size_.x * +0.5f };
+	std::array<float, 2u> xPos{ centor.x + pLocalBodyComp_->size_.x * -0.5f, centor.x + pLocalBodyComp_->size_.x * +0.5f - 0.01f };
 	std::array<float, 2u> yPos{ centor.y + pLocalBodyComp_->size_.y * -0.5f, centor.y + pLocalBodyComp_->size_.y * +0.5f };
 
 	//const Vector2 leftDown = centor - pLocalBodyComp_->size_ * 0.5f;
