@@ -15,6 +15,10 @@ public:
 
 	void PickUp(int32_t facing);
 
+	void Drop(int32_t facing);
+
+	bool IsPicking() const { return pickingBlock_; }
+
 private:
 
 	inline static Lamb::SafePtr<Texture2D> pTexture_ = nullptr;

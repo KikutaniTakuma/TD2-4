@@ -44,3 +44,22 @@ void PleyerBlockPickerComp::PickUp(int32_t facing)
 		}
 	}
 }
+
+void PleyerBlockPickerComp::Drop(int32_t facing)
+{
+	// ブロックを持っている場合
+	if (pickingBlock_) {
+		Vector2 targetPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * static_cast<float>(facing) + Vector2::kIdentity * 0.5f;
+
+		auto block = pBlockMap_->GetBlockType(targetPos);
+
+		if (block == Block::BlockType::kNone) {
+
+			POINTS pos = { .x = static_cast<int16_t>(targetPos.x), .y = static_cast<int16_t>(targetPos.y) };
+			(*pBlockMap_->GetBlockMap())[pos.y][pos.x] = pickingBlock_;
+
+			pickingBlock_ = Block::BlockType::kNone;
+
+		}
+	}
+}

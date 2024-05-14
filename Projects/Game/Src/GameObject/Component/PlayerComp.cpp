@@ -57,7 +57,12 @@ void PlayerComp::Input()
 	}
 
 	if (key->Pushed(DIK_Z)) {
-		pPicker_->PickUp(facing_);
+		if (not pPicker_->IsPicking()) {
+			pPicker_->PickUp(facing_);
+		}
+		else {
+			pPicker_->Drop(facing_);
+		}
 	}
 
 
