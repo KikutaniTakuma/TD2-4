@@ -30,7 +30,7 @@ private:
 	static Lamb::SafePtr<AnimationManager> instance_;
 
 public:
-	[[noreturn]] void LoadAniamtions(const std::string& fileName);
+	void LoadAniamtions(const std::string& fileName);
 	
 	[[nodiscard]] Animations* const GetAnimations(const std::string& fileName);
 

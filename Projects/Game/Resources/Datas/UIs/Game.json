@@ -2,29 +2,49 @@
     "UIs": {
         "Game": [
             {
-                "TextureFullPath": "Resources/UI/ball.png",
-                "TextureName": "ball",
+                "TextureFullPath": "Resources/UI/deadLine.png",
+                "TextureName": "deadLine",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
                 "color": 4294967295,
                 "scale": [
-                    64.0,
-                    64.0
+                    1280.0,
+                    60.0,
+                    1.0
                 ],
                 "translate": [
-                    515.0,
-                    192.0
+                    0.0,
+                    240.0,
+                    0.0
                 ]
             },
             {
-                "TextureFullPath": "Resources/UI/uvChecker.png",
-                "TextureName": "uvChecker",
+                "TextureFullPath": "Resources/UI/rest.png",
+                "TextureName": "rest",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
                 "color": 4294967295,
                 "scale": [
-                    64.0,
-                    64.0
+                    302.0,
+                    50.0,
+                    1.0
                 ],
                 "translate": [
-                    502.0,
-                    -31.0
+                    449.0,
+                    -200.0,
+                    -10.0
                 ]
             }
         ]

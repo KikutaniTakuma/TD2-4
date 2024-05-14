@@ -2,42 +2,72 @@
     "UIs": {
         "Select": [
             {
-                "TextureFullPath": "Resources/UI/enemy_popEffect.png",
-                "TextureName": "enemy_popEffect",
+                "TextureFullPath": "Resources/UI/backGround.png",
+                "TextureName": "backGround",
+                "UVScale": [
+                    2.0,
+                    2.0
+                ],
+                "UVTranslate": [
+                    49.0,
+                    0.0
+                ],
                 "color": 4294967295,
                 "scale": [
-                    64.0,
-                    64.0
+                    1280.0,
+                    720.0,
+                    1.0
                 ],
                 "translate": [
-                    264.0,
-                    141.0
+                    0.0,
+                    0.0,
+                    0.0
                 ]
             },
             {
-                "TextureFullPath": "Resources/UI/circle.png",
-                "TextureName": "circle",
+                "TextureFullPath": "Resources/UI/stageSelectUi.png",
+                "TextureName": "stageSelectUi",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
                 "color": 4294967295,
                 "scale": [
-                    64.0,
-                    64.0
+                    816.0,
+                    144.0,
+                    1.0
                 ],
                 "translate": [
-                    488.0,
-                    220.0
+                    0.0,
+                    282.0,
+                    0.0
                 ]
             },
             {
-                "TextureFullPath": "Resources/UI/uvChecker.png",
-                "TextureName": "uvChecker",
+                "TextureFullPath": "Resources/UI/decision.png",
+                "TextureName": "decision",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
                 "color": 4294967295,
                 "scale": [
-                    64.0,
-                    64.0
+                    320.0,
+                    112.0,
+                    1.0
                 ],
                 "translate": [
-                    452.0,
-                    -168.0
+                    -455.0,
+                    -270.0,
+                    0.0
                 ]
             }
         ]

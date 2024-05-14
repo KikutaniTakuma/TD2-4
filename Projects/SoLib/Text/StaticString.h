@@ -16,7 +16,7 @@ namespace SoLib {
 			std::array<char, Size> buf_;
 
 			// 文字列リテラルから推論を行うためのコンストラクタ
-			constexpr ConstExprString(const char(&s_literal)[Size]) {
+			consteval ConstExprString(const char(&s_literal)[Size]) {
 				for (uint32_t i = 0u; i < Size; i++) {
 					buf_[i] = s_literal[i];
 				}

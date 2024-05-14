@@ -18,7 +18,9 @@ BaseScene::BaseScene(BaseScene::ID sceneID) :
 	stringOutPutManager_(nullptr),
 	sceneID_(sceneID),
 	camera_(std::make_unique<Camera>()),
-	currentCamera_(camera_.get())
+	currentCamera_(camera_.get()),
+	texCamera_(std::make_unique<Camera>()),
+	currentTexCamera_(texCamera_.get())
 {}
 
 void BaseScene::SceneInitialize(SceneManager* sceneManager) {

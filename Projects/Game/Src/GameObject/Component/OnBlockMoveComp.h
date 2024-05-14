@@ -38,7 +38,7 @@ private:
 
 private:
 
-	const Map *pMap_;
+	const BlockMap *pMap_;
 
 	Vector3 moveDir_;
 

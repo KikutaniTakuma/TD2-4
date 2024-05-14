@@ -117,3 +117,9 @@ void Transform::SetParent(const Transform &parent) {
 //	// グローバル座標は変わらないので算出しない
 //	this->CalcMatrix();
 //}
+
+
+Mat4x4 SimpleTransform::MakeAffine() const
+{
+	return SoLib::Math::Affine(scale, rotate, translate);
+}

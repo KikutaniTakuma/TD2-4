@@ -38,7 +38,7 @@ private:
 		Vector3 rotateStart_;
 		Vector3 rotateSecond_;
 		Vector3 pos_;
-		uint32_t color_;
+		Vector4 color_;
 		
 		Vector3 movePos_;
 		Vector3 movePosSecond_;
@@ -190,6 +190,7 @@ public:
 	/// </summary>
 	/// <param name="emitterPos">Emitterの位置</param>
 	void ParticleStart(const Vector3& pos);
+	void ParticleStart(const Vector3& pos, const Vector3& size);
 
 	/// <summary>
 	/// パーティクル停止関数
@@ -233,8 +234,13 @@ public:
 
 	void Resize(uint32_t index);
 
+	void SetParticleScale(float particleScale);
+
+	void SetParticleAllColor(uint32_t color);
+
 public:
 	Vector3 emitterPos;
+	Vector3 emitterSize;
 
 private:
 	std::deque<Setting> settings_;
@@ -246,6 +252,9 @@ private:
 	uint32_t currentParticleIndex_;
 
 	std::vector<WorldTransForm> wtfs_;
+
+	float particleScale_;
+	Vector4 allParticleColor_;
 
 	const class Texture* tex_;
 	bool isLoad_;

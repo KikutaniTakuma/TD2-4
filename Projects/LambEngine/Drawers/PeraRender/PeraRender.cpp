@@ -194,7 +194,7 @@ void PeraRender::Draw(
 
 void PeraRender::ResetPipelineObject(PeraPipeline* pipelineObject) {
 	if (!pipelineObject) {
-		throw Lamb::Error::Code<PeraRender>("pipelineObject is nullptr", __func__);
+		throw Lamb::Error::Code<PeraRender>("pipelineObject is nullptr", ErrorPlace);
 	}
 	else {
 		peraPipelineObject_.reset(pipelineObject);

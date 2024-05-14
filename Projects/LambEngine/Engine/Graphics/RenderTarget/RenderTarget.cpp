@@ -47,7 +47,7 @@ RenderTarget::RenderTarget() :
 			IID_PPV_ARGS(resource_.GetAddressOf())
 		);
 	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<RenderTarget>("CreateCommittedResource Function Failed", "Constructor");
+		throw Lamb::Error::Code<RenderTarget>("CreateCommittedResource Function Failed", ErrorPlace);
 	}
 
 	Lamb::SafePtr rtvHeap = RtvHeap::GetInstance();
@@ -99,7 +99,7 @@ RenderTarget::RenderTarget(uint32_t width, uint32_t height) :
 			IID_PPV_ARGS(resource_.GetAddressOf())
 		);
 	if (!SUCCEEDED(hr)) {
-		throw Lamb::Error::Code<RenderTarget>("CreateCommittedResource Function Failed", "Constructor");
+		throw Lamb::Error::Code<RenderTarget>("CreateCommittedResource Function Failed", ErrorPlace);
 	}
 
 	Lamb::SafePtr rtvHeap = RtvHeap::GetInstance();

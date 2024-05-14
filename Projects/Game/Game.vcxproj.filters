@@ -98,24 +98,8 @@
     <ClCompile Include="Src\Game\CollisionManager\AABB\AABB.cpp">
       <Filter>Game\Manager\CollisionManager\AABB</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Game\Map\Map.cpp" />
     <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp">
       <Filter>Editor\BlockEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\GameObject\Component\OnBlockMoveComp.cpp">
-      <Filter>GameObject\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Game\Map\Map.cpp">
-      <Filter>Game\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Game\Player\Player.cpp">
-      <Filter>Game\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Game\Block\Block.cpp">
-      <Filter>Game\Block</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Game\Enemy\Enemy.cpp">
-      <Filter>Game\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\EnemyManager\EnemyManager.cpp">
       <Filter>Game\Manager\EnemyManager</Filter>
@@ -132,10 +116,10 @@
     <ClCompile Include="Src\Scenes\SelectToGame\SelectToGame.cpp">
       <Filter>Scenes\SelectToGame</Filter>
     </ClCompile>
-    <ClCompile Include="UIEditor.cpp">
+    <ClCompile Include="Src\Editor\UIEditor\UIEditor.cpp">
       <Filter>Editor\UIEditor</Filter>
     </ClCompile>
-    <ClCompile Include="Src\GameObject\Component\PlayerComp.cpp">
+    <ClCompile Include="Src\GameObject\Component\FallingBlockSpawnerComp.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\Ground\Ground.cpp">
@@ -151,6 +135,39 @@
       <Filter>GameObject\Component</Filter>
     </ClCompile>
     <ClCompile Include="Src\GameObject\Component\PickUpComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\BlockGauge.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\GameEffectManager\GameEffectManager.cpp">
+      <Filter>Game\Manager\EffectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\SpriteComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\SpriteAnimatorComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\DwarfAnimator.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\DwarfShakeComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\Map\BlockMap.cpp">
+      <Filter>Game\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\PlayerComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\LocalRigidbody.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\LocalMapHitComp.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\PlayerBlockPickerComp.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
     <ClCompile Include="Src\Game\FlaskParticle\FlaskParticle.cpp">
@@ -230,9 +247,6 @@
     <Filter Include="Game\Block">
       <UniqueIdentifier>{44033f75-5a14-455e-b909-6200bd5aecc5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Player">
-      <UniqueIdentifier>{9d9be9c4-6bcc-4354-8e0d-bd65a0029eed}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Manager">
       <UniqueIdentifier>{5662ba70-c48f-49ac-92ac-c349d16563d8}</UniqueIdentifier>
     </Filter>
@@ -266,9 +280,6 @@
     <Filter Include="Game\Manager\EnemyManager">
       <UniqueIdentifier>{b8bb4175-b5f3-466e-95fb-e2bf95f84093}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Enemy">
-      <UniqueIdentifier>{b275312c-2f59-418a-9e86-b8f0b4b29ec6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Editor\EnemyEditor">
       <UniqueIdentifier>{4ec1fc64-92ec-4948-9170-fb1b17ea103a}</UniqueIdentifier>
     </Filter>
@@ -287,8 +298,8 @@
     <Filter Include="Game\Ground">
       <UniqueIdentifier>{16c5a03b-817a-415d-bfc6-7c8d982c7707}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\FlaskParticle">
-      <UniqueIdentifier>{dfc08694-d612-484a-a60a-53e5cdcec6e7}</UniqueIdentifier>
+    <Filter Include="Game\Manager\EffectManager">
+      <UniqueIdentifier>{c0884d13-d4c2-4801-8536-c9b6c2c2199e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -394,23 +405,11 @@
     <ClInclude Include="Src\Game\CollisionManager\AABB\AABB.h">
       <Filter>Game\Manager\CollisionManager\AABB</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Game\Map\Map.h">
+    <ClInclude Include="Src\Game\Map\BlockMap.h">
       <Filter>Game\Map</Filter>
     </ClInclude>
     <ClInclude Include="Src\Editor\BlockEditor\BlockEditor.h">
       <Filter>Editor\BlockEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\GameObject\Component\OnBlockMoveComp.h">
-      <Filter>GameObject\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Game\Player\Player.h">
-      <Filter>Game\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Game\Block\Block.h">
-      <Filter>Game\Block</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Game\Enemy\Enemy.h">
-      <Filter>Game\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\EnemyManager\EnemyManager.h">
       <Filter>Game\Manager\EnemyManager</Filter>
@@ -427,10 +426,10 @@
     <ClInclude Include="Src\Scenes\SelectToGame\SelectToGame.h">
       <Filter>Scenes\SelectToGame</Filter>
     </ClInclude>
-    <ClInclude Include="UIEditor.h">
+    <ClInclude Include="Src\Editor\UIEditor\UIEditor.h">
       <Filter>Editor\UIEditor</Filter>
     </ClInclude>
-    <ClInclude Include="Src\GameObject\Component\PlayerComp.h">
+    <ClInclude Include="Src\GameObject\Component\FallingBlockSpawnerComp.h">
       <Filter>GameObject\Component</Filter>
     </ClInclude>
     <ClInclude Include="Src\Game\Ground\Ground.h">
@@ -448,8 +447,41 @@
     <ClInclude Include="Src\GameObject\Component\PickUpComp.h">
       <Filter>GameObject\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Game\FlaskParticle\FlaskParticle.h">
-      <Filter>Game\FlaskParticle</Filter>
+    <ClInclude Include="Src\Game\BlockGauge.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\GameEffectManager\GameEffectManager.h">
+      <Filter>Game\Manager\EffectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\SpriteComp.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\SpriteAnimatorComp.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\DwarfAnimator.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\DwarfShakeComp.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\PlayerComp.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\LocalColliderComp.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\LocalRigidbody.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\LocalMapHitComp.h">
+      <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Block\Block.h">
+      <Filter>Game\Block</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\PlayerBlockPickerComp.h">
+      <Filter>GameObject\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

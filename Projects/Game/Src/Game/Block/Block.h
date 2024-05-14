@@ -1,70 +1,47 @@
 #pragma once
-#include <array>
 #include <cstdint>
-#include "../SoLib/Containers/VItem.h"
-#include"Math/Vector2.h"
-#include"Math/Vector3.h"
-#include <list>
-#include <Drawers/Model/Model.h>
-#include "Utils/SafePtr/SafePtr.h"
-#include "Math/Transform.h"
-#include <Camera/Camera.h>
-#include"Game/CollisionManager/AABB/AABB.h"
-#include"Game/CollisionManager/Collider/Collider.h"
-#include <bitset>
-#include <imgui.h>
-class Block{
+#include <array>
+#include "Math/Vector2.h"
+
+class Block {
 public:
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	void Initialize();
 
-	/// <summary>
-	/// 終了処理
-	/// </summary>
-	void Finalize();
+	enum class BlockType : uint32_t {
+		kNone,
 
-	/// <summary>
-	/// 更新処理
-	/// </summary>
-	void Update();
+		kRed,
+		kBlue,
+		kGreen,
+		kYellow,
+		kPurple,
 
-	/// <summary>
-	/// 描画処理
-	/// </summary>
-	void Draw(const Camera& camera);
+		kMax
+	};
 
-	/// <summary>
-	/// Imguiの情報
-	/// </summary>
-	void Debug();
-
-	/// <summary>
-	/// 交換するだけの関数
-	/// </summary>
-	void Trade();
-	
+	inline static constexpr std::array<uint32_t, static_cast<uint32_t>(BlockType::kMax)> kBlockColor_{
+		0x00000000,
+		0xFF0000FF,
+		0x0000FFFF,
+		0x00FF00FF,
+		0x00FFFFFF,
+		0xFF00FFFF,
+	};
 
 public:
-	bool GetIsBreak()const { return isBreak_; }
+	Block(BlockType type = BlockType::kNone) : blockType_(type) {}
+	~Block() = default;
 
-	Obb* GetObb()const { return obb_.get(); }
+	Block &operator=(const BlockType type) { blockType_ = type; return *this; }
 
-public:
-	Vector3 pos_;
+	operator bool() const { return blockType_ != BlockType::kNone and blockType_ != BlockType::kMax; }
 
-	float rotateZ_ = 0.0f;
+	const BlockType GetBlockType() const { return blockType_; }
 
-	inline static const SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale{ {1.5f ,0.5f} };
+	void SetBlockType(const BlockType type) { blockType_ = type; }
+
+	uint32_t GetColor() const { return kBlockColor_[static_cast<uint32_t>(blockType_)]; }
+
 private:
-
-	std::unique_ptr<Transform> transform_;
-
-	Lamb::SafePtr<Model> model_;
-
-	std::unique_ptr<Obb> obb_;
-
-	bool isBreak_;
+	// ブロックの状態
+	BlockType blockType_ = BlockType::kNone;
 };
-

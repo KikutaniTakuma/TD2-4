@@ -42,10 +42,6 @@ void ParticleEditor::Editor() {
 				particle_.LoadSettingDirectory(createString);
 				currentLoadString_ = createString;
 				isOpen_ = true;
-
-				Lamb::SafePtr texuteManager = TextureManager::GetInstance();
-				texuteManager->UploadTextureData();
-				texuteManager->ReleaseIntermediateResource();
 			}
 			ImGui::TreePop();
 		}

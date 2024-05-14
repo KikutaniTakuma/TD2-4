@@ -15,8 +15,11 @@ TitleScene::TitleScene():
 
 void TitleScene::Initialize()
 {
-	currentCamera_->pos = Vector2{ 500.f, 300.f };
+	currentCamera_->pos = { 0.f, 0.f ,-1.0f };
 
+	titleBGM_ = audioManager_->Load("./Resources/Sounds/BGM/title.mp3");
+	beginGame_ = audioManager_->Load("./Resources/Sounds/SE/choice.mp3");
+	titleBGM_->Start(0.1f, true);
 	/*tex_.reset( new Texture2D( "./Resources/Ball.png" ) );
 	tex_->scale *= 30.0f;
 	tex_->pos = Vector2{ 500.0f, 0.0f };
@@ -31,7 +34,8 @@ void TitleScene::Initialize()
 }
 
 void TitleScene::Finalize(){
-	
+	titleBGM_->Stop();
+
 }
 
 void TitleScene::Update()
@@ -62,7 +66,11 @@ void TitleScene::Update()
 	if (mouse->LongPush(Mouse::Button::Left)) {
 		//tex_->pos = Vector3(mouse->GetPos()) * Mat4x4::MakeInverse(camera_->GetViewOthographicsVp());
 	}
-
+	if (key->Pushed(DIK_SPACE)) {
+		beginGame_->Start(0.1f, false);
+		sceneManager_->SceneChange(BaseScene::ID::StageSelect);
+	}
+	
 
 	/*isCollision_ = Lamb::Collision::Capsule(
 		sphere_->pos, sphere2_->pos, sphere_->scale.x * 0.5f,
@@ -81,8 +89,7 @@ void TitleScene::Update()
 
 }
 
-void TitleScene::Draw()
-{
+void TitleScene::Draw(){
 	//tex_->Draw(camera_->GetViewOthographics());
 	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	//sphere_->Draw(camera_->GetViewOthographics());
@@ -92,6 +99,8 @@ void TitleScene::Draw()
 
 	Lamb::screenout << "Capsule Test" << Lamb::endline
 		<< "Check : " << isCollision_;
+
+	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
 }
 
 void TitleScene::Debug(){

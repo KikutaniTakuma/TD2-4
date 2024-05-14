@@ -1,59 +1,77 @@
 #include "PlayerComp.h"
-#include <Drawers/DrawerManager.h>
-#include <SoLib/Math/Math.hpp>
-
+#include "../LambEngine/Input/Input.h"
+#include "Utils/SafePtr/SafePtr.h"
+#include "SpriteComp.h"
+#include "SoLib/Math/Math.hpp"
 
 void PlayerComp::Init()
 {
-	pLocalPosComp_ = object_.AddComponent<LocalBodyComp>();
-	pLocalPosComp_->size_ = Vector2::kIdentity;
+	pLocalBodyComp_ = object_.AddComponent<LocalBodyComp>();
+	pLocalBodyComp_->size_ = Vector2::kIdentity;
+	pLocalBodyComp_->drawScale_ = 1.f;
 
-	fallBlockModel_ = DrawerManager::GetInstance()->GetModel("Resources/Cube.obj");
-}
+	pLocalRigidbody_ = object_.AddComponent<LocalRigidbody>();
+	pHitMapComp_ = object_.AddComponent<LocalMapHitComp>();
 
-void PlayerComp::Start()
-{
-	pLocalPosComp_->localPos_ = Vector2{ 0,static_cast<float>(Map::kMapY) };
+	pPicker_ = object_.AddComponent<PleyerBlockPickerComp>();
+
+	Lamb::SafePtr spriteComp = object_.AddComponent<SpriteComp>();
+	spriteComp->SetTexture("./Resources/uvChecker.png");
+	spriteComp->CalcTexUv();
 }
 
 void PlayerComp::Update()
 {
+	//// 横移動速度を無くす
+	//Vector2 velocity = pLocalRigidbody_->GetVelocity();
+	//velocity.x = 0.f;
+	//pLocalRigidbody_->SetVelocity(velocity);
 
-	pLocalPosComp_->TransfarData();
+	pLocalRigidbody_->ApplyContinuousForce(kGrovity_);
 
+	Input();
+	pLocalBodyComp_->TransfarData();
 }
 
-void PlayerComp::Draw(const Camera &camera) const
+void PlayerComp::Input()
 {
+	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 
-	if (startPos_ != -1) {
-		float xDiff = startPos_ - pLocalPosComp_->localPos_.x;
+	//Vector2 velocity = pLocalRigidbody_->GetVelocity();
 
-		Vector3 pos = Map::GetGrobalPos(pLocalPosComp_->localPos_) - Vector2::kYIdentity + Vector2::kXIdentity * (xDiff * 0.5f);
-		Matrix affine = SoLib::Math::Affine(Vector3{ std::abs(xDiff) + 1 ,1,1 } / 2, Vector3::kZero, pos);
+	constexpr float moveSpeed = 10.f;
 
-		fallBlockModel_->Draw(affine, camera.GetViewProjection(), 0xFFFFFFFF, BlendType::kNone);
+	Vector2 moveVec{};
+
+	if (key->GetKey(DIK_A)) {
+		moveVec = -Vector2::kXIdentity * moveSpeed;
 	}
-}
+	if (key->GetKey(DIK_D)) {
+		moveVec = +Vector2::kXIdentity * moveSpeed;
+	}
 
-void PlayerComp::MoveInput(int32_t xMove)
-{
-	pLocalPosComp_->localPos_.x += xMove;
-	pLocalPosComp_->localPos_.x = std::clamp(pLocalPosComp_->localPos_.x, 0.f, static_cast<float>(Map::kMapX - 1));
-}
+	if (moveVec.x != 0) {
+		pLocalRigidbody_->ApplyContinuousForce(moveVec);
 
-void PlayerComp::SetStartPos()
-{
-	startPos_ = static_cast<int32_t>(pLocalPosComp_->localPos_.x);
-}
+		facing_ = static_cast<int32_t>(SoLib::Math::Sign(moveVec.x));
+	}
 
-void PlayerComp::SpawnFallingBlock()
-{
+	if (key->Pushed(DIK_Z)) {
+		pPicker_->PickUp(facing_);
+	}
 
-	int32_t xDiff = startPos_ - static_cast<int32_t>(pLocalPosComp_->localPos_.x);
 
-	// 落下ブロックの実体の追加
-	pLocalPosComp_->pGameManager_->AddFallingBlock(pLocalPosComp_->localPos_ - Vector2::kYIdentity + Vector2::kXIdentity * (xDiff * 0.5f), Vector2::kIdentity + Vector2::kXIdentity * static_cast<float>(std::abs(xDiff)), false, Vector2::kYIdentity * -20, Vector2::kZero);
+	// 着地している場合
+	if (pHitMapComp_->hitNormal_.y > 0)
+	{
+		if (key->Pushed(DIK_SPACE)) {
+			pLocalRigidbody_->ApplyInstantForce(Vector2::kYIdentity * 14.f);
+		}
+	}
+	Vector2 velocity = pLocalRigidbody_->GetVelocity();
+	velocity.y = 0;
 
-	startPos_ = -1;
+	pLocalRigidbody_->ApplyContinuousForce(velocity * -0.05f * kGrovity_.Length());
+
+
 }

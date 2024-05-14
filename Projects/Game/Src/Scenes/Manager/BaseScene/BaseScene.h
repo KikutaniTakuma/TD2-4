@@ -64,13 +64,21 @@ protected:
 
 	StringOutPutManager* stringOutPutManager_;
 
+	class UIEditor* uiEditor_;
+
 	BaseScene::ID sceneID_;
 
 private:
 	std::unique_ptr<Camera> camera_;
 
+	std::unique_ptr<Camera> texCamera_;
+
+	
+
 protected:
 	Lamb::SafePtr<Camera> currentCamera_;
+
+	Lamb::SafePtr<Camera> currentTexCamera_;
 
 #ifdef _DEBUG
 	std::unique_ptr<DebugCamera> debugCamera_;

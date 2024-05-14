@@ -21,8 +21,6 @@
 
 #include "Game/CollisionManager/CollisionManager.h"
 
-#include"Game/Player/Player.h"
-
 #include "Editor/BlockEditor/BlockEditor.h"
 #include "Editor/EnemyEditor/EnemyEditor.h"
 
@@ -45,12 +43,25 @@ public:
 
 	void Draw() override;
 
-public:
+private:
+	void TextureInitialize();
+
+	void TextureUpdate();
+
+	void CloudReset(const uint32_t cloudNumber);
+
+	void TextureDraw();
+
+	void Debug();
+
+private:
 	//class Water *water_ = nullptr;
 
-
+	
 
 	GameManager* gameManager_ = nullptr;
+
+	Vector2 shakePower_;
 
 	// std::unique_ptr<Player> player_;
 
@@ -59,15 +70,42 @@ public:
 	/*std::unique_ptr<SkyDome> skydome_ = nullptr;
 	class Cloud *cloud_ = nullptr;*/
 
-	bool editorMode_ = false;
+	//bool editorMode_ = false;
 
-	bool enemyMode_ = false;
+	//bool enemyMode_ = false;
 
 	const float editorCameraPosZ_ = -42.0f;
 
-	std::unique_ptr<BlockEditor> blockEditor_;
+	//std::unique_ptr<BlockEditor> blockEditor_;
 
-	std::unique_ptr<EnemyEditor> enemyEditor_;
+	//std::unique_ptr<EnemyEditor> enemyEditor_;
 
-	EnemyManager* enemyManager_ = nullptr;
+	//EnemyManager* enemyManager_ = nullptr;
+
+	Texture2D* tex2D_ = nullptr;
+
+	Audio* gameBGM_ = nullptr;
+
+	//一の位
+	std::unique_ptr<Tex2DState> dwarfNumTex_;
+	//十の位
+	std::unique_ptr<Tex2DState> dwarfTenNumTex_;
+
+	static const uint32_t kCloudNum_ = 8;
+
+	//雲
+	std::array<std::unique_ptr<Tex2DState>, kCloudNum_> clouds_;
+
+	std::array<float, kCloudNum_> cloudsSpeed_;
+
+	std::unordered_map<std::string, Vector2> cloudScale_;
+
+	std::array<std::string, 3> cloudType_;
+	//操作UI
+	std::unique_ptr<Tex2DState> spaceTex_, keyTex_;
+
+	std::unique_ptr<Tex2DState> backGround_;
+
+
+
 };

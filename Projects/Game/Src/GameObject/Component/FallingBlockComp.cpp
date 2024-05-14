@@ -7,12 +7,13 @@ void FallingBlockComp::Init()
 	pLocalPos_ = object_.AddComponent<LocalBodyComp>();
 
 	Lamb::SafePtr modelComp = object_.AddComponent<ModelComp>();
-	modelComp->AddBone("Body", DrawerManager::GetInstance()->GetModel("Resources/Cube.obj"));
+	modelComp->AddBone("Body", DrawerManager::GetInstance()->GetModel("Resources/Cube.obj"))->color_ = 0xF58498FF;
 }
 
 void FallingBlockComp::Start()
 {
-
+	Lamb::SafePtr modelComp = object_.GetComponent<ModelComp>();
+	modelComp->GetBone("Body")->color_ = blockType_.GetColor();
 }
 
 void FallingBlockComp::Update()
@@ -49,7 +50,7 @@ std::list<Vector2> FallingBlockComp::FindLandingList() const
 		{
 			Vector2 findPos = TargetPositon(signVec, Vector2{ x, y } - halfOffset);
 			// 対象のブロックを調べて、虚空以外ならtrue
-			if (pLocalPos_->pMap_->GetBoxType(findPos) != Map::BoxType::kNone)
+			if (pLocalPos_->pMap_->GetBlockType(findPos) != Block::BlockType::kNone)
 			{
 				result.push_back(findPos);
 			}
@@ -72,7 +73,7 @@ bool FallingBlockComp::IsLanding() const
 
 
 	// もし範囲外なら着地していることにする
-	if (Map::IsOutSide(TargetPositon(signVec, -halfOffset)) || Map::IsOutSide(TargetPositon(signVec, halfOffset)))
+	if (BlockMap::IsOutSide(TargetPositon(signVec, -halfOffset)) || BlockMap::IsOutSide(TargetPositon(signVec, halfOffset)))
 	{
 		return true;
 	}
@@ -84,7 +85,7 @@ bool FallingBlockComp::IsLanding() const
 		for (float x = 0; x < size.x; x++)
 		{
 			// 下のブロックを調べて、虚空以外ならtrue
-			if (pLocalPos_->pMap_->GetBoxType(TargetPositon(signVec, Vector2{ x, y } - halfOffset)) != Map::BoxType::kNone)
+			if (pLocalPos_->pMap_->GetBlockType(TargetPositon(signVec, Vector2{ x, y } - halfOffset)) != Block::BlockType::kNone)
 			{
 				return true;
 			}

@@ -2,7 +2,7 @@
 #include "../SoLib/SoLib/SoLib_Traits.h"
 #include <imgui.h>
 #include"Drawers/DrawerManager.h"
-#include <Game/Map/Map.h>
+#include <Game/Map/BlockMap.h>
 #include <SoLib/Math/Math.hpp>
 #include "Game/GameManager/GameManager.h"
 
@@ -13,7 +13,7 @@ void Ground::Init()
 	model_ = drawerManager->GetModel("Resources/Cube.obj");
 
 	// ステージの中心に設置
-	groundModelStates_.transMat = SoLib::Math::Affine(Vector3{ static_cast<float>(Map::kMapX) / 2.f ,0.5f,5.f }, Vector3::kZero, Map::GetGrobalPos(Vector2::kXIdentity * (Map::kMapX - 1) * 0.5f - Vector2::kYIdentity));
+	groundModelStates_.transMat = SoLib::Math::Affine(Vector3{ static_cast<float>(BlockMap::kMapX) / 2.f ,0.5f,5.f }, Vector3::kZero, BlockMap::GetGlobalPos(Vector2::kXIdentity * (BlockMap::kMapX - 1) * 0.5f - Vector2::kYIdentity));
 	groundModelStates_.color = 0xFFFFFFFF;
 
 }
@@ -24,7 +24,7 @@ void Ground::Update([[maybe_unused]] const float deltaTime)
 
 void Ground::Draw(const Camera &camera) const
 {
-	model_->Draw(groundModelStates_.transMat, camera.GetViewProjection(), groundModelStates_.color, BlendType::kNone);
+	model_->Draw(groundModelStates_.transMat, camera.GetViewOthographics(), groundModelStates_.color, BlendType::kNone);
 
 }
 
@@ -56,7 +56,7 @@ void GroundEditor::Draw([[maybe_unused]] const Camera &camera) const {
 
 	for (size_t i = 0; i < modelStates_.size(); i++) {
 		if ((modelStates_[i]->color & 0xFF) != 0x00) {	// 色のアルファ色が無色でない場合は描画
-			model_->Draw(modelStates_[i]->transform.matWorld_, camera.GetViewProjection(), modelStates_[i]->color, BlendType::kNormal);
+			model_->Draw(modelStates_[i]->transform.matWorld_, camera.GetViewOthographics(), modelStates_[i]->color, BlendType::kNormal);
 		}
 	}
 
@@ -113,7 +113,7 @@ void GroundEditor::MultiReset() {
 const GroundEditor::GroundInfo GroundEditor::GetGroundInfo(const Vector3 &localPos) const {
 
 	// もしマップ外に行っていた場合虚無
-	if (localPos.x < 0.f or localPos.y < 0.f or localPos.z < 0.f or localPos.x >= Map::kMapX or localPos.y >= 1 or localPos.z >= 1) {
+	if (localPos.x < 0.f or localPos.y < 0.f or localPos.z < 0.f or localPos.x >= BlockMap::kMapX or localPos.y >= 1 or localPos.z >= 1) {
 		return GroundInfo();
 	}
 

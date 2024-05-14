@@ -1,5 +1,4 @@
 #pragma once
-#include"Game/Enemy/Enemy.h"
 #include"Game/GameManager/GameManager.h"
 class EnemyManager{
 private:
@@ -31,7 +30,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(float deltaTime);
 
 	/// <summary>
 	/// 描画処理
@@ -62,24 +61,18 @@ public:
 
 	void ListReset();
 private:
-	Map* map_ = nullptr;
+	BlockMap* map_ = nullptr;
 
-	Map::Block2dMap * mapSize_ = nullptr;
+	BlockMap::Block2dMap * mapSize_ = nullptr;
 
 	Input* input_ = nullptr;
 
-	// 箱の数
-	size_t EnemyCount_{};
-
-	// 箱の数
-	size_t ListCount_{};
-
 	float moveSpeed_ = 1.000002f;
 	//箱リスト
-	std::list<std::unique_ptr<Enemy>> EnemyList_;
+	std::list<std::unique_ptr<GameObject>> enemyList_;
 
 	std::vector<Vector3> startPosList_;
 
-	std::unique_ptr<Enemy> newEnemy_;
+	std::unique_ptr<GameObject> newEnemy_;
 };
 

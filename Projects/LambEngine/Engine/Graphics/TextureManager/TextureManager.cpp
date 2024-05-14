@@ -17,7 +17,7 @@ TextureManager* const TextureManager::GetInstance() {
 
 void TextureManager::Initialize() {
 	instance_.reset(new TextureManager());
-	instance_.NullPointerException<TextureManager>(__func__);
+	instance_.NullPointerException<TextureManager>(ErrorPlace);
 	instance_->LoadTexture(kWhiteTexturePath);
 }
 
@@ -43,7 +43,7 @@ TextureManager::~TextureManager() {
 
 uint32_t TextureManager::LoadTexture(const std::string& fileName) {
 	if (!std::filesystem::exists(fileName)) {
-		throw Lamb::Error::Code<TextureManager>("this file is not exist -> " + fileName, __func__);
+		throw Lamb::Error::Code<TextureManager>("this file is not exist -> " + fileName, ErrorPlace);
 	}
 
 	auto itr = textures_.find(fileName);

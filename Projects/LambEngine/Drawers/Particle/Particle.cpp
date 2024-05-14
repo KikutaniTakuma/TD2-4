@@ -1,4 +1,7 @@
 #include "Particle.h"
+
+#include "Math/Quaternion.h"
+
 #include "Engine/Graphics/TextureManager/TextureManager.h"
 #include "imgui.h"
 #include "Utils/EngineInfo/EngineInfo.h"
@@ -23,7 +26,9 @@ Particle::Particle() :
 	settings_(),
 	currentSettingIndex_(0u),
 	currentParticleIndex_(0u),
-	isClose_{false}
+	isClose_{false},
+	particleScale_(1.0f),
+	allParticleColor_(Vector4::kIdentity)
 {
 
 	wtfs_.resize(1);
@@ -136,8 +141,8 @@ void Particle::LoadSettingDirectory(const std::string& directoryName) {
 	settings_.clear();
 	datas_.clear();
 
+	dataDirectoryName_ = directoryName;
 	const std::filesystem::path kDirectoryPath = "./Resources/Datas/Particles/" + directoryName + "/";
-	dataDirectoryName_ = kDirectoryPath.string();
 
 	if (!std::filesystem::exists(kDirectoryPath)) {
 		std::filesystem::create_directories(kDirectoryPath);
@@ -159,7 +164,7 @@ void Particle::LoadSettingDirectory(const std::string& directoryName) {
 		LopadSettingFile(filePath.string());
 	}
 
-	std::ifstream file{ dataDirectoryName_ + "otherSetting.txt" };
+	std::ifstream file{ kDirectoryPath.string() + "otherSetting.txt"};
 
 	if (!file.fail()) {
 		std::string lineBuf;
@@ -335,7 +340,7 @@ void Particle::SaveSettingFile(const std::string& groupName) {
 		}
 	}
 
-	const std::filesystem::path kDirectoryPath = dataDirectoryName_;
+	const std::filesystem::path kDirectoryPath = "./Resources/Datas/Particles/" + dataDirectoryName_ + "/";
 
 	if (!std::filesystem::exists(kDirectoryPath)) {
 		std::filesystem::create_directory(kDirectoryPath);
@@ -396,7 +401,7 @@ void Particle::BackUpSettingFile(const std::string& groupName) {
 		}
 	}
 
-	const std::filesystem::path kDirectoryPath = dataDirectoryName_ + "BackUp/";
+	const std::filesystem::path kDirectoryPath = "./Resources/Datas/Particles/" + dataDirectoryName_ + "/" + "BackUp/";
 
 	if (!std::filesystem::exists(kDirectoryPath)) {
 		std::filesystem::create_directory(kDirectoryPath);
@@ -443,6 +448,18 @@ void Particle::ParticleStart(const Vector3& pos) {
 	}
 }
 
+void Particle::ParticleStart(const Vector3& pos, const Vector3& size)
+{
+	if (!settings_.empty()) {
+		currentParticleIndex_ = 0;
+		emitterPos = pos;
+		emitterSize = size;
+		settings_[currentSettingIndex_].isValid_ = false;
+		settings_[currentSettingIndex_].isValid_.Update();
+		settings_[currentParticleIndex_].isValid_ = true;
+	}
+}
+
 void Particle::ParticleStop()
 {
 	settings_[currentSettingIndex_].isValid_ = false;
@@ -462,6 +479,7 @@ void Particle::Update() {
 
 	if (settings_[currentSettingIndex_].isValid_) {
 		settings_[currentSettingIndex_].emitter_.pos_ = emitterPos;
+		settings_[currentSettingIndex_].emitter_.size_ = emitterSize * particleScale_;
 	}
 
 	// 有効になった瞬間始めた瞬間を保存
@@ -511,29 +529,29 @@ void Particle::Update() {
 					maxPos.x += settings_[currentSettingIndex_].emitter_.circleSize_;
 					pos = Lamb::Random(settings_[currentSettingIndex_].emitter_.pos_, maxPos);
 					posRotate = Lamb::Random(settings_[currentSettingIndex_].emitter_.rotate_.first, settings_[currentSettingIndex_].emitter_.rotate_.second);
-					pos *= Mat4x4::MakeAffin(Vector3::kIdentity, posRotate, Vector3::kZero);
+					pos *= Quaternion::EulerToQuaternion(posRotate);
 					break;
 				}
 
 				// 大きさランダム
-				Vector2 size = Lamb::Random(settings_[currentSettingIndex_].size_.first, settings_[currentSettingIndex_].size_.second);
+				Vector2 size = Lamb::Random(settings_[currentSettingIndex_].size_.first, settings_[currentSettingIndex_].size_.second) * particleScale_;
 				if (settings_[currentSettingIndex_].isSameHW_) {
 					size.y = size.x;
 				}
-				Vector2 sizeSecond = Lamb::Random(settings_[currentSettingIndex_].sizeSecond_.first, settings_[currentSettingIndex_].sizeSecond_.second);
+				Vector2 sizeSecond = Lamb::Random(settings_[currentSettingIndex_].sizeSecond_.first, settings_[currentSettingIndex_].sizeSecond_.second) * particleScale_;
 				if (settings_[currentSettingIndex_].isSameHW_) {
 					sizeSecond.y = sizeSecond.x;
 				}
 
 				// 速度ランダム
-				Vector3 velocity = Lamb::Random(settings_[currentSettingIndex_].velocity_.first, settings_[currentSettingIndex_].velocity_.second);
-				Vector3 velocitySecond = Lamb::Random(settings_[currentSettingIndex_].velocitySecond_.first, settings_[currentSettingIndex_].velocitySecond_.second);
+				Vector3 velocity = Lamb::Random(settings_[currentSettingIndex_].velocity_.first, settings_[currentSettingIndex_].velocity_.second) * particleScale_;
+				Vector3 velocitySecond = Lamb::Random(settings_[currentSettingIndex_].velocitySecond_.first, settings_[currentSettingIndex_].velocitySecond_.second) * particleScale_;
 
 				// 移動方向ランダム
 				Vector3 moveRotate = Lamb::Random(settings_[currentSettingIndex_].moveRotate_.first, settings_[currentSettingIndex_].moveRotate_.second);
 
 				// 速度回転
-				velocity *= Mat4x4::MakeAffin(Vector3::kIdentity, moveRotate, Vector3::kZero);
+				velocity *= Quaternion::EulerToQuaternion(moveRotate);
 
 				// 回転
 				Vector3 rotate = Lamb::Random(settings_[currentSettingIndex_].rotate_.first, settings_[currentSettingIndex_].rotate_.second);
@@ -640,7 +658,7 @@ void Particle::Draw(
 					Mat4x4::kIdentity,
 					viewProjection,
 					tex_->GetHandleUINT(),
-					wtfs_[i].color_,
+					(wtfs_[i].color_ * allParticleColor_).GetColorRGBA(),
 					blend
 				);
 			}
@@ -701,16 +719,17 @@ void Particle::Debug(const std::string& guiName) {
 
 		// エミッターの設定
 		if (ImGui::TreeNode("Emitter")) {
-			ImGui::DragFloat3("pos", &settings_[i].emitter_.pos_.x, 0.01f);
+			ImGui::DragFloat3("pos", settings_[i].emitter_.pos_.data(), 0.01f);
 			emitterPos = settings_[i].emitter_.pos_;
-			ImGui::DragFloat3("size", &settings_[i].emitter_.size_.x, 0.01f);
+			ImGui::DragFloat3("size", settings_[i].emitter_.size_.data(), 0.01f);
+			emitterSize = settings_[i].emitter_.size_;
 			int32_t type = static_cast<int32_t>(settings_[i].emitter_.type_);
 			ImGui::SliderInt("type", &type, 0, 1);
 			settings_[i].emitter_.type_ = static_cast<decltype(settings_[i].emitter_.type_)>(type);
 			if (type == 1) {
 				ImGui::DragFloat("circleSize", &settings_[i].emitter_.circleSize_, 0.01f);
-				ImGui::DragFloat3("rotate first", &settings_[i].emitter_.rotate_.first.x, 0.01f);
-				ImGui::DragFloat3("rotate second", &settings_[i].emitter_.rotate_.second.x, 0.01f);
+				ImGui::DragFloat3("rotate first", settings_[i].emitter_.rotate_.first.data(), 0.01f);
+				ImGui::DragFloat3("rotate second", settings_[i].emitter_.rotate_.second.data(), 0.01f);
 			}
 			int32_t particleMaxNum = static_cast<int32_t>(settings_[i].emitter_.particleMaxNum_);
 			ImGui::DragInt("particleMaxNum", &particleMaxNum, 0.1f, 0);
@@ -729,16 +748,16 @@ void Particle::Debug(const std::string& guiName) {
 			if (ImGui::TreeNode("size")) {
 				ImGui::Checkbox("Same height and width", settings_[i].isSameHW_.data());
 				if (settings_[i].isSameHW_) {
-					ImGui::DragFloat("size min", &settings_[i].size_.first.x, 0.01f);
-					ImGui::DragFloat("size max", &settings_[i].size_.second.x, 0.01f);
-					ImGui::DragFloat("sizeSecond min", &settings_[i].sizeSecond_.first.x, 0.01f);
-					ImGui::DragFloat("sizeSecond max", &settings_[i].sizeSecond_.second.x, 0.01f);
+					ImGui::DragFloat("size min", settings_[i].size_.first.data(), 0.01f);
+					ImGui::DragFloat("size max", settings_[i].size_.second.data(), 0.01f);
+					ImGui::DragFloat("sizeSecond min", settings_[i].sizeSecond_.first.data(), 0.01f);
+					ImGui::DragFloat("sizeSecond max", settings_[i].sizeSecond_.second.data(), 0.01f);
 				}
 				else {
-					ImGui::DragFloat2("size first", &settings_[i].size_.first.x, 0.01f);
-					ImGui::DragFloat2("size second", &settings_[i].size_.second.x, 0.01f);
-					ImGui::DragFloat2("sizeSecond min", &settings_[i].sizeSecond_.first.x, 0.01f);
-					ImGui::DragFloat2("sizeSecond max", &settings_[i].sizeSecond_.second.x, 0.01f);
+					ImGui::DragFloat2("size first", settings_[i].size_.first.data(), 0.01f);
+					ImGui::DragFloat2("size second", settings_[i].size_.second.data(), 0.01f);
+					ImGui::DragFloat2("sizeSecond min", settings_[i].sizeSecond_.first.data(), 0.01f);
+					ImGui::DragFloat2("sizeSecond max", settings_[i].sizeSecond_.second.data(), 0.01f);
 				}
 				ImGui::SliderInt("easeType", &settings_[i].sizeEaseType_, 0, 30);
 				settings_[i].sizeEase_ = Easeing::GetFunction(settings_[i].sizeEaseType_);
@@ -746,23 +765,23 @@ void Particle::Debug(const std::string& guiName) {
 				ImGui::TreePop();
 			}
 			if (ImGui::TreeNode("spd")) {
-				ImGui::DragFloat3("velocity min", &settings_[i].velocity_.first.x, 0.01f);
-				ImGui::DragFloat3("velocity max", &settings_[i].velocity_.second.x, 0.01f);
-				ImGui::DragFloat3("velocitySecond min", &settings_[i].velocitySecond_.first.x, 0.01f);
-				ImGui::DragFloat3("velocitySecond max", &settings_[i].velocitySecond_.second.x, 0.01f);
+				ImGui::DragFloat3("velocity min", settings_[i].velocity_.first.data(), 0.01f);
+				ImGui::DragFloat3("velocity max", settings_[i].velocity_.second.data(), 0.01f);
+				ImGui::DragFloat3("velocitySecond min", settings_[i].velocitySecond_.first.data(), 0.01f);
+				ImGui::DragFloat3("velocitySecond max", settings_[i].velocitySecond_.second.data(), 0.01f);
 
 				ImGui::SliderInt("easeType", &settings_[i].moveEaseType, 0, 30);
 				settings_[i].moveEase_ = Easeing::GetFunction(settings_[i].moveEaseType);
 
-				ImGui::DragFloat3("rotate min", &settings_[i].moveRotate_.first.x, 0.01f);
-				ImGui::DragFloat3("rotate max", &settings_[i].moveRotate_.second.x, 0.01f);
+				ImGui::DragFloat3("rotate min", settings_[i].moveRotate_.first.data(), 0.01f);
+				ImGui::DragFloat3("rotate max", settings_[i].moveRotate_.second.data(), 0.01f);
 				ImGui::TreePop();
 			}
 			if (ImGui::TreeNode("rotate")) {
-				ImGui::DragFloat3("rotate min", &settings_[i].rotate_.first.x, 0.01f);
-				ImGui::DragFloat3("rotate max", &settings_[i].rotate_.second.x, 0.01f);
-				ImGui::DragFloat3("rotateSecond min", &settings_[i].rotateSecond_.first.x, 0.01f);
-				ImGui::DragFloat3("rotateSecond max", &settings_[i].rotateSecond_.second.x, 0.01f);
+				ImGui::DragFloat3("rotate min", settings_[i].rotate_.first.data(), 0.01f);
+				ImGui::DragFloat3("rotate max", settings_[i].rotate_.second.data(), 0.01f);
+				ImGui::DragFloat3("rotateSecond min", settings_[i].rotateSecond_.first.data(), 0.01f);
+				ImGui::DragFloat3("rotateSecond max", settings_[i].rotateSecond_.second.data(), 0.01f);
 				ImGui::SliderInt("easeType", &settings_[i].rotateEaseType_, 0, 30);
 				settings_[i].moveEase_ = Easeing::GetFunction(settings_[i].rotateEaseType_);
 				ImGui::TreePop();
@@ -901,6 +920,42 @@ void Particle::Debug(const std::string& guiName) {
 	}
 	ImGui::EndMenuBar();
 
+	if (ImGui::TreeNode("パーティクルスケール")) {
+		ImGui::DragFloat("パーティクルスケール", &particleScale_, 0.01f, -10.0f, 10.0f);
+		if (ImGui::Button("適用")) {
+			ParticleStop();
+
+			for (auto i = 0llu; i < settings_.size(); i++) {
+				const auto groupName = ("setting" + std::to_string(i));
+
+				settings_[i].emitter_.size_ *= particleScale_;
+				settings_[i].emitter_.circleSize_ *= particleScale_;
+				settings_[i].emitter_.circleSize_ *= particleScale_;
+
+				// 大きさ
+				settings_[i].size_.first *= particleScale_;
+				settings_[i].size_.second *= particleScale_;
+				settings_[i].sizeSecond_.first *= particleScale_;
+				settings_[i].sizeSecond_.second *= particleScale_;
+
+				// 速度
+				settings_[i].velocity_.first *= particleScale_;
+				settings_[i].velocity_.second *= particleScale_;
+				settings_[i].velocitySecond_.first *= particleScale_;
+				settings_[i].velocitySecond_.second *= particleScale_;
+			}
+
+			MessageBoxA(
+				WindowFactory::GetInstance()->GetHwnd(),
+				"Apply success", "Particle",
+				MB_OK | MB_ICONINFORMATION
+			);
+
+			particleScale_ = 1.0f;
+		}
+
+		ImGui::TreePop();
+	}
 	ImGui::Checkbox("isBillboard", &isBillboard_);
 	ImGui::Checkbox("isYBillboard", &isYBillboard_);
 	ImGui::Checkbox("isLoop", isLoop_.data());
@@ -954,7 +1009,7 @@ void Particle::Debug(const std::string& guiName) {
 			SaveSettingFile(("setting" + std::to_string(i)).c_str());
 		}
 
-		std::ofstream file{ dataDirectoryName_+"otherSetting.txt"};
+		std::ofstream file{ "./Resources/Datas/Particles/" + dataDirectoryName_ + "/" +"otherSetting.txt"};
 
 		if (!file.fail() && isLoad_) {
 			file << static_cast<bool>(isLoop_) << std::endl
@@ -993,4 +1048,12 @@ void Particle::Debug(const std::string& guiName) {
 
 void Particle::Resize(uint32_t index) {
 	wtfs_.resize(index);
+}
+
+void Particle::SetParticleScale(float particleScale) {
+	particleScale_ = std::clamp(particleScale, -10.0f, 10.0f);
+}
+
+void Particle::SetParticleAllColor(uint32_t color) {
+	allParticleColor_ = color;
 }

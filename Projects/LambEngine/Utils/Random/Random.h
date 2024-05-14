@@ -19,6 +19,9 @@ namespace Lamb {
 	/// <returns>ランダムな値</returns>
 	template<IsInt T> requires requires { sizeof(T) <= sizeof(long); }
 	T Random(T min, T max) {
+		if (min == max) {
+			return min;
+		}
 		if (max < min) {
 			std::swap(min, max);
 		}
@@ -34,14 +37,18 @@ namespace Lamb {
 	/// <param name="min">最小値</param>
 	/// <param name="max">最大値</param>
 	/// <returns>乱数</returns>
-	float Random(float min, float max);
-	/// <summary>
-	/// 最小値から最大値までで一様分布で乱数を生成
-	/// </summary>
-	/// <param name="min">最小値</param>
-	/// <param name="max">最大値</param>
-	/// <returns>乱数</returns>
-	double Random(double min, double max);
+	template<IsFloat T>
+	T Random(T min, T max) {
+		if (min == max) {
+			return min;
+		}
+		if (max < min) {
+			std::swap(min, max);
+		}
+		std::uniform_real_distribution<T> dist{ min, max };
+
+		return static_cast<T>(dist(rnd));
+	}
 
 	/// <summary>
 	/// 最小値から最大値までで一様分布で乱数を生成

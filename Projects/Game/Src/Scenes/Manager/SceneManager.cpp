@@ -15,6 +15,7 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 
 
 	fade_ = std::make_unique<Fade>();
+	fadeCamera_.pos.x = -10.0f;
 	fadeCamera_.Update();
 
 	frameInfo_ = FrameInfo::GetInstance();
@@ -46,6 +47,7 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 
 	uiEditor_ = UIEditor::GetInstance();
 	uiEditor_->Initialize();
+	uiEditor_->LoadFileAll();
 
 	// テクスチャデータのアップロード
 	UploadTextureData();
@@ -111,8 +113,6 @@ void SceneManager::Update() {
 		// シーンの初期化
 		scene_->Initialize();
 
-		// テクスチャデータのアップロード
-		UploadTextureData();
 
 		// ロード中の描画を終了
 		load_->Stop();
@@ -128,6 +128,8 @@ void SceneManager::Update() {
 #pragma endregion
 	}
 
+	// テクスチャデータのアップロード
+	UploadTextureData();
 }
 
 void SceneManager::Draw() {

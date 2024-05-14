@@ -10,12 +10,11 @@
 struct Transform {
 	Transform &operator=(const Transform &other) = default;
 
+	const Transform *parent_ = nullptr;	// 親へのアドレス
 	Vector3 scale = { 1.f,1.f,1.f };
 	Vector3 translate{};
-	const Transform *parent_ = nullptr;	// 親へのアドレス
-	Mat4x4 matWorld_{};	// ローカル . ワールド変換
-
 	Quaternion rotate = Quaternion::kIdentity;
+	Mat4x4 matWorld_{};	// ローカル . ワールド変換
 
 public:
 
@@ -41,4 +40,13 @@ public:
 	/// @brief グローバル座標を維持した親子関係の破棄
 	// void DisConnectParent();
 private:
+};
+
+struct SimpleTransform {
+	Vector3 scale = Vector3::kIdentity;
+	Vector3 translate{};
+	Quaternion rotate = Quaternion::kIdentity;
+
+	Mat4x4 MakeAffine() const;
+
 };

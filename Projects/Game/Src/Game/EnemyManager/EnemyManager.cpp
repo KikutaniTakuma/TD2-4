@@ -1,8 +1,8 @@
 #include "EnemyManager.h"
-EnemyManager::~EnemyManager(){
-	
+EnemyManager::~EnemyManager() {
+
 }
-void EnemyManager::Initialize(){
+void EnemyManager::Initialize() {
 	input_ = Input::GetInstance();
 
 	map_ = GameManager::GetInstance()->GetMap();
@@ -11,83 +11,73 @@ void EnemyManager::Initialize(){
 
 }
 
-void EnemyManager::Finalize(){
-	EnemyCount_ = 0;
+void EnemyManager::Finalize() {
 	startPosList_.clear();
-	EnemyList_.clear();
+	enemyList_.clear();
 }
 
-void EnemyManager::Update(){
-	EnemyList_.remove_if([&](const std::unique_ptr<Enemy>& enemy) {
-		if (enemy->GetIsDead()) {
-			EnemyCount_--;
+void EnemyManager::Update(float deltaTime) {
+	enemyList_.remove_if([&](const std::unique_ptr<GameObject> &enemy) {
+		if (not enemy->GetActive()) {
 			return true;
 		}
 		return false;
-	});
+		});
 
-	std::list<std::unique_ptr<Enemy>>::iterator enemyItr = EnemyList_.begin();
-	
-	
-	// 箱の数分のモデルを描画する
-	for (size_t i = 0; i < EnemyCount_; i++) {		
-		
-		(*enemyItr++)->Update();	// 次のモデルに移動
+
+	// 箱の数分のモデルを更新する
+	for (auto &enemy : enemyList_) {
+		enemy->Update(deltaTime);
 	}
 
 }
 
-void EnemyManager::Draw(const Camera& camera){
-	std::list<std::unique_ptr<Enemy>>::iterator enemyItr = EnemyList_.begin();
+void EnemyManager::Draw(const Camera &camera) {
+	std::list<std::unique_ptr<GameObject>>::iterator enemyItr = enemyList_.begin();
 
 	// 箱の数分のモデルを描画する
-	for (size_t i = 0; i < EnemyCount_; i++) {
-		// モデルを描画
-		(*enemyItr++)->Draw(camera);	// 次のモデルに移動
+	for (const auto &enemy : enemyList_) {
+		enemy->Draw(camera);
 	}
 }
 
-void EnemyManager::Debug(){
-	std::list<std::unique_ptr<Enemy>>::iterator enemyItr = EnemyList_.begin();
+void EnemyManager::Debug() {
 	ImGui::Begin("エネミー関連");
 	ImGui::Text("エネミーの数 %d", static_cast<int>(startPosList_.size()));
-	if (EnemyCount_>0){
-		for (size_t i = 0; i < EnemyCount_; i++) {
-			(*enemyItr++)->Debug(i);
-		}
+	static auto enemyItr = enemyList_.begin();
+	int32_t index = 0;
+	SoLib::ImGuiWidget("エネミーのリスト", &enemyList_, enemyItr, [&index](decltype(enemyList_)::iterator itr)->std::string {return std::to_string(index++); });
+	if (enemyItr != enemyList_.end()) {
+		(*enemyItr)->ImGuiWidget();
 	}
-	
+
 	ImGui::End();
 }
 
-void EnemyManager::AddEnemy(const Vector3& pos){
-	newEnemy_ = std::make_unique<Enemy>();
-	newEnemy_->Initialize();
-	newEnemy_->transform.translate = pos;
-	newEnemy_->SetStartPos(pos);
+void EnemyManager::AddEnemy(const Vector3 &pos) {
+	newEnemy_ = std::make_unique<GameObject>();
+	newEnemy_->transform_.translate = pos;
 	startPosList_.push_back(pos);
 
-	EnemyList_.push_back(std::move(newEnemy_));
-	EnemyCount_++;
+	enemyList_.push_back(std::move(newEnemy_));
 }
 
-void EnemyManager::DeadEnemy(const Vector3& pos){
-	std::list<std::unique_ptr<Enemy>>::iterator enemyItr = EnemyList_.begin();
+void EnemyManager::DeadEnemy(const Vector3 &) {
+	//std::list<std::unique_ptr<GameObject>>::iterator enemyItr = enemyList_.begin();
 
-	// 箱の数分のモデルを描画する
-	for (size_t i = 0; i < EnemyCount_; i++) {
-		Vector3 deadPos = (*enemyItr)->GetStartPos();
-		if (deadPos == pos) {
-			startPosList_.erase(std::remove(startPosList_.begin(), startPosList_.end(), pos), startPosList_.end());
-			(*enemyItr)->SetDead();
-		}
-		enemyItr++;
-	}
+	//// 箱の数分のモデルを描画する
+	//for (size_t i = 0; i < EnemyCount_; i++) {
+	//	Vector3 deadPos = (*enemyItr)->GetStartPos();
+	//	if (deadPos == pos) {
+	//		startPosList_.erase(std::remove(startPosList_.begin(), startPosList_.end(), pos), startPosList_.end());
+	//		(*enemyItr)->SetDead();
+	//	}
+	//	enemyItr++;
+	//}
 }
 
-void EnemyManager::ListReset(){
+void EnemyManager::ListReset() {
 
 	startPosList_.clear();
-	EnemyCount_ = 0;
-	EnemyList_.clear();
+	enemyList_.clear();
 }

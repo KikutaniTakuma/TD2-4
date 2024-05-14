@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector3.h"
 #include "Vector4.h"
+#include "Mat4x4.h"
 
 using LogQuaternion = Vector3;
 
@@ -137,7 +138,7 @@ public:
 	/// 回転行列を取得
 	/// </summary>
 	/// <returns>クォータニオンからの回転行列</returns>
-	[[nodiscard]] class Mat4x4 GetMatrix() const;
+	[[nodiscard]] Mat4x4 GetMatrix() const;
 
 
 
