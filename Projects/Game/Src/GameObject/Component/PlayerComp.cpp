@@ -15,6 +15,10 @@ void PlayerComp::Init()
 
 	pPicker_ = object_.AddComponent<PleyerBlockPickerComp>();
 
+	pHealthComp_ = object_.AddComponent<HealthComp>();
+	pHealthComp_->SetMaxHealth(vMaxHealth_);
+	pHealthComp_->Reset();
+
 	Lamb::SafePtr spriteComp = object_.AddComponent<SpriteComp>();
 	spriteComp->SetTexture("./Resources/uvChecker.png");
 	spriteComp->CalcTexUv();
@@ -31,6 +35,20 @@ void PlayerComp::Update()
 
 	Input();
 	pLocalBodyComp_->TransfarData();
+
+	// 無敵時間の減少
+	invincibleTime_ -= GetDeltaTime();
+	invincibleTime_ = std::clamp(invincibleTime_, 0.f, *vMaxInvincibleTime_);
+}
+
+void PlayerComp::OnCollision([[maybe_unused]] GameObject *const other)
+{
+	// 無敵時間が終わってなかったらその場で終了
+	if (invincibleTime_ > 0.f) { return; }
+	// 無敵時間を付与
+	invincibleTime_ = vMaxInvincibleTime_;
+
+	pHealthComp_->AddHealth(-1.f);
 }
 
 void PlayerComp::Input()
