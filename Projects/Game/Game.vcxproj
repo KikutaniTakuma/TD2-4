@@ -228,6 +228,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\CollisionManager\Plane\Plane.h" />
     <ClInclude Include="Src\Game\CollisionManager\Sphere\Sphere.h" />
     <ClInclude Include="Src\Game\EnemyManager\EnemyManager.h" />
+    <ClInclude Include="Src\Game\FlaskParticle\FlaskParticle.h" />
     <ClInclude Include="Src\Game\GameEffectManager\GameEffectManager.h" />
     <ClInclude Include="Src\Game\GameManager\GameManager.h" />
     <ClInclude Include="Src\Game\Ground\Ground.h" />
