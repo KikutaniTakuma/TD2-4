@@ -1,5 +1,4 @@
 #include "Vector4.h"
-#include "Mat4x4.h"
 #include "Vector3.h"
 #include "Vector2.h"
 #include <cmath>
@@ -109,7 +108,6 @@ Vector4 Vector4::operator*(const Vector4& right) const noexcept {
 
 	return result;
 }
-
 Vector4& Vector4::operator*=(const Vector4& right) noexcept {
 	*this = *this * right;
 
@@ -125,7 +123,6 @@ Vector4 Vector4::operator/(const Vector4& right) const noexcept {
 
 	return result;
 }
-
 Vector4& Vector4::operator/=(const Vector4& right) noexcept {
 	*this = *this / right;
 
@@ -166,11 +163,7 @@ Vector4& Vector4::operator/=(float scalar) noexcept {
 Vector4 Vector4::operator*(const Mat4x4& mat) const noexcept {
 	Vector4 result;
 
-	Mat4x4&& tmp = mat.Transepose();
-
-	for (int32_t i = 0; i < m.size(); i++) {
-		result.m[i] = Dot(tmp[i]);
-	}
+	result.m128 = DirectX::XMVector3Transform(this->m128, mat.GetXMMatrix());
 
 	return result;
 }
@@ -181,20 +174,37 @@ Vector4& Vector4::operator*=(const Mat4x4& mat) noexcept {
 	return *this;
 }
 
-[[nodiscard]] Vector4 operator*(const Mat4x4& left, const Vector4& right) noexcept {
-	Vector4 result;
-	Matrix<float, 4, 1>&& tmp = right.m;
-
-	result.m = (left * tmp).GetVector();
-
-	return result;
-}
-
 bool Vector4::operator==(const Vector4& right) const noexcept {
 	return m == right.m;
 }
 bool Vector4::operator!=(const Vector4& right) const noexcept {
 	return m != right.m;
+}
+
+float& Vector4::operator[](size_t index) {
+	if (size() <= index) {
+		throw Lamb::Error::Code<Vector3>("index is over", ErrorPlace);
+	}
+	return data()[index];
+}
+const float& Vector4::operator[](size_t index) const {
+	if (size() <= index) {
+		throw Lamb::Error::Code<Vector3>("index is over", ErrorPlace);
+	}
+	return data()[index];
+}
+
+float& Vector4::at(size_t index) {
+	if (size() <= index) {
+		throw Lamb::Error::Code<Vector3>("index is over", ErrorPlace);
+	}
+	return data()[index];
+}
+const float& Vector4::at(size_t index) const {
+	if (size() <= index) {
+		throw Lamb::Error::Code<Vector3>("index is over", ErrorPlace);
+	}
+	return data()[index];
 }
 
 float Vector4::Length() const noexcept {
@@ -229,10 +239,10 @@ uint32_t Vector4::GetColorRGBA() const
 {
 	uint32_t result = 0u;
 
-	result += static_cast<uint32_t>(color.r * 255.0f) << 24;
-	result += static_cast<uint32_t>(color.g * 255.0f) << 16;
-	result += static_cast<uint32_t>(color.b * 255.0f) << 8;
-	result += static_cast<uint32_t>(color.a * 255.0f);
+	result += static_cast<uint32_t>(std::clamp(color.r, 0.0f, 1.0f) * 255.0f) << 24;
+	result += static_cast<uint32_t>(std::clamp(color.g, 0.0f, 1.0f) * 255.0f) << 16;
+	result += static_cast<uint32_t>(std::clamp(color.b, 0.0f, 1.0f) * 255.0f) << 8;
+	result += static_cast<uint32_t>(std::clamp(color.a, 0.0f, 1.0f) * 255.0f);
 
 	return result;
 }

@@ -2,11 +2,24 @@
 #include <array>
 #include <immintrin.h>
 #include "Utils/Cocepts/Cocepts.h"
+#include "Mat4x4.h"
 
 /// <summary>
 /// 4次元配列
 /// </summary>
 class Vector4 final {
+private:
+	static constexpr size_t arraySize = 4llu;
+
+public:
+	using size_type = size_t;
+
+	using iterator = std::_Array_iterator<float, arraySize>;
+	using const_iterator = std::_Array_const_iterator<float, arraySize>;
+
+	using reverse_iterator = std::reverse_iterator<iterator>;
+	using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -43,30 +56,21 @@ public:
 
 	[[nodiscard]] Vector4 operator*(const Vector4& right) const noexcept;
 	Vector4& operator*=(const Vector4& right) noexcept;
-
 	[[nodiscard]] Vector4 operator/(const Vector4& right) const noexcept;
 	Vector4& operator/=(const Vector4& right) noexcept;
-
 	[[nodiscard]] Vector4 operator*(float scalar) const noexcept;
 	Vector4& operator*=(float scalar) noexcept;
 	[[nodiscard]] Vector4 operator/(float scalar) const noexcept;
 	Vector4& operator/=(float scalar) noexcept;
 
-	[[nodiscard]] Vector4 operator*(const class Mat4x4& mat) const noexcept;
-	Vector4& operator*=(const class Mat4x4& mat) noexcept;
-	friend Vector4 operator*(const class Mat4x4& left, const Vector4& right) noexcept;
+	[[nodiscard]] Vector4 operator*(const Mat4x4& mat) const noexcept;
+	Vector4& operator*=(const Mat4x4& mat) noexcept;
 
 	[[nodiscard]] bool operator==(const Vector4& right) const noexcept;
 	[[nodiscard]] bool operator!=(const Vector4& right) const noexcept;
 
-	template<Lamb::IsInt T>
-	[[nodiscard]] float& operator[](T index) noexcept {
-		return m[index];
-	}
-	template<Lamb::IsInt T>
-	[[nodiscard]] const float& operator[](T index) const noexcept {
-		return m[index];
-	}
+	[[nodiscard]] float& operator[](size_t index);
+	[[nodiscard]] const float& operator[](size_t index) const;
 
 	/// <summary>
 	/// メンバ関数
@@ -89,57 +93,92 @@ public:
 /// 配列関係の関数
 /// </summary>
 public:
-	[[nodiscard]] float& front() noexcept {
-		return m.front();
+	constexpr void fill(float value) {
+		std::fill_n(data(), size(), value);
 	}
-	[[nodiscard]] const float& front() const noexcept {
-		return m.front();
-	}
-	[[nodiscard]] float& back() noexcept {
-		return m.back();
-	}
-	[[nodiscard]] const float& back() const noexcept {
-		return m.back();
-	}
-	[[nodiscard]] float& at(size_t index) noexcept {
-		return m.at(index);
-	}
-	[[nodiscard]] const float& at(size_t index) const noexcept {
-		return m.at(index);
+	constexpr void swap(Vector4& other)noexcept(std::_Is_nothrow_swappable<float>::value) {
+		std::_Swap_ranges_unchecked(data(), data() + size(), other.data());
 	}
 
 	[[nodiscard]] float* data() noexcept {
 		return m.data();
 	}
-
 	[[nodiscard]] const float* data() const noexcept {
 		return m.data();
 	}
+	[[nodiscard]] constexpr iterator begin() noexcept {
+		return iterator(data(), 0);
+	}
 
-	[[nodiscard]] std::array<float, 4>::iterator begin() noexcept {
-		return m.begin();
+	[[nodiscard]] constexpr const_iterator begin() const noexcept {
+		return const_iterator(data(), 0);
 	}
-	[[nodiscard]] std::array<float, 4>::iterator end() noexcept {
-		return m.end();
+
+	[[nodiscard]] constexpr iterator end() noexcept {
+		return iterator(data(), size());
 	}
-	[[nodiscard]] std::array<float, 4>::const_iterator cbegin() const noexcept {
-		return m.cbegin();
+
+	[[nodiscard]] constexpr const_iterator end() const noexcept {
+		return const_iterator(data(), size());
 	}
-	[[nodiscard]] std::array<float, 4>::const_iterator cend() const noexcept {
-		return m.cend();
+
+	[[nodiscard]] constexpr reverse_iterator rbegin() noexcept {
+		return reverse_iterator(end());
 	}
-	[[nodiscard]] std::array<float, 4>::reverse_iterator rbegin() noexcept {
-		return m.rbegin();
+
+	[[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept {
+		return const_reverse_iterator(end());
 	}
-	[[nodiscard]] std::array<float, 4>::reverse_iterator rend() noexcept {
-		return m.rend();
+
+	[[nodiscard]] constexpr reverse_iterator rend() noexcept {
+		return reverse_iterator(begin());
 	}
-	[[nodiscard]] std::array<float, 4>::const_reverse_iterator crbegin() const noexcept {
-		return m.crbegin();
+
+	[[nodiscard]] constexpr const_reverse_iterator rend() const noexcept {
+		return const_reverse_iterator(begin());
 	}
-	[[nodiscard]] std::array<float, 4>::const_reverse_iterator crend() const noexcept {
-		return m.crend();
+
+	[[nodiscard]] constexpr const_iterator cbegin() const noexcept {
+		return begin();
 	}
+
+	[[nodiscard]] constexpr const_iterator cend() const noexcept {
+		return end();
+	}
+
+	[[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept {
+		return rbegin();
+	}
+
+	[[nodiscard]] constexpr const_reverse_iterator crend() const noexcept {
+		return rend();
+	}
+
+	[[nodiscard]] constexpr size_type size() const {
+		return arraySize;
+	}
+	[[nodiscard]] constexpr size_type max_size() const {
+		return arraySize;
+	}
+
+	[[nodiscard]] constexpr bool empty() const {
+		return false;
+	}
+
+	[[nodiscard]] constexpr float& front() {
+		return m.front();
+	}
+	[[nodiscard]] constexpr const float& front() const {
+		return m.front();
+	}
+	[[nodiscard]] constexpr float& back() {
+		return m.back();
+	}
+	[[nodiscard]] constexpr const float& back() const {
+		return m.back();
+	}
+	[[nodiscard]] float& at(size_t index);
+	[[nodiscard]] const float& at(size_t index) const;
 
 
 /// <summary>
@@ -177,7 +216,7 @@ public:
 	/// </summary>
 public:
 	union {
-		std::array<float, 4> m;
+		std::array<float, arraySize> m;
 		struct {
 			float x;
 			float y;

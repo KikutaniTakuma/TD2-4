@@ -247,12 +247,13 @@ Vector3 Quaternion::GetDirectionZ() const
 }
 
 Mat4x4 Quaternion::GetMatrix() const {
+	/*
 	Vector3&& directionX = GetDirectionX();
 	Vector3&& directionY = GetDirectionY();
 	Vector3&& directionZ = GetDirectionZ();
 
 
-	Mat4x4 result = Mat4x4{
+	Mat4x4 result = Mat4x4::vector_type{
 			directionX.x,
 			directionX.y,
 			directionX.z,
@@ -270,9 +271,10 @@ Mat4x4 Quaternion::GetMatrix() const {
 
 			0.0f,0.0f,0.0f,1.0f
 	};
+	*/
 
 
-	return result;
+	return Mat4x4::MakeRotate(*this);
 }
 #pragma endregion
 /// ========================================================================
