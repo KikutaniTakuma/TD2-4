@@ -18,6 +18,7 @@
 #include <GameObject/Component/DwarfAnimator.h>
 #include <GameObject/Component/DwarfShakeComp.h>
 #include <GameObject/Component/PlayerComp.h>
+#include <GameObject/Component/PlayerBulletComp.h>
 
 void GameManager::Init()
 {
@@ -81,6 +82,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	player_->Update(deltaTime);
 
 	spawner_->Update(deltaTime);
+	for (auto &bullet : plBulletList_) {
+		bullet->Update(deltaTime);
+	}
 	for (auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Update(deltaTime);
 	}
@@ -95,6 +99,18 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		// 落下しているブロックの座標
 		Lamb::SafePtr blockBody = fallComp->pLocalPos_;
 
+
+		if (fallingBlock->GetActive()) {
+			Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
+			const Vector2 centorDiff = blockBody->localPos_ - playerBody->localPos_;
+			const Vector2 sizeSum = (blockBody->size_ + playerBody->size_) / 2.f;
+			if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
+				fallingBlock->OnCollision(player_.get());
+				player_->OnCollision(fallingBlock.get());
+				player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{ SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f });
+			}
+		}
+
 		// もしブロックがあったら
 		if (fallComp->IsLanding()) {
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType());
@@ -105,6 +121,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	// 落下ブロックの破棄
 	std::erase_if(fallingBlocks_, [](const auto &itr) ->bool { return not itr->GetActive(); });
+	std::erase_if(plBulletList_, [](const auto &itr) ->bool { return not itr->GetActive(); });
 
 	// 小人の破棄
 	{
@@ -175,6 +192,9 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	blockMap_->Draw(camera);
 	player_->Draw(camera);
 	spawner_->Draw(camera);
+	for (const auto &bullet : plBulletList_) {
+		bullet->Draw(camera);
+	}
 	for (const auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Draw(camera);
 	}
@@ -205,6 +225,21 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 	return isChange;
 }
 
+GameObject *GameManager::AddPlayerBullet(Vector2 centerPos, Vector2 velocity)
+{
+	std::unique_ptr<GameObject> bullet = std::make_unique<GameObject>();
+
+	bullet->AddComponent<PlayerBulletComp>();
+	Lamb::SafePtr localBodyComp = bullet->AddComponent<LocalBodyComp>();
+
+	localBodyComp->localPos_ = centerPos;
+	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
+	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+	plBulletList_.push_back(std::move(bullet));
+
+	return plBulletList_.back().get();
+}
+
 
 GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity)
 {
@@ -218,8 +253,8 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 	localBodyComp->size_ = size;
 
 	fallingComp->blockType_ = blockType;
-	fallingComp->velocity_ = velocity;
 	fallingComp->gravity_ = gravity;
+	addBlock->GetComponent<LocalRigidbody>()->SetVelocity(velocity);
 
 	// 末尾に追加
 	fallingBlocks_.push_back(std::move(addBlock));

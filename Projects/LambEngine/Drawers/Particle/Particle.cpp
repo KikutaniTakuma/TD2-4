@@ -719,16 +719,17 @@ void Particle::Debug(const std::string& guiName) {
 
 		// エミッターの設定
 		if (ImGui::TreeNode("Emitter")) {
-			ImGui::DragFloat3("pos", &settings_[i].emitter_.pos_.x, 0.01f);
+			ImGui::DragFloat3("pos", settings_[i].emitter_.pos_.data(), 0.01f);
 			emitterPos = settings_[i].emitter_.pos_;
-			ImGui::DragFloat3("size", &settings_[i].emitter_.size_.x, 0.01f);
+			ImGui::DragFloat3("size", settings_[i].emitter_.size_.data(), 0.01f);
+			emitterSize = settings_[i].emitter_.size_;
 			int32_t type = static_cast<int32_t>(settings_[i].emitter_.type_);
 			ImGui::SliderInt("type", &type, 0, 1);
 			settings_[i].emitter_.type_ = static_cast<decltype(settings_[i].emitter_.type_)>(type);
 			if (type == 1) {
 				ImGui::DragFloat("circleSize", &settings_[i].emitter_.circleSize_, 0.01f);
-				ImGui::DragFloat3("rotate first", &settings_[i].emitter_.rotate_.first.x, 0.01f);
-				ImGui::DragFloat3("rotate second", &settings_[i].emitter_.rotate_.second.x, 0.01f);
+				ImGui::DragFloat3("rotate first", settings_[i].emitter_.rotate_.first.data(), 0.01f);
+				ImGui::DragFloat3("rotate second", settings_[i].emitter_.rotate_.second.data(), 0.01f);
 			}
 			int32_t particleMaxNum = static_cast<int32_t>(settings_[i].emitter_.particleMaxNum_);
 			ImGui::DragInt("particleMaxNum", &particleMaxNum, 0.1f, 0);
@@ -747,16 +748,16 @@ void Particle::Debug(const std::string& guiName) {
 			if (ImGui::TreeNode("size")) {
 				ImGui::Checkbox("Same height and width", settings_[i].isSameHW_.data());
 				if (settings_[i].isSameHW_) {
-					ImGui::DragFloat("size min", &settings_[i].size_.first.x, 0.01f);
-					ImGui::DragFloat("size max", &settings_[i].size_.second.x, 0.01f);
-					ImGui::DragFloat("sizeSecond min", &settings_[i].sizeSecond_.first.x, 0.01f);
-					ImGui::DragFloat("sizeSecond max", &settings_[i].sizeSecond_.second.x, 0.01f);
+					ImGui::DragFloat("size min", settings_[i].size_.first.data(), 0.01f);
+					ImGui::DragFloat("size max", settings_[i].size_.second.data(), 0.01f);
+					ImGui::DragFloat("sizeSecond min", settings_[i].sizeSecond_.first.data(), 0.01f);
+					ImGui::DragFloat("sizeSecond max", settings_[i].sizeSecond_.second.data(), 0.01f);
 				}
 				else {
-					ImGui::DragFloat2("size first", &settings_[i].size_.first.x, 0.01f);
-					ImGui::DragFloat2("size second", &settings_[i].size_.second.x, 0.01f);
-					ImGui::DragFloat2("sizeSecond min", &settings_[i].sizeSecond_.first.x, 0.01f);
-					ImGui::DragFloat2("sizeSecond max", &settings_[i].sizeSecond_.second.x, 0.01f);
+					ImGui::DragFloat2("size first", settings_[i].size_.first.data(), 0.01f);
+					ImGui::DragFloat2("size second", settings_[i].size_.second.data(), 0.01f);
+					ImGui::DragFloat2("sizeSecond min", settings_[i].sizeSecond_.first.data(), 0.01f);
+					ImGui::DragFloat2("sizeSecond max", settings_[i].sizeSecond_.second.data(), 0.01f);
 				}
 				ImGui::SliderInt("easeType", &settings_[i].sizeEaseType_, 0, 30);
 				settings_[i].sizeEase_ = Easeing::GetFunction(settings_[i].sizeEaseType_);
@@ -764,23 +765,23 @@ void Particle::Debug(const std::string& guiName) {
 				ImGui::TreePop();
 			}
 			if (ImGui::TreeNode("spd")) {
-				ImGui::DragFloat3("velocity min", &settings_[i].velocity_.first.x, 0.01f);
-				ImGui::DragFloat3("velocity max", &settings_[i].velocity_.second.x, 0.01f);
-				ImGui::DragFloat3("velocitySecond min", &settings_[i].velocitySecond_.first.x, 0.01f);
-				ImGui::DragFloat3("velocitySecond max", &settings_[i].velocitySecond_.second.x, 0.01f);
+				ImGui::DragFloat3("velocity min", settings_[i].velocity_.first.data(), 0.01f);
+				ImGui::DragFloat3("velocity max", settings_[i].velocity_.second.data(), 0.01f);
+				ImGui::DragFloat3("velocitySecond min", settings_[i].velocitySecond_.first.data(), 0.01f);
+				ImGui::DragFloat3("velocitySecond max", settings_[i].velocitySecond_.second.data(), 0.01f);
 
 				ImGui::SliderInt("easeType", &settings_[i].moveEaseType, 0, 30);
 				settings_[i].moveEase_ = Easeing::GetFunction(settings_[i].moveEaseType);
 
-				ImGui::DragFloat3("rotate min", &settings_[i].moveRotate_.first.x, 0.01f);
-				ImGui::DragFloat3("rotate max", &settings_[i].moveRotate_.second.x, 0.01f);
+				ImGui::DragFloat3("rotate min", settings_[i].moveRotate_.first.data(), 0.01f);
+				ImGui::DragFloat3("rotate max", settings_[i].moveRotate_.second.data(), 0.01f);
 				ImGui::TreePop();
 			}
 			if (ImGui::TreeNode("rotate")) {
-				ImGui::DragFloat3("rotate min", &settings_[i].rotate_.first.x, 0.01f);
-				ImGui::DragFloat3("rotate max", &settings_[i].rotate_.second.x, 0.01f);
-				ImGui::DragFloat3("rotateSecond min", &settings_[i].rotateSecond_.first.x, 0.01f);
-				ImGui::DragFloat3("rotateSecond max", &settings_[i].rotateSecond_.second.x, 0.01f);
+				ImGui::DragFloat3("rotate min", settings_[i].rotate_.first.data(), 0.01f);
+				ImGui::DragFloat3("rotate max", settings_[i].rotate_.second.data(), 0.01f);
+				ImGui::DragFloat3("rotateSecond min", settings_[i].rotateSecond_.first.data(), 0.01f);
+				ImGui::DragFloat3("rotateSecond max", settings_[i].rotateSecond_.second.data(), 0.01f);
 				ImGui::SliderInt("easeType", &settings_[i].rotateEaseType_, 0, 30);
 				settings_[i].moveEase_ = Easeing::GetFunction(settings_[i].rotateEaseType_);
 				ImGui::TreePop();

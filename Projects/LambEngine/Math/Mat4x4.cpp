@@ -3,158 +3,109 @@
 #include <cmath>
 #include "Math/MathCommon.h"
 
-const Mat4x4 Mat4x4::kIdentity = BasedMatrix::Identity();
+const Matrix<float, 4, 4> Matrix<float, 4, 4>::kIdentity = DirectX::XMMatrixIdentity();
 
-const Mat4x4 Mat4x4::kZero = Mat4x4();
+const Matrix<float, 4, 4> Matrix<float, 4, 4>::kZero = Matrix<float, 4, 4>();
 
-Mat4x4::Mat4x4(const Mat4x4& right) {
-	*this = right;
+constexpr Matrix<float, 4, 4>::Matrix(const DirectX::XMMATRIX& xmMatrix) {
+	xmMatrix_ = xmMatrix;
 }
 
-Mat4x4::Mat4x4(Mat4x4&& right) noexcept {
-	*this = std::move(right);
-}
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeTranslate(const Vector3& vec) {
+	Matrix<float, 4, 4> result;
 
-Mat4x4::Mat4x4(const std::initializer_list<float>& right) {
-	std::copy(right.begin(), right.end(), vector_.begin());
-}
-
-Mat4x4::Mat4x4(const BasedMatrix::vector_type& right) {
-	std::copy(right.begin(), right.end(), vector_.begin());
-}
-
-Mat4x4::Mat4x4(const BasedMatrix& right) {
-	*this = right;
-}
-
-Mat4x4& Mat4x4::operator=(const BasedMatrix& right) {
-	std::copy(right.GetVector().begin(), right.GetVector().end(), vector_.begin());
-
-	return *this;
-}
-
-
-Mat4x4 Mat4x4::MakeTranslate(const Vector3& vec) {
-	Mat4x4 result;
-
-	result[0][0] = 1.0f;
-	result[1][1] = 1.0f;
-	result[2][2] = 1.0f;
-	result[3][3] = 1.0f;
-
-	result[3][0] = vec.x;
-	result[3][1] = vec.y;
-	result[3][2] = vec.z;
+	result.xmMatrix_ = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
 
 	return result;
 }
 
-Mat4x4 Mat4x4::MakeScalar(const Vector3& vec) {
-	Mat4x4 result;
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeScalar(const Vector3& vec) {
+	Matrix<float, 4, 4> result;
 
-	result[0][0] = vec.x;
-	result[1][1] = vec.y;
-	result[2][2] = vec.z;
-	result[3][3] = 1.0f;
+	result.xmMatrix_ = DirectX::XMMatrixScaling(vec.x, vec.y, vec.z);
 
 	return result;
 }
 
-Mat4x4 Mat4x4::MakeRotateX(float rad) {
-	Mat4x4 result;
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeRotateX(float rad) {
+	Matrix<float, 4, 4> result;
 
-	result[0][0] = 1.0f;
-	result[3][3] = 1.0f;
-
-	result[1][1] = std::cos(rad);
-	result[1][2] = std::sin(rad);
-	result[2][1] = -std::sin(rad);
-	result[2][2] = std::cos(rad);
+	result.xmMatrix_ = DirectX::XMMatrixRotationX(rad);
 
 	return result;
 }
 
-Mat4x4 Mat4x4::MakeRotateY(float rad) {
-	Mat4x4 result;
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeRotateY(float rad) {
+	Matrix<float, 4, 4> result;
 
-	result[1][1] = 1.0f;
-	result[3][3] = 1.0f;
-
-	result[0][0] = std::cos(rad);
-	result[0][2] = -std::sin(rad);
-	result[2][0] = std::sin(rad);
-	result[2][2] = std::cos(rad);
+	result.xmMatrix_ = DirectX::XMMatrixRotationY(rad);
 
 	return result;
 }
 
-Mat4x4 Mat4x4::MakeRotateZ(float rad) {
-	Mat4x4 result;
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeRotateZ(float rad) {
+	Matrix<float, 4, 4> result;
 
-	result[2][2] = 1.0f;
-	result[3][3] = 1.0f;
-
-	result[0][0] = std::cos(rad);
-	result[0][1] = -std::sin(rad);
-	result[1][0] = std::sin(rad);
-	result[1][1] = std::cos(rad);
+	result.xmMatrix_ = DirectX::XMMatrixRotationZ(rad);
 
 	return result;
 }
 
-Mat4x4 Mat4x4::MakeRotate(const Vector3& rad) {
-	return  MakeAffin(Vector3::kIdentity, rad, Vector3::kZero);
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeRotate(const Vector3& rad) {
+	return DirectX::XMMatrixRotationRollPitchYawFromVector({ rad.x,rad.y, rad.z });
 }
 
-Mat4x4 Mat4x4::MakeAffin(const Vector3& scale, const Vector3& rad, const Vector3& translate) {
-	Mat4x4 result;
-
-	Mat4x4 rotate = Mat4x4::MakeRotateX(rad.x) * Mat4x4::MakeRotateY(rad.y) * Mat4x4::MakeRotateZ(rad.z);
-
-	result = Mat4x4{
-		scale.x * rotate[0][0], scale.x * rotate[0][1],scale.x * rotate[0][2], 0.0f,
-		scale.y * rotate[1][0], scale.y * rotate[1][1],scale.y * rotate[1][2], 0.0f,
-		scale.z * rotate[2][0], scale.z * rotate[2][1],scale.z * rotate[2][2], 0.0f,
-		translate.x, translate.y, translate.z, 1.0f
-	};
-
-	return result;
-}
-
-Mat4x4 Mat4x4::MakeAffin(const Vector3& scale, const Quaternion& rad, const Vector3& translate)
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeRotate(const Quaternion& rad)
 {
-	Mat4x4 result;
+	return DirectX::XMMatrixRotationQuaternion(rad.m128);
+}
 
-	result = Mat4x4::MakeScalar(scale) * rad.GetMatrix() * Mat4x4::MakeTranslate(translate);
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeAffin(const Vector3& scale, const Vector3& rad, const Vector3& translate) {
+	Matrix<float, 4, 4> result;
+
+	result.xmMatrix_ = DirectX::XMMatrixAffineTransformation({ scale.x, scale.y, scale.z }, {}, Quaternion::EulerToQuaternion(rad).m128, {translate.x,translate.y,translate.z});
+
 
 	return result;
 }
 
-Mat4x4 Mat4x4::MakeAffin(const Vector3& scale, const Vector3& from, const Vector3& to, const Vector3& translate) {
-	Mat4x4 result;
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeAffin(const Vector3& scale, const Quaternion& rad, const Vector3& translate)
+{
+	Matrix<float, 4, 4> result;
 
-	result = Mat4x4::MakeScalar(scale) * Mat4x4::DirectionToDirection(from, to) * Mat4x4::MakeTranslate(translate);
+	result.xmMatrix_ = DirectX::XMMatrixAffineTransformation({ scale.x, scale.y, scale.z }, {}, rad.m128, { translate.x,translate.y,translate.z });
 
 	return result;
 }
 
-Mat4x4 Mat4x4::MakePerspectiveFov(float fovY, float aspectRatio, float nearClip, float farClip) {
-	Mat4x4 result;
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeAffin(const Vector3& scale, const Vector3& from, const Vector3& to, const Vector3& translate) {
+	Matrix<float, 4, 4> result;
 
+	result.xmMatrix_ = DirectX::XMMatrixAffineTransformation({ scale.x, scale.y, scale.z }, {}, Quaternion::DirectionToDirection(from, to).m128, { translate.x,translate.y,translate.z });
+
+	return result;
+}
+
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakePerspectiveFov(float fovY, float aspectRatio, float nearClip, float farClip) {
+	Matrix<float, 4, 4> result;
+
+	/*
 	result[0][0] = (1.0f / aspectRatio) * (1.0f / std::tan(fovY / 2.0f));
 	result[1][1] = 1.0f / std::tan(fovY / 2.0f);
 	result[2][2] = farClip / (farClip - nearClip);
 	result[2][3] = 1.0f;
 	result[3][2] = (-nearClip * farClip) / (farClip - nearClip);
+	*/
+
+	result.xmMatrix_ = DirectX::XMMatrixPerspectiveFovLH(fovY, aspectRatio, nearClip, farClip);
 
 	return result;
 }
 
-Mat4x4 Mat4x4::MakeOrthographic(float left, float top, float right, float bottom, float nearClip, float farClip) {
-	Mat4x4 result;
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeOrthographic(float width, float height, float nearClip, float farClip) {
+	Matrix<float, 4, 4> result;
 
-
-
+	/*
 	result[0][0] = 2.0f / (right - left);
 	result[1][1] = 2.0f / (top - bottom);
 	result[2][2] = 1.0f / (farClip - nearClip);
@@ -163,12 +114,15 @@ Mat4x4 Mat4x4::MakeOrthographic(float left, float top, float right, float bottom
 	result[3][0] = (left + right) / (left - right);
 	result[3][1] = (top + bottom) / (bottom - top);
 	result[3][2] = nearClip / (nearClip - farClip);
+	*/
+
+	result.xmMatrix_ = DirectX::XMMatrixOrthographicLH(width, height, nearClip, farClip);
 
 	return result;
 }
 
-Mat4x4 Mat4x4::MakeViewPort(float left, float top, float width, float height, float minDepth, float maxDepth) {
-	Mat4x4 result;
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeViewPort(float left, float top, float width, float height, float minDepth, float maxDepth) {
+	Matrix<float, 4, 4> result;
 
 	result[0][0] = width / 2.0f;
 	result[1][1] = height / -2.0f;
@@ -182,7 +136,7 @@ Mat4x4 Mat4x4::MakeViewPort(float left, float top, float width, float height, fl
 	return result;
 }
 
-Mat4x4 Mat4x4::DirectionToDirection(const Vector3& from, const Vector3& to) {
+Matrix<float, 4, 4> Matrix<float, 4, 4>::DirectionToDirection(const Vector3& from, const Vector3& to) {
 	Vector3 normal;
 
 	if (from.Dot(to) == -1.0f) {
@@ -201,8 +155,8 @@ Mat4x4 Mat4x4::DirectionToDirection(const Vector3& from, const Vector3& to) {
 	float theataCos = from.Dot(to);
 	float theataSin = from.Cross(to).Length();
 
-	Mat4x4 result = 
-		BasedMatrix::vector_type{
+	Matrix<float, 4, 4> result = 
+		vector_type{
 			normal.x * normal.x * (1.0f - theataCos) + theataCos,
 			normal.x * normal.y * (1.0f - theataCos) + normal.z * theataSin,
 			normal.x * normal.z * (1.0f - theataCos) - normal.y * theataSin,
@@ -225,64 +179,53 @@ Mat4x4 Mat4x4::DirectionToDirection(const Vector3& from, const Vector3& to) {
 	return result;
 }
 
-Mat4x4 Mat4x4::MakeRotateAxisAngle(const Vector3& axis, float angle) {
-	float angleCos = std::cos(angle);
-	float angleSin = std::sin(angle);
-
-	Mat4x4 result = BasedMatrix::vector_type{
-			axis.x * axis.x * (1.0f - angleCos) + angleCos,
-			axis.x * axis.y * (1.0f - angleCos) + axis.z * angleSin,
-			axis.x * axis.z * (1.0f - angleCos) - axis.y * angleSin,
-			0.0f,
-
-			axis.y * axis.x * (1.0f - angleCos) - axis.z * angleSin,
-			axis.y * axis.y * (1.0f - angleCos) + angleCos,
-			axis.y * axis.z * (1.0f - angleCos) + axis.x * angleSin,
-			0.0f,
-
-			axis.z * axis.x * (1.0f - angleCos) + axis.y * angleSin,
-			axis.z * axis.y * (1.0f - angleCos) - axis.x * angleSin,
-			axis.z * axis.z * (1.0f - angleCos) + angleCos,
-			0.0f,
-
-			0.0f,0.0f,0.0f,1.0f
-	};
-
-
-	return result;
+Matrix<float, 4, 4> Matrix<float, 4, 4>::MakeRotateAxisAngle(const Vector3& axis, float angle) {
+	return DirectX::XMMatrixRotationAxis({ axis.x,axis.y,axis.z }, angle);
 }
 
-Vector3 Mat4x4::GetTranslate()
+
+Vector3 Matrix<float, 4, 4>::GetTranslate()
 {
-	return Vector3((*this)[3][0], (*this)[3][1], (*this)[3][2]);
+	return Vector3(matrix_[3][0], matrix_[3][1], matrix_[3][2]);
 }
-Vector3 Mat4x4::GetScale() {
+Vector3 Matrix<float, 4, 4>::GetScale() {
 	return Vector3(
 		Lamb::Math::Length({ matrix_[0][0], matrix_[0][1], matrix_[0][2] }),
 		Lamb::Math::Length({ matrix_[1][0], matrix_[1][1], matrix_[1][2] }),
 		Lamb::Math::Length({ matrix_[2][0], matrix_[2][1], matrix_[2][2]})
 	);
 }
-Quaternion Mat4x4::GetRotate() {
-	const Matrix<float, 3, 3>& inverceScaleMatrix = Mat4x4::MakeScalar(GetScale()).Inverse();
-	const Matrix<float, 3, 3>& rotateScaleMat = this->matrix_;
-	const Matrix<float, 3, 3>& rotateMat = rotateScaleMat * inverceScaleMatrix;
+Quaternion Matrix<float, 4, 4>::GetRotate() {
+	Vector3 scale;
+	Quaternion rotate;
+	Vector3 translate;
+	DirectX::XMMatrixDecompose(
+		reinterpret_cast<DirectX::XMVECTOR*>(scale.data()),
+		reinterpret_cast<DirectX::XMVECTOR*>(rotate.data()),
+		reinterpret_cast<DirectX::XMVECTOR*>(translate.data()),
+		this->xmMatrix_
+	);
 
-	Quaternion result;
-	result.quaternion.w = std::sqrt(1.0f + rotateMat[0][0] + rotateMat[1][1] + rotateMat[2][2]) * 0.5f;
-	if (result.quaternion.w == 0.0f) {
-		throw Lamb::Error::Code<Mat4x4>("w is 0.0f", ErrorPlace);
-	}
-	float w = 1.0f / (result.quaternion.w * 4.0f);
-	result.quaternion.x = (rotateMat[1][2] - rotateMat[2][1]) * w;
-	result.quaternion.y = (rotateMat[2][0] - rotateMat[0][2]) * w;
-	result.quaternion.z = (rotateMat[0][1] - rotateMat[1][0]) * w;
-
-	return result.Normalize();
+	return rotate.Normalize();
 }
 
-void Mat4x4::Decompose(Vector3& scale, Quaternion& rotate, Vector3& translate) {
-	scale = GetScale();
-	rotate = GetRotate();
-	translate = GetTranslate();
+void Matrix<float, 4, 4>::Decompose(Vector3& scale, Quaternion& rotate, Vector3& translate) {
+	DirectX::XMMatrixDecompose(
+		reinterpret_cast<DirectX::XMVECTOR*>(scale.data()),
+		reinterpret_cast<DirectX::XMVECTOR*>(rotate.data()),
+		reinterpret_cast<DirectX::XMVECTOR*>(translate.data()),
+		this->xmMatrix_
+		);
+}
+
+void Matrix<float, 4, 4>::Decompose(Vector3& scale, Vector3& rotate, Vector3& translate) {
+	Quaternion quaternion;
+	DirectX::XMMatrixDecompose(
+		reinterpret_cast<DirectX::XMVECTOR*>(scale.data()),
+		reinterpret_cast<DirectX::XMVECTOR*>(quaternion.data()),
+		reinterpret_cast<DirectX::XMVECTOR*>(translate.data()),
+		this->xmMatrix_
+	);
+
+	rotate = Vector3::QuaternionToEuler(quaternion);
 }

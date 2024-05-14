@@ -52,6 +52,8 @@ public:
 	// マップのデータを取得
 	BlockMap *GetMap() { return blockMap_.get(); }
 
+	GameObject *AddPlayerBullet(Vector2 centerPos, Vector2 velocity);
+
 	/// <summary>
 	/// 落下ブロックを追加する
 	/// </summary>
@@ -130,6 +132,9 @@ private:
 
 	// 小人のリスト
 	std::list<std::unique_ptr<GameObject>> dwarfList_;
+
+	// プレイヤが撃った弾のリスト
+	std::list<std::unique_ptr<GameObject>> plBulletList_;
 
 	std::unique_ptr<GameEffectManager> gameEffectManager_ = nullptr;
 

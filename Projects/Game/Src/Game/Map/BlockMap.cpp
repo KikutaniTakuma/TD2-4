@@ -7,6 +7,8 @@
 
 void BlockMap::Init()
 {
+
+	pTexture2d_ = DrawerManager::GetInstance()->GetTexture2D();
 	blockMap_ = std::make_unique<Block2dMap>();
 	blockStatesMap_ = std::make_unique<Map2dMap<std::unique_ptr<BlockStatus>>>();
 
@@ -32,10 +34,11 @@ void BlockMap::Update([[maybe_unused]] const float deltaTime) {
 }
 
 void BlockMap::Draw([[maybe_unused]] const Camera &camera) const {
+	uint32_t whiteTex = TextureManager::GetInstance()->GetWhiteTex();
 	for (const auto &modelStateArr : modelStateMap_) {
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
-				model_->Draw(modelState->transMat, camera.GetViewOthographics(), modelState->color, BlendType::kNone);
+				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, modelState->color, BlendType::kNone);
 			}
 		}
 	}
@@ -227,6 +230,7 @@ void BlockMap::BreakBlock(POINTS localPos)
 	auto &targetBlock = blockMap_->at(localPos.y).at(localPos.x);
 	// ブロックがあるなら破壊
 	if (targetBlock) {
+		targetBlock.SetDamage(0);
 		targetBlock.SetBlockType(Block::BlockType::kNone);
 		blockStatesMap_->at(localPos.y).at(localPos.x).reset();
 
