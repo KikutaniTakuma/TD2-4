@@ -95,6 +95,18 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		// 落下しているブロックの座標
 		Lamb::SafePtr blockBody = fallComp->pLocalPos_;
 
+
+		if (fallingBlock->GetActive()) {
+			Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
+			const Vector2 centorDiff = blockBody->localPos_ - playerBody->localPos_;
+			const Vector2 sizeSum = (blockBody->size_ + playerBody->size_) / 2.f;
+			if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
+				fallingBlock->OnCollision(player_.get());
+				player_->OnCollision(fallingBlock.get());
+				player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{ SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f });
+			}
+		}
+
 		// もしブロックがあったら
 		if (fallComp->IsLanding()) {
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType());
@@ -218,8 +230,8 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 	localBodyComp->size_ = size;
 
 	fallingComp->blockType_ = blockType;
-	fallingComp->velocity_ = velocity;
 	fallingComp->gravity_ = gravity;
+	addBlock->GetComponent<LocalRigidbody>()->SetVelocity(velocity);
 
 	// 末尾に追加
 	fallingBlocks_.push_back(std::move(addBlock));
