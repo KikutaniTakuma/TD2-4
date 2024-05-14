@@ -188,9 +188,9 @@ Vector3 Vector3::Lerp(const Vector3& start, const Vector3& end, float t) {
 Vector3 Vector3::CatmullRom(const Vector3& controlPoint0, const Vector3& controlPoint1, const Vector3& controlPoint2, const Vector3& controlPoint3, const float t) {
 	Vector3 result{};
 	result =
-		((-controlPoint0 + controlPoint1 * 3.0f - controlPoint2 * 3.0f + controlPoint3) * std::powf(3.0f, t) +
-			(controlPoint0 * 2.0f - controlPoint1 * 5.0f + controlPoint2 * 4.0f - controlPoint3) * std::powf(2.0f, t) +
-			(-controlPoint0 + controlPoint2) * t + controlPoint1 * 2.0f) * 0.5f;
+		((controlPoint0 * -1.0f + controlPoint1 * 3.0f + controlPoint2 * -3.0f + controlPoint3) * std::powf(t, 3.0f) +
+			(controlPoint0 * 2.0f + controlPoint1 * -5.0f + controlPoint2 * 4.0f + controlPoint3 * -1.0f) * std::powf(t, 2.0f) +
+			(controlPoint0 * -1.0f + controlPoint2) * t + controlPoint1 * 2.0f) * 0.5f;
 
 	return result;
 }

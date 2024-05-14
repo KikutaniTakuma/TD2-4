@@ -30,15 +30,68 @@ public:
 
 	void Draw() override;
 
+	void DrawCatmullRom(const Vector2& controlPoint0, const Vector2& controlPoint1, const Vector2& controlPoint2, 
+		const Vector2& controlPoint3, const Mat4x4& viewProjectionMatrix);
+
+
 	void Debug();
 
 public:
-	std::unique_ptr<Texture2D> tex_;
-	std::unique_ptr<Texture2D> sphere_;
-	std::unique_ptr<Texture2D> sphere2_;
+	Texture2D* tex2D_;
+
+	std::vector< std::unique_ptr<Tex2DState>> spheres_;
+
+
 	bool isCollision_;
 
 	Audio* titleBGM_ = nullptr;
 
 	Audio* beginGame_ = nullptr;
+
+
+	/*CatmullRom*/
+	std::vector<std::unique_ptr<Line>> lines_;
+
+	Vector2 controlPoint_[4] = {
+		{100.0f,100.0f},
+		{400.0f,400.0f},
+		{700.0f,100.0f},
+		{1000.0f,200.0f}
+	};
+
+	std::vector<Vector2> ControlPoints_;
+
+	//分割数
+	uint32_t Linecolor_ = 0x000000ff;
+
+	const uint32_t divisionNumber_ = 8;
+	float point_ = 0.0f;
+	float t_ = 0.0f;
+
+	uint32_t linePass_ = 0;
+
+	const uint32_t firstLinePass_ = 0;
+	uint32_t LastLinePass_ = 2;
+
+	bool isMove_ = false;
+
+	uint32_t drawCount_ = 0;
+
+	int addElementsNum_ = 1;
+
+	int subtractionElementsNum_ = 1;
+
+	int mode_ = 0;
+
+	enum {
+		First,
+		Last,
+	};
+
+	//曲線一本の長さを調べるための変数群
+	std::vector<float> catMullLength_;
+
+	float length_;
+
+
 };
