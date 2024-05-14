@@ -182,6 +182,8 @@ public:
 public:
 	static [[nodiscard]] Vector2 Lerp(const Vector2& start, const Vector2& end, float easeSpd);
 
+	static [[nodiscard]] Vector2 CatmullRom(const Vector2& controlPoint0, const Vector2& controlPoint1, const Vector2& controlPoint2, const Vector2& controlPoint3, const float t);
+
 /// <summary>
 /// 静的定数
 /// </summary>

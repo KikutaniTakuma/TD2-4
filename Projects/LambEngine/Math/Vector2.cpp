@@ -173,3 +173,13 @@ Vector2 Vector2::Lerp(const Vector2& start, const Vector2& end, float easeSpd) {
 
 	return result;
 }
+
+Vector2 Vector2::CatmullRom(const Vector2& controlPoint0, const Vector2& controlPoint1, const Vector2& controlPoint2, const Vector2& controlPoint3, const float t) {
+	Vector2 result{};
+	result =
+		((-controlPoint0 + controlPoint1 * 3.0f - controlPoint2 * 3.0f + controlPoint3) * std::powf(3.0f, t) +
+			(controlPoint0 * 2.0f - controlPoint1 * 5.0f + controlPoint2 * 4.0f - controlPoint3) * std::powf(2.0f, t) +
+			(-controlPoint0 + controlPoint2) * t + controlPoint1 * 2.0f) * 0.5f;
+
+	return result;
+}
