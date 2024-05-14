@@ -41,7 +41,12 @@ public:
 
 	uint32_t GetColor() const { return kBlockColor_[static_cast<uint32_t>(blockType_)]; }
 
+	int32_t GetDamage() const { return damage_; }
+
+	void AddDamage(const int32_t val) { damage_ += val; }
+
 private:
 	// ブロックの状態
 	BlockType blockType_ = BlockType::kNone;
+	int32_t damage_ = 0;
 };

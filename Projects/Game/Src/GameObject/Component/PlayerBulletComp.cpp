@@ -15,25 +15,30 @@ void PlayerBulletComp::Update()
 	// ぶつかっていたら返す
 	if (pHitMapComp_->hitNormal_ != Vector2::kZero) {
 
+		auto *map = GameManager::GetInstance()->GetMap();
+		POINTS hitPos;
+
 		const Vector2 centor = pLocalBodyComp_->localPos_ + Vector2::kIdentity * 0.5f;
 		// 右側に移動していた場合
 		if (pHitMapComp_->hitNormal_.x < 0) {
 
-			POINTS rightSide{
+			hitPos = {
 				.x = static_cast<int16_t>(centor.x + pLocalBodyComp_->size_.x / 2),
 				.y = static_cast<int16_t>(centor.y)
 			};
-
-			GameManager::GetInstance()->GetMap()->BreakBlock(rightSide);
 		}
 		else {
 
-			POINTS leftSide{
+			hitPos = {
 				.x = static_cast<int16_t>(centor.x - pLocalBodyComp_->size_.x / 2),
 				.y = static_cast<int16_t>(centor.y)
 			};
+		}
 
-			GameManager::GetInstance()->GetMap()->BreakBlock(leftSide);
+		auto &block = map->GetBlockMap()->at(hitPos.y)[hitPos.x];
+		block.AddDamage(1);
+		if (block.GetDamage() > 3) {
+			map->BreakBlock(hitPos);
 		}
 
 		object_.SetActive(false);

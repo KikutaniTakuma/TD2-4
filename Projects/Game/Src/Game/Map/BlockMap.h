@@ -13,6 +13,7 @@
 #include "SoLib/Math/Angle.h"
 #include <functional>
 #include <Game/Block/Block.h>
+#include "Drawers/DrawerManager.h"
 
 class BlockMap {
 public:
@@ -179,4 +180,8 @@ private:
 
 	// 床のクラス
 	std::unique_ptr<Ground> ground_;
+
+
+	Texture2D *pTexture2d_ = nullptr;
+
 };

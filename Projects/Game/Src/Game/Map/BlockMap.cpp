@@ -7,6 +7,8 @@
 
 void BlockMap::Init()
 {
+
+	pTexture2d_ = DrawerManager::GetInstance()->GetTexture2D();
 	blockMap_ = std::make_unique<Block2dMap>();
 	blockStatesMap_ = std::make_unique<Map2dMap<std::unique_ptr<BlockStatus>>>();
 
@@ -32,10 +34,11 @@ void BlockMap::Update([[maybe_unused]] const float deltaTime) {
 }
 
 void BlockMap::Draw([[maybe_unused]] const Camera &camera) const {
+	uint32_t whiteTex = TextureManager::GetInstance()->GetWhiteTex();
 	for (const auto &modelStateArr : modelStateMap_) {
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
-				model_->Draw(modelState->transMat, camera.GetViewOthographics(), modelState->color, BlendType::kNone);
+				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, modelState->color, BlendType::kNone);
 			}
 		}
 	}
@@ -87,13 +90,13 @@ void BlockMap::TransferBoxData()
 			// ボックスが存在する場合は実体を作成
 			if (box) {
 				// 描画先の座標
-				const Vector2 drawPos = GetGlobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) } + (*blockStatesMap_)[yi][xi]->drawOffset_);
+				const Vector2 drawPos = GetGlobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) } /*+ (*blockStatesMap_)[yi][xi]->drawOffset_*/);
 				// もしすでに実在したら生成しない
 				if (not modelState) {
 					modelState = std::make_unique<MatrixModelState>();
 
 				}
-				modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y } *0.5f, Vector3::kZero, { drawPos, -1.f });
+				modelState->transMat = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { drawPos, -5.f });
 				// 色を指定する
 				modelState->color = box.GetColor();
 			}
