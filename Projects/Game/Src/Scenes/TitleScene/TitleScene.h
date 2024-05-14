@@ -52,11 +52,13 @@ public:
 	/*CatmullRom*/
 	std::vector<std::unique_ptr<Line>> lines_;
 
+	const Vector2 minusPos_ = { -540.0f,-260.0f };
+
 	Vector2 controlPoint_[4] = {
-		{100.0f,100.0f},
-		{400.0f,400.0f},
-		{700.0f,100.0f},
-		{1000.0f,200.0f}
+		{100.0f + minusPos_.x,100.0f + minusPos_.y},
+		{400.0f + minusPos_.x,400.0f + minusPos_.y},
+		{700.0f + minusPos_.x,100.0f + minusPos_.y},
+		{1000.0f + minusPos_.x,200.0f + minusPos_.y}
 	};
 
 	std::vector<Vector2> ControlPoints_;

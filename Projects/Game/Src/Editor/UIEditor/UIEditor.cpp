@@ -63,6 +63,7 @@ void UIEditor::Update(const BaseScene::ID id){
 			continue;
 
 		for (size_t j = 0; j < texies_[i].size(); j++){
+			texies_[i][j]->transform.translate.z = 1.0f;
 			texies_[i][j]->transform.CalcMatrix();
 			texies_[i][j]->uvTrnasform.CalcMatrix();
 		}

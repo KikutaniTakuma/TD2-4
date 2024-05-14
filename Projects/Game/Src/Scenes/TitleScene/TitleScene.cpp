@@ -16,7 +16,7 @@ TitleScene::TitleScene():
 void TitleScene::Initialize(){
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
 
-	currentCamera_->pos = { 540.f, 260.f ,-1.0f };
+	currentCamera_->pos = { 0.f, 0.f ,-1.0f };
 
 	titleBGM_ = audioManager_->Load("./Resources/Sounds/BGM/title.mp3");
 	beginGame_ = audioManager_->Load("./Resources/Sounds/SE/choice.mp3");
@@ -24,7 +24,7 @@ void TitleScene::Initialize(){
 
 	for (int i = 0; i < 4; i++) {
 		std::unique_ptr<Tex2DState> setTex_ = std::make_unique<Tex2DState>();
-		setTex_->color = i["color"];
+		setTex_->color = 0x000000ff;
 		setTex_->transform.scale = { 10.0f, 10.0f };
 		setTex_->transform.translate = { 10.0f, 10.0f };
 		setTex_->uvTrnasform.scale = { 0.0f, 0.0f };
@@ -123,9 +123,9 @@ void TitleScene::Draw(){
 	drawCount_ = 0;
 
 	//tex_->Draw(camera_->GetViewOthographics());
-	//UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	//sphere_->Draw(camera_->GetViewOthographics());
 	//sphere2_->Draw(camera_->GetViewOthographics());
+	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 
 	for (size_t j = 0; j < spheres_.size(); j++) {
 		tex2D_->Draw(spheres_[j]->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
