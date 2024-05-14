@@ -30,6 +30,10 @@ void FlaskParticle::Update() {
             particles_[index].activeTime = 0.0f;
             particles_[index].scale = Lamb::Random(scaleMin, scaleMax);
         }
+
+        curentParticleIndex_ += appParticle;
+
+
     }
 }
 
