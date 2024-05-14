@@ -30,7 +30,7 @@ void PlayerBulletComp::Update()
 		else {
 
 			hitPos = {
-				.x = static_cast<int16_t>(centor.x - pLocalBodyComp_->size_.x / 2),
+				.x = static_cast<int16_t>(centor.x - pLocalBodyComp_->size_.x / 2 - 0.05f),
 				.y = static_cast<int16_t>(centor.y)
 			};
 		}
@@ -38,7 +38,7 @@ void PlayerBulletComp::Update()
 		auto &block = map->GetBlockMap()->at(hitPos.y)[hitPos.x];
 		block.AddDamage(1);
 		if (block.GetDamage() > 3) {
-			map->BreakBlock(hitPos);
+			map->BreakChainBlocks(hitPos);
 		}
 
 		object_.SetActive(false);

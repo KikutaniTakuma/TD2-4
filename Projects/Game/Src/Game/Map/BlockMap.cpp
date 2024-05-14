@@ -230,6 +230,7 @@ void BlockMap::BreakBlock(POINTS localPos)
 	auto &targetBlock = blockMap_->at(localPos.y).at(localPos.x);
 	// ブロックがあるなら破壊
 	if (targetBlock) {
+		targetBlock.SetDamage(0);
 		targetBlock.SetBlockType(Block::BlockType::kNone);
 		blockStatesMap_->at(localPos.y).at(localPos.x).reset();
 

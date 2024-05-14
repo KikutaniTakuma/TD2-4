@@ -26,6 +26,11 @@ public:
 		0x00FFFFFF,
 		0xFF00FFFF,
 	};
+	inline static const std::array<Mat4x4, 3> kUvMatrix_{
+		Mat4x4::MakeScalar({1.f / 3.f,1,1}),
+		Mat4x4::MakeScalar({1.f / 3.f,1,1}) * Mat4x4::MakeTranslate({1.f / 3.f,0,0}),
+		Mat4x4::MakeScalar({1.f / 3.f,1,1}) * Mat4x4::MakeTranslate({2.f / 3.f,0,0}),
+	};
 
 public:
 	Block(BlockType type = BlockType::kNone) : blockType_(type) {}
@@ -43,7 +48,10 @@ public:
 
 	int32_t GetDamage() const { return damage_; }
 
-	void AddDamage(const int32_t val) { damage_ += val; }
+	int32_t AddDamage(const int32_t val) { damage_ += val; return damage_; }
+	void SetDamage(const int32_t val) { damage_ = val; }
+
+	const Mat4x4 &GetDamageUv() const { return kUvMatrix_[damage_]; }
 
 private:
 	// ブロックの状態
