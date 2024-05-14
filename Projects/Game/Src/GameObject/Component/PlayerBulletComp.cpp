@@ -37,7 +37,7 @@ void PlayerBulletComp::Update()
 
 		auto &block = map->GetBlockMap()->at(hitPos.y)[hitPos.x];
 		block.AddDamage(1);
-		if (block.GetDamage() > 3) {
+		if (block.GetDamage() >= 3) {
 			map->BreakChainBlocks(hitPos);
 		}
 
