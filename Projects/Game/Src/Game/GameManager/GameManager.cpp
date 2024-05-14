@@ -81,6 +81,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	player_->Update(deltaTime);
 
 	spawner_->Update(deltaTime);
+	for (auto &bullet : plBulletList_) {
+		bullet->Update(deltaTime);
+	}
 	for (auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Update(deltaTime);
 	}
@@ -117,6 +120,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	// 落下ブロックの破棄
 	std::erase_if(fallingBlocks_, [](const auto &itr) ->bool { return not itr->GetActive(); });
+	std::erase_if(plBulletList_, [](const auto &itr) ->bool { return not itr->GetActive(); });
 
 	// 小人の破棄
 	{
@@ -187,6 +191,9 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	blockMap_->Draw(camera);
 	player_->Draw(camera);
 	spawner_->Draw(camera);
+	for (const auto &bullet : plBulletList_) {
+		bullet->Draw(camera);
+	}
 	for (const auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Draw(camera);
 	}
@@ -215,6 +222,20 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 #endif // _DEBUG
 
 	return isChange;
+}
+
+GameObject *GameManager::AddPlayerBullet(Vector2 centerPos, Vector2 velocity)
+{
+	std::unique_ptr<GameObject> bullet = std::make_unique<GameObject>();
+
+	Lamb::SafePtr localBodyComp = bullet->AddComponent<LocalBodyComp>();
+
+	localBodyComp->localPos_ = centerPos;
+	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
+	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+	plBulletList_.push_back(std::move(bullet));
+
+	return plBulletList_.back().get();
 }
 
 

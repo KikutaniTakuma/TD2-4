@@ -51,6 +51,11 @@ void PlayerComp::OnCollision([[maybe_unused]] GameObject *const other)
 	pHealthComp_->AddHealth(-1.f);
 }
 
+void PlayerComp::FireBullet()
+{
+	GameManager::GetInstance()->AddPlayerBullet(pLocalBodyComp_->localPos_, Vector2::kXIdentity * (facing_ * 5.f));
+}
+
 void PlayerComp::Input()
 {
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
@@ -78,6 +83,9 @@ void PlayerComp::Input()
 		pPicker_->PickUp(facing_);
 	}
 
+	if (key->Pushed(DIK_RETURN)) {
+		FireBullet();
+	}
 
 	// 着地している場合
 	if (pHitMapComp_->hitNormal_.y > 0)

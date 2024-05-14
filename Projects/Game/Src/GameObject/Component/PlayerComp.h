@@ -24,6 +24,8 @@ private:
 
 	float invincibleTime_ = 0.f;
 
+	void FireBullet();
+
 	void Input();
 	inline static const Vector2 kGrovity_{ 0,-40.f };
 
