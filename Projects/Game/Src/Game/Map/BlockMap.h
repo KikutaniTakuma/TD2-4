@@ -181,6 +181,10 @@ private:
 	// 床のクラス
 	std::unique_ptr<Ground> ground_;
 
+	//ブロックのテクスチャ
+	//赤、青、緑、黄の四種(順番も)
+	std::array<uint32_t, 4> textures_;
+
 
 	Texture2D *pTexture2d_ = nullptr;
 

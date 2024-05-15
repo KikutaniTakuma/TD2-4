@@ -19,6 +19,12 @@ void BlockMap::Init()
 	ground_ = std::make_unique<Ground>();
 	ground_->Init();
 
+	textures_ = {
+		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/lizardTailBlock.png"),
+		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/waterBlock.png"),
+		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/herbBlock.png"),
+		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/mineralBlock.png"),
+	};
 }
 
 void BlockMap::Update([[maybe_unused]] const float deltaTime) {
@@ -34,11 +40,32 @@ void BlockMap::Update([[maybe_unused]] const float deltaTime) {
 }
 
 void BlockMap::Draw([[maybe_unused]] const Camera &camera) const {
-	uint32_t whiteTex = TextureManager::GetInstance()->GetWhiteTex();
+	uint32_t blockTex = 0;
+	uint32_t blockColor = 0xFFFFFFFF;
 	for (const auto &modelStateArr : modelStateMap_) {
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
-				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, modelState->color, BlendType::kNone);
+				if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kRed)]) {
+					blockTex = textures_[0];
+					blockColor = 0xFFFFFFFF;
+				}
+				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kBlue)]){
+					blockTex = textures_[1];
+					blockColor = 0xFFFFFFFF;
+				}
+				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kGreen)]) {
+					blockTex = textures_[2];
+					blockColor = 0xFFFFFFFF;
+				}
+				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kYellow)]) {
+					blockTex = textures_[3];
+					blockColor = 0xFFFFFFFF;
+				}
+				else {
+					blockTex = TextureManager::GetInstance()->GetWhiteTex();
+					blockColor = modelState->color;
+				}
+				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), blockTex, blockColor, BlendType::kNone);
 			}
 		}
 	}
