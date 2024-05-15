@@ -35,21 +35,6 @@ void DwarfComp::Start()
 void DwarfComp::Update()
 {
 
-	// 持ち運び
-	{
-		// 現在の座標
-		// Vector2 localPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * 0.5f;
-		//// 足元のブロックの座標
-		// Vector2 downPos = localPos - Vector2::kYIdentity;
-
-		//// 足元にブロックがあるなら
-		// if (LocalBodyComp::pMap_->GetBoxType(downPos) != Block::BlockType::kNone)
-		//{
-		//	// 持ち上げる
-		//	//pPickUpComp_->PickupTargetBlock(downPos);
-		// }
-	}
-
 	// もし埋まってたら上に登る
 	ClimbUp();
 	// 登ってない場合

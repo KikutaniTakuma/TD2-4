@@ -1,15 +1,15 @@
 #pragma once
-#include "../SoLib/Containers/Singleton.h"
 #include "../SoLib/Containers/Array2D.h"
+#include "../SoLib/Containers/Singleton.h"
 
-#include <memory>
 #include <bitset>
-#include <list>
 #include <cstdint>
+#include <list>
+#include <memory>
 
 #include "../LambEngine/Input/Input.h"
-#include "Game/Map/BlockMap.h"
 #include "Game/BlockGauge.h"
+#include "Game/Map/BlockMap.h"
 
 #include "GameObject/GameObject.h"
 #include <Drawers/Model/Model.h>
@@ -17,14 +17,15 @@
 #include <Game/GameEffectManager/GameEffectManager.h>
 
 // ダメージ判定
-struct DamageArea {
+struct DamageArea
+{
 	Vector2 centerPos_;
 	Vector2 size_;
 };
 
-class GameManager : public SoLib::Singleton<GameManager> {
+class GameManager : public SoLib::Singleton<GameManager>
+{
 private:
-
 	friend SoLib::Singleton<GameManager>;
 	GameManager() = default;
 	GameManager(const GameManager &) = delete;
@@ -32,11 +33,9 @@ private:
 	~GameManager() = default;
 
 public:
-
 	inline static const char *kDwarfModelName = "Resources/Cube.obj";
 
 public:
-
 	void Init();
 
 	void Update(const float deltaTime);
@@ -44,10 +43,7 @@ public:
 	void Draw(const Camera &camera) const;
 
 public:
-
 	bool Debug(const char *const str);
-
-
 
 	// マップのデータを取得
 	BlockMap *GetMap() { return blockMap_.get(); }
@@ -77,20 +73,20 @@ public:
 	/// @param maxWeight 持つことのできる上限値
 	/// @param isPowerful 上にブロックがあっても持ち上げるか
 	/// @return [ 持ちあげたブロック, ブロックの中心座標 ]
-	//std::pair<PickUpBlockData, Vector2> PickUp(Vector2 localPos, int hasBlockWeight, int maxWeight = 6, bool isPowerful = false);
+	// std::pair<PickUpBlockData, Vector2> PickUp(Vector2 localPos, int hasBlockWeight, int maxWeight = 6, bool isPowerful = false);
 
 	GameEffectManager *GetGameEffect() { return gameEffectManager_.get(); }
 
-public:
+	std::unordered_set<POINTS> GetDwarfPos() const;
 
+public:
 	/// @brief 入力動作
 	void InputAction();
 
 private:
-
 	void BlockMapDropDown();
 
-	//void BreakEnemyHouse(int32_t facing, Map::HouseInfo enemyHouse)
+	// void BreakEnemyHouse(int32_t facing, Map::HouseInfo enemyHouse)
 	//{
 	//	static const Vector2  kTowerBaseThrowSpeed_ = { 0.5f, 2.f };
 	//	static const Vector2 kTowerMultipleSpeed_ = { 1.5f, 1.f };
@@ -137,5 +133,4 @@ private:
 	std::list<std::unique_ptr<GameObject>> plBulletList_;
 
 	std::unique_ptr<GameEffectManager> gameEffectManager_ = nullptr;
-
 };

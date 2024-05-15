@@ -2,23 +2,23 @@
 
 #include <fstream>
 
-#include "GameObject/Component/IvyComponent.h"
-#include "Utils/Random/Random.h"
-#include <Game/CollisionManager/Capsule/Capsule.h>
-#include <Game/CollisionManager/Collider/Collider.h>
-#include <GlobalVariables/GlobalVariables.h>
-#include <GameObject/Component/ModelComp.h>
-#include "Utils/SafePtr/SafePtr.h"
 #include "Drawers/DrawerManager.h"
 #include "GameObject/Component/FallingBlockSpawnerComp.h"
-#include <GameObject/Component/FallingBlockComp.h>
-#include <GameObject/Component/Rigidbody.h>
-#include <GameObject/Component/DwarfComp.h>
-#include <GameObject/Component/SpriteComp.h>
+#include "GameObject/Component/IvyComponent.h"
+#include "Utils/Random/Random.h"
+#include "Utils/SafePtr/SafePtr.h"
+#include <Game/CollisionManager/Capsule/Capsule.h>
+#include <Game/CollisionManager/Collider/Collider.h>
 #include <GameObject/Component/DwarfAnimator.h>
+#include <GameObject/Component/DwarfComp.h>
 #include <GameObject/Component/DwarfShakeComp.h>
-#include <GameObject/Component/PlayerComp.h>
+#include <GameObject/Component/FallingBlockComp.h>
+#include <GameObject/Component/ModelComp.h>
 #include <GameObject/Component/PlayerBulletComp.h>
+#include <GameObject/Component/PlayerComp.h>
+#include <GameObject/Component/Rigidbody.h>
+#include <GameObject/Component/SpriteComp.h>
+#include <GlobalVariables/GlobalVariables.h>
 
 void GameManager::Init()
 {
@@ -74,8 +74,6 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	blockMap_->Update(deltaTime);
 
-	blockMap_->BreakChainBlocks({ 0,0 });
-
 	// 浮いているブロックを落とす
 	BlockMapDropDown();
 
@@ -99,7 +97,6 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		// 落下しているブロックの座標
 		Lamb::SafePtr blockBody = fallComp->pLocalPos_;
 
-
 		if (fallingBlock->GetActive()) {
 			Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
 			const Vector2 centorDiff = blockBody->localPos_ - playerBody->localPos_;
@@ -107,7 +104,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
 				fallingBlock->OnCollision(player_.get());
 				player_->OnCollision(fallingBlock.get());
-				player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{ SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f });
+				player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f});
 			}
 		}
 
@@ -116,18 +113,16 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType());
 			fallingBlock->SetActive(false);
 		}
-
 	}
 
 	// 落下ブロックの破棄
-	std::erase_if(fallingBlocks_, [](const auto &itr) ->bool { return not itr->GetActive(); });
-	std::erase_if(plBulletList_, [](const auto &itr) ->bool { return not itr->GetActive(); });
+	std::erase_if(fallingBlocks_, [](const auto &itr) -> bool { return not itr->GetActive(); });
+	std::erase_if(plBulletList_, [](const auto &itr) -> bool { return not itr->GetActive(); });
 
 	// 小人の破棄
 	{
 		for (auto dwarfItr = dwarfList_.begin(); dwarfItr != dwarfList_.end();) {
 			Lamb::SafePtr dwarfObject = dwarfItr->get();
-
 
 			// もし死んでいたら消す
 			if (not dwarfObject->GetActive()) {
@@ -140,12 +135,10 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 				continue;
 			}
 
-
 			// 何もなかったら次へ
 			++dwarfItr;
 		}
 	}
-
 
 	for (auto &dwarf : dwarfList_) {
 
@@ -163,10 +156,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 				dwarf->SetActive(false);
 
 				break;
-
 			}
-
-
 		}
 	}
 
@@ -204,7 +194,6 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	blockGauge_->Draw(camera);
 
 	gameEffectManager_->Draw(camera);
-
 }
 
 bool GameManager::Debug([[maybe_unused]] const char *const str)
@@ -240,7 +229,6 @@ GameObject *GameManager::AddPlayerBullet(Vector2 centerPos, Vector2 velocity)
 	return plBulletList_.back().get();
 }
 
-
 GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity)
 {
 	std::unique_ptr<GameObject> addBlock = std::make_unique<GameObject>();
@@ -266,10 +254,8 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 {
 
-
 	// ダメージ判定があるならダメージ判定を追加
-	if (hasDamage)
-	{
+	if (hasDamage) {
 		DamageArea damage;
 		// ブロックの下側にダメージ判定を出す
 		damage.centerPos_ = centerPos - Vector2::kYIdentity * (size.y * 0.5f);
@@ -279,10 +265,9 @@ void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 		damageAreaList_.push_back(damage);
 
 		// 演出用にデータを渡す
-		gameEffectManager_->blockBreakPos_.push_back({ centerPos,size });
+		gameEffectManager_->blockBreakPos_.push_back({centerPos, size});
 
-	}
-	else {
+	} else {
 		// ブロックを設置
 		blockMap_->SetBlocks(centerPos, size, Block::BlockType::kRed);
 	}
@@ -308,7 +293,7 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	return dwarfList_.back().get();
 }
 //
-//std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, [[maybe_unused]] int hasBlockWeight, [[maybe_unused]] int maxWeight, [[maybe_unused]] bool isPowerful)
+// std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, [[maybe_unused]] int hasBlockWeight, [[maybe_unused]] int maxWeight, [[maybe_unused]] bool isPowerful)
 //{
 //
 //	// 範囲外である場合は終わる
@@ -390,6 +375,26 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 //
 //}
 
+std::unordered_set<POINTS> GameManager::GetDwarfPos() const
+{
+	std::unordered_set<POINTS> result;
+
+	result.reserve(dwarfList_.size());
+
+	for (const auto &dwarf : dwarfList_) {
+		// ドワーフの体コンポーネントを取得する
+		Lamb::SafePtr body = dwarf->GetComponent<LocalBodyComp>();
+
+		// ドワーフのマップ上の座標を取得する
+		POINTS pos = body->GetMapPos();
+
+		// データを格納する
+		result.insert(pos);
+	}
+
+	return result;
+}
+
 void GameManager::InputAction()
 {
 	{
@@ -402,7 +407,7 @@ void GameManager::InputAction()
 			spawnerComp->SetStartPos(); // 落下開始地点を設定
 		}
 		if (key->Released(DIK_DOWN)) {
-			spawnerComp->SpawnFallingBlock();	// 落下ブロックを追加
+			spawnerComp->SpawnFallingBlock(); // 落下ブロックを追加
 		}
 
 		if (key->Pushed(DIK_UP)) {
@@ -421,7 +426,6 @@ void GameManager::InputAction()
 
 		spawnerComp->MoveInput(inputSpawner);
 	}
-
 }
 
 void GameManager::BlockMapDropDown()
@@ -449,13 +453,10 @@ void GameManager::BlockMapDropDown()
 				blockMap_->GetBlockStatusMap()->at(static_cast<int32_t>(localPos.y)).at(static_cast<int32_t>(localPos.x)).reset();
 			}
 
-
 			// 最後に加算
 			index++;
 			localPos.x++;
 		}
 		localPos.y++;
 	}
-
-
 }
