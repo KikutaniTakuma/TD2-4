@@ -123,7 +123,6 @@ public:
 	static bool IsOutSide(const Vector2 localPos);
 	static bool IsOutSide(const POINTS localPos);
 
-	uint32_t BreakChainBlocks(POINTS localPos);
 
 	void BreakBlock(POINTS localPos);
 
@@ -165,8 +164,9 @@ public:
 		return Vector2{ kMapX, kMapY };
 	}
 
-private:
 	std::array<std::bitset<kMapX>, kMapY> &&FindChainBlocks(POINTS localPos, std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result = {}) const;
+
+private:
 
 private:
 	// 箱の配列 [y][x]

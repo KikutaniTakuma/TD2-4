@@ -15,7 +15,8 @@ void PlayerBulletComp::Update()
 	// ぶつかっていたら返す
 	if (pHitMapComp_->hitNormal_ != Vector2::kZero) {
 
-		auto *map = GameManager::GetInstance()->GetMap();
+		auto *gManager = GameManager::GetInstance();
+		auto *map = gManager->GetMap();
 		POINTS hitPos;
 
 		const Vector2 centor = pLocalBodyComp_->localPos_ + Vector2::kIdentity * 0.5f;
@@ -38,7 +39,7 @@ void PlayerBulletComp::Update()
 		auto &block = map->GetBlockMap()->at(hitPos.y)[hitPos.x];
 		block.AddDamage(1);
 		if (block.GetDamage() >= 3) {
-			map->BreakChainBlocks(hitPos);
+			gManager->BreakChainBlocks(hitPos);
 		}
 
 		object_.SetActive(false);

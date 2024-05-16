@@ -104,7 +104,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
 				fallingBlock->OnCollision(player_.get());
 				player_->OnCollision(fallingBlock.get());
-				player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f});
+				player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{ SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f });
 			}
 		}
 
@@ -265,9 +265,10 @@ void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 		damageAreaList_.push_back(damage);
 
 		// 演出用にデータを渡す
-		gameEffectManager_->blockBreakPos_.push_back({centerPos, size});
+		gameEffectManager_->blockBreakPos_.push_back({ centerPos, size });
 
-	} else {
+	}
+	else {
 		// ブロックを設置
 		blockMap_->SetBlocks(centerPos, size, Block::BlockType::kRed);
 	}
@@ -291,6 +292,39 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	dwarfList_.push_back(std::move(dwarf));
 	// 参照を返す
 	return dwarfList_.back().get();
+}
+
+
+std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakChainBlocks(POINTS localPos)
+{
+
+	auto dwarfPos = GetDwarfPos();
+
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, dwarfPos);
+
+	POINTS targetPos{};
+
+	for (targetPos.y = 0; targetPos.y < BlockMap::kMapY; targetPos.y++) {
+		const auto &breakLine = chainBlockMap[targetPos.y];
+		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
+			if (breakLine[targetPos.x]) {
+				blockMap_->BreakBlock(targetPos);
+			}
+		}
+	}
+
+	for (auto &dwarf : dwarfList_) {
+		auto localBody = dwarf->GetComponent<LocalBodyComp>();
+		if (localBody) {
+			POINTS mapIndex = localBody->GetMapPos();
+			// そこが破壊対象なら死ぬ
+			if (chainBlockMap[mapIndex.y][mapIndex.x]) {
+				dwarf->SetActive(false);
+			}
+		}
+	}
+
+	return std::move(chainBlockMap);
 }
 //
 // std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, [[maybe_unused]] int hasBlockWeight, [[maybe_unused]] int maxWeight, [[maybe_unused]] bool isPowerful)

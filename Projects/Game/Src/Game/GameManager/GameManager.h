@@ -79,6 +79,9 @@ public:
 
 	std::unordered_set<POINTS> GetDwarfPos() const;
 
+	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BreakChainBlocks(POINTS localPos);
+
+
 public:
 	/// @brief 入力動作
 	void InputAction();

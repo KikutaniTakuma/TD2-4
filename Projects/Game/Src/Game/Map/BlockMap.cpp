@@ -225,28 +225,6 @@ bool BlockMap::IsOutSide(const POINTS localPos)
 	return localPos.x < 0 or localPos.y < 0 or localPos.x >= BlockMap::kMapX or localPos.y >= BlockMap::kMapY;
 }
 
-uint32_t BlockMap::BreakChainBlocks(POINTS localPos)
-{
-	uint32_t result = 0;
-
-	auto dwarfPos = GameManager::GetInstance()->GetDwarfPos();
-
-	const auto &&chainBlockMap = FindChainBlocks(localPos, dwarfPos);
-
-	POINTS targetPos{};
-
-	for (targetPos.y = 0; targetPos.y < kMapY; targetPos.y++) {
-		const auto &breakLine = chainBlockMap[targetPos.y];
-		for (targetPos.x = 0; targetPos.x < kMapX; targetPos.x++) {
-			if (breakLine[targetPos.x]) {
-				BreakBlock(targetPos);
-			}
-		}
-		result += static_cast<uint32_t>(breakLine.count());
-	}
-
-	return result;
-}
 
 void BlockMap::BreakBlock(POINTS localPos)
 {
