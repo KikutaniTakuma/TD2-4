@@ -153,7 +153,7 @@ void DwarfComp::FireBullet()
 
 bool DwarfComp::GetIsDarkDwarf() const
 {
-	return std::count(updateFunc_.begin(), updateFunc_.end(), [](const auto &func)->bool {return func == &DwarfComp::FireBullet});
+	return std::count(updateFunc_.begin(), updateFunc_.end(), &DwarfComp::FireBullet);
 }
 
 // ブロックを持っていたら帰る
