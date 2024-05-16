@@ -303,6 +303,7 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 	ImGui::Begin(str);
 
 	blockMap_->Debug("BlockMap");
+	SoLib::ImGuiWidget(vFallSpan_.c_str(), &*vFallSpan_);
 
 	ImGui::End();
 
@@ -522,12 +523,12 @@ void GameManager::RandomDwarfSpawn()
 void GameManager::RandomFallBlockSpawn()
 {
 	if (not fallBlockSpawnTimer_.IsActive()) {
-		fallBlockSpawnTimer_.Start(5.f);
+		fallBlockSpawnTimer_.Start(vFallSpan_);
 		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
 		uint32_t blockType = Lamb::Random(static_cast<uint32_t>(Block::BlockType::kNone) + 1, static_cast<uint32_t>(Block::BlockType::kMax) - 1);
 
 
-		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -10, Vector2::kZero);
+		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -5, Vector2::kZero);
 	}
 }
 //
