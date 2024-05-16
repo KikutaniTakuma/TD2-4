@@ -15,19 +15,43 @@ void DwarfAnimatorComp::Init()
 	spriteAnimator_->SetAnimationNumber(3u);
 	spriteAnimator_->Start();
 
-	pSpriteComp_->SetTexture("./Resources/Enemy/slimeWalk.png");
 	Lamb::SafePtr textureManager = TextureManager::GetInstance();
-	textureManager->LoadTexture("./Resources/Enemy/slimeWallWalk.png");
-	textureManager->LoadTexture("./Resources/Enemy/badSlimAttack.png");
-	textureManager->LoadTexture("./Resources/Enemy/badSlimeWait.png");
+	textureID_[0] = textureManager->LoadTexture("./Resources/Enemy/slimeWallWalk.png");
+	textureID_[1] = textureManager->LoadTexture("./Resources/Enemy/slimeWalk.png");
+	textureID_[2] = textureManager->LoadTexture("./Resources/Enemy/badSlimAttack.png");
+	textureID_[3] = textureManager->LoadTexture("./Resources/Enemy/badSlimeWait.png");
+
+	pSpriteComp_->SetTexture("./Resources/Enemy/slimeWalk.png");
 }
 
 void DwarfAnimatorComp::Update()
 {
-	bool isClimbing = pDwarfComp_->IsClimbing();
+	bool isDrakDwarf = pDwarfComp_->GetIsDarkDwarf();
+	pDwarfComp_->AttackTimer().IsFinish();
 
-	// 0.0 ~ 1.0 の間で、1.0はギリ死なない
-	pSpriteComp_->SetTexture(isClimbing ?  "./Resources/Enemy/slimeWallWalk.png" : "./Resources/Enemy/slimeWalk.png");
+	if (isDrakDwarf) {
+		bool isAttack = pDwarfComp_->AttackTimer().IsFinish();
+		if (isAttack) {
+			pSpriteComp_->SetTexture(textureID_[2]);
+			spriteAnimator_->SetLoopAnimation(false);
+			spriteAnimator_->SetDuration(0.25f);
+			spriteAnimator_->Start();
+		}
+		else if(not spriteAnimator_->GetIsActive()){
+			pSpriteComp_->SetTexture(textureID_[3]);
+			spriteAnimator_->SetLoopAnimation(true);
+			spriteAnimator_->SetDuration(0.35f);
+			spriteAnimator_->Start();
+		}
+	}
+	else {
+		bool isClimbing = pDwarfComp_->IsClimbing();
+		uint32_t textureIndex = (isClimbing ? 0 : 1);
 
+		spriteAnimator_->SetDuration(0.25f);
+
+		// 0.0 ~ 1.0 の間で、1.0はギリ死なない
+		pSpriteComp_->SetTexture(textureID_[textureIndex]);
+	}
 	spriteAnimator_->FlipHorizontal(pDwarfComp_->GetFacing() < 0);
 }

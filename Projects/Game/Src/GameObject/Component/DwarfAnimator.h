@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include "../GameObject.h"
 
 #include "Utils/SafePtr/SafePtr.h"
@@ -25,4 +26,5 @@ private:
 
 	Lamb::SafePtr<Tex2DAniamtor> spriteAnimator_ = nullptr;
 
+	std::array<uint32_t, 4> textureID_;
 };
