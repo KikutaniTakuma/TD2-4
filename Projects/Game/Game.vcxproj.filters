@@ -176,6 +176,9 @@
     <ClCompile Include="Src\GameObject\Component\EnemyBulletComp.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\FlaskParticle\FlaskParticle.cpp">
+      <Filter>Game\FlaskParticle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -303,6 +306,9 @@
     </Filter>
     <Filter Include="Game\Manager\EffectManager">
       <UniqueIdentifier>{c0884d13-d4c2-4801-8536-c9b6c2c2199e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\FlaskParticle">
+      <UniqueIdentifier>{6697558b-a808-424a-9fc3-805e0491fdfd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -491,6 +497,9 @@
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\EnemyBulletComp.h">
       <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\FlaskParticle\FlaskParticle.h">
+      <Filter>Game\FlaskParticle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
