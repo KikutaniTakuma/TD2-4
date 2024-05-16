@@ -40,10 +40,7 @@ void GameManager::Init()
 	LocalBodyComp::pMap_ = GetMap();
 
 	spawner_ = std::make_unique<GameObject>();
-	/*{
-		Lamb::SafePtr modelComp = player_->AddComponent<ModelComp>();
-		modelComp->AddBone("Body", drawerManager->GetModel("Resources/Cube.obj"));
-	}*/
+	
 	{
 		Lamb::SafePtr spriteComp = spawner_->AddComponent<SpriteComp>();
 		spriteComp->SetTexture("./Resources/uvChecker.png");
@@ -85,6 +82,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	}
 	else {
 		blockMap_->SetBreakMap({});
+		blockMap_->SetBreakBlockMap({});
 	}
 
 	//if (not blockBreakTimer_.IsActive()) {
@@ -425,11 +423,18 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 
 	POINTS targetPos{};
 
+
+	// 壊れたブロックだけのデータ
+	decltype(chainBlockMap) breakBlock = {};
+
 	for (targetPos.y = 0; targetPos.y < BlockMap::kMapY; targetPos.y++) {
 		const auto &breakLine = chainBlockMap[targetPos.y];
 		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
 			if (breakLine[targetPos.x]) {
-				blockMap_->BreakBlock(targetPos);
+				if (blockMap_->GetBlockType(targetPos) != Block::BlockType::kNone) {
+					breakBlock[targetPos.y][targetPos.x] = true;
+					blockMap_->BreakBlock(targetPos);
+				}
 			}
 		}
 	}
@@ -444,6 +449,9 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 			}
 		}
 	}
+
+
+	blockMap_->SetBreakBlockMap(breakBlock);
 
 	blockMap_->SetBreakMap(chainBlockMap);
 

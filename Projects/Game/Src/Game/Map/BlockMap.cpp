@@ -65,7 +65,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), blockTex, 0xFFFFFFFF, BlendType::kNone);
 			}
 			// 破壊フラグが立っていたら
-			if (breakMap_[yi][xi]) {
+			if (breakBlockMap_[yi][xi]) {
 				Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos({static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
 
 				pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, 0xFFFFFFFF, BlendType::kNone);
