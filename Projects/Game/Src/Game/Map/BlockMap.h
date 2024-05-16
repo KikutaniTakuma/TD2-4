@@ -166,7 +166,7 @@ public:
 		return Vector2{ kMapX, kMapY };
 	}
 
-	std::array<std::bitset<kMapX>, kMapY> &&FindChainBlocks(POINTS localPos, std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result = {}) const;
+	std::array<std::bitset<kMapX>, kMapY> &&FindChainBlocks(POINTS localPos, const std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result = {}) const;
 
 	void SetBreakMap(const std::array<std::bitset<kMapX>, kMapY> &map) { breakMap_ = map; }
 	const std::array<std::bitset<kMapX>, kMapY> &GetBreakMap() const { return breakMap_; }

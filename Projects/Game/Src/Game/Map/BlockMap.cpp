@@ -243,7 +243,7 @@ void BlockMap::BreakBlock(POINTS localPos)
 		blockStatesMap_->at(localPos.y).at(localPos.x).reset();
 	}
 }
-std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BlockMap::FindChainBlocks(POINTS localPos, std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result) const
+std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BlockMap::FindChainBlocks(POINTS localPos, const std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result) const
 {
 	static constexpr std::array<POINTS, 4u> kMoveDir{
 		{{-1, 0},

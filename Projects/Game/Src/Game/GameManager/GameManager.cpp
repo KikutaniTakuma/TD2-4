@@ -408,9 +408,8 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 		blockBreakTimer_.Start(vBreakStopTime_);
 
 	}
-	auto dwarfPos = GetDwarfPos();
 
-	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, dwarfPos);
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, GetDwarfPos());
 
 	POINTS targetPos{};
 
@@ -444,9 +443,7 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::HitChai
 		GetMap()->SetDamageColor(block.GetColor());
 	}
 
-	auto dwarfPos = GetDwarfPos();
-
-	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, dwarfPos);
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, GetDwarfPos());
 
 	GetMap()->SetHitMap(chainBlockMap);
 
