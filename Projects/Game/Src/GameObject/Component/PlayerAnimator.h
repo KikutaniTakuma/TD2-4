@@ -39,6 +39,9 @@ private:
 	bool isAttackAnimation_;
 
 	std::unique_ptr<Particle> haveParticle_;
+	std::unique_ptr<Particle> shotParticle_;
 
 	Lamb::Flg isPicking_;
+
+	Lamb::Flg isShoting_;
 };

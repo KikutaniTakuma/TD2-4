@@ -25,6 +25,8 @@ void PlayerAnimatorComp::Init()
 
 	haveParticle_ = std::make_unique<Particle>();
 	haveParticle_->LoadSettingDirectory("MagicHand");
+	shotParticle_ = std::make_unique<Particle>();
+	shotParticle_->LoadSettingDirectory("Magic");
 }
 
 void PlayerAnimatorComp::Update()
@@ -46,7 +48,7 @@ void PlayerAnimatorComp::Update()
 		pSpriteComp_->SetTexture("./Resources/Player/witchShot.png");
 		isAttackAnimation_ = true;
 	}
-	else if(not isAttack and not isAttackAnimation_){
+	else if (not isAttack and not isAttackAnimation_) {
 		if (pPlayerComp_->GetInputVec().x == 0.0f) {
 			pSpriteComp_->SetTexture("./Resources/Player/witchWait.png");
 			spriteAnimator_->SetDuration(0.5f);
@@ -72,10 +74,28 @@ void PlayerAnimatorComp::Update()
 		haveParticle_->emitterPos = pPlayerPickerComp_->GetBlockAffine().GetTranslate();
 	}
 
+	isShoting_ = isAttackAnimation_;
+	if (isShoting_.OnEnter()) {
+		shotParticle_->ParticleStart(transform_.translate - Vector3::kZIdentity * 50, Vector2::kIdentity);
+	}
+	else if (isShoting_.OnExit()) {
+		shotParticle_->ParticleStop();
+	}
+	if (isShoting_) {
+		shotParticle_->emitterPos = transform_.translate - Vector3::kZIdentity * 50;
+	}
+
+
+	shotParticle_->Update();
+
 	haveParticle_->Update();
 }
 
-void PlayerAnimatorComp::Draw(const Camera& camera) const {
+void PlayerAnimatorComp::Draw(const Camera &camera) const {
+	shotParticle_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics()
+	);
 	haveParticle_->Draw(
 		camera.rotate,
 		camera.GetViewOthographics()
