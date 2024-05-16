@@ -109,7 +109,7 @@ void PlayerComp::Input()
 	if (pHitMapComp_->hitNormal_.y > 0)
 	{
 		if (key->Pushed(DIK_SPACE)) {
-			pLocalRigidbody_->ApplyInstantForce(Vector2::kYIdentity * 14.f);
+			pLocalRigidbody_->ApplyInstantForce(Vector2::kYIdentity * 13.f);
 		}
 	}
 	Vector2 velocity = pLocalRigidbody_->GetVelocity();

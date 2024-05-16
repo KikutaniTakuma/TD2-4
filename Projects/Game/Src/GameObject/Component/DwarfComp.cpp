@@ -138,6 +138,8 @@ void DwarfComp::ChangeMovementTarget()
 
 void DwarfComp::FireBullet()
 {
+	GameManager::GetInstance()->GetPlayer();
+
 	timer_.Update(GetDeltaTime());
 	if (not timer_.IsActive()) {
 

@@ -16,7 +16,7 @@ public:
 	// 移動の減少値
 	inline static const float kMovementResistance_ = 0.1f;
 
-	inline static const float kMovementMul_ = 2.5f;
+	inline static const float kMovementMul_ = 1.5f;
 
 public:
 	using IComponent::IComponent;

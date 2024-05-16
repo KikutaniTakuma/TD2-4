@@ -19,6 +19,8 @@ public:
 
 	bool IsPicking() const { return pickingBlock_; }
 
+	const Mat4x4 &GetBlockAffine() const { return affine_; }
+
 private:
 
 	inline static Lamb::SafePtr<Texture2D> pTexture_ = nullptr;

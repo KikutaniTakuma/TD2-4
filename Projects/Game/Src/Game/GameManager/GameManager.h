@@ -98,6 +98,8 @@ public:
 
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }
 
+	GameObject *GetPlayer() { return player_.get(); }
+
 public:
 	/// @brief 入力動作
 	void InputAction();
@@ -118,7 +120,7 @@ private:
 
 	std::unique_ptr<BlockGauge> blockGauge_ = nullptr;
 
-	std::unique_ptr<GameObject> spawner_;
+	//std::unique_ptr<GameObject> spawner_;
 
 	std::unique_ptr<GameObject> player_;
 

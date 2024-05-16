@@ -44,9 +44,9 @@ void GameManager::Init()
 	LocalBodyComp::pGameManager_ = this;
 	LocalBodyComp::pMap_ = GetMap();
 
-	spawner_ = std::make_unique<GameObject>();
+	//spawner_ = std::make_unique<GameObject>();
 
-	{
+	/*{
 		Lamb::SafePtr spriteComp = spawner_->AddComponent<SpriteComp>();
 		spriteComp->SetTexture("./Resources/uvChecker.png");
 		spriteComp->CalcTexUv();
@@ -55,7 +55,7 @@ void GameManager::Init()
 	{
 		Lamb::SafePtr playerComp = spawner_->AddComponent<FallingBlockSpawnerComp>();
 		playerComp->SetGauge(blockGauge_.get());
-	}
+	}*/
 
 	player_ = std::make_unique<GameObject>();
 	player_->AddComponent<PlayerComp>();
@@ -85,6 +85,8 @@ void GameManager::Init()
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
 {
+	Debug("GameManager");
+
 	// 演出用のデータの破棄
 	gameEffectManager_->Clear();
 
@@ -127,7 +129,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	player_->Update(localDeltaTime);
 
-	spawner_->Update(localDeltaTime);
+	//spawner_->Update(localDeltaTime);
 	for (auto &bullet : plBulletList_) {
 		bullet->Update(localDeltaTime);
 	};
@@ -261,7 +263,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	blockGauge_->Update(localDeltaTime);
 	//}
-	gameEffectManager_->fallingBlock_ = spawner_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
+	//gameEffectManager_->fallingBlock_ = spawner_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
 
 	gameEffectManager_->Update(deltaTime);
 
@@ -273,7 +275,7 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 {
 	blockMap_->Draw(camera);
 	player_->Draw(camera);
-	spawner_->Draw(camera);
+	//spawner_->Draw(camera);
 	for (const auto &bullet : plBulletList_) {
 		bullet->Draw(camera);
 	}
@@ -303,7 +305,7 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 
 	ImGui::Begin(str);
 
-	blockMap_->Debug("BlockMap");
+	//blockMap_->Debug("BlockMap");
 	SoLib::ImGuiWidget(vFallSpan_.c_str(), &*vFallSpan_);
 
 	ImGui::End();
@@ -472,12 +474,14 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 		auto localBody = dwarf->GetComponent<LocalBodyComp>();
 		if (localBody) {
 			POINTS mapIndex = localBody->GetMapPos();
-			// そこが破壊対象なら死ぬ
-			if (chainBlockMap[mapIndex.y][mapIndex.x]) {
-				Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
-				audio->Start(0.2f, false);
+			if (not BlockMap::IsOutSide(mapIndex)) {
+				// そこが破壊対象なら死ぬ
+				if (chainBlockMap[mapIndex.y][mapIndex.x]) {
+					Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
+					audio->Start(0.2f, false);
 
-				dwarf->SetActive(false);
+					dwarf->SetActive(false);
+				}
 			}
 		}
 	}
@@ -649,32 +653,32 @@ void GameManager::InputAction()
 {
 	{
 		// スポナーのコンポーネント
-		Lamb::SafePtr spawnerComp = spawner_->GetComponent<FallingBlockSpawnerComp>();
-		Lamb::SafePtr key = input_->GetKey();
+		//Lamb::SafePtr spawnerComp = spawner_->GetComponent<FallingBlockSpawnerComp>();
+		//Lamb::SafePtr key = input_->GetKey();
 
 		// DIK_DOWN を押したときに実行
-		if (key->Pushed(DIK_DOWN)) {
-			spawnerComp->SetStartPos(); // 落下開始地点を設定
-		}
-		if (key->Released(DIK_DOWN)) {
-			spawnerComp->SpawnFallingBlock(); // 落下ブロックを追加
-		}
+		//if (key->Pushed(DIK_DOWN)) {
+		//	spawnerComp->SetStartPos(); // 落下開始地点を設定
+		//}
+		//if (key->Released(DIK_DOWN)) {
+		//	spawnerComp->SpawnFallingBlock(); // 落下ブロックを追加
+		//}
 
-		if (key->Pushed(DIK_UP)) {
-			spawnerComp->fallBlockType_ = static_cast<Block::BlockType>(static_cast<uint32_t>(spawnerComp->fallBlockType_.GetBlockType()) + 1);
-			if (not spawnerComp->fallBlockType_) {
-				spawnerComp->fallBlockType_ = Block::BlockType::kRed;
-			}
-		}
+		//if (key->Pushed(DIK_UP)) {
+		//	spawnerComp->fallBlockType_ = static_cast<Block::BlockType>(static_cast<uint32_t>(spawnerComp->fallBlockType_.GetBlockType()) + 1);
+		//	if (not spawnerComp->fallBlockType_) {
+		//		spawnerComp->fallBlockType_ = Block::BlockType::kRed;
+		//	}
+		//}
 
-		// スポナーに付与する移動方向
-		int32_t inputSpawner{};
+		//// スポナーに付与する移動方向
+		//int32_t inputSpawner{};
 
-		// 横方向の移動
-		inputSpawner -= key->Pushed(DIK_LEFT);
-		inputSpawner += key->Pushed(DIK_RIGHT);
+		//// 横方向の移動
+		//inputSpawner -= key->Pushed(DIK_LEFT);
+		//inputSpawner += key->Pushed(DIK_RIGHT);
 
-		spawnerComp->MoveInput(inputSpawner);
+		//spawnerComp->MoveInput(inputSpawner);
 	}
 }
 
