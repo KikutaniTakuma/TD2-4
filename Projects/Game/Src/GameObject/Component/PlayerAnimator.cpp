@@ -8,6 +8,7 @@ void PlayerAnimatorComp::Init()
 	pSpriteComp_ = object_.AddComponent<SpriteComp>();			// 描画を自動で行う
 	pAnimComp_ = object_.AddComponent<SpriteAnimatorComp>();	// UpdateとUV行列の転送を自動で行う
 	pPlayerPickerComp_ = object_.AddComponent<PlayerBlockPickerComp>();
+	pMapHitComp_ = object_.AddComponent<LocalMapHitComp>();
 
 	object_.GetComponent<LocalBodyComp>()->drawScale_ = 2.0f;
 
@@ -27,6 +28,8 @@ void PlayerAnimatorComp::Init()
 	haveParticle_->LoadSettingDirectory("MagicHand");
 	shotParticle_ = std::make_unique<Particle>();
 	shotParticle_->LoadSettingDirectory("Magic");
+	smokeParticle_ = std::make_unique<Particle>();
+	smokeParticle_->LoadSettingDirectory("Smoke");
 }
 
 void PlayerAnimatorComp::Update()
@@ -85,6 +88,17 @@ void PlayerAnimatorComp::Update()
 		shotParticle_->emitterPos = transform_.translate - Vector3::kZIdentity * 50;
 	}
 
+	isLanding_ = pMapHitComp_->hitNormal_.y > 0.f;
+	if (isLanding_.OnEnter()) {
+		smokeParticle_->ParticleStart(transform_.translate - Vector3::kZIdentity * 50, Vector2::kIdentity);
+		smokeParticle_->SetParticleScale(0.25f);
+	}
+	if (isLanding_) {
+		smokeParticle_->emitterPos = transform_.translate - Vector3::kZIdentity * 50;
+	}
+
+
+	smokeParticle_->Update();
 
 	shotParticle_->Update();
 
@@ -92,6 +106,12 @@ void PlayerAnimatorComp::Update()
 }
 
 void PlayerAnimatorComp::Draw(const Camera &camera) const {
+	// 描画順を変えるコスト考えて無理矢理変えた
+	pSpriteComp_->Draw(camera);
+	smokeParticle_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics()
+	);
 	shotParticle_->Draw(
 		camera.rotate,
 		camera.GetViewOthographics()
