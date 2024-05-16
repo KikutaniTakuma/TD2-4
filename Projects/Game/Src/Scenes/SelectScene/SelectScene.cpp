@@ -97,11 +97,13 @@ void SelectScene::Draw(){
 }
 
 void SelectScene::Debug(){
+#ifdef _DEBUG
 	ImGui::Begin("セレクト画面");
 	if (ImGui::Button("シェイクテスト")){
 		currentCamera_->BeginShake(shakePower_);
 	}
 	ImGui::End();
+#endif // _DEBUG
 }
 
 void SelectScene::SelectMove(){

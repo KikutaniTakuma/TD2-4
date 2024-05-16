@@ -16,7 +16,6 @@ UIEditor::~UIEditor(){
 void UIEditor::Initialize(){
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
 
-#ifdef _DEBUG
 	sceneName_[BaseScene::ID::Title] = "Title";
 	sceneName_[BaseScene::ID::Game] = "Game";
 	sceneName_[BaseScene::ID::StageSelect] = "Select";
@@ -38,7 +37,6 @@ void UIEditor::Initialize(){
 	//texAnim_->SetLoopAnimation(true);
 	//texAnim_->Start();
 	//animNum_ = DrawerManager::GetInstance()->LoadTexture("./Resources/Load.png");
-#endif // _DEBUG
 
 }
 

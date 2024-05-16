@@ -666,7 +666,10 @@ void Particle::Draw(
 	}
 }
 
-void Particle::Debug(const std::string& guiName) {
+void Particle::Debug([[maybe_unused]]const std::string& guiName) {
+#ifdef _DEBUG
+
+
 	if (isClose_) {
 		return;
 	}
@@ -1044,6 +1047,7 @@ void Particle::Debug(const std::string& guiName) {
 	}
 
 	ImGui::End();
+#endif // 
 }
 
 void Particle::Resize(uint32_t index) {

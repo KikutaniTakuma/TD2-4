@@ -4,6 +4,7 @@
 #include "Utils/ExecutionLog/ExecutionLog.h"
 #include "imgui.h"
 #include "Error/Error.h"
+#include "Utils/ConvertString/ConvertString.h"
 
 Audio::Audio():
 	wfet_(),

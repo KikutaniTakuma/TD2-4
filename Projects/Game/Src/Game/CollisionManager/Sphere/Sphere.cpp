@@ -79,9 +79,11 @@ void Sphere::Draw(const Mat4x4& viewProjectionMatrix, uint32_t color) {
 
 void Sphere::Debug([[maybe_unused]] const std::string guiName)
 {
+#ifdef _DEBUG
 	ImGui::Begin(guiName.c_str());
 	ImGui::DragFloat("radius", &radius, 0.01f);
 	ImGui::DragFloat3("rotate", &worldRoate.x, 0.01f);
 	ImGui::DragFloat3("pos", &translation.x, 0.01f);
 	ImGui::End();
+#endif // 
 }

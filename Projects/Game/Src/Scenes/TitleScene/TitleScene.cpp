@@ -274,6 +274,9 @@ void TitleScene::SetControlPoint(){
 }
 
 void TitleScene::Debug(){
+#ifdef _DEBUG
+
+
 	ImGui::Begin("点の位置");
 	for (size_t i = 0; i < ControlPoints_.size(); ++i) {
 		ImGui::DragFloat2(("Points" + std::to_string(i)).c_str(), ControlPoints_[i].data(), 1.0f);
@@ -388,4 +391,5 @@ void TitleScene::Debug(){
 
 	ImGui::End();
 
+#endif // 
 }

@@ -6,8 +6,10 @@ SelectToGame::SelectToGame() {
 }
 
 void SelectToGame::Debug(){
+#ifdef _DEBUG
 	ImGui::Begin("セレクトとゲームシーンをまたぐ情報");
 	ImGui::Text("選択しているステージ = %d ", selectNum_);
 	
 	ImGui::End();
+#endif // _DEBUG
 }

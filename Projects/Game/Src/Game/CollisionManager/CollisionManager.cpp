@@ -25,6 +25,9 @@ void CollisionManager::DeleteCollider(Obb* collider){
 }
 
 void CollisionManager::Debug(){
+#ifdef _DEBUG
+
+
 	ImGui::Begin("コライダーリスト");
 	int j = 0;
 	for (auto i = obbColliders_.begin(); i != obbColliders_.end(); i++){
@@ -34,6 +37,7 @@ void CollisionManager::Debug(){
 	}
 
 	ImGui::End();
+#endif // DEBUG
 }
 
 void CollisionManager::Update() {
