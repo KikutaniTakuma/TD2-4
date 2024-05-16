@@ -63,7 +63,11 @@ void UIEditor::Update(const BaseScene::ID id){
 			continue;
 
 		for (size_t j = 0; j < texies_[i].size(); j++){
-			texies_[i][j]->transform.translate.z = 1.0f;
+			if (texies_[i][j]->textureName == "backGround") {
+				texies_[i][j]->uvTrnasform.translate.x += 0.001f;
+				texies_[i][j]->uvTrnasform.translate.y += 0.0005f;
+			}
+
 			texies_[i][j]->transform.CalcMatrix();
 			texies_[i][j]->uvTrnasform.CalcMatrix();
 		}
