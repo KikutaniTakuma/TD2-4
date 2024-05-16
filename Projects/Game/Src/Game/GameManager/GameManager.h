@@ -89,6 +89,8 @@ public:
 
 	void RandomFallBlockSpawn();
 
+	SoLib::VItem<"破壊時の停止時間", float> vBreakStopTime_{ 1.f };
+
 public:
 	/// @brief 入力動作
 	void InputAction();
@@ -98,30 +100,9 @@ private:
 
 	void MargeDwarf();
 
-	// void BreakEnemyHouse(int32_t facing, Map::HouseInfo enemyHouse)
-	//{
-	//	static const Vector2  kTowerBaseThrowSpeed_ = { 0.5f, 2.f };
-	//	static const Vector2 kTowerMultipleSpeed_ = { 1.5f, 1.f };
-	//	static const Vector2 kTowerGravityPower_ = { 0.f, -15.f };
-
-	//	if (facing != 0)
-	//	{
-	//		blockMap_->ProcessEnemyHouseBlocks([facing, &enemyHouse, this](int32_t y, int32_t x)
-	//			{
-	//				Vector2 blockFinder = { static_cast<float>(enemyHouse.xPos_ + x), static_cast<float>(y) };
-	//				if (blockMap_->GetBoxType(blockFinder) == Block::BlockType::kEnemyBlock)
-	//				{
-	//					auto [pickup, center] = PickUp(blockFinder, 0, 100, true);
-	//					// 空っぽだったら飛ばす
-	//					if (pickup.GetWeight() == 0) { return; }
-
-	//					AddFallingBlock(center, pickup.size_, true, Vector2{ kTowerBaseThrowSpeed_.x + facing * blockFinder.y * kTowerMultipleSpeed_.x, kTowerBaseThrowSpeed_.y + blockFinder.y * kTowerMultipleSpeed_.y }, kTowerGravityPower_);
-	//				}
-	//			});
-	//	}
-	//}
-
 private:
+
+	SoLib::Time::DeltaTimer blockBreakTimer_;
 
 	SoLib::Time::DeltaTimer dwarfSpawnTimer_;
 	SoLib::Time::DeltaTimer fallBlockSpawnTimer_;

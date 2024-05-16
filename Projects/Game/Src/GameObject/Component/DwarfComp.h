@@ -5,6 +5,8 @@
 #include "PickUpComp.h"
 #include "SoLib/Math/Math.hpp"
 #include "Utils/SafePtr/SafePtr.h"
+#include "LocalRigidbody.h"
+#include "LocalMapHitComp.h"
 
 class DwarfComp : public IComponent
 {
@@ -90,6 +92,8 @@ private:
 
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;
 	Lamb::SafePtr<PickUpComp> pPickUpComp_ = nullptr;
+	Lamb::SafePtr<LocalRigidbody> pRigidbody_ = nullptr;
+	Lamb::SafePtr<LocalMapHitComp> pMapHitComp_ = nullptr;
 
 	Audio *killSE_ = nullptr;
 };

@@ -97,7 +97,7 @@ void DwarfComp::ClimbUp()
 
 bool DwarfComp::FallDown()
 {
-	const float downPower = 0.1f;
+	const float downPower = 2.f * GetDeltaTime();
 	float afterPosY = pLocalBodyComp_->localPos_.y - downPower;
 	// 落下先の座標
 	const Vector2 downSide = Vector2{ pLocalBodyComp_->localPos_.x + 0.5f, afterPosY };

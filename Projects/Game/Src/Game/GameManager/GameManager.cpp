@@ -73,11 +73,19 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	GlobalVariables::GetInstance()->Update();
 
-	blockMap_->Update(deltaTime);
+	blockBreakTimer_.Update(deltaTime);
 
-	dwarfSpawnTimer_.Update(deltaTime);
+	float localDeltaTime = deltaTime;
+
+	if (blockBreakTimer_.IsActive()) {
+		localDeltaTime *= blockBreakTimer_.GetProgress();
+	}
+	//if (not blockBreakTimer_.IsActive()) {
+	blockMap_->Update(localDeltaTime);
+
+	dwarfSpawnTimer_.Update(localDeltaTime);
 	RandomDwarfSpawn();
-	fallBlockSpawnTimer_.Update(deltaTime);
+	fallBlockSpawnTimer_.Update(localDeltaTime);
 	RandomFallBlockSpawn();
 
 	// 浮いているブロックを落とす
@@ -85,25 +93,25 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	MargeDwarf();
 
-	player_->Update(deltaTime);
+	player_->Update(localDeltaTime);
 
-	spawner_->Update(deltaTime);
+	spawner_->Update(localDeltaTime);
 	for (auto &bullet : plBulletList_) {
-		bullet->Update(deltaTime);
+		bullet->Update(localDeltaTime);
 	};
 	for (auto &bullet : enemyBulletList_) {
-		bullet->Update(deltaTime);
+		bullet->Update(localDeltaTime);
 	}
 	for (auto &fallingBlock : fallingBlocks_) {
-		fallingBlock->Update(deltaTime);
+		fallingBlock->Update(localDeltaTime);
 	}
 
 	for (auto &dwarf : dwarfList_) {
-		dwarf->Update(deltaTime);
+		dwarf->Update(localDeltaTime);
 	}
 
 	for (auto &dwarf : darkDwarfList_) {
-		dwarf->Update(deltaTime);
+		dwarf->Update(localDeltaTime);
 	}
 
 	for (auto &fallingBlock : fallingBlocks_) {
@@ -214,11 +222,11 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	// ボタンを押していない間はゲージを回復する
 	if (not Input::GetInstance()->GetKey()->GetKey(DIK_SPACE)) {
-		blockGauge_->EnergyRecovery(deltaTime);
+		blockGauge_->EnergyRecovery(localDeltaTime);
 	}
 
-	blockGauge_->Update(deltaTime);
-
+	blockGauge_->Update(localDeltaTime);
+	//}
 	gameEffectManager_->fallingBlock_ = spawner_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
 
 	gameEffectManager_->Update(deltaTime);
@@ -392,6 +400,8 @@ GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
 
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakChainBlocks(POINTS localPos)
 {
+
+	blockBreakTimer_.Start(vBreakStopTime_);
 
 	auto dwarfPos = GetDwarfPos();
 

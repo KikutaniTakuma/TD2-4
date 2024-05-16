@@ -13,7 +13,6 @@ public:
 		kBlue,
 		kGreen,
 		kYellow,
-		kPurple,
 
 		kMax
 	};
@@ -24,7 +23,6 @@ public:
 		0x0000FFFF,
 		0x00FF00FF,
 		0x00FFFFFF,
-		0xFF00FFFF,
 	};
 	inline static const std::array<Mat4x4, 3> kUvMatrix_{
 		Mat4x4::MakeScalar({1.f / 3.f,1,1}),
