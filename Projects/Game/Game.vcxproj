@@ -135,6 +135,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\GameObject\Component\DwarfAnimator.cpp" />
     <ClCompile Include="Src\GameObject\Component\DwarfComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\DwarfShakeComp.cpp" />
+    <ClCompile Include="Src\GameObject\Component\EnemyBulletComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\FallingBlockComp.cpp" />
     <ClCompile Include="Src\Editor\UIEditor\UIEditor.cpp" />
     <ClCompile Include="Src\GameObject\Component\FollowCameraComp.cpp" />
@@ -198,6 +199,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\GameObject\Component\DwarfAnimator.h" />
     <ClInclude Include="Src\GameObject\Component\DwarfComp.h" />
     <ClInclude Include="Src\GameObject\Component\DwarfShakeComp.h" />
+    <ClInclude Include="Src\GameObject\Component\EnemyBulletComp.h" />
     <ClInclude Include="Src\GameObject\Component\FallingBlockComp.h" />
     <ClInclude Include="Src\GameObject\Component\FollowCameraComp.h" />
     <ClInclude Include="Src\GameObject\Component\HealthComp.h" />

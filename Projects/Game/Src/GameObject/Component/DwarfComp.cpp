@@ -56,8 +56,12 @@ void DwarfComp::Update()
 			}
 		}
 
+		for (const auto &func : updateFunc_) {
+			(this->*func)();
+		}
+
 		// 登っているブロックごとの処理
-		ChangeMovementTarget();
+		//ChangeMovementTarget();
 	}
 
 	if (pPickUpComp_->GetBlockWeight() > 6) {
@@ -96,7 +100,7 @@ bool DwarfComp::FallDown()
 	const float downPower = 0.1f;
 	float afterPosY = pLocalBodyComp_->localPos_.y - downPower;
 	// 落下先の座標
-	const Vector2 downSide = Vector2{pLocalBodyComp_->localPos_.x + 0.5f, afterPosY};
+	const Vector2 downSide = Vector2{ pLocalBodyComp_->localPos_.x + 0.5f, afterPosY };
 	if (afterPosY > 0) {
 		// 落下先がブロックでない場合
 		if (LocalBodyComp::pMap_->GetBlockType(downSide) == Block::BlockType::kNone) {
@@ -109,7 +113,8 @@ bool DwarfComp::FallDown()
 			// 足場の上に強制的に置く
 			pLocalBodyComp_->localPos_.y = std::floor(downSide.y) + 1.f;
 		}
-	} else {
+	}
+	else {
 		pLocalBodyComp_->localPos_.y = 0.f;
 	}
 
@@ -130,6 +135,22 @@ void DwarfComp::ChangeMovementTarget()
 	// 自由に動き回る
 	FreeTargetMove();
 }
+
+void DwarfComp::FireBullet()
+{
+	timer_.Update(GetDeltaTime());
+	if (not timer_.IsActive()) {
+
+		timer_.Start(5.f);
+
+		Lamb::SafePtr pGManager = GameManager::GetInstance();
+
+		Vector2 facingVec = Vector2::kXIdentity * static_cast<float>(facing_);
+
+		pGManager->AddEnemyBullet(pLocalBodyComp_->localPos_ + facingVec, Vector2::kXIdentity * (facing_ * 5.f));
+	}
+}
+
 // ブロックを持っていたら帰る
 void DwarfComp::CarryBlockForHouse()
 {
@@ -302,7 +323,8 @@ void DwarfComp::FreeTargetMove()
 	if (movementFacing_ == 1) {
 		// 右下に移動
 		targetPos_ = Vector2::kXIdentity * ((BlockMap::kMapX - 1));
-	} else if (movementFacing_ == -1) {
+	}
+	else if (movementFacing_ == -1) {
 		// 左下に移動
 		targetPos_ = Vector2::kZero;
 	}

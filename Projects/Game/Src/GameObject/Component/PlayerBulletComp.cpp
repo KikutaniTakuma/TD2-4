@@ -36,12 +36,15 @@ void PlayerBulletComp::Update()
 			};
 		}
 
-		auto &block = map->GetBlockMap()->at(hitPos.y)[hitPos.x];
-		block.AddDamage(1);
-		if (block.GetDamage() >= 3) {
-			gManager->BreakChainBlocks(hitPos);
-		}
+		// ステージ内なら
+		if (not BlockMap::IsOutSide(hitPos)) {
 
+			auto &block = map->GetBlockMap()->at(hitPos.y)[hitPos.x];
+			block.AddDamage(1);
+			if (block.GetDamage() >= 3) {
+				gManager->BreakChainBlocks(hitPos);
+			}
+		}
 		object_.SetActive(false);
 	}
 

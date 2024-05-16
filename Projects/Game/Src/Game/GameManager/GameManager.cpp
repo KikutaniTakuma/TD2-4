@@ -19,6 +19,7 @@
 #include <GameObject/Component/Rigidbody.h>
 #include <GameObject/Component/SpriteComp.h>
 #include <GlobalVariables/GlobalVariables.h>
+#include <GameObject/Component/EnemyBulletComp.h>
 
 void GameManager::Init()
 {
@@ -84,6 +85,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	spawner_->Update(deltaTime);
 	for (auto &bullet : plBulletList_) {
 		bullet->Update(deltaTime);
+	};
+	for (auto &bullet : enemyBulletList_) {
+		bullet->Update(deltaTime);
 	}
 	for (auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Update(deltaTime);
@@ -124,6 +128,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	// 落下ブロックの破棄
 	std::erase_if(fallingBlocks_, [](const auto &itr) -> bool { return not itr->GetActive(); });
 	std::erase_if(plBulletList_, [](const auto &itr) -> bool { return not itr->GetActive(); });
+	std::erase_if(enemyBulletList_, [](const auto &itr) -> bool { return not itr->GetActive(); });
 
 	// 小人の破棄
 	{
@@ -208,6 +213,9 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	for (const auto &bullet : plBulletList_) {
 		bullet->Draw(camera);
 	}
+	for (const auto &bullet : enemyBulletList_) {
+		bullet->Draw(camera);
+	}
 	for (const auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Draw(camera);
 	}
@@ -253,6 +261,21 @@ GameObject *GameManager::AddPlayerBullet(Vector2 centerPos, Vector2 velocity)
 	plBulletList_.push_back(std::move(bullet));
 
 	return plBulletList_.back().get();
+}
+
+GameObject *GameManager::AddEnemyBullet(Vector2 centerPos, Vector2 velocity)
+{
+	std::unique_ptr<GameObject> bullet = std::make_unique<GameObject>();
+
+	bullet->AddComponent<EnemyBulletComp>();
+	Lamb::SafePtr localBodyComp = bullet->AddComponent<LocalBodyComp>();
+
+	localBodyComp->localPos_ = centerPos;
+	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
+	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+	enemyBulletList_.push_back(std::move(bullet));
+
+	return enemyBulletList_.back().get();
 }
 
 GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity)
@@ -306,13 +329,15 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	std::unique_ptr<GameObject> dwarf = std::make_unique<GameObject>();
 
 	// コンポーネントの追加
-	dwarf->AddComponent<DwarfComp>();
+	Lamb::SafePtr dwarfComp = dwarf->AddComponent<DwarfComp>();
 	Lamb::SafePtr localBody = dwarf->GetComponent<LocalBodyComp>();
 	localBody->localPos_ = centerPos; // 座標の指定
 	localBody->drawScale_ = 1.f;
 
 	dwarf->AddComponent<DwarfAnimatorComp>();
 	dwarf->AddComponent<DwarfShakeComp>();
+
+	dwarfComp->updateFunc_.push_back(&DwarfComp::ChangeMovementTarget);
 
 	// 末尾に追加
 	dwarfList_.push_back(std::move(dwarf));
@@ -326,13 +351,15 @@ GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
 	std::unique_ptr<GameObject> dwarf = std::make_unique<GameObject>();
 
 	// コンポーネントの追加
-	dwarf->AddComponent<DwarfComp>();
+	Lamb::SafePtr dwarfComp = dwarf->AddComponent<DwarfComp>();
 	Lamb::SafePtr localBody = dwarf->GetComponent<LocalBodyComp>();
 	localBody->localPos_ = centerPos; // 座標の指定
 	localBody->drawScale_ = 1.f;
 
 	dwarf->AddComponent<DwarfAnimatorComp>();
 	dwarf->AddComponent<DwarfShakeComp>();
+
+	dwarfComp->updateFunc_.push_back(&DwarfComp::FireBullet);
 
 	// 末尾に追加
 	darkDwarfList_.push_back(std::move(dwarf));

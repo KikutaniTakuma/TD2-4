@@ -31,14 +31,18 @@ public:
 
 	bool IsClimbing() const { return isClimbing_; }
 
+	std::vector<void(DwarfComp:: *)(void)> updateFunc_;
+
+	void ChangeMovementTarget();
+
+	void FireBullet();
+
 private:
 	void ClimbUp();
 
 	/// @brief 空中にいる場合は落下する
 	/// @return 落下していたらtrue
 	bool FallDown();
-
-	void ChangeMovementTarget();
 
 	void CarryBlockForHouse();
 
@@ -73,6 +77,9 @@ private:
 	}
 
 private:
+
+	SoLib::Time::DeltaTimer timer_;
+
 	int32_t facing_;
 
 	int32_t movementFacing_;

@@ -50,6 +50,8 @@ public:
 
 	GameObject *AddPlayerBullet(Vector2 centerPos, Vector2 velocity);
 
+	GameObject *AddEnemyBullet(Vector2 centerPos, Vector2 velocity);
+
 	/// <summary>
 	/// 落下ブロックを追加する
 	/// </summary>
@@ -138,6 +140,8 @@ private:
 
 	// プレイヤが撃った弾のリスト
 	std::list<std::unique_ptr<GameObject>> plBulletList_;
+
+	std::list<std::unique_ptr<GameObject>> enemyBulletList_;
 
 	// プレイヤが撃った弾のリスト
 	std::list<std::unique_ptr<GameObject>> darkDwarfList_;
