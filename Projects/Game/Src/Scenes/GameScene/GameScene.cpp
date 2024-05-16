@@ -26,21 +26,21 @@ void GameScene::TextureInitialize(){
 	std::unique_ptr<Tex2DState> dwarfTenNumTex_;
 	//操作UI
 	std::unique_ptr<Tex2DState> spaceTex_, keyTex_;*/
-	dwarfNumTex_ = std::make_unique<Tex2DState>();
-	dwarfNumTex_->transform.scale = { 64.0f,64.0f };
-	dwarfNumTex_->transform.translate = { 510.0f, -200.0f ,-10 };
-	dwarfNumTex_->uvTrnasform.translate = { 0.f, 0.01f };
-	dwarfNumTex_->uvTrnasform.scale.x = { 0.1f };
-	dwarfNumTex_->color = 0xffffffff;
-	dwarfNumTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/dwarfNumber.png");
+	//dwarfNumTex_ = std::make_unique<Tex2DState>();
+	//dwarfNumTex_->transform.scale = { 64.0f,64.0f };
+	//dwarfNumTex_->transform.translate = { 510.0f, -200.0f ,-10 };
+	//dwarfNumTex_->uvTrnasform.translate = { 0.f, 0.01f };
+	//dwarfNumTex_->uvTrnasform.scale.x = { 0.1f };
+	//dwarfNumTex_->color = 0xffffffff;
+	//dwarfNumTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/dwarfNumber.png");
 
-	dwarfTenNumTex_ = std::make_unique<Tex2DState>();
-	dwarfTenNumTex_->transform.scale = { 64.0f,64.0f };
-	dwarfTenNumTex_->transform.translate = { 442.0f, -200.0f ,-10 };
-	dwarfTenNumTex_->uvTrnasform.translate = { 0.f, 0.01f };
-	dwarfTenNumTex_->uvTrnasform.scale.x = { 0.1f };
-	dwarfTenNumTex_->color = 0xffffffff;
-	dwarfTenNumTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/dwarfNumber.png");
+	//dwarfTenNumTex_ = std::make_unique<Tex2DState>();
+	//dwarfTenNumTex_->transform.scale = { 64.0f,64.0f };
+	//dwarfTenNumTex_->transform.translate = { 442.0f, -200.0f ,-10 };
+	//dwarfTenNumTex_->uvTrnasform.translate = { 0.f, 0.01f };
+	//dwarfTenNumTex_->uvTrnasform.scale.x = { 0.1f };
+	//dwarfTenNumTex_->color = 0xffffffff;
+	//dwarfTenNumTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/dwarfNumber.png");
 
 	//雲関係
 	/*//雲
@@ -213,11 +213,11 @@ void GameScene::TextureUpdate(){
 		}
 		clouds_[i]->transform.CalcMatrix();
 	}
-	dwarfNumTex_->transform.CalcMatrix();
-	dwarfNumTex_->uvTrnasform.CalcMatrix();
+	//dwarfNumTex_->transform.CalcMatrix();
+	//dwarfNumTex_->uvTrnasform.CalcMatrix();
 
-	dwarfTenNumTex_->transform.CalcMatrix();
-	dwarfTenNumTex_->uvTrnasform.CalcMatrix();
+	//dwarfTenNumTex_->transform.CalcMatrix();
+	//dwarfTenNumTex_->uvTrnasform.CalcMatrix();
 
 	spaceTex_->transform.CalcMatrix();
 	spaceTex_->uvTrnasform.CalcMatrix();
@@ -282,11 +282,11 @@ void GameScene::TextureDraw(){
 
 	
 
-	tex2D_->Draw(dwarfNumTex_->transform.matWorld_, dwarfNumTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
+	/*tex2D_->Draw(dwarfNumTex_->transform.matWorld_, dwarfNumTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, dwarfNumTex_->textureID, dwarfNumTex_->color, BlendType::kNormal);
 
 	tex2D_->Draw(dwarfTenNumTex_->transform.matWorld_, dwarfTenNumTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
-		, dwarfTenNumTex_->textureID, dwarfTenNumTex_->color, BlendType::kNormal);
+		, dwarfTenNumTex_->textureID, dwarfTenNumTex_->color, BlendType::kNormal);*/
 
 	tex2D_->Draw(spaceTex_->transform.matWorld_, spaceTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, spaceTex_->textureID, spaceTex_->color, BlendType::kNormal);
@@ -298,7 +298,7 @@ void GameScene::TextureDraw(){
 void GameScene::Debug(){
 #ifdef _DEBUG
 	ImGui::Begin("ゲームテクスチャ");
-	if (ImGui::TreeNode("一の位")){
+	/*if (ImGui::TreeNode("一の位")){
 		ImGui::DragFloat2("Transform", &dwarfNumTex_->transform.translate.x, 1.0f);
 		ImGui::DragFloat2("Scale", &dwarfNumTex_->transform.scale.x, 1.0f);
 		ImGui::DragFloat2("UVTransform", &dwarfNumTex_->uvTrnasform.translate.x, 0.01f);
@@ -311,7 +311,7 @@ void GameScene::Debug(){
 		ImGui::DragFloat2("UVTransform", &dwarfTenNumTex_->uvTrnasform.translate.x, 0.01f);
 		ImGui::DragFloat2("UVScale", &dwarfTenNumTex_->uvTrnasform.scale.x, 0.01f);
 		ImGui::TreePop();
-	}
+	}*/
 	if (ImGui::TreeNode("spaceキー")) {
 		ImGui::DragFloat2("Transform", &spaceTex_->transform.translate.x, 1.0f);
 		ImGui::DragFloat2("Scale", &spaceTex_->transform.scale.x, 1.0f);

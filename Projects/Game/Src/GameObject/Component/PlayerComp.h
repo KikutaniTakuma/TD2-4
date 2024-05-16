@@ -20,9 +20,13 @@ public:
 	inline static SoLib::VItem<"無敵時間", float> vMaxInvincibleTime_ = { 1.f };
 	inline static SoLib::VItem<"最大体力", float> vMaxHealth_ = { 10.f };
 
+	int32_t InflictDamage(int32_t damage, const Vector2 acceleration = {});
+
 private:
 
 	float invincibleTime_ = 0.f;
+
+	void FireBullet();
 
 	void Input();
 	inline static const Vector2 kGrovity_{ 0,-40.f };

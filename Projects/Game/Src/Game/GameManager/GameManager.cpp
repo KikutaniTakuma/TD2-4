@@ -2,22 +2,24 @@
 
 #include <fstream>
 
-#include "GameObject/Component/IvyComponent.h"
-#include "Utils/Random/Random.h"
-#include <Game/CollisionManager/Capsule/Capsule.h>
-#include <Game/CollisionManager/Collider/Collider.h>
-#include <GlobalVariables/GlobalVariables.h>
-#include <GameObject/Component/ModelComp.h>
-#include "Utils/SafePtr/SafePtr.h"
 #include "Drawers/DrawerManager.h"
 #include "GameObject/Component/FallingBlockSpawnerComp.h"
-#include <GameObject/Component/FallingBlockComp.h>
-#include <GameObject/Component/Rigidbody.h>
-#include <GameObject/Component/DwarfComp.h>
-#include <GameObject/Component/SpriteComp.h>
+#include "GameObject/Component/IvyComponent.h"
+#include "Utils/Random/Random.h"
+#include "Utils/SafePtr/SafePtr.h"
+#include <Game/CollisionManager/Capsule/Capsule.h>
+#include <Game/CollisionManager/Collider/Collider.h>
 #include <GameObject/Component/DwarfAnimator.h>
+#include <GameObject/Component/DwarfComp.h>
 #include <GameObject/Component/DwarfShakeComp.h>
+#include <GameObject/Component/FallingBlockComp.h>
+#include <GameObject/Component/ModelComp.h>
+#include <GameObject/Component/PlayerBulletComp.h>
 #include <GameObject/Component/PlayerComp.h>
+#include <GameObject/Component/Rigidbody.h>
+#include <GameObject/Component/SpriteComp.h>
+#include <GlobalVariables/GlobalVariables.h>
+#include <GameObject/Component/EnemyBulletComp.h>
 
 void GameManager::Init()
 {
@@ -73,14 +75,27 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	blockMap_->Update(deltaTime);
 
-	blockMap_->BreakChainBlocks({ 0,0 });
+	timer_.Update(deltaTime);
+	if (not timer_.IsActive()) {
+		timer_.Start(5.f);
+		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
+		AddDwarf(Vector2{ static_cast<float>(spawnPos), 0 });
+	}
 
 	// 浮いているブロックを落とす
 	BlockMapDropDown();
 
+	MargeDwarf();
+
 	player_->Update(deltaTime);
 
 	spawner_->Update(deltaTime);
+	for (auto &bullet : plBulletList_) {
+		bullet->Update(deltaTime);
+	};
+	for (auto &bullet : enemyBulletList_) {
+		bullet->Update(deltaTime);
+	}
 	for (auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Update(deltaTime);
 	}
@@ -89,12 +104,15 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		dwarf->Update(deltaTime);
 	}
 
+	for (auto &dwarf : darkDwarfList_) {
+		dwarf->Update(deltaTime);
+	}
+
 	for (auto &fallingBlock : fallingBlocks_) {
 		// 落下しているブロックのコンポーネント
 		Lamb::SafePtr fallComp = fallingBlock->GetComponent<FallingBlockComp>();
 		// 落下しているブロックの座標
 		Lamb::SafePtr blockBody = fallComp->pLocalPos_;
-
 
 		if (fallingBlock->GetActive()) {
 			Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
@@ -112,17 +130,34 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType());
 			fallingBlock->SetActive(false);
 		}
+	}
 
+	for (auto &bullet : enemyBulletList_) {
+		if (bullet->GetActive()) {
+
+			Lamb::SafePtr bulletBody = bullet->GetComponent<LocalBodyComp>();
+
+
+			Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
+			const Vector2 centorDiff = bulletBody->localPos_ - playerBody->localPos_;
+			const Vector2 sizeSum = (bulletBody->size_ + playerBody->size_) / 2.f;
+			if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
+				bullet->OnCollision(player_.get());
+				player_->OnCollision(bullet.get());
+
+			}
+		}
 	}
 
 	// 落下ブロックの破棄
-	std::erase_if(fallingBlocks_, [](const auto &itr) ->bool { return not itr->GetActive(); });
+	std::erase_if(fallingBlocks_, [](const auto &itr) -> bool { return not itr->GetActive(); });
+	std::erase_if(plBulletList_, [](const auto &itr) -> bool { return not itr->GetActive(); });
+	std::erase_if(enemyBulletList_, [](const auto &itr) -> bool { return not itr->GetActive(); });
 
 	// 小人の破棄
 	{
 		for (auto dwarfItr = dwarfList_.begin(); dwarfItr != dwarfList_.end();) {
 			Lamb::SafePtr dwarfObject = dwarfItr->get();
-
 
 			// もし死んでいたら消す
 			if (not dwarfObject->GetActive()) {
@@ -135,12 +170,27 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 				continue;
 			}
 
+			// 何もなかったら次へ
+			++dwarfItr;
+		}
+		for (auto dwarfItr = darkDwarfList_.begin(); dwarfItr != darkDwarfList_.end();) {
+			Lamb::SafePtr dwarfObject = dwarfItr->get();
+
+			// もし死んでいたら消す
+			if (not dwarfObject->GetActive()) {
+
+				dwarfObject->GetComponent<PickUpComp>()->ThrowAllBlocks();
+				// 描画用にデータを渡す
+				gameEffectManager_->dwarfDeadPos_.push_back(dwarfObject->GetComponent<LocalBodyComp>()->localPos_);
+
+				dwarfItr = darkDwarfList_.erase(dwarfItr); // オブジェクトを破棄してイテレータを変更
+				continue;
+			}
 
 			// 何もなかったら次へ
 			++dwarfItr;
 		}
 	}
-
 
 	for (auto &dwarf : dwarfList_) {
 
@@ -158,10 +208,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 				dwarf->SetActive(false);
 
 				break;
-
 			}
-
-
 		}
 	}
 
@@ -187,16 +234,24 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	blockMap_->Draw(camera);
 	player_->Draw(camera);
 	spawner_->Draw(camera);
+	for (const auto &bullet : plBulletList_) {
+		bullet->Draw(camera);
+	}
+	for (const auto &bullet : enemyBulletList_) {
+		bullet->Draw(camera);
+	}
 	for (const auto &fallingBlock : fallingBlocks_) {
 		fallingBlock->Draw(camera);
 	}
 	for (const auto &dwarf : dwarfList_) {
 		dwarf->Draw(camera);
 	}
+	for (const auto &dwarf : darkDwarfList_) {
+		dwarf->Draw(camera);
+	}
 	blockGauge_->Draw(camera);
 
 	gameEffectManager_->Draw(camera);
-
 }
 
 bool GameManager::Debug([[maybe_unused]] const char *const str)
@@ -217,6 +272,35 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 	return isChange;
 }
 
+GameObject *GameManager::AddPlayerBullet(Vector2 centerPos, Vector2 velocity)
+{
+	std::unique_ptr<GameObject> bullet = std::make_unique<GameObject>();
+
+	bullet->AddComponent<PlayerBulletComp>();
+	Lamb::SafePtr localBodyComp = bullet->AddComponent<LocalBodyComp>();
+
+	localBodyComp->localPos_ = centerPos;
+	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
+	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+	plBulletList_.push_back(std::move(bullet));
+
+	return plBulletList_.back().get();
+}
+
+GameObject *GameManager::AddEnemyBullet(Vector2 centerPos, Vector2 velocity)
+{
+	std::unique_ptr<GameObject> bullet = std::make_unique<GameObject>();
+
+	bullet->AddComponent<EnemyBulletComp>();
+	Lamb::SafePtr localBodyComp = bullet->AddComponent<LocalBodyComp>();
+
+	localBodyComp->localPos_ = centerPos;
+	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
+	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+	enemyBulletList_.push_back(std::move(bullet));
+
+	return enemyBulletList_.back().get();
+}
 
 GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity)
 {
@@ -243,10 +327,8 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 {
 
-
 	// ダメージ判定があるならダメージ判定を追加
-	if (hasDamage)
-	{
+	if (hasDamage) {
 		DamageArea damage;
 		// ブロックの下側にダメージ判定を出す
 		damage.centerPos_ = centerPos - Vector2::kYIdentity * (size.y * 0.5f);
@@ -256,7 +338,7 @@ void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 		damageAreaList_.push_back(damage);
 
 		// 演出用にデータを渡す
-		gameEffectManager_->blockBreakPos_.push_back({ centerPos,size });
+		gameEffectManager_->blockBreakPos_.push_back({ centerPos, size });
 
 	}
 	else {
@@ -271,7 +353,7 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	std::unique_ptr<GameObject> dwarf = std::make_unique<GameObject>();
 
 	// コンポーネントの追加
-	dwarf->AddComponent<DwarfComp>();
+	Lamb::SafePtr dwarfComp = dwarf->AddComponent<DwarfComp>();
 	Lamb::SafePtr localBody = dwarf->GetComponent<LocalBodyComp>();
 	localBody->localPos_ = centerPos; // 座標の指定
 	localBody->drawScale_ = 1.f;
@@ -279,13 +361,70 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	dwarf->AddComponent<DwarfAnimatorComp>();
 	dwarf->AddComponent<DwarfShakeComp>();
 
+	dwarfComp->updateFunc_.push_back(&DwarfComp::ChangeMovementTarget);
+
 	// 末尾に追加
 	dwarfList_.push_back(std::move(dwarf));
 	// 参照を返す
 	return dwarfList_.back().get();
 }
+
+GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
+{
+	// 小人の実体を構築
+	std::unique_ptr<GameObject> dwarf = std::make_unique<GameObject>();
+
+	// コンポーネントの追加
+	Lamb::SafePtr dwarfComp = dwarf->AddComponent<DwarfComp>();
+	Lamb::SafePtr localBody = dwarf->GetComponent<LocalBodyComp>();
+	localBody->localPos_ = centerPos; // 座標の指定
+	localBody->drawScale_ = 1.f;
+
+	dwarf->AddComponent<DwarfAnimatorComp>();
+	dwarf->AddComponent<DwarfShakeComp>();
+
+	dwarfComp->updateFunc_.push_back(&DwarfComp::FireBullet);
+
+	// 末尾に追加
+	darkDwarfList_.push_back(std::move(dwarf));
+	// 参照を返す
+	return darkDwarfList_.back().get();
+}
+
+
+std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakChainBlocks(POINTS localPos)
+{
+
+	auto dwarfPos = GetDwarfPos();
+
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, dwarfPos);
+
+	POINTS targetPos{};
+
+	for (targetPos.y = 0; targetPos.y < BlockMap::kMapY; targetPos.y++) {
+		const auto &breakLine = chainBlockMap[targetPos.y];
+		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
+			if (breakLine[targetPos.x]) {
+				blockMap_->BreakBlock(targetPos);
+			}
+		}
+	}
+
+	for (auto &dwarf : dwarfList_) {
+		auto localBody = dwarf->GetComponent<LocalBodyComp>();
+		if (localBody) {
+			POINTS mapIndex = localBody->GetMapPos();
+			// そこが破壊対象なら死ぬ
+			if (chainBlockMap[mapIndex.y][mapIndex.x]) {
+				dwarf->SetActive(false);
+			}
+		}
+	}
+
+	return std::move(chainBlockMap);
+}
 //
-//std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, [[maybe_unused]] int hasBlockWeight, [[maybe_unused]] int maxWeight, [[maybe_unused]] bool isPowerful)
+// std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, [[maybe_unused]] int hasBlockWeight, [[maybe_unused]] int maxWeight, [[maybe_unused]] bool isPowerful)
 //{
 //
 //	// 範囲外である場合は終わる
@@ -367,6 +506,26 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 //
 //}
 
+std::unordered_set<POINTS> GameManager::GetDwarfPos() const
+{
+	std::unordered_set<POINTS> result;
+
+	result.reserve(dwarfList_.size());
+
+	for (const auto &dwarf : dwarfList_) {
+		// ドワーフの体コンポーネントを取得する
+		Lamb::SafePtr body = dwarf->GetComponent<LocalBodyComp>();
+
+		// ドワーフのマップ上の座標を取得する
+		POINTS pos = body->GetMapPos();
+
+		// データを格納する
+		result.insert(pos);
+	}
+
+	return result;
+}
+
 void GameManager::InputAction()
 {
 	{
@@ -379,7 +538,7 @@ void GameManager::InputAction()
 			spawnerComp->SetStartPos(); // 落下開始地点を設定
 		}
 		if (key->Released(DIK_DOWN)) {
-			spawnerComp->SpawnFallingBlock();	// 落下ブロックを追加
+			spawnerComp->SpawnFallingBlock(); // 落下ブロックを追加
 		}
 
 		if (key->Pushed(DIK_UP)) {
@@ -398,7 +557,6 @@ void GameManager::InputAction()
 
 		spawnerComp->MoveInput(inputSpawner);
 	}
-
 }
 
 void GameManager::BlockMapDropDown()
@@ -426,13 +584,50 @@ void GameManager::BlockMapDropDown()
 				blockMap_->GetBlockStatusMap()->at(static_cast<int32_t>(localPos.y)).at(static_cast<int32_t>(localPos.x)).reset();
 			}
 
-
 			// 最後に加算
 			index++;
 			localPos.x++;
 		}
 		localPos.y++;
 	}
+}
 
+void GameManager::MargeDwarf()
+{
+	if (not dwarfList_.empty()) {
+		for (decltype(dwarfList_)::iterator fItr = dwarfList_.begin(); fItr != dwarfList_.end(); ++fItr) {
+			auto *const fDwarf = (*fItr).get();
+			// 死んでたら飛ばす
+			if (not fDwarf->GetActive()) { continue; }
+			Lamb::SafePtr fDwComp = fDwarf->GetComponent<DwarfComp>();
+			Lamb::SafePtr fBody = fDwarf->GetComponent<LocalBodyComp>();
 
+			for (decltype(dwarfList_)::iterator sItr = std::next(fItr); sItr != dwarfList_.end(); ++sItr) {
+				auto *const sDwarf = (*sItr).get();
+				// 死んでたら飛ばす
+				if (not sDwarf->GetActive()) { continue; }
+				Lamb::SafePtr sDwComp = sDwarf->GetComponent<DwarfComp>();
+				Lamb::SafePtr sBody = sDwarf->GetComponent<LocalBodyComp>();
+
+				// 向いている向きが一致しない場合
+				if (sDwComp->GetFacing() != fDwComp->GetFacing()) {
+
+					const Vector2 centerDiff = fBody->localPos_ - sBody->localPos_;
+					const Vector2 sizeSum = (fBody->size_ + sBody->size_) / 2.f;
+					if (std::abs(centerDiff.x) <= sizeSum.x and std::abs(centerDiff.y) <= sizeSum.y) {
+
+						fDwarf->SetActive(false);
+						sDwarf->SetActive(false);
+
+						// 召喚先
+						Vector2 spawnPos = fBody->localPos_;
+
+						AddDarkDwarf(spawnPos);
+
+					}
+				}
+
+			}
+		}
+	}
 }

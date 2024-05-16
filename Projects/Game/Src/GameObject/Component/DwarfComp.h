@@ -1,11 +1,10 @@
 #pragma once
 #include "../GameObject.h"
-#include "Utils/SafePtr/SafePtr.h"
+#include "AudioManager/AudioManager.h"
 #include "LocalBodyComp.h"
 #include "PickUpComp.h"
 #include "SoLib/Math/Math.hpp"
-#include "AudioManager/AudioManager.h"
-
+#include "Utils/SafePtr/SafePtr.h"
 
 class DwarfComp : public IComponent
 {
@@ -28,18 +27,22 @@ public:
 	void Update() override;
 
 public:
-
 	int32_t GetFacing() const { return facing_; }
 
 	bool IsClimbing() const { return isClimbing_; }
 
-private:
-
-	void ClimbUp();
-
-	void FallDown();
+	std::vector<void(DwarfComp:: *)(void)> updateFunc_;
 
 	void ChangeMovementTarget();
+
+	void FireBullet();
+
+private:
+	void ClimbUp();
+
+	/// @brief 空中にいる場合は落下する
+	/// @return 落下していたらtrue
+	bool FallDown();
 
 	void CarryBlockForHouse();
 
@@ -49,8 +52,6 @@ private:
 
 	void FreeTargetMove();
 
-
-
 	/// <summary>
 	/// 移動を行う
 	/// </summary>
@@ -59,14 +60,15 @@ private:
 	bool MoveBlockPos(Vector2 target)
 	{
 		// ターゲットが指定されていない場合終わり
-		if (target == -Vector2::kIdentity) { return false; }
+		if (target == -Vector2::kIdentity) {
+			return false;
+		}
 
 		float xMove = target.x - pLocalBodyComp_->localPos_.x;
 		pLocalBodyComp_->localPos_.x += std::clamp(xMove, -1.f, 1.f) * kMovementMul_ * GetDeltaTime() * (kMovementSpeed_ - kMovementResistance_ * pPickUpComp_->GetBlockWeight());
 
 		// 移動距離が有効なら
-		if (xMove != 0)
-		{
+		if (xMove != 0) {
 			// 方向を与える
 			facing_ = static_cast<int32_t>(SoLib::Math::Sign(xMove));
 		}
@@ -76,17 +78,18 @@ private:
 
 private:
 
-	int32_t facing_;
+	SoLib::Time::DeltaTimer timer_;
+
+	int32_t facing_ = 1;
 
 	int32_t movementFacing_;
 
-	Vector2 targetPos_;
+	Vector2 targetPos_ = -Vector2::kIdentity;
 
 	bool isClimbing_ = false;
 
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;
 	Lamb::SafePtr<PickUpComp> pPickUpComp_ = nullptr;
 
-	Audio* killSE_ = nullptr;
-
+	Audio *killSE_ = nullptr;
 };

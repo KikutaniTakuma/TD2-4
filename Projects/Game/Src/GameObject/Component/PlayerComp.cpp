@@ -43,12 +43,23 @@ void PlayerComp::Update()
 
 void PlayerComp::OnCollision([[maybe_unused]] GameObject *const other)
 {
-	// 無敵時間が終わってなかったらその場で終了
-	if (invincibleTime_ > 0.f) { return; }
-	// 無敵時間を付与
-	invincibleTime_ = vMaxInvincibleTime_;
 
-	pHealthComp_->AddHealth(-1.f);
+}
+
+int32_t PlayerComp::InflictDamage(int32_t damage, const Vector2 acceleration)
+{
+	if (invincibleTime_ <= 0) {
+		pHealthComp_->AddHealth(static_cast<float>(-damage));
+		pLocalRigidbody_->ApplyInstantForce(acceleration);
+		// 無敵時間を付与
+		invincibleTime_ = vMaxInvincibleTime_;
+	}
+	return static_cast<int32_t>(pHealthComp_->GetNowHealth());
+}
+
+void PlayerComp::FireBullet()
+{
+	GameManager::GetInstance()->AddPlayerBullet(pLocalBodyComp_->localPos_, Vector2::kXIdentity * (facing_ * 5.f));
 }
 
 void PlayerComp::Input()
@@ -75,9 +86,17 @@ void PlayerComp::Input()
 	}
 
 	if (key->Pushed(DIK_Z)) {
-		pPicker_->PickUp(facing_);
+		if (not pPicker_->IsPicking()) {
+			pPicker_->PickUp(facing_);
+		}
+		else {
+			pPicker_->Drop(facing_);
+		}
 	}
 
+	if (key->Pushed(DIK_RETURN)) {
+		FireBullet();
+	}
 
 	// 着地している場合
 	if (pHitMapComp_->hitNormal_.y > 0)

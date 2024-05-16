@@ -1,24 +1,42 @@
 #pragma once
-#include <array>
-#include <cstdint>
 #include "../SoLib/Containers/VItem.h"
 #include "../SoLib/SoLib_Traits.h"
-#include"Math/Vector2.h"
-#include"Math/Vector3.h"
-#include <list>
-#include <Drawers/Model/Model.h>
-#include <Camera/Camera.h>
-#include <bitset>
-#include"Game/Ground/Ground.h"
+#include "Drawers/DrawerManager.h"
+#include "Game/Ground/Ground.h"
+#include "Math/Vector2.h"
+#include "Math/Vector3.h"
 #include "SoLib/Math/Angle.h"
-#include <functional>
+#include <Camera/Camera.h>
+#include <Drawers/Model/Model.h>
 #include <Game/Block/Block.h>
+#include <array>
+#include <bitset>
+#include <cstdint>
+#include <functional>
+#include <list>
+#include <unordered_set>
 
-class BlockMap {
+inline bool operator==(const POINTS l, const POINTS r) {
+	return l.x == r.x and l.y == r.y;
+}
+
+template<>
+struct std::hash<POINTS> {
+	size_t operator()(const POINTS &data) const {
+		int32_t tmp;
+		tmp = data.y;
+		tmp <<= 16;
+		tmp = data.x;
+		return std::hash<int32_t>{}(tmp);
+	}
+};
+
+class BlockMap
+{
 public:
-
 	// ブロックの情報
-	struct BlockStatus {
+	struct BlockStatus
+	{
 		// ローカル座標
 		Vector2 localPos_;
 
@@ -47,29 +65,26 @@ public:
 		{
 
 			shakeTime_ -= deltaTime;
-			if (shakeTime_ <= 0)
-			{
+			if (shakeTime_ <= 0) {
 				shakeTime_ = 0;
 				startTime_ = 0;
 			}
 
 			Vector2 diff = {};
 
-			if (startTime_ != 0)
-			{
+			if (startTime_ != 0) {
 				float x = shakeTime_ / startTime_;
 
 				diff += shakeVec_ * x * std::sin(4 * x * Angle::PI) / 8 * x;
 			}
 			drawOffset_ = diff;
-
 		}
 	};
 
 	inline static constexpr int32_t kMapX = 30u, kMapY = 20u;
 
 	// マップの配列 [y][x]
-	template<SoLib::IsRealType T>
+	template <SoLib::IsRealType T>
 	using Map2dMap = std::array<std::array<T, kMapX>, kMapY>;
 
 	// 箱の配列 [y][x]
@@ -80,7 +95,6 @@ public:
 public:
 	BlockMap() = default;
 	~BlockMap() = default;
-
 
 	void Init();
 
@@ -109,22 +123,17 @@ public:
 	static bool IsOutSide(const Vector2 localPos);
 	static bool IsOutSide(const POINTS localPos);
 
-	uint32_t BreakChainBlocks(POINTS localPos);
 
 	void BreakBlock(POINTS localPos);
 
-
 	void ProcessEnemyHouseBlocks(std::function<void(int32_t y, int32_t x)> processBlock)
 	{
-		for (int yi = 0; yi < BlockMap::kMapY; yi++)
-		{
-			for (int xi = -1; xi < 2; xi++)
-			{
+		for (int yi = 0; yi < BlockMap::kMapY; yi++) {
+			for (int xi = -1; xi < 2; xi++) {
 				processBlock(yi, xi);
 			}
 		}
 	}
-
 
 public:
 	/// @brief 2次元配列の取得
@@ -145,27 +154,28 @@ public:
 		return Vector2{ gPos.x / vBlockScale_->x, gPos.y / vBlockScale_->y } + Vector2::kXIdentity * vBlockScale_->x / ((kMapX - 1) / 2.f);
 	}
 
-	static float GetMapDistance() {
+	static float GetMapDistance()
+	{
 		return vBlockScale_->y;
 	}
 
-	static Vector2 GetMapSize() noexcept {
+	static Vector2 GetMapSize() noexcept
+	{
 		return Vector2{ kMapX, kMapY };
 	}
 
-private:
-
-	std::array<std::bitset<kMapX>, kMapY> &&FindChainBlocks(POINTS localPos, std::array<std::bitset<kMapX>, kMapY> &&result = {}) const;
+	std::array<std::bitset<kMapX>, kMapY> &&FindChainBlocks(POINTS localPos, std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result = {}) const;
 
 private:
 
+private:
 	// 箱の配列 [y][x]
 	std::unique_ptr<Block2dMap> blockMap_;
 	// ブロックの情報
 	std::unique_ptr<BlockStatusMap> blockStatesMap_;
 
 	// 拠点のリスト
-	//HouseList houseList_;
+	// HouseList houseList_;
 
 	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale_{ {1.f, 1.f} };
 	inline static SoLib::VItem<"敵拠点の横幅", int32_t> vEnemyHouseWidth_{ 3 };
@@ -179,4 +189,10 @@ private:
 
 	// 床のクラス
 	std::unique_ptr<Ground> ground_;
+
+	// ブロックのテクスチャ
+	// 赤、青、緑、黄の四種(順番も)
+	std::array<uint32_t, 4> textures_;
+
+	Texture2D *pTexture2d_ = nullptr;
 };

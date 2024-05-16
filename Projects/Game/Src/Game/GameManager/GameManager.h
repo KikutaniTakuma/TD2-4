@@ -1,15 +1,15 @@
 #pragma once
-#include "../SoLib/Containers/Singleton.h"
 #include "../SoLib/Containers/Array2D.h"
+#include "../SoLib/Containers/Singleton.h"
 
-#include <memory>
 #include <bitset>
-#include <list>
 #include <cstdint>
+#include <list>
+#include <memory>
 
 #include "../LambEngine/Input/Input.h"
-#include "Game/Map/BlockMap.h"
 #include "Game/BlockGauge.h"
+#include "Game/Map/BlockMap.h"
 
 #include "GameObject/GameObject.h"
 #include <Drawers/Model/Model.h>
@@ -17,14 +17,15 @@
 #include <Game/GameEffectManager/GameEffectManager.h>
 
 // ダメージ判定
-struct DamageArea {
+struct DamageArea
+{
 	Vector2 centerPos_;
 	Vector2 size_;
 };
 
-class GameManager : public SoLib::Singleton<GameManager> {
+class GameManager : public SoLib::Singleton<GameManager>
+{
 private:
-
 	friend SoLib::Singleton<GameManager>;
 	GameManager() = default;
 	GameManager(const GameManager &) = delete;
@@ -32,11 +33,9 @@ private:
 	~GameManager() = default;
 
 public:
-
 	inline static const char *kDwarfModelName = "Resources/Cube.obj";
 
 public:
-
 	void Init();
 
 	void Update(const float deltaTime);
@@ -44,13 +43,14 @@ public:
 	void Draw(const Camera &camera) const;
 
 public:
-
 	bool Debug(const char *const str);
-
-
 
 	// マップのデータを取得
 	BlockMap *GetMap() { return blockMap_.get(); }
+
+	GameObject *AddPlayerBullet(Vector2 centerPos, Vector2 velocity);
+
+	GameObject *AddEnemyBullet(Vector2 centerPos, Vector2 velocity);
 
 	/// <summary>
 	/// 落下ブロックを追加する
@@ -69,26 +69,34 @@ public:
 
 	GameObject *AddDwarf(Vector2 centerPos);
 
+	GameObject *AddDarkDwarf(Vector2 centerPos);
+
 	/// @brief 指定した座標のブロックを持ち上げる
 	/// @param localPos 指定先
 	/// @param hasBlockWeight すでに持っているブロックの重さ
 	/// @param maxWeight 持つことのできる上限値
 	/// @param isPowerful 上にブロックがあっても持ち上げるか
 	/// @return [ 持ちあげたブロック, ブロックの中心座標 ]
-	//std::pair<PickUpBlockData, Vector2> PickUp(Vector2 localPos, int hasBlockWeight, int maxWeight = 6, bool isPowerful = false);
+	// std::pair<PickUpBlockData, Vector2> PickUp(Vector2 localPos, int hasBlockWeight, int maxWeight = 6, bool isPowerful = false);
 
 	GameEffectManager *GetGameEffect() { return gameEffectManager_.get(); }
 
-public:
+	std::unordered_set<POINTS> GetDwarfPos() const;
 
+	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BreakChainBlocks(POINTS localPos);
+
+	void RandomDwarfSpawn();
+
+public:
 	/// @brief 入力動作
 	void InputAction();
 
 private:
-
 	void BlockMapDropDown();
 
-	//void BreakEnemyHouse(int32_t facing, Map::HouseInfo enemyHouse)
+	void MargeDwarf();
+
+	// void BreakEnemyHouse(int32_t facing, Map::HouseInfo enemyHouse)
 	//{
 	//	static const Vector2  kTowerBaseThrowSpeed_ = { 0.5f, 2.f };
 	//	static const Vector2 kTowerMultipleSpeed_ = { 1.5f, 1.f };
@@ -112,6 +120,8 @@ private:
 	//}
 
 private:
+
+	SoLib::Time::DeltaTimer timer_;
 	// 入力マネージャ
 	Input *input_ = nullptr;
 
@@ -131,6 +141,13 @@ private:
 	// 小人のリスト
 	std::list<std::unique_ptr<GameObject>> dwarfList_;
 
-	std::unique_ptr<GameEffectManager> gameEffectManager_ = nullptr;
+	// プレイヤが撃った弾のリスト
+	std::list<std::unique_ptr<GameObject>> plBulletList_;
 
+	std::list<std::unique_ptr<GameObject>> enemyBulletList_;
+
+	// プレイヤが撃った弾のリスト
+	std::list<std::unique_ptr<GameObject>> darkDwarfList_;
+
+	std::unique_ptr<GameEffectManager> gameEffectManager_ = nullptr;
 };

@@ -1,12 +1,15 @@
 #include "BlockMap.h"
 
 #include "../SoLib/SoLib/SoLib_Traits.h"
-#include <imgui.h>
-#include"Drawers/DrawerManager.h"
+#include "Drawers/DrawerManager.h"
 #include "SoLib/Math/Math.hpp"
+#include <imgui.h>
+#include "Game/GameManager/GameManager.h"
 
 void BlockMap::Init()
 {
+
+	pTexture2d_ = DrawerManager::GetInstance()->GetTexture2D();
 	blockMap_ = std::make_unique<Block2dMap>();
 	blockStatesMap_ = std::make_unique<Map2dMap<std::unique_ptr<BlockStatus>>>();
 
@@ -17,9 +20,16 @@ void BlockMap::Init()
 	ground_ = std::make_unique<Ground>();
 	ground_->Init();
 
+	textures_ = {
+		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/lizardTailBlock.png"),
+		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/waterBlock.png"),
+		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/herbBlock.png"),
+		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/mineralBlock.png"),
+	};
 }
 
-void BlockMap::Update([[maybe_unused]] const float deltaTime) {
+void BlockMap::Update([[maybe_unused]] const float deltaTime)
+{
 
 	for (auto &blockStatusLine : *blockStatesMap_) {
 		for (auto &blockStatus : blockStatusLine) {
@@ -28,14 +38,36 @@ void BlockMap::Update([[maybe_unused]] const float deltaTime) {
 			}
 		}
 	}
-
 }
 
-void BlockMap::Draw([[maybe_unused]] const Camera &camera) const {
+void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
+{
+	uint32_t blockTex = 0;
+	uint32_t blockColor = 0xFFFFFFFF;
 	for (const auto &modelStateArr : modelStateMap_) {
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
-				model_->Draw(modelState->transMat, camera.GetViewOthographics(), modelState->color, BlendType::kNone);
+				if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kRed)]) {
+					blockTex = textures_[0];
+					blockColor = 0xFFFFFFFF;
+				}
+				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kBlue)]) {
+					blockTex = textures_[1];
+					blockColor = 0xFFFFFFFF;
+				}
+				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kGreen)]) {
+					blockTex = textures_[2];
+					blockColor = 0xFFFFFFFF;
+				}
+				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kYellow)]) {
+					blockTex = textures_[3];
+					blockColor = 0xFFFFFFFF;
+				}
+				else {
+					blockTex = TextureManager::GetInstance()->GetWhiteTex();
+					blockColor = modelState->color;
+				}
+				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), blockTex, blockColor, BlendType::kNone);
 			}
 		}
 	}
@@ -51,9 +83,9 @@ bool BlockMap::Debug(const char *const str)
 	if (ImGui::TreeNode(str)) {
 
 		for (size_t y = 0; y < kMapY; y++) {
-			// 
-			//if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
-				//for (size_t z = 0; z < kMapZ; z++) {
+			//
+			// if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
+			// for (size_t z = 0; z < kMapZ; z++) {
 			for (size_t x = 0; x < kMapX; x++) {
 				isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(y) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*blockMap_)[y][x]));
 				if (x != 9) {
@@ -61,8 +93,8 @@ bool BlockMap::Debug(const char *const str)
 				}
 			}
 			//}
-			//ImGui::TreePop();
-		//}
+			// ImGui::TreePop();
+			//}
 		}
 
 		ImGui::TreePop();
@@ -86,14 +118,13 @@ void BlockMap::TransferBoxData()
 
 			// ボックスが存在する場合は実体を作成
 			if (box) {
-				// 描画先の座標
-				const Vector2 drawPos = GetGlobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) } + (*blockStatesMap_)[yi][xi]->drawOffset_);
 				// もしすでに実在したら生成しない
 				if (not modelState) {
 					modelState = std::make_unique<MatrixModelState>();
-
 				}
-				modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y } *0.5f, Vector3::kZero, { drawPos, -1.f });
+				// 描画先の座標
+				const Vector2 drawPos = GetGlobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) } /*+ (*blockStatesMap_)[yi][xi]->drawOffset_*/);
+				modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y }, Vector3::kZero, { drawPos, -1.f });
 				// 色を指定する
 				modelState->color = box.GetColor();
 			}
@@ -108,13 +139,12 @@ void BlockMap::TransferBoxData()
 	}
 
 	//// 拠点のデータの転送
-	//for (auto &house : houseList_) {
+	// for (auto &house : houseList_) {
 
 	//	// 現在のモデル
 	//	house.houseModelState_.transMat = SoLib::Math::Affine(Vector3{ static_cast<float>(*vEnemyHouseWidth_),1,1 } + Vector3::kIdentity * 0.1f, Vector3::kZero, GetGrobalPos(Vector2{ static_cast<float>(house.xPos_), -1.f }));
 
 	//}
-
 }
 
 void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType)
@@ -128,10 +158,7 @@ void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxTy
 	for (int32_t i = 0; i < 2; i++) {
 
 		SoLib::begin(calcCenterPos)[i] = std::floor(SoLib::begin(centerPos)[i]) + SoLib::begin(halfSize)[i] - ((SoLib::begin(size)[i] - 1.f) * 0.5f);
-
 	}
-
-
 
 	for (int32_t yi = 0; yi < static_cast<int32_t>(size.y); yi++) {
 		for (int32_t xi = 0; xi < static_cast<int32_t>(size.x); xi++) {
@@ -162,14 +189,12 @@ void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxTy
 
 			// データの転送
 			blockState = std::move(setBlockState);
-
 		}
 	}
-
-
 }
 
-const Block::BlockType BlockMap::GetBlockType(const Vector2 localPos) const {
+const Block::BlockType BlockMap::GetBlockType(const Vector2 localPos) const
+{
 	// もしマップ外に行っていた場合虚無
 	if (IsOutSide(localPos)) {
 		return Block::BlockType::kNone;
@@ -179,7 +204,8 @@ const Block::BlockType BlockMap::GetBlockType(const Vector2 localPos) const {
 	return (*blockMap_)[int(localPos.y)][int(localPos.x)].GetBlockType();
 }
 
-const Block::BlockType BlockMap::GetBlockType(const POINTS localPos) const {
+const Block::BlockType BlockMap::GetBlockType(const POINTS localPos) const
+{
 	// もしマップ外に行っていた場合虚無
 	if (IsOutSide(localPos)) {
 		return Block::BlockType::kNone;
@@ -199,55 +225,33 @@ bool BlockMap::IsOutSide(const POINTS localPos)
 	return localPos.x < 0 or localPos.y < 0 or localPos.x >= BlockMap::kMapX or localPos.y >= BlockMap::kMapY;
 }
 
-uint32_t BlockMap::BreakChainBlocks(POINTS localPos)
-{
-	uint32_t result = 0;
-
-	const auto &&chainBlockMap = FindChainBlocks(localPos);
-
-	POINTS targetPos{};
-
-	for (targetPos.y = 0; targetPos.y < kMapY; targetPos.y++) {
-		const auto &breakLine = chainBlockMap[targetPos.y];
-		for (targetPos.x = 0; targetPos.x < kMapX; targetPos.x++) {
-			if (breakLine[targetPos.x]) {
-				BreakBlock(targetPos);
-			}
-		}
-		result += static_cast<uint32_t>(breakLine.count());
-	}
-
-
-	return result;
-}
 
 void BlockMap::BreakBlock(POINTS localPos)
 {
-	if (IsOutSide(localPos)) { return; }
+	if (IsOutSide(localPos)) {
+		return;
+	}
 	auto &targetBlock = blockMap_->at(localPos.y).at(localPos.x);
 	// ブロックがあるなら破壊
 	if (targetBlock) {
+		targetBlock.SetDamage(0);
 		targetBlock.SetBlockType(Block::BlockType::kNone);
 		blockStatesMap_->at(localPos.y).at(localPos.x).reset();
-
 	}
 }
 
-std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BlockMap::FindChainBlocks(POINTS localPos, std::array<std::bitset<kMapX>, kMapY> &&result) const
+std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BlockMap::FindChainBlocks(POINTS localPos, std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result) const
 {
 	static constexpr std::array<POINTS, 4u> kMoveDir{
-		{
-			{-1, 0},
-			{ 1,0 },
-			{ 0,-1 },
-			{ 0,1 }
-		}
-	};
+		{{-1, 0},
+		 {1, 0},
+		 {0, -1},
+		 {0, 1}} };
 
 	// 今のブロックのタイプ
 	const Block::BlockType localType = GetBlockType(localPos);
 	// もし虚空なら終わる
-	if (localType == Block::BlockType::kNone) {
+	if (localType == Block::BlockType::kNone and not set.contains(localPos)) {
 		return std::move(result);
 	}
 	result[localPos.y][localPos.x] = true;
@@ -261,14 +265,16 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BlockMap::FindChainB
 
 		// 移動先の情報
 		const Block::BlockType targetType = GetBlockType(targetPos);
+		// ステージ外か
+		bool isOutMap = IsOutSide(targetPos);
+		// もしステージ外なら飛ばす
+		if (isOutMap) { continue; }
 
 		// 移動先のブロックが現在と一致してたら
-		if (targetType == localType and result[targetPos.y][targetPos.x] == false) {
-			result = FindChainBlocks(targetPos, std::move(result));
+		if ((set.contains(targetPos) or targetType == localType) and result[targetPos.y][targetPos.x] == false) {
+			result = FindChainBlocks(targetPos, set, std::move(result));
 		}
-
 	}
-
 
 	return std::move(result);
 }
