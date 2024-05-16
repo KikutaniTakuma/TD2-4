@@ -20,6 +20,7 @@
 #include <GameObject/Component/SpriteComp.h>
 #include <GlobalVariables/GlobalVariables.h>
 #include <GameObject/Component/EnemyBulletComp.h>
+#include <GameObject/Component/PlayerAnimator.h>
 
 #include "Drawers/Particle/Particle.h"
 
@@ -57,6 +58,7 @@ void GameManager::Init()
 
 	player_ = std::make_unique<GameObject>();
 	player_->AddComponent<PlayerComp>();
+	player_->AddComponent<PlayerAnimatorComp>();
 
 	for (float i = 0; i < 15.f; i++) {
 		AddDwarf(Vector2::kXIdentity * i);

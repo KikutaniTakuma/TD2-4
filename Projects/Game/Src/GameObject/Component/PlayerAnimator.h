@@ -1,0 +1,33 @@
+#pragma once
+
+#pragma once
+#include "../GameObject.h"
+
+#include "Utils/SafePtr/SafePtr.h"
+
+#include "PlayerComp.h"			// 小人の動作コンポーネント
+#include "PickUpComp.h"			// 小人の持ち上げたブロックに関するコンポーネント
+#include "SpriteComp.h"			// 小人自体のスプライトのコンポーネント
+#include "SpriteAnimatorComp.h"	// スプライトに紐づいたアニメーションのコンポーネント
+
+class PlayerAnimatorComp : public IComponent
+{
+public:
+	using IComponent::IComponent;
+	~PlayerAnimatorComp() = default;
+
+	void Init() override;
+
+	void Update() override;
+
+private:
+
+	Lamb::SafePtr<PlayerComp> pPlayerComp_ = nullptr;
+	Lamb::SafePtr<LocalRigidbody> pPlayerRigidComp_ = nullptr;
+	Lamb::SafePtr<SpriteComp> pSpriteComp_ = nullptr;
+	Lamb::SafePtr<SpriteAnimatorComp> pAnimComp_ = nullptr;
+
+	Lamb::SafePtr<Tex2DAniamtor> spriteAnimator_ = nullptr;
+
+	bool isAttackAnimation_;
+};
