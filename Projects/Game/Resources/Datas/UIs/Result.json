@@ -5,12 +5,12 @@
                 "TextureFullPath": "Resources/UI/backGround.png",
                 "TextureName": "backGround",
                 "UVScale": [
-                    2.0,
-                    2.0
+                    1.0,
+                    1.0
                 ],
                 "UVTranslate": [
-                    0.0,
-                    0.0
+                    0.675994873046875,
+                    0.3379974365234375
                 ],
                 "color": 4294967295,
                 "scale": [
