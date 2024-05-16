@@ -45,8 +45,6 @@ public:
 public:
 	bool Debug(const char *const str);
 
-	void ClearHitMap();
-
 	// マップのデータを取得
 	BlockMap *GetMap() { return blockMap_.get(); }
 
@@ -96,8 +94,6 @@ public:
 
 	SoLib::VItem<"破壊時の停止時間", float> vBreakStopTime_{ 1.f };
 
-	const auto &GetHitMap() const { return hitPos_; }
-
 public:
 	/// @brief 入力動作
 	void InputAction();
@@ -108,8 +104,6 @@ private:
 	void MargeDwarf();
 
 private:
-
-	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> hitPos_;
 
 	SoLib::Time::DeltaTimer blockBreakTimer_;
 

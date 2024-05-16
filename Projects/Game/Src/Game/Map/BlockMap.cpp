@@ -43,8 +43,6 @@ void BlockMap::Update([[maybe_unused]] const float deltaTime)
 void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 {
 	uint32_t blockTex = 0;
-	uint32_t blockColor = 0xFFFFFFFF;
-	const auto &hitMap = GameManager::GetInstance()->GetHitMap();
 	Lamb::SafePtr texManager = TextureManager::GetInstance();
 
 	int32_t yi = 0;
@@ -54,19 +52,16 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 			if (modelState) {
 				for (uint32_t typeIndex = 1; typeIndex < static_cast<uint32_t>(Block::BlockType::kMax); typeIndex++) {
 					if (modelState->color == Block::kBlockColor_[typeIndex]) {
-						if (modelState->color == damageColor_ and hitMap[yi][xi]) {
+						if (modelState->color == damageColor_ and hitMap_[yi][xi]) {
 
 							blockTex = texManager->GetWhiteTex();
 						}
 						else {
 							blockTex = textures_[typeIndex - 1];
 						}
-
-
-						blockColor = 0xFFFFFFFF;
 					}
 				}
-				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), blockTex, blockColor, BlendType::kNone);
+				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), blockTex, 0xFFFFFFFF, BlendType::kNone);
 			}
 			xi++;
 		}
@@ -248,14 +243,6 @@ void BlockMap::BreakBlock(POINTS localPos)
 		blockStatesMap_->at(localPos.y).at(localPos.x).reset();
 	}
 }
-
-void BlockMap::HitBlock(POINTS localPos) {
-	if (IsOutSide(localPos)) {
-		return;
-	}
-	//auto& targetBlock = blockMap_->at(localPos.y).at(localPos.x);
-}
-
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BlockMap::FindChainBlocks(POINTS localPos, std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result) const
 {
 	static constexpr std::array<POINTS, 4u> kMoveDir{

@@ -73,7 +73,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	GlobalVariables::GetInstance()->Update();
 
-	ClearHitMap();
+	GetMap()->SetHitMap({});
 
 	blockMap_->Update(deltaTime);
 	blockBreakTimer_.Update(deltaTime);
@@ -281,14 +281,6 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 	return isChange;
 }
 
-void GameManager::ClearHitMap()
-{
-	GetMap()->SetDamageColor(0);
-	for (auto &line : hitPos_) {
-		line.reset();
-	}
-}
-
 GameObject *GameManager::AddPlayerBullet(Vector2 centerPos, Vector2 velocity)
 {
 	std::unique_ptr<GameObject> bullet = std::make_unique<GameObject>();
@@ -411,9 +403,11 @@ GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
 
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakChainBlocks(POINTS localPos)
 {
+	if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
 
-	blockBreakTimer_.Start(vBreakStopTime_);
+		blockBreakTimer_.Start(vBreakStopTime_);
 
+	}
 	auto dwarfPos = GetDwarfPos();
 
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, dwarfPos);
@@ -440,6 +434,8 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 		}
 	}
 
+	blockMap_->SetBreakMap(chainBlockMap);
+
 	return std::move(chainBlockMap);
 }
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::HitChainBlocks(POINTS localPos) {
@@ -452,29 +448,7 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::HitChai
 
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, dwarfPos);
 
-	POINTS targetPos{};
-
-	for (targetPos.y = 0; targetPos.y < BlockMap::kMapY; targetPos.y++) {
-		const auto &breakLine = chainBlockMap[targetPos.y];
-		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
-			if (breakLine[targetPos.x]) {
-				blockMap_->HitBlock(targetPos);
-			}
-		}
-	}
-
-	for (auto &dwarf : darkDwarfList_) {
-		auto localBody = dwarf->GetComponent<LocalBodyComp>();
-		if (localBody) {
-			POINTS mapIndex = localBody->GetMapPos();
-			// そこが破壊対象なら死ぬ
-			if (chainBlockMap[mapIndex.y][mapIndex.x]) {
-				dwarf->SetActive(false);
-			}
-		}
-	}
-
-	hitPos_ = chainBlockMap;
+	GetMap()->SetHitMap(chainBlockMap);
 
 	return std::move(chainBlockMap);
 }

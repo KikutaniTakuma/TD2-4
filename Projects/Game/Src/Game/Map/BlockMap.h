@@ -127,8 +127,6 @@ public:
 
 
 	void BreakBlock(POINTS localPos);
-	//弾が当たったブロック
-	void HitBlock(POINTS localPos);
 
 	void ProcessEnemyHouseBlocks(std::function<void(int32_t y, int32_t x)> processBlock)
 	{
@@ -170,7 +168,26 @@ public:
 
 	std::array<std::bitset<kMapX>, kMapY> &&FindChainBlocks(POINTS localPos, std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result = {}) const;
 
+	void SetBreakMap(const std::array<std::bitset<kMapX>, kMapY> &map) { breakMap_ = map; }
+	const std::array<std::bitset<kMapX>, kMapY> &GetBreakMap() const { return breakMap_; }
+
+	void SetHitMap(const std::array<std::bitset<kMapX>, kMapY> &map) { hitMap_ = map; }
+	const std::array<std::bitset<kMapX>, kMapY> &GetHitMap() const { return hitMap_; }
+
+	void ClearHitMap()
+	{
+		SetDamageColor(0);
+		for (auto &line : hitMap_) {
+			line.reset();
+		}
+	}
+
+
 private:
+
+	std::array<std::bitset<kMapX>, kMapY> hitMap_;
+
+	std::array<std::bitset<kMapX>, kMapY> breakMap_;
 
 private:
 	// 箱の配列 [y][x]
