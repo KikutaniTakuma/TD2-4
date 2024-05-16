@@ -443,10 +443,11 @@ void GameManager::RandomFallBlockSpawn()
 {
 	if (not fallBlockSpawnTimer_.IsActive()) {
 		fallBlockSpawnTimer_.Start(5.f);
-		//int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
+		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
+		uint32_t blockType = Lamb::Random(static_cast<uint32_t>(Block::BlockType::kNone) + 1, static_cast<uint32_t>(Block::BlockType::kMax) - 1);
 
 
-		//AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY)},Vector2::kIdentity, );
+		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -10, Vector2::kZero);
 	}
 }
 //
