@@ -128,6 +128,8 @@ public:
 
 	void BreakBlock(POINTS localPos);
 
+	void BreakUpdate(const float deltaTime);
+
 	void ProcessEnemyHouseBlocks(std::function<void(int32_t y, int32_t x)> processBlock)
 	{
 		for (int yi = 0; yi < BlockMap::kMapY; yi++) {
@@ -222,7 +224,7 @@ private:
 
 	Texture2D *pTexture2d_ = nullptr;
 
-	
+
 
 	//変数
 //攻撃を受けたかどうか

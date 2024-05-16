@@ -40,7 +40,7 @@ void GameManager::Init()
 	LocalBodyComp::pMap_ = GetMap();
 
 	spawner_ = std::make_unique<GameObject>();
-	
+
 	{
 		Lamb::SafePtr spriteComp = spawner_->AddComponent<SpriteComp>();
 		spriteComp->SetTexture("./Resources/uvChecker.png");
@@ -78,7 +78,10 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	float localDeltaTime = deltaTime;
 
 	if (blockBreakTimer_.IsActive()) {
-		localDeltaTime = 0.f;
+		localDeltaTime = deltaTime * std::lerp(0.3f, 0.8f, blockBreakTimer_.GetProgress());
+		if (blockBreakTimer_.IsFinish()) {
+
+		}
 	}
 	else {
 		blockMap_->SetBreakMap({});

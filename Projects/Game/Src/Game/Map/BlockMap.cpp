@@ -46,6 +46,9 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 	const uint32_t whiteTex = texManager->GetWhiteTex();
 	uint32_t blockTex = 0;
 
+	const auto &breakTimer = GameManager::GetInstance()->GetBreakTimer();
+	bool isDraw = std::fmodf(breakTimer.GetProgress(), 0.2f) > 0.1f;
+
 	int32_t yi = 0;
 	for (const auto &modelStateArr : modelStateMap_) {
 		int32_t xi = 0;
@@ -65,7 +68,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), blockTex, 0xFFFFFFFF, BlendType::kNone);
 			}
 			// 破壊フラグが立っていたら
-			if (breakBlockMap_[yi][xi]) {
+			if (isDraw and breakBlockMap_[yi][xi]) {
 				Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos({static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
 
 				pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, 0xFFFFFFFF, BlendType::kNone);
@@ -247,12 +250,19 @@ void BlockMap::BreakBlock(POINTS localPos)
 	auto &targetBlock = blockMap_->at(localPos.y).at(localPos.x);
 	// ブロックがあるなら破壊
 	if (targetBlock) {
+		targetBlock.SetIsDestroy(false);
 		targetBlock.SetDamage(0);
 		targetBlock.SetBlockType(Block::BlockType::kNone);
 		damageColor_ = 0;
 		blockStatesMap_->at(localPos.y).at(localPos.x).reset();
 	}
 }
+
+void BlockMap::BreakUpdate([[maybe_unused]] const float deltaTime)
+{
+
+}
+
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BlockMap::FindChainBlocks(POINTS localPos, const std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result) const
 {
 	static constexpr std::array<POINTS, 4u> kMoveDir{

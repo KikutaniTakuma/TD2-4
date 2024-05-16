@@ -92,7 +92,9 @@ public:
 
 	void RandomFallBlockSpawn();
 
-	SoLib::VItem<"破壊時の停止時間", float> vBreakStopTime_{ 1.f };
+	SoLib::VItem<"破壊時の停止時間", float> vBreakStopTime_{ 0.5f };
+
+	const auto &GetBreakTimer() const { return blockBreakTimer_; }
 
 public:
 	/// @brief 入力動作
