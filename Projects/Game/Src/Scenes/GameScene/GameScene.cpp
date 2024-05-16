@@ -254,10 +254,6 @@ void GameScene::Draw() {
 
 	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
 #endif // _DEBUG
-
-
-	Lamb::screenout << "Water and cloud scene" << Lamb::endline
-		<< "Press space to change ""Model scene""";
 }
 
 void GameScene::TextureDraw() {

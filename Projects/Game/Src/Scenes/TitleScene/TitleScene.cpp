@@ -169,9 +169,6 @@ void TitleScene::Draw(){
 
 	//Line::Draw(sphere_->pos, sphere2_->pos, camera_->GetViewOthographics(), 0xffffffff);
 
-	Lamb::screenout << "Capsule Test" << Lamb::endline
-		<< "Check : " << isCollision_;
-
 #ifdef _DEBUG
 
 	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
