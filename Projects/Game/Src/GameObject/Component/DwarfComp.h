@@ -41,6 +41,8 @@ public:
 
 	bool GetIsDarkDwarf()const;
 
+	const auto &AttackTimer() { return timer_; }
+
 private:
 	void ClimbUp();
 
