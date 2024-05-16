@@ -39,6 +39,8 @@ public:
 
 	void FireBullet();
 
+	bool GetIsDarkDwarf()const;
+
 private:
 	void ClimbUp();
 
