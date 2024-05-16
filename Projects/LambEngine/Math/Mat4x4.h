@@ -11,12 +11,12 @@
 
 // 4x4行列
 template<>
-class Matrix<float, 4,4> final {
+class Matrix<float, 4, 4> final {
 private:
 	static constexpr size_t kWidth = 4;
 	static constexpr size_t kHeight = 4;
 
-	static_assert(0llu != kWidth and 0llu != 4,
+	static_assert(0llu != kWidth and 0llu != kHeight,
 		"Height and width must be greater than ""0""");
 public:
 	using value_type = float;
@@ -58,15 +58,15 @@ public:
 #endif // value_cast
 
 public:
-	constexpr Matrix() noexcept  :
+	constexpr Matrix() noexcept :
 		vector_()
 	{}
 
-	constexpr Matrix(const vector_type& right) noexcept  :
+	constexpr Matrix(const vector_type& right) noexcept :
 		vector_(right)
 	{}
-	constexpr Matrix(const Matrix&)  = default;
-	constexpr Matrix(Matrix&&)  = default;
+	constexpr Matrix(const Matrix&) = default;
+	constexpr Matrix(Matrix&&) = default;
 	constexpr Matrix(const DirectX::XMMATRIX& xmMatrix);
 
 
@@ -109,6 +109,20 @@ public:
 		Matrix result;
 
 		result.xmMatrix_ = DirectX::XMMatrixMultiply(this->xmMatrix_, right.xmMatrix_);
+
+		return result;
+	}
+	template<std::floating_point othertype, size_t otherHeight, size_t otherWidth>
+	[[nodiscard]] constexpr Matrix<value_type, kHeight, otherWidth> operator*(const Matrix<othertype, otherHeight, otherWidth>& right) const requires(kWidth == otherHeight and kWidth != otherWidth) {
+		Matrix<value_type, kHeight, otherWidth> result;
+
+		for (size_t y = 0; y < result.HeightSize(); y++) {
+			for (size_t x = 0; x < result.WidthSize(); x++) {
+				for (size_t i = 0; i < kWidth; i++) {
+					result[y][x] += matrix_[y][i] * value_cast(right[i][x]);
+				}
+			}
+		}
 
 		return result;
 	}
@@ -311,7 +325,7 @@ public:
 private:
 	void OutOfRange(const std::string& funcName,
 		const std::string& sourceFileName,
-		uint32_t codeLineNumber) const 
+		uint32_t codeLineNumber) const
 	{
 		throw Lamb::Error::Code<Matrix>("out of range", funcName, sourceFileName, codeLineNumber);
 	}
@@ -326,18 +340,18 @@ protected:
 		DirectX::XMMATRIX xmMatrix_;
 	};
 
-/// <summary>
-/// 4x4行列用の関数
-/// </summary>
+	/// <summary>
+	/// 4x4行列用の関数
+	/// </summary>
 public:
-	class Vector3 GetTranslate();
-	class Vector3 GetScale();
-	class Quaternion GetRotate();
+	class Vector3 GetTranslate() const;
+	class Vector3 GetScale() const;
+	class Quaternion GetRotate() const;
 
-	void Decompose(class Vector3& scale, class Quaternion& rotate, class Vector3& translate);
-	void Decompose(class Vector3& scale, class Vector3& rotate, class Vector3& translate);
+	void Decompose(class Vector3& scale, class Quaternion& rotate, class Vector3& translate) const;
+	void Decompose(class Vector3& scale, class Vector3& rotate, class Vector3& translate) const;
 
-// 静的メンバ関数
+	// 静的メンバ関数
 public:
 	static [[nodiscard]] Matrix MakeTranslate(const class Vector3& vec);
 
@@ -354,7 +368,7 @@ public:
 	static [[nodiscard]] Matrix MakeRotate(const class Quaternion& rad);
 
 	static [[nodiscard]] Matrix MakeAffin(const class Vector3& scale, const class Vector3& rad, const class Vector3& translate);
-	
+
 	static [[nodiscard]] Matrix MakeAffin(const class Vector3& scale, const class Quaternion& rad, const class Vector3& translate);
 
 	static [[nodiscard]] Matrix MakeAffin(const class Vector3& scale, const class Vector3& from, const class Vector3& to, const class Vector3& translate);
@@ -370,7 +384,7 @@ public:
 
 	static [[nodiscard]] Matrix MakeRotateAxisAngle(const class Vector3& axis, float angle);
 
-// 静的定数
+	// 静的定数
 public:
 	static const Matrix kIdentity;
 	static const Matrix kZero;
