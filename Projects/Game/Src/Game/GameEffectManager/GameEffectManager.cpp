@@ -32,6 +32,8 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 	}*/
 
 	if (blockBreakPos_.first != Block::BlockType::kNone) {
+		Audio* audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockBreak.mp3");
+		audio->Start(0.3f, false);
 		auto particle = particles_.begin();
 		for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
 			for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
