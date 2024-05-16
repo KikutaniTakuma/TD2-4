@@ -21,7 +21,7 @@
                 "translate": [
                     0.0,
                     0.0,
-                    0.0
+                    200.0
                 ]
             },
             {
@@ -48,8 +48,8 @@
                 ]
             },
             {
-                "TextureFullPath": "Resources/UI/Result\\flask.png",
-                "TextureName": "Result\\flask",
+                "TextureFullPath": "Resources/UI/pot.png",
+                "TextureName": "pot",
                 "UVScale": [
                     1.0,
                     1.0
@@ -60,13 +60,13 @@
                 ],
                 "color": 4294967295,
                 "scale": [
-                    272.0,
-                    464.0,
+                    415.0,
+                    415.0,
                     1.0
                 ],
                 "translate": [
                     0.0,
-                    0.0,
+                    -128.0,
                     0.0
                 ]
             }

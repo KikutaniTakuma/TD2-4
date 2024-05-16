@@ -24,6 +24,7 @@ public:
 	struct ParticleStatus {
 		Vector3 startPos;
 		Vector3 translate;
+		Vector3 startScale;
 		Vector3 scale;
 
 		float activeTime = 0.0f;
@@ -94,6 +95,10 @@ public:
 	void SetParticleSize(const Vector3& min, const Vector3& max) {
 		scaleMin_ = min;
 		scaleMax_ = max;
+	}
+
+	void SetFreq(Vector2 freq) {
+		freq_ = freq;
 	}
 
 private:

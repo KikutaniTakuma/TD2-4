@@ -23,7 +23,7 @@ void ResultScene::Initialize(){
 	currentCamera_->pos = { 0.f, 0.f ,-10.0f };
 
 	tex2D_ = drawerManager_->GetTexture2D();
-	backGround_.translate.z = 100.0f;
+	backGround_.translate.z = 50.0f;
 	backGround_.scale = Lamb::ClientSize();
 	backGroundTextureID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
 
@@ -39,16 +39,28 @@ void ResultScene::Initialize(){
 	}
 
 	for (auto texID = flaskTextureID_.begin(); auto & i : flaskParticles_) {
-		i.SetParticleSize(Vector3::kIdentity * 20.0f, Vector3::kIdentity * 30.0f);
-		i.SetRotate(Vector2(30_deg, 150_deg));
-		i.SetEndTranslate(Vector3::kYIdentity * -200.0f);
-		i.SetTextureID(*texID);
-		i.Start();
+		i = std::make_unique<FlaskParticle>();
+		i->SetParticleSize(Vector3::kIdentity * 50.0f, Vector3::kIdentity * 80.0f);
+		i->Resize(20);
+		i->SetDeathTime({2.0f, 3.0f});
+		i->SetRotate(Vector2(15_deg, 165_deg));
+		i->SetRadius(Vector2(300.0f, 400.0f));
+		i->SetFreq(Vector2(0.2f, 1.0f));
+		//i->SetEndTranslate(Vector3::kYIdentity * -200.0f);
+		i->SetTextureID(*texID);
+		i->Start();
 		texID++;
 		if (texID == flaskTextureID_.end()) {
 			break;
 		}
 	}
+	backGroundStartPos_ = backGround_.translate;
+	backGroundStartPos_.y = Lamb::ClientSize().y;
+	backGroundEndPos_ = backGround_.translate;
+
+	backGroundEase_ = std::make_unique<Easeing>();
+
+	isActiveParticle_ = true;
 }
 
 void ResultScene::Finalize(){
@@ -59,10 +71,28 @@ void ResultScene::Update(){
 	currentCamera_->Debug("カメラ");
 	currentCamera_->Update();
 
-	for (auto& i : flaskParticles_) {
-		i.Update();
+	if (not backGroundEase_->GetIsActive()) {
+		isActiveParticle_ = true;
+		bool isActive = false;
+		for (auto& i : flaskParticles_) {
+			i->Update();
+			if (i->GetIsActive()) {
+				isActive = true;
+			}
+		}
+		isActiveParticle_ = isActive;
 	}
 
+	if (isActiveParticle_.OnExit()) {
+		backGroundEase_->Start(
+			false,
+			0.8f,
+			Easeing::OutBounce
+		);
+	}
+
+	backGroundEase_->Update();
+	backGround_.translate = backGroundEase_->Get(backGroundStartPos_, backGroundEndPos_);
 	backGround_.CalcMatrix();
 }
 
@@ -78,7 +108,7 @@ void ResultScene::Draw(){
 	);
 
 	for (auto& i : flaskParticles_) {
-		i.Draw(currentCamera_->GetViewOthographics());
+		i->Draw(currentCamera_->GetViewOthographics());
 	}
 
 	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());

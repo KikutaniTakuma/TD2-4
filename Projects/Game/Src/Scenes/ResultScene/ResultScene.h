@@ -30,10 +30,14 @@ private:
 	Lamb::SafePtr<Texture2D> tex2D_;
 	Transform backGround_;
 	uint32_t backGroundTextureID_;
-	std::unique_ptr<Particle> backGroundParticle_;
+	//std::unique_ptr<Particle> backGroundParticle_;
+	std::unique_ptr<Easeing> backGroundEase_;
+	Vector3 backGroundStartPos_;
+	Vector3 backGroundEndPos_;
+	Lamb::Flg isActiveParticle_;
 
 
-	std::array<FlaskParticle, 4> flaskParticles_;
+	std::array<std::unique_ptr<FlaskParticle>, 4> flaskParticles_;
 	std::array<uint32_t, 4> flaskTextureID_;
 };
 

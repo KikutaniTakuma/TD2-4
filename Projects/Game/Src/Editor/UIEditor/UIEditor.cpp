@@ -139,14 +139,14 @@ void UIEditor::Debug(const BaseScene::ID id){
 		if (ImGui::BeginMenu("配置しているUI")) {
 			for (size_t i = 0; i < texies_[static_cast<size_t>(id)].size(); i++){
 				if (ImGui::TreeNode((texies_[static_cast<size_t>(id)][i]->textureName.c_str() + std::to_string(i)).c_str())) {
-					ImGui::DragFloat2("ポジション", &texies_[static_cast<size_t>(id)][i]->transform.translate.x, 1.0f);
-					ImGui::DragFloat2("大きさ", &texies_[static_cast<size_t>(id)][i]->transform.scale.x, 1.0f);
-					ImGui::DragFloat2("UVポジション", &texies_[static_cast<size_t>(id)][i]->uvTrnasform.translate.x, 1.0f);
-					ImGui::DragFloat2("UV大きさ", &texies_[static_cast<size_t>(id)][i]->uvTrnasform.scale.x, 1.0f);
+					ImGui::DragFloat3("ポジション", texies_[static_cast<size_t>(id)][i]->transform.translate.data(), 1.0f);
+					ImGui::DragFloat2("大きさ", texies_[static_cast<size_t>(id)][i]->transform.scale.data(), 1.0f);
+					ImGui::DragFloat2("UVポジション", texies_[static_cast<size_t>(id)][i]->uvTrnasform.translate.data(), 1.0f);
+					ImGui::DragFloat2("UV大きさ",texies_[static_cast<size_t>(id)][i]->uvTrnasform.scale.data(), 1.0f);
 					uint32_t colorInt = texies_[static_cast<size_t>(id)][i]->color;					
-					Vector4 color = ConvertRGBAColorToVector4(colorInt);
+					Vector4 color = colorInt;
 					 ImGui::ColorEdit4("テクスチャの色", &color.vec.x, true);
-					 texies_[static_cast<size_t>(id)][i]->color = ConvertVector4ToRGBAColor(color);
+					 texies_[static_cast<size_t>(id)][i]->color = color.GetColorRGBA();
 					 if (ImGui::Button("このテクスチャを削除する")){
 						 if (OperationConfirmation()) {
 							 texies_[static_cast<size_t>(id)].erase(texies_[static_cast<size_t>(id)].begin() + i);
@@ -553,9 +553,6 @@ void UIEditor::LoadFileAll(){
 			setTex_->textureFullPath = i["TextureFullPath"];
 			setTex_->textureName = i["TextureName"];
 
-			if (setTex_->textureName == "rest") {
-				setTex_->transform.translate.z = -10.0f;
-			}
 			texies_[static_cast<size_t>(scene.first)].emplace_back(std::move(setTex_));
 
 		}
