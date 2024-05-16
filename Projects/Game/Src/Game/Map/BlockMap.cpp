@@ -73,7 +73,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 bool BlockMap::Debug(const char *const str)
 {
 	bool isChange = false;
-
+	str;
 #ifdef _DEBUG
 
 	if (ImGui::TreeNode(str)) {

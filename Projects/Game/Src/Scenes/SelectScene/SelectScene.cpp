@@ -90,7 +90,10 @@ void SelectScene::Draw(){
 			, texies_[i]->textureID, texies_[i]->color, BlendType::kNormal);
 	}
 
-	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
+#ifdef _DEBUG
+
+	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
+#endif // _DEBUG
 }
 
 void SelectScene::Debug(){
