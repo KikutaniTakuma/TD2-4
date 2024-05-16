@@ -18,6 +18,8 @@ public:
 
 	void Update() override;
 
+	void Draw(const Camera &camera) const override;
+
 	void OnCollision(GameObject *other) override;
 
 public:

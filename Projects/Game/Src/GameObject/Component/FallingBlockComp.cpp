@@ -9,14 +9,12 @@ void FallingBlockComp::Init()
 	pRigidbody_ = object_.AddComponent<LocalRigidbody>();
 	pHitMapComp_ = object_.AddComponent<LocalMapHitComp>();
 
-	Lamb::SafePtr modelComp = object_.AddComponent<ModelComp>();
-	modelComp->AddBone("Body", DrawerManager::GetInstance()->GetModel("Resources/Cube.obj"))->color_ = 0xF58498FF;
+	
 }
 
 void FallingBlockComp::Start()
 {
-	Lamb::SafePtr modelComp = object_.GetComponent<ModelComp>();
-	modelComp->GetBone("Body")->color_ = blockType_.GetColor();
+	
 }
 
 void FallingBlockComp::Update()
@@ -28,6 +26,12 @@ void FallingBlockComp::Update()
 
 	// グローバル空間に持ってくる
 	pLocalPos_->TransfarData();
+}
+
+void FallingBlockComp::Draw(const Camera &camera) const
+{
+	Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { pLocalPos_->GetGlobalPos() + Vector2::kYIdentity, -5.f });
+	DrawerManager::GetInstance()->GetTexture2D()->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), blockType_.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 }
 
 void FallingBlockComp::OnCollision(GameObject *other)

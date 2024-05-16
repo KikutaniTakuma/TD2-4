@@ -67,6 +67,14 @@ public:
 
 	const Mat4x4 &GetDamageUv() const { return kUvMatrix_[damage_]; }
 
+	uint32_t GetTexture() const {
+		if (blockType_ == BlockType::kNone) { return 0; }
+		else
+		{
+			return kTextures_[static_cast<uint32_t>(blockType_) - 1];
+		}
+	}
+
 	void SetIsDestroy(bool val) { isDestroy_ = val; }
 	bool GetIsDestroy() const { return isDestroy_; }
 
