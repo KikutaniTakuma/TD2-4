@@ -32,7 +32,7 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 	}*/
 
 	if (blockBreakPos_.first != Block::BlockType::kNone) {
-		Audio* audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockBreak.mp3");
+		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockBreak.mp3");
 		audio->Start(0.3f, false);
 		auto particle = particles_.begin();
 		for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
@@ -40,6 +40,7 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 				if (particle != particles_.end()) {
 					if (blockBreakPos_.second[yi][xi]) {
 						(*particle)->ParticleStart({ ToGrobal(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -10.f }, Vector2::kIdentity);
+						(*particle)->SetParticleScale(0.5f);
 						(*particle)->SetParticleAllColor(Block::kBlockColor_[static_cast<uint32_t>(blockBreakPos_.first)]);
 						++particle;
 					}

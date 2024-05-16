@@ -30,6 +30,9 @@ void PlayerAnimatorComp::Init()
 	shotParticle_->LoadSettingDirectory("Magic");
 	smokeParticle_ = std::make_unique<Particle>();
 	smokeParticle_->LoadSettingDirectory("Smoke");
+
+	damageParticle_ = std::make_unique<Particle>();
+	damageParticle_->LoadSettingDirectory("Player-Damaged");
 }
 
 void PlayerAnimatorComp::Update()
@@ -79,13 +82,14 @@ void PlayerAnimatorComp::Update()
 
 	isShoting_ = isAttackAnimation_;
 	if (isShoting_.OnEnter()) {
-		shotParticle_->ParticleStart(transform_.translate - Vector3::kZIdentity * 50, Vector2::kIdentity);
+		shotParticle_->ParticleStart(transform_.translate + Vector3{ pPlayerComp_->GetFacing() * 0.5f,0.f,-50.f }, Vector2::kIdentity);
+		shotParticle_->SetParticleScale(0.5f);
 	}
 	else if (isShoting_.OnExit()) {
 		shotParticle_->ParticleStop();
 	}
 	if (isShoting_) {
-		shotParticle_->emitterPos = transform_.translate - Vector3::kZIdentity * 50;
+		shotParticle_->emitterPos = transform_.translate + Vector3{ pPlayerComp_->GetFacing() * 0.5f,0.f,-50.f };
 	}
 
 	isLanding_ = pMapHitComp_->hitNormal_.y > 0.f;
@@ -97,6 +101,16 @@ void PlayerAnimatorComp::Update()
 		smokeParticle_->emitterPos = transform_.translate + Vector3{ 0.f,-0.5f,-50.f };
 	}
 
+	isDamage_ = pPlayerComp_->GetIsDamage();
+	if (isDamage_.OnEnter()) {
+		damageParticle_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
+		damageParticle_->SetParticleScale(0.5f);
+	}
+	if (isDamage_) {
+		damageParticle_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
+	}
+
+	damageParticle_->Update();
 
 	smokeParticle_->Update();
 
@@ -108,6 +122,10 @@ void PlayerAnimatorComp::Update()
 void PlayerAnimatorComp::Draw(const Camera &camera) const {
 	// 描画順を変えるコスト考えて無理矢理変えた
 	pSpriteComp_->Draw(camera);
+	damageParticle_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics()
+	);
 	smokeParticle_->Draw(
 		camera.rotate,
 		camera.GetViewOthographics()

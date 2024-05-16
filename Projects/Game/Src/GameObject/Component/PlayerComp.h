@@ -15,7 +15,7 @@ public:
 
 	void Update() override;
 
-	void OnCollision(GameObject* const other) override;
+	void OnCollision(GameObject *const other) override;
 
 	inline static SoLib::VItem<"無敵時間", float> vMaxInvincibleTime_ = { 1.f };
 	inline static SoLib::VItem<"最大体力", float> vMaxHealth_ = { 10.f };
@@ -29,6 +29,8 @@ public:
 	bool GetIsAttack() const {
 		return isAttack_;
 	}
+
+	bool GetIsDamage() const;
 
 	const Vector2 GetInputVec() const { return inputVec_; }
 
@@ -46,6 +48,8 @@ private:
 	int32_t facing_ = 1;
 
 	bool isAttack_;
+
+	int32_t preHealth_;
 
 	Lamb::SafePtr<LocalMapHitComp> pHitMapComp_ = nullptr;
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;

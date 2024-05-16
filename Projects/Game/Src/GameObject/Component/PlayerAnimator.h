@@ -42,10 +42,12 @@ private:
 	std::unique_ptr<Particle> haveParticle_;
 	std::unique_ptr<Particle> shotParticle_;
 	std::unique_ptr<Particle> smokeParticle_;
+	std::unique_ptr<Particle> damageParticle_;
 
 	Lamb::Flg isPicking_;
 
 	Lamb::Flg isLanding_;
+	Lamb::Flg isDamage_;
 
 	Lamb::Flg isShoting_;
 };

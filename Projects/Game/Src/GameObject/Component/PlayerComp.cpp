@@ -32,6 +32,9 @@ void PlayerComp::Update()
 	//velocity.x = 0.f;
 	//pLocalRigidbody_->SetVelocity(velocity);
 
+	preHealth_ = static_cast<int32_t>(pHealthComp_->GetNowHealth());
+
+
 	pLocalRigidbody_->ApplyContinuousForce(kGrovity_);
 
 	Input();
@@ -58,6 +61,11 @@ int32_t PlayerComp::InflictDamage(int32_t damage, const Vector2 acceleration)
 	return static_cast<int32_t>(pHealthComp_->GetNowHealth());
 }
 
+bool PlayerComp::GetIsDamage() const
+{
+	return static_cast<int32_t>(pHealthComp_->GetNowHealth()) != preHealth_;
+}
+
 void PlayerComp::FireBullet()
 {
 	GameManager::GetInstance()->AddPlayerBullet(pLocalBodyComp_->localPos_, Vector2::kXIdentity * (facing_ * 5.f));
@@ -71,7 +79,7 @@ void PlayerComp::Input()
 
 	constexpr float moveSpeed = 10.f;
 
-	inputVec_ ={};
+	inputVec_ = {};
 
 	if (key->GetKey(DIK_A)) {
 		inputVec_ = -Vector2::kXIdentity * moveSpeed;
@@ -96,7 +104,7 @@ void PlayerComp::Input()
 	}
 
 	if (key->Pushed(DIK_RETURN)) {
-		Audio* audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/shot.mp3");
+		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/shot.mp3");
 		audio->Start(0.2f, false);
 		isAttack_ = true;
 		FireBullet();
