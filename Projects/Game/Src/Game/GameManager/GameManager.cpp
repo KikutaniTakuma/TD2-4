@@ -21,6 +21,9 @@
 #include <GlobalVariables/GlobalVariables.h>
 #include <GameObject/Component/EnemyBulletComp.h>
 
+#include "Drawers/Particle/Particle.h"
+
+
 void GameManager::Init()
 {
 
@@ -81,11 +84,14 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		localDeltaTime = deltaTime * std::lerp(0.3f, 0.8f, blockBreakTimer_.GetProgress());
 		if (blockBreakTimer_.IsFinish()) {
 
+			gameEffectManager_->blockBreakPos_ = blockMap_->GetBreakBlockMap();
+
+			blockMap_->SetBreakMap({});
+			blockMap_->SetBreakBlockMap({});
 		}
 	}
 	else {
-		blockMap_->SetBreakMap({});
-		blockMap_->SetBreakBlockMap({});
+
 	}
 
 	//if (not blockBreakTimer_.IsActive()) {
@@ -141,7 +147,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 		// もしブロックがあったら
 		if (fallComp->IsLanding()) {
-			Audio* audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
+			Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
 			audio->Start(0.2f, false);
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType());
 			fallingBlock->SetActive(false);
@@ -354,7 +360,7 @@ void GameManager::LandBlock(Vector2 centerPos, Vector2 size, bool hasDamage)
 		damageAreaList_.push_back(damage);
 
 		// 演出用にデータを渡す
-		gameEffectManager_->blockBreakPos_.push_back({ centerPos, size });
+		//gameEffectManager_->blockBreakPos_.push_back({ centerPos, size });
 
 	}
 	else {
@@ -450,7 +456,7 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 			POINTS mapIndex = localBody->GetMapPos();
 			// そこが破壊対象なら死ぬ
 			if (chainBlockMap[mapIndex.y][mapIndex.x]) {
-				Audio* audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
+				Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
 				audio->Start(0.2f, false);
 
 				dwarf->SetActive(false);

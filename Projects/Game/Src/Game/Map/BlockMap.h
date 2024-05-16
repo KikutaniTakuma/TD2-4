@@ -92,6 +92,8 @@ public:
 
 	using BlockStatusMap = Map2dMap<std::unique_ptr<BlockStatus>>;
 
+	using BlockBitMap = std::array<std::bitset<kMapX>, kMapY>;
+
 public:
 	BlockMap() = default;
 	~BlockMap() = default;
@@ -168,16 +170,16 @@ public:
 		return Vector2{ kMapX, kMapY };
 	}
 
-	std::array<std::bitset<kMapX>, kMapY> &&FindChainBlocks(POINTS localPos, const std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result = {}) const;
+	BlockBitMap &&FindChainBlocks(POINTS localPos, const std::unordered_set<POINTS> &set, BlockBitMap &&result = {}) const;
 
-	void SetBreakMap(const std::array<std::bitset<kMapX>, kMapY> &map) { breakMap_ = map; }
-	const std::array<std::bitset<kMapX>, kMapY> &GetBreakMap() const { return breakMap_; }
+	void SetBreakMap(const BlockBitMap &map) { breakMap_ = map; }
+	const BlockBitMap &GetBreakMap() const { return breakMap_; }
 
-	void SetBreakBlockMap(const std::array<std::bitset<kMapX>, kMapY> &map) { breakBlockMap_ = map; }
-	const std::array<std::bitset<kMapX>, kMapY> &GetBreakBlockMap() const { return breakBlockMap_; }
+	void SetBreakBlockMap(const BlockBitMap &map) { breakBlockMap_ = map; }
+	const BlockBitMap &GetBreakBlockMap() const { return breakBlockMap_; }
 
-	void SetHitMap(const std::array<std::bitset<kMapX>, kMapY> &map) { hitMap_ = map; }
-	const std::array<std::bitset<kMapX>, kMapY> &GetHitMap() const { return hitMap_; }
+	void SetHitMap(const BlockBitMap &map) { hitMap_ = map; }
+	const BlockBitMap &GetHitMap() const { return hitMap_; }
 
 	void ClearHitMap()
 	{
@@ -190,11 +192,11 @@ public:
 
 private:
 
-	std::array<std::bitset<kMapX>, kMapY> hitMap_;
+	BlockBitMap hitMap_;
 
-	std::array<std::bitset<kMapX>, kMapY> breakMap_;
+	BlockBitMap breakMap_;
 
-	std::array<std::bitset<kMapX>, kMapY> breakBlockMap_;
+	BlockBitMap breakBlockMap_;
 
 private:
 	// 箱の配列 [y][x]
