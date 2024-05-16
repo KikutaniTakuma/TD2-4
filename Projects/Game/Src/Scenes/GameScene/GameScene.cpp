@@ -16,10 +16,10 @@
 #include "Utils/Random/Random.h"
 
 GameScene::GameScene() :
-	BaseScene(BaseScene::ID::Game)	
+	BaseScene(BaseScene::ID::Game)
 {}
 
-void GameScene::TextureInitialize(){
+void GameScene::TextureInitialize() {
 	/*//一の位
 	std::unique_ptr<Tex2DState> dwarfNumTex_;
 	//十の位
@@ -60,7 +60,7 @@ void GameScene::TextureInitialize(){
 	cloudScale_[cloudType_[1]] = { 256,144 };
 	cloudScale_[cloudType_[2]] = { 144,96 };
 
-	for (uint32_t i = 0; i < kCloudNum_; i++){
+	for (uint32_t i = 0; i < kCloudNum_; i++) {
 		clouds_[i] = std::make_unique<Tex2DState>();
 		uint32_t num = Lamb::Random(0, 2);
 		clouds_[i]->textureName = cloudType_[num];
@@ -79,7 +79,7 @@ void GameScene::TextureInitialize(){
 	backGround_->color = 0xffffffff;
 	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/gameBackGround.png");
 
-	
+
 }
 
 
@@ -87,12 +87,15 @@ void GameScene::Initialize() {
 	collisionManager_ = CollisionManager::GetInstance();
 
 	currentCamera_->farClip = 3000.0f;
-	currentCamera_->pos.y = 10.0f;
+	currentCamera_->pos.y = 5.0f;
 	currentCamera_->pos.z = -70.0f;
 	currentCamera_->offset.z = -60.0f;
 	currentCamera_->offset.y = 8.0f;
 	currentCamera_->rotate.x = 0_deg;
 	currentCamera_->drawScale = 0.036f;
+
+	currentCamera_->scale.x = 0.5f;
+	currentCamera_->scale.y = 0.5f;
 
 	currentTexCamera_->farClip = 3000.0f;
 	currentTexCamera_->pos.y = 10.0f;
@@ -132,7 +135,7 @@ void GameScene::Initialize() {
 
 
 	gameBGM_->Start(0.1f, true);
-	
+
 	shakePower_ = { 3.0f,3.0f };
 }
 
@@ -180,8 +183,8 @@ void GameScene::Update() {
 	//}
 	//player_->AllTrade();
 
-	if (input_->GetKey()->LongPush(DIK_RETURN)&&input_->GetKey()->Pushed(DIK_BACKSPACE)) {
-		Audio* cancel = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
+	if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
+		Audio *cancel = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
 
 		gameBGM_->Stop();
 		cancel->Start(0.1f, false);
@@ -190,10 +193,10 @@ void GameScene::Update() {
 	}
 }
 
-void GameScene::TextureUpdate(){
+void GameScene::TextureUpdate() {
 	for (uint32_t i = 0; i < kCloudNum_; i++) {
 		clouds_[i]->transform.translate.x += cloudsSpeed_[i];
-		if (clouds_[i]->transform.translate.x > (700.0f) + (clouds_[i]->transform.scale.x)){
+		if (clouds_[i]->transform.translate.x > (700.0f) + (clouds_[i]->transform.scale.x)) {
 			CloudReset(i);
 		}
 		clouds_[i]->transform.CalcMatrix();
@@ -209,7 +212,7 @@ void GameScene::TextureUpdate(){
 
 }
 
-void GameScene::CloudReset(const uint32_t cloudNumber){
+void GameScene::CloudReset(const uint32_t cloudNumber) {
 	clouds_[cloudNumber]->textureName = cloudType_[Lamb::Random(0, 2)];
 	clouds_[cloudNumber]->transform.translate = { -640.0f - cloudScale_[clouds_[cloudNumber]->textureName].x,Lamb::Random(-50.0f,250.0f) };
 	cloudsSpeed_[cloudNumber] = Lamb::Random(3.0f, 1.0f);
@@ -257,10 +260,10 @@ void GameScene::Draw() {
 		<< "Press space to change ""Model scene""";
 }
 
-void GameScene::TextureDraw(){
+void GameScene::TextureDraw() {
 
 
-	
+
 
 	/*tex2D_->Draw(dwarfNumTex_->transform.matWorld_, dwarfNumTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, dwarfNumTex_->textureID, dwarfNumTex_->color, BlendType::kNormal);
@@ -270,7 +273,7 @@ void GameScene::TextureDraw(){
 
 }
 
-void GameScene::Debug(){
+void GameScene::Debug() {
 #ifdef _DEBUG
 	ImGui::Begin("ゲームテクスチャ");
 	/*if (ImGui::TreeNode("一の位")){
@@ -301,7 +304,7 @@ void GameScene::Debug(){
 	//	ImGui::DragFloat2("UVScale", &keyTex_->uvTrnasform.scale.x, 0.01f);
 	//	ImGui::TreePop();
 	//}
-	
+
 	ImGui::End();
 
 
