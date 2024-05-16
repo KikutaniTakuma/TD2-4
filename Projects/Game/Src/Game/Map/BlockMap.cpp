@@ -44,87 +44,33 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 {
 	uint32_t blockTex = 0;
 	uint32_t blockColor = 0xFFFFFFFF;
+	const auto &hitMap = GameManager::GetInstance()->GetHitMap();
+	Lamb::SafePtr texManager = TextureManager::GetInstance();
+
+	int32_t yi = 0;
 	for (const auto &modelStateArr : modelStateMap_) {
+		int32_t xi = 0;
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
-				if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kRed)]) {
-					if (modelState->color == damageColor_) {
-						
-						for (size_t i = 0; i < damageMats_.size(); i++){
-							if (modelState->transMat == damageMats_[i]) {
-								blockTex = TextureManager::GetInstance()->GetWhiteTex();
-								break;
-							}
-							if (i == damageMats_.size() - 1) {
-								blockTex = textures_[0];
-							}
+				for (uint32_t typeIndex = 1; typeIndex < static_cast<uint32_t>(Block::BlockType::kMax); typeIndex++) {
+					if (modelState->color == Block::kBlockColor_[typeIndex]) {
+						if (modelState->color == damageColor_ and hitMap[yi][xi]) {
+
+							blockTex = texManager->GetWhiteTex();
 						}
-						
-					}
-					else {
-						blockTex = textures_[0];
-					}
-					
-					blockColor = 0xFFFFFFFF;
-				}
-				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kBlue)]) {
-					if (modelState->color == damageColor_) {
-						for (size_t i = 0; i < damageMats_.size(); i++) {
-							if (modelState->transMat == damageMats_[i]) {
-								blockTex = TextureManager::GetInstance()->GetWhiteTex();
-								break;
-							}
-							if (i == damageMats_.size() - 1) {
-								blockTex = textures_[1];
-							}
+						else {
+							blockTex = textures_[typeIndex - 1];
 						}
+
+
+						blockColor = 0xFFFFFFFF;
 					}
-					else {
-						blockTex = textures_[1];
-					}
-					blockColor = 0xFFFFFFFF;
-				}
-				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kGreen)]) {
-					if (modelState->color == damageColor_) {
-						for (size_t i = 0; i < damageMats_.size(); i++) {
-							if (modelState->transMat == damageMats_[i]) {
-								blockTex = TextureManager::GetInstance()->GetWhiteTex();
-								break;
-							}
-							if (i == damageMats_.size() - 1) {
-								blockTex = textures_[2];
-							}
-						}
-					}
-					else {
-						blockTex = textures_[2];
-					}
-					blockColor = 0xFFFFFFFF;
-				}
-				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kYellow)]) {
-					if (modelState->color == damageColor_) {
-						for (size_t i = 0; i < damageMats_.size(); i++) {
-							if (modelState->transMat == damageMats_[i]) {
-								blockTex = TextureManager::GetInstance()->GetWhiteTex();
-								break;
-							}
-							if (i == damageMats_.size() - 1) {
-								blockTex = textures_[3];
-							}
-						}
-					}
-					else {
-						blockTex = textures_[3];
-					}
-					blockColor = 0xFFFFFFFF;
-				}
-				else {
-					blockTex = TextureManager::GetInstance()->GetWhiteTex();
-					blockColor = modelState->color;
 				}
 				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), blockTex, blockColor, BlendType::kNone);
 			}
+			xi++;
 		}
+		yi++;
 	}
 	ground_->Draw(camera);
 }
@@ -162,8 +108,7 @@ bool BlockMap::Debug(const char *const str)
 
 void BlockMap::TransferBoxData()
 {
-	damageMats_.clear();
-	const auto &hitMap = GameManager::GetInstance()->GetHitMap();
+	//const auto &hitMap = GameManager::GetInstance()->GetHitMap();
 
 	for (int32_t yi = 0; yi < kMapY; yi++) {
 		for (int32_t xi = 0; xi < kMapX; xi++) {
@@ -185,10 +130,6 @@ void BlockMap::TransferBoxData()
 				// 色を指定する
 				modelState->color = box.GetColor();
 
-				if (hitMap[yi][xi]) {
-					damageColor_ = modelState->color;
-					damageMats_.push_back(modelState->transMat);
-				}
 			}
 			// もしボックスが存在しない場合は
 			else {
@@ -308,7 +249,7 @@ void BlockMap::BreakBlock(POINTS localPos)
 	}
 }
 
-void BlockMap::HitBlock(POINTS localPos){
+void BlockMap::HitBlock(POINTS localPos) {
 	if (IsOutSide(localPos)) {
 		return;
 	}

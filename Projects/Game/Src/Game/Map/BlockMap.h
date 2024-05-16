@@ -206,6 +206,4 @@ private:
 
 	//ダメージを受けたブロックの色
 	uint32_t damageColor_;
-
-	std::vector<Mat4x4> damageMats_;
 };
