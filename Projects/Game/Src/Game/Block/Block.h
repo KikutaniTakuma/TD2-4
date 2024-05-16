@@ -49,20 +49,10 @@ public:
 	int32_t AddDamage(const int32_t val) { damage_ += val;return damage_; }
 	void SetDamage(const int32_t val) { damage_ = val; }
 
-	bool GetHit() const { return isHit_; }
-
-	//当たったブロックのフラグを変更
-	void SetHitBlockFlug(const bool isHitFlug) {
-		isHit_ = isHitFlug;
-	}
-
-
 	const Mat4x4 &GetDamageUv() const { return kUvMatrix_[damage_]; }
 
 private:
 	// ブロックの状態
 	BlockType blockType_ = BlockType::kNone;
 	int32_t damage_ = 0;
-
-	bool isHit_ = false;
 };

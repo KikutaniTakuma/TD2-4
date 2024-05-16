@@ -45,6 +45,8 @@ public:
 public:
 	bool Debug(const char *const str);
 
+	void ClearHitMap();
+
 	// マップのデータを取得
 	BlockMap *GetMap() { return blockMap_.get(); }
 
@@ -86,13 +88,15 @@ public:
 	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BreakChainBlocks(POINTS localPos);
 
 	//弾が当たったときに当たった個所からつながっているブロックを検索して色を変化させる
-	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY>&& HitChainBlocks(POINTS localPos);
+	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&HitChainBlocks(POINTS localPos);
 
 	void RandomDwarfSpawn();
 
 	void RandomFallBlockSpawn();
 
 	SoLib::VItem<"破壊時の停止時間", float> vBreakStopTime_{ 1.f };
+
+	const auto &GetHitMap() const { return hitPos_; }
 
 public:
 	/// @brief 入力動作
@@ -104,6 +108,8 @@ private:
 	void MargeDwarf();
 
 private:
+
+	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> hitPos_;
 
 	SoLib::Time::DeltaTimer blockBreakTimer_;
 

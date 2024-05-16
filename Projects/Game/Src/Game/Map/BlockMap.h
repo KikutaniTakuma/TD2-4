@@ -111,6 +111,8 @@ public:
 	/// @brief 箱のデータをモデルに転送
 	void TransferBoxData();
 
+	void SetDamageColor(uint32_t color);
+
 	/// @brief ブロックを設置する
 	/// @param centerPos 中心座標
 	/// @param size 直径
@@ -136,9 +138,6 @@ public:
 			}
 		}
 	}
-
-	//関数
-	void ResetHit();
 
 public:
 	/// @brief 2次元配列の取得
@@ -206,7 +205,7 @@ private:
 	bool isDamege_ = false;
 
 	//ダメージを受けたブロックの色
-	uint32_t damegeColor_;
+	uint32_t damageColor_;
 
-	std::vector<Mat4x4> damegeMats_;
+	std::vector<Mat4x4> damageMats_;
 };

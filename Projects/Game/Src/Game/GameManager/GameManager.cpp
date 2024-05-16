@@ -73,7 +73,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	GlobalVariables::GetInstance()->Update();
 
-	blockMap_->ResetHit();
+	ClearHitMap();
 
 	blockMap_->Update(deltaTime);
 	blockBreakTimer_.Update(deltaTime);
@@ -281,6 +281,14 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 	return isChange;
 }
 
+void GameManager::ClearHitMap()
+{
+	GetMap()->SetDamageColor(0);
+	for (auto &line : hitPos_) {
+		line.reset();
+	}
+}
+
 GameObject *GameManager::AddPlayerBullet(Vector2 centerPos, Vector2 velocity)
 {
 	std::unique_ptr<GameObject> bullet = std::make_unique<GameObject>();
@@ -434,16 +442,20 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 
 	return std::move(chainBlockMap);
 }
-std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY>&& GameManager::HitChainBlocks(POINTS localPos){
+std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::HitChainBlocks(POINTS localPos) {
+
+	if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
+		GetMap()->SetDamageColor(block.GetColor());
+	}
 
 	auto dwarfPos = GetDwarfPos();
 
-	auto&& chainBlockMap = blockMap_->FindChainBlocks(localPos, dwarfPos);
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, dwarfPos);
 
 	POINTS targetPos{};
 
 	for (targetPos.y = 0; targetPos.y < BlockMap::kMapY; targetPos.y++) {
-		const auto& breakLine = chainBlockMap[targetPos.y];
+		const auto &breakLine = chainBlockMap[targetPos.y];
 		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
 			if (breakLine[targetPos.x]) {
 				blockMap_->HitBlock(targetPos);
@@ -451,7 +463,6 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY>&& GameManager::HitChai
 		}
 	}
 
-	
 	for (auto &dwarf : darkDwarfList_) {
 		auto localBody = dwarf->GetComponent<LocalBodyComp>();
 		if (localBody) {
@@ -462,6 +473,8 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY>&& GameManager::HitChai
 			}
 		}
 	}
+
+	hitPos_ = chainBlockMap;
 
 	return std::move(chainBlockMap);
 }
