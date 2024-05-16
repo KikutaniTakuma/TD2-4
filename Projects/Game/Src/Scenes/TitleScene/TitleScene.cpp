@@ -107,7 +107,7 @@ void TitleScene::Update()
 	if (mouse->LongPush(Mouse::Button::Left)) {
 		//tex_->pos = Vector3(mouse->GetPos()) * Mat4x4::MakeInverse(camera_->GetViewOthographicsVp());
 	}
-	if (key->Pushed(DIK_SPACE)&&key->Pushed(DIK_LSHIFT)) {
+	if (key->Pushed(DIK_SPACE)) {
 		beginGame_->Start(0.1f, false);
 		sceneManager_->SceneChange(BaseScene::ID::StageSelect);
 	}
@@ -149,20 +149,20 @@ void TitleScene::Draw(){
 	//sphere2_->Draw(camera_->GetViewOthographics());
 	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 
-	for (size_t j = 0; j < spheres_.size(); j++) {
-		tex2D_->Draw(spheres_[j]->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
-			, spheres_[j]->textureID, spheres_[j]->color, BlendType::kNormal);
-	}
+	//for (size_t j = 0; j < spheres_.size(); j++) {
+	//	tex2D_->Draw(spheres_[j]->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
+	//		, spheres_[j]->textureID, spheres_[j]->color, BlendType::kNormal);
+	//}
 
-	tex2D_->Draw(runTexture_->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
-		, runTexture_->textureID, runTexture_->color, BlendType::kNormal);
+	//tex2D_->Draw(runTexture_->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
+	//	, runTexture_->textureID, runTexture_->color, BlendType::kNormal);
 
-	DrawCatmullRom(ControlPoints_[0], ControlPoints_[0], ControlPoints_[1], ControlPoints_[2], currentCamera_->GetViewOthographics());
-	for (uint32_t i = 1; i < LastLinePass_; i++) {
-		DrawCatmullRom(ControlPoints_[i - 1], ControlPoints_[i], ControlPoints_[i + 1], ControlPoints_[i + 2], currentCamera_->GetViewOthographics());
-	}
+	//DrawCatmullRom(ControlPoints_[0], ControlPoints_[0], ControlPoints_[1], ControlPoints_[2], currentCamera_->GetViewOthographics());
+	//for (uint32_t i = 1; i < LastLinePass_; i++) {
+	//	DrawCatmullRom(ControlPoints_[i - 1], ControlPoints_[i], ControlPoints_[i + 1], ControlPoints_[i + 2], currentCamera_->GetViewOthographics());
+	//}
 
-	DrawCatmullRom(ControlPoints_[LastLinePass_ - 1], ControlPoints_[LastLinePass_], ControlPoints_[LastLinePass_ + 1], ControlPoints_[LastLinePass_ + 1], currentCamera_->GetViewOthographics());
+	//DrawCatmullRom(ControlPoints_[LastLinePass_ - 1], ControlPoints_[LastLinePass_], ControlPoints_[LastLinePass_ + 1], ControlPoints_[LastLinePass_ + 1], currentCamera_->GetViewOthographics());
 
 	//DrawCatmullRom(ControlPoints_[0], ControlPoints_[1], ControlPoints_[2], ControlPoints_[3], currentCamera_->GetViewOthographics());
 	//DrawCatmullRom(ControlPoints_[1], ControlPoints_[2], ControlPoints_[3], ControlPoints_[3], currentCamera_->GetViewOthographics());
