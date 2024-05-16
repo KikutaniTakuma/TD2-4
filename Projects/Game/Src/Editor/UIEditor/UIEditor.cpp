@@ -104,7 +104,7 @@ void UIEditor::PutDraw(const Mat4x4& camera){
 }
 
 void UIEditor::Debug(const BaseScene::ID id){
-
+	id;
 #ifdef _DEBUG
 	ImGui::Begin("UIエディター", nullptr, ImGuiWindowFlags_MenuBar);
 

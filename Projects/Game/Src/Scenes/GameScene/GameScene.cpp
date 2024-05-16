@@ -247,7 +247,6 @@ void GameScene::Draw() {
 
 	//enemyManager_->Draw(*currentCamera_);
 
-#ifdef _DEBUG
 	tex2D_->Draw(backGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 		, backGround_->textureID, backGround_->color, BlendType::kNormal);
 
@@ -268,6 +267,7 @@ void GameScene::Draw() {
 		}
 	}*/
 	TextureDraw();
+#ifdef _DEBUG
 
 	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
 #endif // _DEBUG

@@ -90,7 +90,10 @@ void SelectScene::Draw(){
 			, texies_[i]->textureID, texies_[i]->color, BlendType::kNormal);
 	}
 
-	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
+#ifdef _DEBUG
+
+	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
+#endif // _DEBUG
 }
 
 void SelectScene::Debug(){
@@ -130,11 +133,11 @@ void SelectScene::SelectMove(){
 
 	if (input_->GetKey()->LongPush(DIK_LSHIFT)&& input_->GetKey()->Pushed(DIK_SPACE)){
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
-		gameDecision_->Start(0.1f, false);
+		gameDecision_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Game);
 	}
 	if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
-		cancel_->Start(0.1f, false);
+		cancel_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}
 

@@ -172,7 +172,10 @@ void TitleScene::Draw(){
 	Lamb::screenout << "Capsule Test" << Lamb::endline
 		<< "Check : " << isCollision_;
 
-	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
+#ifdef _DEBUG
+
+	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
+#endif // _DEBUG
 }
 
 void TitleScene::DrawCatmullRom(

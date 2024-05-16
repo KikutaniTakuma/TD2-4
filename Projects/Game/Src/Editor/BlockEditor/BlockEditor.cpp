@@ -67,9 +67,11 @@ void BlockEditor::Draw(const Camera &camera) {
 }
 
 void BlockEditor::Debug() {
-	bool isChange = false;
+	
 
 #ifdef _DEBUG
+	bool isChange = false;
+
 	if (isUseImgui_) {
 
 		ImGui::Begin("ブロックエディター", nullptr, ImGuiWindowFlags_MenuBar);

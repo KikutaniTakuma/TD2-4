@@ -42,6 +42,8 @@ void EnemyManager::Draw(const Camera &camera) {
 }
 
 void EnemyManager::Debug() {
+#ifdef _DEBUG
+
 	ImGui::Begin("エネミー関連");
 	ImGui::Text("エネミーの数 %d", static_cast<int>(startPosList_.size()));
 	static auto enemyItr = enemyList_.begin();
@@ -52,6 +54,7 @@ void EnemyManager::Debug() {
 	}
 
 	ImGui::End();
+#endif // _DEBUG
 }
 
 void EnemyManager::AddEnemy(const Vector3 &pos) {
