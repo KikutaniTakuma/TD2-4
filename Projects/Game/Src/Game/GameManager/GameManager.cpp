@@ -450,6 +450,17 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 		}
 	}
 
+	for (auto &dwarf : darkDwarfList_) {
+		auto localBody = dwarf->GetComponent<LocalBodyComp>();
+		if (localBody) {
+			POINTS mapIndex = localBody->GetMapPos();
+			// そこが破壊対象なら死ぬ
+			if (chainBlockMap[mapIndex.y][mapIndex.x]) {
+				dwarf->SetActive(false);
+			}
+		}
+	}
+
 
 	blockMap_->SetBreakBlockMap(breakBlock);
 
