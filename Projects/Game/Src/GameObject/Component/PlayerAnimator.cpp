@@ -90,11 +90,11 @@ void PlayerAnimatorComp::Update()
 
 	isLanding_ = pMapHitComp_->hitNormal_.y > 0.f;
 	if (isLanding_.OnEnter()) {
-		smokeParticle_->ParticleStart(transform_.translate - Vector3::kZIdentity * 50, Vector2::kIdentity);
+		smokeParticle_->ParticleStart(transform_.translate + Vector3{ 0.f,-0.5f,-50.f }, Vector2::kIdentity);
 		smokeParticle_->SetParticleScale(0.25f);
 	}
 	if (isLanding_) {
-		smokeParticle_->emitterPos = transform_.translate - Vector3::kZIdentity * 50;
+		smokeParticle_->emitterPos = transform_.translate + Vector3{ 0.f,-0.5f,-50.f };
 	}
 
 
