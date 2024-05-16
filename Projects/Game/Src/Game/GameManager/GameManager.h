@@ -85,6 +85,7 @@ public:
 
 	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BreakChainBlocks(POINTS localPos);
 
+	void RandomDwarfSpawn();
 
 public:
 	/// @brief 入力動作
@@ -119,6 +120,8 @@ private:
 	//}
 
 private:
+
+	SoLib::Time::DeltaTimer timer_;
 	// 入力マネージャ
 	Input *input_ = nullptr;
 

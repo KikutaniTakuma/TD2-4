@@ -80,11 +80,11 @@ private:
 
 	SoLib::Time::DeltaTimer timer_;
 
-	int32_t facing_;
+	int32_t facing_ = 1;
 
 	int32_t movementFacing_;
 
-	Vector2 targetPos_;
+	Vector2 targetPos_ = -Vector2::kIdentity;
 
 	bool isClimbing_ = false;
 

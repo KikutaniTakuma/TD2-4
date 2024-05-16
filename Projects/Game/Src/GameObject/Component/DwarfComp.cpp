@@ -308,6 +308,10 @@ void DwarfComp::FreeTargetMove()
 	// ローカルの座標
 	float localX = pLocalBodyComp_->localPos_.x;
 
+	if (targetPos_ == -Vector2::kIdentity) {
+		movementFacing_ = 1;
+	}
+
 	// 右端にいる場合
 	if ((BlockMap::kMapX - 1.5f) <= localX) {
 		// 左端に行くように指定

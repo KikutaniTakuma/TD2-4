@@ -17,7 +17,6 @@ public:
 	void OnCollision(GameObject *const other) override;
 private:
 
-	Lamb::SafePtr<LocalMapHitComp> pHitMapComp_ = nullptr;
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;
 	Lamb::SafePtr<LocalRigidbody> pLocalRigidbody_ = nullptr;
 	Lamb::SafePtr<SpriteComp> pSpriteComp_ = nullptr;

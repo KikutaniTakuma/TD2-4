@@ -75,6 +75,13 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	blockMap_->Update(deltaTime);
 
+	timer_.Update(deltaTime);
+	if (not timer_.IsActive()) {
+		timer_.Start(5.f);
+		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
+		AddDwarf(Vector2{ static_cast<float>(spawnPos), 0 });
+	}
+
 	// 浮いているブロックを落とす
 	BlockMapDropDown();
 
@@ -137,7 +144,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
 				bullet->OnCollision(player_.get());
 				player_->OnCollision(bullet.get());
-				
+
 			}
 		}
 	}

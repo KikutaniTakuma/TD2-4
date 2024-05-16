@@ -5,7 +5,6 @@
 
 void EnemyBulletComp::Init()
 {
-	pHitMapComp_ = object_.AddComponent<LocalMapHitComp>();
 	pLocalBodyComp_ = object_.AddComponent<LocalBodyComp>();
 	pLocalRigidbody_ = object_.AddComponent<LocalRigidbody>();
 	pSpriteComp_ = object_.AddComponent<SpriteComp>();
