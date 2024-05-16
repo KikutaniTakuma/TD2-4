@@ -3,7 +3,7 @@
 #include "Utils/SafePtr/SafePtr.h"
 #include "LocalBodyComp.h"
 
-class PleyerBlockPickerComp : public IComponent {
+class PlayerBlockPickerComp : public IComponent {
 public:
 	using IComponent::IComponent;
 

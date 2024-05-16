@@ -12,7 +12,7 @@ void PlayerComp::Init()
 	pLocalRigidbody_ = object_.AddComponent<LocalRigidbody>();
 	pHitMapComp_ = object_.AddComponent<LocalMapHitComp>();
 
-	pPicker_ = object_.AddComponent<PleyerBlockPickerComp>();
+	pPicker_ = object_.AddComponent<PlayerBlockPickerComp>();
 
 	pHealthComp_ = object_.AddComponent<HealthComp>();
 	pHealthComp_->SetMaxHealth(vMaxHealth_);

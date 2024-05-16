@@ -50,7 +50,7 @@ private:
 	Lamb::SafePtr<LocalMapHitComp> pHitMapComp_ = nullptr;
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;
 	Lamb::SafePtr<LocalRigidbody> pLocalRigidbody_ = nullptr;
-	Lamb::SafePtr<PleyerBlockPickerComp> pPicker_ = nullptr;
+	Lamb::SafePtr<PlayerBlockPickerComp> pPicker_ = nullptr;
 
 	Lamb::SafePtr<HealthComp> pHealthComp_ = nullptr;
 

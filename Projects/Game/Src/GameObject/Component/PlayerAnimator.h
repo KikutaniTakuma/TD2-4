@@ -9,6 +9,10 @@
 #include "PickUpComp.h"			// 小人の持ち上げたブロックに関するコンポーネント
 #include "SpriteComp.h"			// 小人自体のスプライトのコンポーネント
 #include "SpriteAnimatorComp.h"	// スプライトに紐づいたアニメーションのコンポーネント
+#include "PlayerBlockPickerComp.h"
+
+#include <memory>
+#include "Drawers/Particle/Particle.h"
 
 class PlayerAnimatorComp : public IComponent
 {
@@ -20,9 +24,12 @@ public:
 
 	void Update() override;
 
+	void Draw(const Camera& camera) const override;
+
 private:
 
 	Lamb::SafePtr<PlayerComp> pPlayerComp_ = nullptr;
+	Lamb::SafePtr<PlayerBlockPickerComp> pPlayerPickerComp_ = nullptr;
 	Lamb::SafePtr<LocalRigidbody> pPlayerRigidComp_ = nullptr;
 	Lamb::SafePtr<SpriteComp> pSpriteComp_ = nullptr;
 	Lamb::SafePtr<SpriteAnimatorComp> pAnimComp_ = nullptr;
@@ -30,4 +37,8 @@ private:
 	Lamb::SafePtr<Tex2DAniamtor> spriteAnimator_ = nullptr;
 
 	bool isAttackAnimation_;
+
+	std::unique_ptr<Particle> haveParticle_;
+
+	Lamb::Flg isPicking_;
 };

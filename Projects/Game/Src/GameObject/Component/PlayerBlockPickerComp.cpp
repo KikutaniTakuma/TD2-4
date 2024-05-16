@@ -2,7 +2,7 @@
 #include <Drawers/DrawerManager.h>
 #include <SoLib/Math/Math.hpp>
 
-void PleyerBlockPickerComp::Init()
+void PlayerBlockPickerComp::Init()
 {
 	pLocalBodyComp_ = object_.GetComponent<LocalBodyComp>();
 	pBlockMap_ = GameManager::GetInstance()->GetMap();
@@ -13,12 +13,12 @@ void PleyerBlockPickerComp::Init()
 		}
 }
 
-void PleyerBlockPickerComp::Update()
+void PlayerBlockPickerComp::Update()
 {
 	affine_ = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { pLocalBodyComp_->GetGlobalPos() + Vector2::kYIdentity, -5.f });
 }
 
-void PleyerBlockPickerComp::Draw([[maybe_unused]] const Camera &camera) const
+void PlayerBlockPickerComp::Draw([[maybe_unused]] const Camera &camera) const
 {
 	// もしブロックを持っていたら
 	if (pickingBlock_) {
@@ -26,7 +26,7 @@ void PleyerBlockPickerComp::Draw([[maybe_unused]] const Camera &camera) const
 	}
 }
 
-void PleyerBlockPickerComp::PickUp(int32_t facing)
+void PlayerBlockPickerComp::PickUp(int32_t facing)
 {
 	// ブロックを持っていない場合
 	if (not pickingBlock_) {
@@ -45,7 +45,7 @@ void PleyerBlockPickerComp::PickUp(int32_t facing)
 	}
 }
 
-void PleyerBlockPickerComp::Drop(int32_t facing)
+void PlayerBlockPickerComp::Drop(int32_t facing)
 {
 	// ブロックを持っている場合
 	if (pickingBlock_) {
