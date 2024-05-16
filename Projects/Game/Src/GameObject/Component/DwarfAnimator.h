@@ -4,7 +4,6 @@
 #include "Utils/SafePtr/SafePtr.h"
 
 #include "DwarfComp.h"			// 小人の動作コンポーネント
-#include "PickUpComp.h"			// 小人の持ち上げたブロックに関するコンポーネント
 #include "SpriteComp.h"			// 小人自体のスプライトのコンポーネント
 #include "SpriteAnimatorComp.h"	// スプライトに紐づいたアニメーションのコンポーネント
 
@@ -21,7 +20,6 @@ public:
 private:
 
 	Lamb::SafePtr<DwarfComp> pDwarfComp_ = nullptr;
-	Lamb::SafePtr<PickUpComp> pPickUpComp_ = nullptr;
 	Lamb::SafePtr<SpriteComp> pSpriteComp_ = nullptr;
 	Lamb::SafePtr<SpriteAnimatorComp> pAnimComp_ = nullptr;
 
