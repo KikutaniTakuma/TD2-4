@@ -104,8 +104,8 @@ private:
 	uint32_t appParticleNumMin_;
 	uint32_t appParticleNumMax_;
 
-	Vector3 scaleMin;
-	Vector3 scaleMax;
+	Vector3 scaleMin_;
+	Vector3 scaleMax_;
 
 	Vector2 deathTime_;
 
