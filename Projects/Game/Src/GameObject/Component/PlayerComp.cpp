@@ -21,6 +21,8 @@ void PlayerComp::Init()
 	Lamb::SafePtr spriteComp = object_.AddComponent<SpriteComp>();
 	spriteComp->SetTexture("./Resources/uvChecker.png");
 	spriteComp->CalcTexUv();
+
+	isAttack_ = false;
 }
 
 void PlayerComp::Update()
@@ -69,19 +71,19 @@ void PlayerComp::Input()
 
 	constexpr float moveSpeed = 10.f;
 
-	Vector2 moveVec{};
+	inputVec_ ={};
 
 	if (key->GetKey(DIK_A)) {
-		moveVec = -Vector2::kXIdentity * moveSpeed;
+		inputVec_ = -Vector2::kXIdentity * moveSpeed;
 	}
 	if (key->GetKey(DIK_D)) {
-		moveVec = +Vector2::kXIdentity * moveSpeed;
+		inputVec_ = +Vector2::kXIdentity * moveSpeed;
 	}
 
-	if (moveVec.x != 0) {
-		pLocalRigidbody_->ApplyContinuousForce(moveVec);
+	if (inputVec_.x != 0) {
+		pLocalRigidbody_->ApplyContinuousForce(inputVec_);
 
-		facing_ = static_cast<int32_t>(SoLib::Math::Sign(moveVec.x));
+		facing_ = static_cast<int32_t>(SoLib::Math::Sign(inputVec_.x));
 	}
 
 	if (key->Pushed(DIK_Z)) {
@@ -96,7 +98,11 @@ void PlayerComp::Input()
 	if (key->Pushed(DIK_RETURN)) {
 		Audio* audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/shot.mp3");
 		audio->Start(0.2f, false);
+		isAttack_ = true;
 		FireBullet();
+	}
+	else {
+		isAttack_ = false;
 	}
 
 	// 着地している場合

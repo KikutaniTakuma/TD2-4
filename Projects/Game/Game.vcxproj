@@ -148,6 +148,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\GameObject\Component\ModelComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\PickUpComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\FallingBlockSpawnerComp.cpp" />
+    <ClCompile Include="Src\GameObject\Component\PlayerAnimator.cpp" />
     <ClCompile Include="Src\GameObject\Component\PlayerBlockPickerComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\PlayerBulletComp.cpp" />
     <ClCompile Include="Src\GameObject\Component\PlayerComp.cpp" />
@@ -213,6 +214,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\GameObject\Component\ModelComp.h" />
     <ClInclude Include="Src\GameObject\Component\PickUpComp.h" />
     <ClInclude Include="Src\GameObject\Component\FallingBlockSpawnerComp.h" />
+    <ClInclude Include="Src\GameObject\Component\PlayerAnimator.h" />
     <ClInclude Include="Src\GameObject\Component\PlayerBlockPickerComp.h" />
     <ClInclude Include="Src\GameObject\Component\PlayerBulletComp.h" />
     <ClInclude Include="Src\GameObject\Component\PlayerComp.h" />

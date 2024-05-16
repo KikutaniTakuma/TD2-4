@@ -3,6 +3,7 @@
 #include "Math/Mat4x4.h"
 #include "Math/Vector3.h"
 #include "Math/Vector2.h"
+#include "Utils/Flg/Flg.h"
 
 class Tex2DAniamtor {
 public:
@@ -43,6 +44,10 @@ public:
 	/// <returns></returns>
 	[[nodiscard]] const Mat4x4& GetUvMat4x4() const {
 		return animationMatrix_;
+	}
+
+	[[nodiscard]] const Lamb::Flg& GetIsActive() const {
+		return isActive_;
 	}
 
 	/// <summary>
@@ -105,6 +110,6 @@ private:
 	float duration_ = 0.0f;
 	Mat4x4 animationMatrix_;
 
-	bool isActive_ = false;
+	Lamb::Flg isActive_ = false;
 	bool isLoop_ = false;
 };

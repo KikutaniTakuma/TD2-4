@@ -179,6 +179,9 @@
     <ClCompile Include="Src\Game\FlaskParticle\FlaskParticle.cpp">
       <Filter>Game\FlaskParticle</Filter>
     </ClCompile>
+    <ClCompile Include="Src\GameObject\Component\PlayerAnimator.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -500,6 +503,9 @@
     </ClInclude>
     <ClInclude Include="Src\Game\FlaskParticle\FlaskParticle.h">
       <Filter>Game\FlaskParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject\Component\PlayerAnimator.h">
+      <Filter>GameObject\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
