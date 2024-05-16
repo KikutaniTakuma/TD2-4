@@ -23,7 +23,7 @@ public:
 		0xFF0000FF,
 		0x0000FFFF,
 		0x00FF00FF,
-		0x00FFFFFF,
+		0xFFFF00FF,
 	};
 	inline static const std::array<Mat4x4, 3> kUvMatrix_{
 		Mat4x4::MakeScalar({1.f / 3.f,1,1}),

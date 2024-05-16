@@ -178,6 +178,9 @@ public:
 	void SetBreakBlockMap(const BlockBitMap &map) { breakBlockMap_ = map; }
 	const BlockBitMap &GetBreakBlockMap() const { return breakBlockMap_; }
 
+	void SetBreakBlockType(const Block::BlockType type) { breakBlockType_ = type; }
+	Block::BlockType GetBreakBlockType() const { return breakBlockType_; }
+
 	void SetHitMap(const BlockBitMap &map) { hitMap_ = map; }
 	const BlockBitMap &GetHitMap() const { return hitMap_; }
 
@@ -196,6 +199,7 @@ private:
 
 	BlockBitMap breakMap_;
 
+	Block::BlockType breakBlockType_ = Block::BlockType::kNone;
 	BlockBitMap breakBlockMap_;
 
 private:

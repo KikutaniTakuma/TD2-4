@@ -84,7 +84,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		localDeltaTime = deltaTime * std::lerp(0.3f, 0.8f, blockBreakTimer_.GetProgress());
 		if (blockBreakTimer_.IsFinish()) {
 
-			gameEffectManager_->blockBreakPos_ = blockMap_->GetBreakBlockMap();
+			gameEffectManager_->blockBreakPos_.first = blockMap_->GetBreakBlockType();
+			gameEffectManager_->blockBreakPos_.second = blockMap_->GetBreakBlockMap();
 
 			blockMap_->SetBreakMap({});
 			blockMap_->SetBreakBlockMap({});
@@ -416,10 +417,9 @@ GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
 
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakChainBlocks(POINTS localPos)
 {
-	/*if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
+	auto block = blockMap_->GetBlockType(localPos); 
 
 
-	}*/
 
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, GetDwarfPos());
 
@@ -476,6 +476,7 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 	}
 
 
+	blockMap_->SetBreakBlockType(block);
 	blockMap_->SetBreakBlockMap(breakBlock);
 
 	blockMap_->SetBreakMap(chainBlockMap);

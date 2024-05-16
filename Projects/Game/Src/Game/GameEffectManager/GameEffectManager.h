@@ -39,7 +39,7 @@ private:
 	// ↓ 自動的に追加、破棄を行う。
 
 	// 破壊されたブロックのローカル座標
-	BlockMap::BlockBitMap blockBreakPos_;
+	std::pair<Block::BlockType, BlockMap::BlockBitMap> blockBreakPos_;
 
 	// 小人が死んだ時のローカル座標
 	std::list<Vector2> dwarfDeadPos_;
