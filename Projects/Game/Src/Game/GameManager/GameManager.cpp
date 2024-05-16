@@ -60,9 +60,9 @@ void GameManager::Init()
 	player_->AddComponent<PlayerComp>();
 	player_->AddComponent<PlayerAnimatorComp>();
 
-	for (float i = 0; i < 15.f; i++) {
-		AddDwarf(Vector2::kXIdentity * i);
-	}
+	//for (float i = 0; i < 15.f; i++) {
+	//	AddDwarf(Vector2::kXIdentity * i);
+	//}
 
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
 	gameEffectManager_->Init();
