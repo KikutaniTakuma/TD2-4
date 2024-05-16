@@ -7,8 +7,7 @@
 void PlayerComp::Init()
 {
 	pLocalBodyComp_ = object_.AddComponent<LocalBodyComp>();
-	pLocalBodyComp_->size_ = Vector2::kIdentity;
-	pLocalBodyComp_->drawScale_ = 1.f;
+	pLocalBodyComp_->size_ = Vector2{ 0.8f,1.f };
 
 	pLocalRigidbody_ = object_.AddComponent<LocalRigidbody>();
 	pHitMapComp_ = object_.AddComponent<LocalMapHitComp>();
@@ -34,7 +33,7 @@ void PlayerComp::Update()
 	pLocalRigidbody_->ApplyContinuousForce(kGrovity_);
 
 	Input();
-	pLocalBodyComp_->TransfarData();
+	transform_.translate = pLocalBodyComp_->GetGlobalPos();
 
 	// 無敵時間の減少
 	invincibleTime_ -= GetDeltaTime();

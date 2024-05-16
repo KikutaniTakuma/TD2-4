@@ -217,6 +217,8 @@ private:
 
 	Texture2D *pTexture2d_ = nullptr;
 
+	
+
 	//変数
 //攻撃を受けたかどうか
 	bool isDamege_ = false;

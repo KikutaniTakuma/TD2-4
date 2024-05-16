@@ -81,8 +81,12 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	float localDeltaTime = deltaTime;
 
 	if (blockBreakTimer_.IsActive()) {
-		localDeltaTime *= blockBreakTimer_.GetProgress();
+		localDeltaTime = 0.f;
 	}
+	else {
+		blockMap_->SetBreakMap({});
+	}
+
 	//if (not blockBreakTimer_.IsActive()) {
 	blockMap_->Update(localDeltaTime);
 
@@ -403,13 +407,21 @@ GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
 
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakChainBlocks(POINTS localPos)
 {
-	if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
+	/*if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
 
-		blockBreakTimer_.Start(vBreakStopTime_);
 
-	}
+	}*/
 
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, GetDwarfPos());
+
+	for (const auto &line : chainBlockMap) {
+		// どこか1つでも壊れてたらタイマー開始
+		if (line.any()) {
+
+			blockBreakTimer_.Start(vBreakStopTime_);
+			break;
+		}
+	}
 
 	POINTS targetPos{};
 
