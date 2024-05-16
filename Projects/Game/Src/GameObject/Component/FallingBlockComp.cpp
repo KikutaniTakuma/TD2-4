@@ -1,6 +1,7 @@
 #include "FallingBlockComp.h"
 #include "ModelComp.h"
 #include <Drawers/DrawerManager.h>
+#include "PlayerComp.h"
 
 void FallingBlockComp::Init()
 {
@@ -27,6 +28,15 @@ void FallingBlockComp::Update()
 
 	// グローバル空間に持ってくる
 	pLocalPos_->TransfarData();
+}
+
+void FallingBlockComp::OnCollision(GameObject *other)
+{
+	Lamb::SafePtr playerComp = other->GetComponent<PlayerComp>();
+	if (playerComp) {
+		playerComp->InflictDamage(1);
+	}
+
 }
 
 bool FallingBlockComp::IsLanding() const

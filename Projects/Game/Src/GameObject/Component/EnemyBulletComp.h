@@ -14,6 +14,7 @@ public:
 
 	void Update() override;
 
+	void OnCollision(GameObject *const other) override;
 private:
 
 	Lamb::SafePtr<LocalMapHitComp> pHitMapComp_ = nullptr;

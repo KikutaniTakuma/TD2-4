@@ -18,6 +18,8 @@ public:
 
 	void Update() override;
 
+	void OnCollision(GameObject *other) override;
+
 public:
 
 	/// @brief ブロックの重さを返す

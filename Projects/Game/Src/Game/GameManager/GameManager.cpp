@@ -125,6 +125,23 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		}
 	}
 
+	for (auto &bullet : enemyBulletList_) {
+		if (bullet->GetActive()) {
+
+			Lamb::SafePtr bulletBody = bullet->GetComponent<LocalBodyComp>();
+
+
+			Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
+			const Vector2 centorDiff = bulletBody->localPos_ - playerBody->localPos_;
+			const Vector2 sizeSum = (bulletBody->size_ + playerBody->size_) / 2.f;
+			if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
+				bullet->OnCollision(player_.get());
+				player_->OnCollision(bullet.get());
+				
+			}
+		}
+	}
+
 	// 落下ブロックの破棄
 	std::erase_if(fallingBlocks_, [](const auto &itr) -> bool { return not itr->GetActive(); });
 	std::erase_if(plBulletList_, [](const auto &itr) -> bool { return not itr->GetActive(); });
