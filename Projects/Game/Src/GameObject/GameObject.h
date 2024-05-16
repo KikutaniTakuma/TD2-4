@@ -9,6 +9,8 @@
 #include "Camera/Camera.h"
 #include "Math/Transform.h"
 #include "../SoLib/SoLib/SoLib.h"
+#include"AudioManager/AudioManager.h"
+
 //#include "../../Engine/DirectBase/Render/Camera.h"
 
 class GameObject;
