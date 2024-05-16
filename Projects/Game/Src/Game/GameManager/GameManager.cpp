@@ -75,7 +75,7 @@ void GameManager::Init()
 		}
 	}
 
-	player_->GetComponent<LocalBodyComp>()->localPos_.y = 10.f;
+	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,10.f };
 
 
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
