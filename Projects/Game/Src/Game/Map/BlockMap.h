@@ -166,10 +166,13 @@ public:
 		return Vector2{ kMapX, kMapY };
 	}
 
-	std::array<std::bitset<kMapX>, kMapY> &&FindChainBlocks(POINTS localPos, std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result = {}) const;
+	std::array<std::bitset<kMapX>, kMapY> &&FindChainBlocks(POINTS localPos, const std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result = {}) const;
 
 	void SetBreakMap(const std::array<std::bitset<kMapX>, kMapY> &map) { breakMap_ = map; }
 	const std::array<std::bitset<kMapX>, kMapY> &GetBreakMap() const { return breakMap_; }
+
+	void SetBreakBlockMap(const std::array<std::bitset<kMapX>, kMapY> &map) { breakBlockMap_ = map; }
+	const std::array<std::bitset<kMapX>, kMapY> &GetBreakBlockMap() const { return breakBlockMap_; }
 
 	void SetHitMap(const std::array<std::bitset<kMapX>, kMapY> &map) { hitMap_ = map; }
 	const std::array<std::bitset<kMapX>, kMapY> &GetHitMap() const { return hitMap_; }
@@ -188,6 +191,8 @@ private:
 	std::array<std::bitset<kMapX>, kMapY> hitMap_;
 
 	std::array<std::bitset<kMapX>, kMapY> breakMap_;
+
+	std::array<std::bitset<kMapX>, kMapY> breakBlockMap_;
 
 private:
 	// 箱の配列 [y][x]
@@ -216,6 +221,8 @@ private:
 	std::array<uint32_t, 4> textures_;
 
 	Texture2D *pTexture2d_ = nullptr;
+
+	
 
 	//変数
 //攻撃を受けたかどうか

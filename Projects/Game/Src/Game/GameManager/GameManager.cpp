@@ -40,10 +40,7 @@ void GameManager::Init()
 	LocalBodyComp::pMap_ = GetMap();
 
 	spawner_ = std::make_unique<GameObject>();
-	/*{
-		Lamb::SafePtr modelComp = player_->AddComponent<ModelComp>();
-		modelComp->AddBone("Body", drawerManager->GetModel("Resources/Cube.obj"));
-	}*/
+	
 	{
 		Lamb::SafePtr spriteComp = spawner_->AddComponent<SpriteComp>();
 		spriteComp->SetTexture("./Resources/uvChecker.png");
@@ -81,8 +78,13 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	float localDeltaTime = deltaTime;
 
 	if (blockBreakTimer_.IsActive()) {
-		localDeltaTime *= blockBreakTimer_.GetProgress();
+		localDeltaTime = 0.f;
 	}
+	else {
+		blockMap_->SetBreakMap({});
+		blockMap_->SetBreakBlockMap({});
+	}
+
 	//if (not blockBreakTimer_.IsActive()) {
 	blockMap_->Update(localDeltaTime);
 
@@ -405,22 +407,36 @@ GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
 
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakChainBlocks(POINTS localPos)
 {
-	if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
+	/*if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
 
-		blockBreakTimer_.Start(vBreakStopTime_);
 
+	}*/
+
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, GetDwarfPos());
+
+	for (const auto &line : chainBlockMap) {
+		// どこか1つでも壊れてたらタイマー開始
+		if (line.any()) {
+
+			blockBreakTimer_.Start(vBreakStopTime_);
+			break;
+		}
 	}
-	auto dwarfPos = GetDwarfPos();
-
-	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, dwarfPos);
 
 	POINTS targetPos{};
+
+
+	// 壊れたブロックだけのデータ
+	decltype(chainBlockMap) breakBlock = {};
 
 	for (targetPos.y = 0; targetPos.y < BlockMap::kMapY; targetPos.y++) {
 		const auto &breakLine = chainBlockMap[targetPos.y];
 		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
 			if (breakLine[targetPos.x]) {
-				blockMap_->BreakBlock(targetPos);
+				if (blockMap_->GetBlockType(targetPos) != Block::BlockType::kNone) {
+					breakBlock[targetPos.y][targetPos.x] = true;
+					blockMap_->BreakBlock(targetPos);
+				}
 			}
 		}
 	}
@@ -439,6 +455,20 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 		}
 	}
 
+	for (auto &dwarf : darkDwarfList_) {
+		auto localBody = dwarf->GetComponent<LocalBodyComp>();
+		if (localBody) {
+			POINTS mapIndex = localBody->GetMapPos();
+			// そこが破壊対象なら死ぬ
+			if (chainBlockMap[mapIndex.y][mapIndex.x]) {
+				dwarf->SetActive(false);
+			}
+		}
+	}
+
+
+	blockMap_->SetBreakBlockMap(breakBlock);
+
 	blockMap_->SetBreakMap(chainBlockMap);
 
 	return std::move(chainBlockMap);
@@ -449,9 +479,7 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::HitChai
 		GetMap()->SetDamageColor(block.GetColor());
 	}
 
-	auto dwarfPos = GetDwarfPos();
-
-	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, dwarfPos);
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, GetDwarfPos());
 
 	GetMap()->SetHitMap(chainBlockMap);
 
