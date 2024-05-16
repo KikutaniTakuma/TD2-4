@@ -34,17 +34,21 @@ void DwarfAnimatorComp::Update()
 		if (isAttack) {
 			pSpriteComp_->SetTexture(textureID_[2]);
 			spriteAnimator_->SetLoopAnimation(false);
+			spriteAnimator_->SetDuration(0.25f);
 			spriteAnimator_->Start();
 		}
 		else if(not spriteAnimator_->GetIsActive()){
 			pSpriteComp_->SetTexture(textureID_[3]);
 			spriteAnimator_->SetLoopAnimation(true);
+			spriteAnimator_->SetDuration(0.35f);
 			spriteAnimator_->Start();
 		}
 	}
 	else {
 		bool isClimbing = pDwarfComp_->IsClimbing();
 		uint32_t textureIndex = (isClimbing ? 0 : 1);
+
+		spriteAnimator_->SetDuration(0.25f);
 
 		// 0.0 ~ 1.0 の間で、1.0はギリ死なない
 		pSpriteComp_->SetTexture(textureID_[textureIndex]);
