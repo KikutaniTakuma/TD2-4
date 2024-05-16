@@ -20,12 +20,6 @@ void BlockMap::Init()
 	ground_ = std::make_unique<Ground>();
 	ground_->Init();
 
-	textures_ = {
-		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/lizardTailBlock.png"),
-		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/waterBlock.png"),
-		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/herbBlock.png"),
-		TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/mineralBlock.png"),
-	};
 }
 
 void BlockMap::Update([[maybe_unused]] const float deltaTime)
@@ -61,7 +55,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 							blockTex = whiteTex;
 						}
 						else {
-							blockTex = textures_[typeIndex - 1];
+							blockTex = Block::kTextures_[typeIndex - 1];
 						}
 					}
 				}

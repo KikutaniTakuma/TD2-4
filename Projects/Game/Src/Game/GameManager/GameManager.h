@@ -94,6 +94,8 @@ public:
 
 	SoLib::VItem<"破壊時の停止時間", float> vBreakStopTime_{ 0.5f };
 
+	SoLib::VItem<"落下するまでの間隔(sec)", float> vFallSpan_{ 2.5f };
+
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }
 
 public:
