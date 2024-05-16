@@ -17,8 +17,8 @@ FlaskParticle::FlaskParticle():
 {
     texture2D_ = DrawerManager::GetInstance()->GetTexture2D();
     textureID_ = DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png");
-    scaleMin_ = Vector3::kIdentity * 20.0f;
-    scaleMax_ = Vector3::kIdentity * 30.0f;
+    scaleMin_ = Vector3::kIdentity * 2.0f;
+    scaleMax_ = Vector3::kIdentity * 3.0f;
 
     emitter_.radius = { 10.0f, 20.0f };
     emitter_.angle = { std::numbers::pi_v<float> / 3.0f, 2.0f * std::numbers::pi_v<float> / 3.0f };
@@ -30,7 +30,7 @@ FlaskParticle::FlaskParticle():
 
 void FlaskParticle::Update() {
     if (isActive_) {
-        if (randomFreq_ < latesetFreq_) {
+        if (randomFreq_ < latesetFreq_ and curentParticleIndex_ < static_cast<uint32_t>(particles_.size())) {
             uint32_t appParticle = Lamb::Random(appParticleNumMin_, appParticleNumMax_);
 
             for (size_t index = curentParticleIndex_; index < (curentParticleIndex_ + appParticle) and index < particles_.size(); index++) {
@@ -42,11 +42,6 @@ void FlaskParticle::Update() {
             }
 
             curentParticleIndex_ += appParticle;
-
-            if (static_cast<uint32_t>(particles_.size()) <= curentParticleIndex_) {
-                curentParticleIndex_ = 0u;
-                Stop();
-            }
             
             latesetFreq_ = 0.0f;
             randomFreq_ = Lamb::Random(freq_.min, freq_.max);
@@ -107,12 +102,12 @@ void FlaskParticle::Reset() {
 }
 
 Vector3 FlaskParticle::GetRandomVector() {
-    Vector3 result = Vector3::kZero;
+    Vector3 result;
 
     float angle = Lamb::Random(emitter_.angle.min, emitter_.angle.max);
     float radius = Lamb::Random(emitter_.radius.min, emitter_.radius.max);
 
-    result *= Mat4x4::MakeAffin(emitter_.translate, Vector3::kZIdentity * angle, Vector3::kXIdentity * radius);
+    result *= Mat4x4::MakeTranslate(Vector3::kXIdentity * radius) * Mat4x4::MakeRotateZ(angle) * Mat4x4::MakeTranslate(emitter_.translate);
 
     return result;
 }
