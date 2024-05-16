@@ -27,6 +27,7 @@
 
 void GameManager::Init()
 {
+	Block::StaticLoad();
 
 	blockGauge_ = std::make_unique<BlockGauge>();
 	blockGauge_->Init();

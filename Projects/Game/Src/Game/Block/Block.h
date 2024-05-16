@@ -31,9 +31,24 @@ public:
 		Mat4x4::MakeScalar({1.f / 3.f,1,1}) * Mat4x4::MakeTranslate({2.f / 3.f,0,0}),
 	};
 
+	// ブロックのテクスチャ
+	// 赤、青、緑、黄の四種(順番も)
+	inline static  std::array<uint32_t, 4u> kTextures_{
+
+	};
+
 public:
 	Block(BlockType type = BlockType::kNone) : blockType_(type) {}
 	~Block() = default;
+
+	static void StaticLoad() {
+		kTextures_ = {
+			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/lizardTailBlock.png"),
+			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/waterBlock.png"),
+			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/herbBlock.png"),
+			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/mineralBlock.png"),
+		};
+	}
 
 	Block &operator=(const BlockType type) { blockType_ = type; return *this; }
 
