@@ -72,21 +72,6 @@ void GameScene::TextureInitialize(){
 		clouds_[i]->textureID = DrawerManager::GetInstance()->LoadTexture(("./Resources/UI/GameMain/" + clouds_[i]->textureName).c_str());
 	}
 
-	spaceTex_ = std::make_unique<Tex2DState>();
-	spaceTex_->transform.scale = { 164.0f,96.0f };
-	spaceTex_->transform.translate = { -500.0f, -175.0f ,-10 };
-	spaceTex_->uvTrnasform.translate = { 0.f, 0.0f };
-	spaceTex_->uvTrnasform.scale.x = { 0.5f };
-	spaceTex_->color = 0xffffffff;
-	spaceTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/makeBlockSpace.png");
-
-	keyTex_ = std::make_unique<Tex2DState>();
-	keyTex_->transform.scale = { 128.0f,96.0f };
-	keyTex_->transform.translate = { -514.0f, -292.0f ,-10 };
-	keyTex_->uvTrnasform.translate = { 0.f, 0.00f };
-	keyTex_->uvTrnasform.scale.x = { 0.2f };
-	keyTex_->color = 0xffffffff;
-	keyTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/makeBolckMove.png");
 
 	backGround_ = std::make_unique<Tex2DState>();
 	backGround_->transform.scale = { 1280.0f,720.0f };
@@ -219,11 +204,6 @@ void GameScene::TextureUpdate(){
 	//dwarfTenNumTex_->transform.CalcMatrix();
 	//dwarfTenNumTex_->uvTrnasform.CalcMatrix();
 
-	spaceTex_->transform.CalcMatrix();
-	spaceTex_->uvTrnasform.CalcMatrix();
-
-	keyTex_->transform.CalcMatrix();
-	keyTex_->uvTrnasform.CalcMatrix();
 
 	backGround_->transform.CalcMatrix();
 
@@ -288,11 +268,6 @@ void GameScene::TextureDraw(){
 	tex2D_->Draw(dwarfTenNumTex_->transform.matWorld_, dwarfTenNumTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, dwarfTenNumTex_->textureID, dwarfTenNumTex_->color, BlendType::kNormal);*/
 
-	tex2D_->Draw(spaceTex_->transform.matWorld_, spaceTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
-		, spaceTex_->textureID, spaceTex_->color, BlendType::kNormal);
-
-	tex2D_->Draw(keyTex_->transform.matWorld_, keyTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
-		, keyTex_->textureID, keyTex_->color, BlendType::kNormal);
 }
 
 void GameScene::Debug(){
@@ -312,20 +287,20 @@ void GameScene::Debug(){
 		ImGui::DragFloat2("UVScale", &dwarfTenNumTex_->uvTrnasform.scale.x, 0.01f);
 		ImGui::TreePop();
 	}*/
-	if (ImGui::TreeNode("spaceキー")) {
-		ImGui::DragFloat2("Transform", &spaceTex_->transform.translate.x, 1.0f);
-		ImGui::DragFloat2("Scale", &spaceTex_->transform.scale.x, 1.0f);
-		ImGui::DragFloat2("UVTransform", &spaceTex_->uvTrnasform.translate.x, 0.01f);
-		ImGui::DragFloat2("UVScale", &spaceTex_->uvTrnasform.scale.x, 0.01f);
-		ImGui::TreePop();
-	}
-	if (ImGui::TreeNode("WASDキー")) {
-		ImGui::DragFloat2("Transform", &keyTex_->transform.translate.x, 1.0f);
-		ImGui::DragFloat2("Scale", &keyTex_->transform.scale.x, 1.0f);
-		ImGui::DragFloat2("UVTransform", &keyTex_->uvTrnasform.translate.x, 0.01f);
-		ImGui::DragFloat2("UVScale", &keyTex_->uvTrnasform.scale.x, 0.01f);
-		ImGui::TreePop();
-	}
+	//if (ImGui::TreeNode("spaceキー")) {
+	//	ImGui::DragFloat2("Transform", &spaceTex_->transform.translate.x, 1.0f);
+	//	ImGui::DragFloat2("Scale", &spaceTex_->transform.scale.x, 1.0f);
+	//	ImGui::DragFloat2("UVTransform", &spaceTex_->uvTrnasform.translate.x, 0.01f);
+	//	ImGui::DragFloat2("UVScale", &spaceTex_->uvTrnasform.scale.x, 0.01f);
+	//	ImGui::TreePop();
+	//}
+	//if (ImGui::TreeNode("WASDキー")) {
+	//	ImGui::DragFloat2("Transform", &keyTex_->transform.translate.x, 1.0f);
+	//	ImGui::DragFloat2("Scale", &keyTex_->transform.scale.x, 1.0f);
+	//	ImGui::DragFloat2("UVTransform", &keyTex_->uvTrnasform.translate.x, 0.01f);
+	//	ImGui::DragFloat2("UVScale", &keyTex_->uvTrnasform.scale.x, 0.01f);
+	//	ImGui::TreePop();
+	//}
 	
 	ImGui::End();
 

@@ -102,7 +102,7 @@ private:
 
 	std::array<std::string, 3> cloudType_;
 	//操作UI
-	std::unique_ptr<Tex2DState> spaceTex_, keyTex_;
+	//std::unique_ptr<Tex2DState> spaceTex_, keyTex_;
 
 	std::unique_ptr<Tex2DState> backGround_;
 
