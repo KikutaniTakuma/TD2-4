@@ -64,6 +64,20 @@ void GameManager::Init()
 	//	AddDwarf(Vector2::kXIdentity * i);
 	//}
 
+	for (int32_t yi = 0; yi < 3; yi++) {
+		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+			const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
+
+			Block::BlockType type = static_cast<Block::BlockType>(Lamb::Random(static_cast<uint32_t>(Block::BlockType::kNone) + 1, static_cast<uint32_t>(Block::BlockType::kMax) - 1));
+
+			blockMap_->SetBlocks(pos, Vector2::kIdentity, type);
+
+		}
+	}
+
+	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,10.f };
+
+
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
 	gameEffectManager_->Init();
 }
@@ -419,7 +433,7 @@ GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
 
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakChainBlocks(POINTS localPos)
 {
-	auto block = blockMap_->GetBlockType(localPos); 
+	auto block = blockMap_->GetBlockType(localPos);
 
 
 

@@ -81,7 +81,7 @@ public:
 		}
 	};
 
-	inline static constexpr int32_t kMapX = 15u, kMapY = 20u;
+	inline static constexpr int32_t kMapX = 15u, kMapY = 10u;
 
 	// マップの配列 [y][x]
 	template <SoLib::IsRealType T>
