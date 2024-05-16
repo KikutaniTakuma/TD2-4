@@ -8,7 +8,7 @@ void GameEffectManager::Init()
 	pMap_ = pGameManager_->GetMap();
 
 	particles_.resize(20);
-	for (auto& i : particles_) {
+	for (auto &i : particles_) {
 		i = std::make_unique<Particle>();
 
 		i->LoadSettingDirectory("Block-Break");
@@ -22,23 +22,38 @@ void GameEffectManager::Init()
 
 void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 {
-	for (auto particle = particles_.begin(); const auto & blockPosAndSize : blockBreakPos_) {
+	/*for (auto particle = particles_.begin(); const auto & blockPosAndSize : blockBreakPos_) {
 		if (particle == particles_.end()) {
 			break;
 		}
 		Vector3 emitterpos = ToGrobal(blockPosAndSize.first);
 		emitterpos.z = -10.0f;
 		(*particle)->ParticleStart(emitterpos, blockPosAndSize.second);
+	}*/
+
+	auto particle = particles_.begin();
+	for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
+		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+			if (particle != particles_.end()) {
+				if (blockBreakPos_[yi][xi]) {
+					(*particle)->ParticleStart({ ToGrobal(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -10.f }, Vector2::kIdentity);
+					++particle;
+				}
+			}
+			else {
+				break;
+			}
+		}
 	}
 
-	for (auto& i : particles_) {
+	for (auto &i : particles_) {
 		i->Update();
 	}
 }
 
 void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
 {
-	for (auto& i : particles_) {
+	for (auto &i : particles_) {
 		i->Draw(
 			camera.rotate,
 			camera.GetViewOthographics(),
@@ -63,7 +78,7 @@ void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
 
 void GameEffectManager::Clear()
 {
-	blockBreakPos_.clear();
+	blockBreakPos_ = {};
 	dwarfDeadPos_.clear();
 	fallingBlock_ = { -1,-1 };
 }

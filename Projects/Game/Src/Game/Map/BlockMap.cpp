@@ -263,7 +263,7 @@ void BlockMap::BreakUpdate([[maybe_unused]] const float deltaTime)
 
 }
 
-std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BlockMap::FindChainBlocks(POINTS localPos, const std::unordered_set<POINTS> &set, std::array<std::bitset<kMapX>, kMapY> &&result) const
+BlockMap::BlockBitMap &&BlockMap::FindChainBlocks(POINTS localPos, const std::unordered_set<POINTS> &set, BlockBitMap &&result) const
 {
 	static constexpr std::array<POINTS, 4u> kMoveDir{
 		{{-1, 0},

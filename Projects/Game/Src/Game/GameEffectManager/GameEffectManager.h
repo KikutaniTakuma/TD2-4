@@ -34,11 +34,12 @@ private:
 	uint32_t whiteTex_;
 
 	static Vector2 ToGrobal(const Vector2 localPos) noexcept { return BlockMap::GetGlobalPos(localPos); }
+	static Vector2 ToGrobal(const POINTS localPos) noexcept { return BlockMap::GetGlobalPos({ static_cast<float>(localPos.x), static_cast<float>(localPos.y) }); }
 
 	// ↓ 自動的に追加、破棄を行う。
 
 	// 破壊されたブロックのローカル座標
-	std::list<std::pair<Vector2, Vector2>> blockBreakPos_;	// 中心, 直径
+	BlockMap::BlockBitMap blockBreakPos_;
 
 	// 小人が死んだ時のローカル座標
 	std::list<Vector2> dwarfDeadPos_;
