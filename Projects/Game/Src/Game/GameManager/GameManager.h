@@ -67,6 +67,8 @@ public:
 
 	GameObject *AddDwarf(Vector2 centerPos);
 
+	GameObject *AddDarkDwarf(Vector2 centerPos);
+
 	/// @brief 指定した座標のブロックを持ち上げる
 	/// @param localPos 指定先
 	/// @param hasBlockWeight すでに持っているブロックの重さ
@@ -88,6 +90,8 @@ public:
 
 private:
 	void BlockMapDropDown();
+
+	void MargeDwarf();
 
 	// void BreakEnemyHouse(int32_t facing, Map::HouseInfo enemyHouse)
 	//{
@@ -134,6 +138,9 @@ private:
 
 	// プレイヤが撃った弾のリスト
 	std::list<std::unique_ptr<GameObject>> plBulletList_;
+
+	// プレイヤが撃った弾のリスト
+	std::list<std::unique_ptr<GameObject>> darkDwarfList_;
 
 	std::unique_ptr<GameEffectManager> gameEffectManager_ = nullptr;
 };

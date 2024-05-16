@@ -77,6 +77,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	// 浮いているブロックを落とす
 	BlockMapDropDown();
 
+	MargeDwarf();
+
 	player_->Update(deltaTime);
 
 	spawner_->Update(deltaTime);
@@ -88,6 +90,10 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	}
 
 	for (auto &dwarf : dwarfList_) {
+		dwarf->Update(deltaTime);
+	}
+
+	for (auto &dwarf : darkDwarfList_) {
 		dwarf->Update(deltaTime);
 	}
 
@@ -132,6 +138,23 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 				gameEffectManager_->dwarfDeadPos_.push_back(dwarfObject->GetComponent<LocalBodyComp>()->localPos_);
 
 				dwarfItr = dwarfList_.erase(dwarfItr); // オブジェクトを破棄してイテレータを変更
+				continue;
+			}
+
+			// 何もなかったら次へ
+			++dwarfItr;
+		}
+		for (auto dwarfItr = darkDwarfList_.begin(); dwarfItr != darkDwarfList_.end();) {
+			Lamb::SafePtr dwarfObject = dwarfItr->get();
+
+			// もし死んでいたら消す
+			if (not dwarfObject->GetActive()) {
+
+				dwarfObject->GetComponent<PickUpComp>()->ThrowAllBlocks();
+				// 描画用にデータを渡す
+				gameEffectManager_->dwarfDeadPos_.push_back(dwarfObject->GetComponent<LocalBodyComp>()->localPos_);
+
+				dwarfItr = darkDwarfList_.erase(dwarfItr); // オブジェクトを破棄してイテレータを変更
 				continue;
 			}
 
@@ -189,6 +212,9 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 		fallingBlock->Draw(camera);
 	}
 	for (const auto &dwarf : dwarfList_) {
+		dwarf->Draw(camera);
+	}
+	for (const auto &dwarf : darkDwarfList_) {
 		dwarf->Draw(camera);
 	}
 	blockGauge_->Draw(camera);
@@ -292,6 +318,26 @@ GameObject *GameManager::AddDwarf(Vector2 centerPos)
 	dwarfList_.push_back(std::move(dwarf));
 	// 参照を返す
 	return dwarfList_.back().get();
+}
+
+GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
+{
+	// 小人の実体を構築
+	std::unique_ptr<GameObject> dwarf = std::make_unique<GameObject>();
+
+	// コンポーネントの追加
+	dwarf->AddComponent<DwarfComp>();
+	Lamb::SafePtr localBody = dwarf->GetComponent<LocalBodyComp>();
+	localBody->localPos_ = centerPos; // 座標の指定
+	localBody->drawScale_ = 1.f;
+
+	dwarf->AddComponent<DwarfAnimatorComp>();
+	dwarf->AddComponent<DwarfShakeComp>();
+
+	// 末尾に追加
+	darkDwarfList_.push_back(std::move(dwarf));
+	// 参照を返す
+	return darkDwarfList_.back().get();
 }
 
 
@@ -492,5 +538,45 @@ void GameManager::BlockMapDropDown()
 			localPos.x++;
 		}
 		localPos.y++;
+	}
+}
+
+void GameManager::MargeDwarf()
+{
+	if (not dwarfList_.empty()) {
+		for (decltype(dwarfList_)::iterator fItr = dwarfList_.begin(); fItr != dwarfList_.end(); ++fItr) {
+			auto *const fDwarf = (*fItr).get();
+			// 死んでたら飛ばす
+			if (not fDwarf->GetActive()) { continue; }
+			Lamb::SafePtr fDwComp = fDwarf->GetComponent<DwarfComp>();
+			Lamb::SafePtr fBody = fDwarf->GetComponent<LocalBodyComp>();
+
+			for (decltype(dwarfList_)::iterator sItr = std::next(fItr); sItr != dwarfList_.end(); ++sItr) {
+				auto *const sDwarf = (*sItr).get();
+				// 死んでたら飛ばす
+				if (not sDwarf->GetActive()) { continue; }
+				Lamb::SafePtr sDwComp = sDwarf->GetComponent<DwarfComp>();
+				Lamb::SafePtr sBody = sDwarf->GetComponent<LocalBodyComp>();
+
+				// 向いている向きが一致しない場合
+				if (sDwComp->GetFacing() != fDwComp->GetFacing()) {
+
+					const Vector2 centerDiff = fBody->localPos_ - sBody->localPos_;
+					const Vector2 sizeSum = (fBody->size_ + sBody->size_) / 2.f;
+					if (std::abs(centerDiff.x) <= sizeSum.x and std::abs(centerDiff.y) <= sizeSum.y) {
+
+						fDwarf->SetActive(false);
+						sDwarf->SetActive(false);
+
+						// 召喚先
+						Vector2 spawnPos = fBody->localPos_;
+
+						AddDarkDwarf(spawnPos);
+
+					}
+				}
+
+			}
+		}
 	}
 }
