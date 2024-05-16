@@ -63,6 +63,7 @@ void UIEditor::Update(const BaseScene::ID id){
 			continue;
 
 		for (size_t j = 0; j < texies_[i].size(); j++){
+			texies_[i][j]->transform.translate.z = 1.0f;
 			texies_[i][j]->transform.CalcMatrix();
 			texies_[i][j]->uvTrnasform.CalcMatrix();
 		}
@@ -105,7 +106,7 @@ void UIEditor::Debug(const BaseScene::ID id){
 
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("UI生成")) {
-			ImGui::DragFloat2("生成するポジション", &newTex_->transform.translate.x, 0.1f);
+			ImGui::DragFloat2("生成するポジション", &newTex_->transform.translate.x, 1.0f);
 			if (ImGui::TreeNode("生成するUI画像")) {
 				auto file = Lamb::GetFilePathFormDir("Resources/UI/", ".png");
 				for (auto& i : file) {

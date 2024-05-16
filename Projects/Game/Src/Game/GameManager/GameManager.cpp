@@ -73,6 +73,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	GlobalVariables::GetInstance()->Update();
 
+	blockMap_->ResetHit();
+
+	blockMap_->Update(deltaTime);
 	blockBreakTimer_.Update(deltaTime);
 
 	float localDeltaTime = deltaTime;
@@ -428,6 +431,27 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 			}
 		}
 	}
+
+	return std::move(chainBlockMap);
+}
+std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY>&& GameManager::HitChainBlocks(POINTS localPos){
+
+	auto dwarfPos = GetDwarfPos();
+
+	auto&& chainBlockMap = blockMap_->FindChainBlocks(localPos, dwarfPos);
+
+	POINTS targetPos{};
+
+	for (targetPos.y = 0; targetPos.y < BlockMap::kMapY; targetPos.y++) {
+		const auto& breakLine = chainBlockMap[targetPos.y];
+		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
+			if (breakLine[targetPos.x]) {
+				blockMap_->HitBlock(targetPos);
+			}
+		}
+	}
+
+	
 	for (auto &dwarf : darkDwarfList_) {
 		auto localBody = dwarf->GetComponent<LocalBodyComp>();
 		if (localBody) {

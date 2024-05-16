@@ -44,6 +44,9 @@ void PlayerBulletComp::Update()
 			if (block.GetDamage() >= 3) {
 				gManager->BreakChainBlocks(hitPos);
 			}
+			else {
+				gManager->HitChainBlocks(hitPos);
+			}
 		}
 		object_.SetActive(false);
 	}

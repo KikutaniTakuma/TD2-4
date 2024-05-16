@@ -125,6 +125,8 @@ public:
 
 
 	void BreakBlock(POINTS localPos);
+	//弾が当たったブロック
+	void HitBlock(POINTS localPos);
 
 	void ProcessEnemyHouseBlocks(std::function<void(int32_t y, int32_t x)> processBlock)
 	{
@@ -134,6 +136,9 @@ public:
 			}
 		}
 	}
+
+	//関数
+	void ResetHit();
 
 public:
 	/// @brief 2次元配列の取得
@@ -195,4 +200,13 @@ private:
 	std::array<uint32_t, 4> textures_;
 
 	Texture2D *pTexture2d_ = nullptr;
+
+	//変数
+//攻撃を受けたかどうか
+	bool isDamege_ = false;
+
+	//ダメージを受けたブロックの色
+	uint32_t damegeColor_;
+
+	std::vector<Mat4x4> damegeMats_;
 };

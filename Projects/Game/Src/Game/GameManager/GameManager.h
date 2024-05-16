@@ -85,6 +85,9 @@ public:
 
 	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BreakChainBlocks(POINTS localPos);
 
+	//弾が当たったときに当たった個所からつながっているブロックを検索して色を変化させる
+	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY>&& HitChainBlocks(POINTS localPos);
+
 	void RandomDwarfSpawn();
 
 	void RandomFallBlockSpawn();

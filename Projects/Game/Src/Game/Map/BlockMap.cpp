@@ -48,19 +48,74 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
 				if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kRed)]) {
-					blockTex = textures_[0];
+					if (modelState->color == damegeColor_) {
+						
+						for (size_t i = 0; i < damegeMats_.size(); i++){
+							if (modelState->transMat == damegeMats_[i]) {
+								blockTex = TextureManager::GetInstance()->GetWhiteTex();
+								break;
+							}
+							if (i == damegeMats_.size() - 1) {
+								blockTex = textures_[0];
+							}
+						}
+						
+					}
+					else {
+						blockTex = textures_[0];
+					}
+					
 					blockColor = 0xFFFFFFFF;
 				}
 				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kBlue)]) {
-					blockTex = textures_[1];
+					if (modelState->color == damegeColor_) {
+						for (size_t i = 0; i < damegeMats_.size(); i++) {
+							if (modelState->transMat == damegeMats_[i]) {
+								blockTex = TextureManager::GetInstance()->GetWhiteTex();
+								break;
+							}
+							if (i == damegeMats_.size() - 1) {
+								blockTex = textures_[1];
+							}
+						}
+					}
+					else {
+						blockTex = textures_[1];
+					}
 					blockColor = 0xFFFFFFFF;
 				}
 				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kGreen)]) {
-					blockTex = textures_[2];
+					if (modelState->color == damegeColor_) {
+						for (size_t i = 0; i < damegeMats_.size(); i++) {
+							if (modelState->transMat == damegeMats_[i]) {
+								blockTex = TextureManager::GetInstance()->GetWhiteTex();
+								break;
+							}
+							if (i == damegeMats_.size() - 1) {
+								blockTex = textures_[2];
+							}
+						}
+					}
+					else {
+						blockTex = textures_[2];
+					}
 					blockColor = 0xFFFFFFFF;
 				}
 				else if (modelState->color == Block::kBlockColor_[static_cast<uint32_t>(Block::BlockType::kYellow)]) {
-					blockTex = textures_[3];
+					if (modelState->color == damegeColor_) {
+						for (size_t i = 0; i < damegeMats_.size(); i++) {
+							if (modelState->transMat == damegeMats_[i]) {
+								blockTex = TextureManager::GetInstance()->GetWhiteTex();
+								break;
+							}
+							if (i == damegeMats_.size() - 1) {
+								blockTex = textures_[3];
+							}
+						}
+					}
+					else {
+						blockTex = textures_[3];
+					}
 					blockColor = 0xFFFFFFFF;
 				}
 				else {
@@ -105,8 +160,28 @@ bool BlockMap::Debug(const char *const str)
 	return isChange;
 }
 
+void BlockMap::ResetHit() {
+	for (int32_t yi = 0; yi < kMapY; yi++) {
+		for (int32_t xi = 0; xi < kMapX; xi++) {
+			// ボックスの状態
+			auto& box = (*blockMap_)[yi][xi];
+			// ボックスが存在する場合は実体を作成
+			if (box) {
+				if (!box.GetHit()) {
+					continue;
+				}
+				box.SetHitBlockFlug(false);
+				damegeColor_ = 0;
+				
+			}
+
+		}
+	}
+}
+
 void BlockMap::TransferBoxData()
 {
+	damegeMats_.clear();
 
 	for (int32_t yi = 0; yi < kMapY; yi++) {
 		for (int32_t xi = 0; xi < kMapX; xi++) {
@@ -127,6 +202,11 @@ void BlockMap::TransferBoxData()
 				modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y }, Vector3::kZero, { drawPos, -1.f });
 				// 色を指定する
 				modelState->color = box.GetColor();
+
+				if (box.GetHit()) {
+					damegeColor_ = modelState->color;
+					damegeMats_.push_back(modelState->transMat);
+				}
 			}
 			// もしボックスが存在しない場合は
 			else {
@@ -236,7 +316,20 @@ void BlockMap::BreakBlock(POINTS localPos)
 	if (targetBlock) {
 		targetBlock.SetDamage(0);
 		targetBlock.SetBlockType(Block::BlockType::kNone);
+		targetBlock.SetHitBlockFlug(false);
+		damegeColor_ = 0;
 		blockStatesMap_->at(localPos.y).at(localPos.x).reset();
+	}
+}
+
+void BlockMap::HitBlock(POINTS localPos){
+	if (IsOutSide(localPos)) {
+		return;
+	}
+	auto& targetBlock = blockMap_->at(localPos.y).at(localPos.x);
+	// ブロックがあるならフラグを立てる
+	if (targetBlock) {
+		targetBlock.SetHitBlockFlug(true);
 	}
 }
 

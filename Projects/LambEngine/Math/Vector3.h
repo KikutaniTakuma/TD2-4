@@ -222,6 +222,8 @@ public:
 /// </summary>
 public:
 	static [[nodiscard]] Vector3 Lerp(const Vector3& start, const Vector3& end, float t);
+
+	static [[nodiscard]] Vector3 CatmullRom(const Vector3& controlPoint0, const Vector3& controlPoint1, const Vector3& controlPoint2, const Vector3& controlPoint3, const float t);
 	
 	static [[nodiscard]] Vector3 QuaternionToEuler(const class Quaternion& quaternion);
 };
