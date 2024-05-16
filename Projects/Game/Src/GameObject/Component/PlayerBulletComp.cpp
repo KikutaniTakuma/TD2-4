@@ -42,6 +42,8 @@ void PlayerBulletComp::Update()
 			auto &block = map->GetBlockMap()->at(hitPos.y)[hitPos.x];
 			block.AddDamage(1);
 			if (block.GetDamage() >= 3) {
+				audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockHit.mp3");
+				audio->Start(0.2f, false);
 				gManager->BreakChainBlocks(hitPos);
 			}
 			else {
