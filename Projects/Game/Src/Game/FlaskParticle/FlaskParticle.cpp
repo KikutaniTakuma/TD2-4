@@ -2,6 +2,7 @@
 #include "Drawers/DrawerManager.h"
 #include "Utils/EngineInfo/EngineInfo.h"
 #include "Utils/Random/Random.h"
+#include "Utils/Easeing/Easeing.h"
 #include <numbers>
 
 FlaskParticle::FlaskParticle():
@@ -36,7 +37,7 @@ void FlaskParticle::Update() {
             for (size_t index = curentParticleIndex_; index < (curentParticleIndex_ + appParticle) and index < particles_.size(); index++) {
                 particles_[index].isActive = true;
                 particles_[index].activeTime = 0.0f;
-                particles_[index].scale = Lamb::Random(scaleMin_, scaleMax_);
+                particles_[index].startScale = Lamb::Random(scaleMin_, scaleMax_);
                 particles_[index].startPos = GetRandomVector();
                 particles_[index].deathTime = Lamb::Random(deathTime_.min, deathTime_.max);
             }
@@ -49,20 +50,27 @@ void FlaskParticle::Update() {
 
         float deltatime = Lamb::DeltaTime();
         latesetFreq_ += deltatime;
-        for (auto& i : particles_) {
-            if (i.isActive) {
-                float t = i.activeTime / i.deathTime;
-                i.translate = Vector3::Lerp(i.startPos, endTranslate_, t);
+        for (auto i = particles_.begin(); i != particles_.end(); i++) {
+            if (i->isActive) {
+                float t = i->activeTime / i->deathTime;
+                i->translate = Vector3::Lerp(i->startPos, endTranslate_, Easeing::OutExpo(t));
+                i->scale= Vector3::Lerp(i->startScale, i->startScale * 0.1f, t);
                 if (1.0f <= t) {
-                    i.isActive = false;
+                    i->isActive = false;
+                    if (i == (--particles_.end())) {
+                        isActive_ = false;
+                    }
                 }
-                i.activeTime += deltatime;
+                i->activeTime += deltatime;
             }
         }
     }
 }
 
 void FlaskParticle::Draw(const Mat4x4& camera) {
+    if (not isActive_) {
+        return;
+    }
     for (auto& particle : particles_) {
         if (particle.isActive) {
             texture2D_->Draw(
