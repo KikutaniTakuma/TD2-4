@@ -95,6 +95,8 @@ void PlayerComp::Input()
 	}
 
 	if (key->Pushed(DIK_RETURN)) {
+		Audio* audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/shot.mp3");
+		audio->Start(0.2f, false);
 		FireBullet();
 	}
 
