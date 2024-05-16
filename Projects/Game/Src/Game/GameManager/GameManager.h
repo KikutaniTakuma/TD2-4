@@ -87,6 +87,8 @@ public:
 
 	void RandomDwarfSpawn();
 
+	void RandomFallBlockSpawn();
+
 public:
 	/// @brief 入力動作
 	void InputAction();
@@ -121,7 +123,8 @@ private:
 
 private:
 
-	SoLib::Time::DeltaTimer timer_;
+	SoLib::Time::DeltaTimer dwarfSpawnTimer_;
+	SoLib::Time::DeltaTimer fallBlockSpawnTimer_;
 	// 入力マネージャ
 	Input *input_ = nullptr;
 

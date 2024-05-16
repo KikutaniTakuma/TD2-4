@@ -75,12 +75,10 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	blockMap_->Update(deltaTime);
 
-	timer_.Update(deltaTime);
-	if (not timer_.IsActive()) {
-		timer_.Start(5.f);
-		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
-		AddDwarf(Vector2{ static_cast<float>(spawnPos), 0 });
-	}
+	dwarfSpawnTimer_.Update(deltaTime);
+	RandomDwarfSpawn();
+	fallBlockSpawnTimer_.Update(deltaTime);
+	RandomFallBlockSpawn();
 
 	// 浮いているブロックを落とす
 	BlockMapDropDown();
@@ -420,8 +418,36 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 			}
 		}
 	}
+	for (auto &dwarf : darkDwarfList_) {
+		auto localBody = dwarf->GetComponent<LocalBodyComp>();
+		if (localBody) {
+			POINTS mapIndex = localBody->GetMapPos();
+			// そこが破壊対象なら死ぬ
+			if (chainBlockMap[mapIndex.y][mapIndex.x]) {
+				dwarf->SetActive(false);
+			}
+		}
+	}
 
 	return std::move(chainBlockMap);
+}
+void GameManager::RandomDwarfSpawn()
+{
+	if (not dwarfSpawnTimer_.IsActive()) {
+		dwarfSpawnTimer_.Start(5.f);
+		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
+		AddDwarf(Vector2{ static_cast<float>(spawnPos), 0 });
+	}
+}
+void GameManager::RandomFallBlockSpawn()
+{
+	if (not fallBlockSpawnTimer_.IsActive()) {
+		fallBlockSpawnTimer_.Start(5.f);
+		//int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
+
+
+		//AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY)},Vector2::kIdentity, );
+	}
 }
 //
 // std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, [[maybe_unused]] int hasBlockWeight, [[maybe_unused]] int maxWeight, [[maybe_unused]] bool isPowerful)
@@ -510,9 +536,19 @@ std::unordered_set<POINTS> GameManager::GetDwarfPos() const
 {
 	std::unordered_set<POINTS> result;
 
-	result.reserve(dwarfList_.size());
+	result.reserve(dwarfList_.size() + darkDwarfList_.size());
 
 	for (const auto &dwarf : dwarfList_) {
+		// ドワーフの体コンポーネントを取得する
+		Lamb::SafePtr body = dwarf->GetComponent<LocalBodyComp>();
+
+		// ドワーフのマップ上の座標を取得する
+		POINTS pos = body->GetMapPos();
+
+		// データを格納する
+		result.insert(pos);
+	}
+	for (const auto &dwarf : darkDwarfList_) {
 		// ドワーフの体コンポーネントを取得する
 		Lamb::SafePtr body = dwarf->GetComponent<LocalBodyComp>();
 

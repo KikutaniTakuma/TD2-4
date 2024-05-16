@@ -81,7 +81,7 @@ public:
 		}
 	};
 
-	inline static constexpr int32_t kMapX = 30u, kMapY = 20u;
+	inline static constexpr int32_t kMapX = 15u, kMapY = 20u;
 
 	// マップの配列 [y][x]
 	template <SoLib::IsRealType T>
@@ -146,7 +146,7 @@ public:
 
 	static Vector2 GetGlobalPos(Vector2 localPos) noexcept
 	{
-		return Vector2{ localPos.x * vBlockScale_->x, localPos.y * vBlockScale_->y } - Vector2::kXIdentity * vBlockScale_->x * ((kMapX - 1) / 2.f);
+		return localPos - Vector2::kXIdentity * vBlockScale_->x * ((kMapX - 1) / 2.f);
 	}
 
 	static Vector2 LocalPos(const Vector2 gPos) noexcept
