@@ -16,7 +16,10 @@ void DwarfAnimatorComp::Init()
 	spriteAnimator_->Start();
 
 	pSpriteComp_->SetTexture("./Resources/Enemy/slimeWalk.png");
-	TextureManager::GetInstance()->LoadTexture("./Resources/Enemy/slimeWallWalk.png");
+	Lamb::SafePtr textureManager = TextureManager::GetInstance();
+	textureManager->LoadTexture("./Resources/Enemy/slimeWallWalk.png");
+	textureManager->LoadTexture("./Resources/Enemy/badSlimAttack.png");
+	textureManager->LoadTexture("./Resources/Enemy/badSlimeWait.png");
 }
 
 void DwarfAnimatorComp::Update()
