@@ -138,10 +138,13 @@ void DwarfComp::ChangeMovementTarget()
 
 void DwarfComp::FireBullet()
 {
-	GameManager::GetInstance()->GetPlayer();
 
 	timer_.Update(GetDeltaTime());
 	if (not timer_.IsActive()) {
+		Lamb::SafePtr player = GameManager::GetInstance()->GetPlayer();
+		Lamb::SafePtr plBody = player->GetComponent<LocalBodyComp>();
+
+		facing_ = SoLib::Math::Sign(static_cast<int32_t>(plBody->localPos_.x - pLocalBodyComp_->localPos_.x));
 
 		timer_.Start(5.f);
 

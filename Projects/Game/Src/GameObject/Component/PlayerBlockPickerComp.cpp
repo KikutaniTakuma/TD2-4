@@ -22,7 +22,7 @@ void PlayerBlockPickerComp::Draw([[maybe_unused]] const Camera &camera) const
 {
 	// もしブロックを持っていたら
 	if (pickingBlock_) {
-		pTexture_->Draw(affine_, Mat4x4::kIdentity, camera.GetViewOthographics(), texID_, pickingBlock_.GetColor(), BlendType::kNone);
+		pTexture_->Draw(affine_, Mat4x4::kIdentity, camera.GetViewOthographics(), pickingBlock_.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 	}
 }
 
