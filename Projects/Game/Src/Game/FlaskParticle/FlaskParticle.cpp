@@ -17,8 +17,8 @@ FlaskParticle::FlaskParticle():
 {
     texture2D_ = DrawerManager::GetInstance()->GetTexture2D();
     textureID_ = DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png");
-    scaleMin = Vector3::kIdentity * 20.0f;
-    scaleMax = Vector3::kIdentity * 30.0f;
+    scaleMin_ = Vector3::kIdentity * 20.0f;
+    scaleMax_ = Vector3::kIdentity * 30.0f;
 
     emitter_.radius = { 10.0f, 20.0f };
     emitter_.angle = { std::numbers::pi_v<float> / 3.0f, 2.0f * std::numbers::pi_v<float> / 3.0f };
@@ -36,7 +36,7 @@ void FlaskParticle::Update() {
             for (size_t index = curentParticleIndex_; index < (curentParticleIndex_ + appParticle) and index < particles_.size(); index++) {
                 particles_[index].isActive = true;
                 particles_[index].activeTime = 0.0f;
-                particles_[index].scale = Lamb::Random(scaleMin, scaleMax);
+                particles_[index].scale = Lamb::Random(scaleMin_, scaleMax_);
                 particles_[index].startPos = GetRandomVector();
                 particles_[index].deathTime = Lamb::Random(deathTime_.min, deathTime_.max);
             }

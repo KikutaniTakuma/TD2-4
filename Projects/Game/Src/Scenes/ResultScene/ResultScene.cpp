@@ -20,11 +20,35 @@ BaseScene{ BaseScene::ID::Result }
 }
 
 void ResultScene::Initialize(){
-	currentCamera_->pos = { 0.f, 0.f ,-1.0f };
+	currentCamera_->pos = { 0.f, 0.f ,-10.0f };
 
-	/*tex_.reset(new Texture2D("./Resources/Ball.png"));
-	tex_->scale *= 30.0f;
-	tex_->pos = Vector2{ 300.0f, 0.0f };*/
+	tex2D_ = drawerManager_->GetTexture2D();
+	backGround_.translate.z = 100.0f;
+	backGround_.scale = Lamb::ClientSize();
+	backGroundTextureID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
+
+	for (size_t index = 0; const auto& i : std::filesystem::directory_iterator("./Resources/Item/")) {
+		if (not i.path().has_extension()) {
+			continue;
+		}
+		flaskTextureID_[index] = drawerManager_->LoadTexture(i.path().string());
+		index++;
+		if (flaskTextureID_.size() <= index) {
+			break;
+		}
+	}
+
+	for (auto texID = flaskTextureID_.begin(); auto & i : flaskParticles_) {
+		i.SetParticleSize(Vector3::kIdentity * 20.0f, Vector3::kIdentity * 30.0f);
+		i.SetRotate(Vector2(30_deg, 150_deg));
+		i.SetEndTranslate(Vector3::kYIdentity * -200.0f);
+		i.SetTextureID(*texID);
+		i.Start();
+		texID++;
+		if (texID == flaskTextureID_.end()) {
+			break;
+		}
+	}
 }
 
 void ResultScene::Finalize(){
@@ -35,14 +59,27 @@ void ResultScene::Update(){
 	currentCamera_->Debug("カメラ");
 	currentCamera_->Update();
 
+	for (auto& i : flaskParticles_) {
+		i.Update();
+	}
 
-	/*tex_->Debug("テスト用サークル");
-	tex_->Update();*/
+	backGround_.CalcMatrix();
 }
 
 void ResultScene::Draw(){
 	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
-	//tex_->Draw(currentCamera_->GetViewOthographics());
+	tex2D_->Draw(
+		backGround_.matWorld_,
+		Mat4x4::kIdentity,
+		currentCamera_->GetViewOthographics(),
+		backGroundTextureID_,
+		std::numeric_limits<uint32_t>::max(),
+		BlendType::kNone
+	);
+
+	for (auto& i : flaskParticles_) {
+		i.Draw(currentCamera_->GetViewOthographics());
+	}
 
 	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
 }

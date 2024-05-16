@@ -91,6 +91,11 @@ public:
 		emitter_.translate = pos;
 	}
 
+	void SetParticleSize(const Vector3& min, const Vector3& max) {
+		scaleMin_ = min;
+		scaleMax_ = max;
+	}
+
 private:
 	Vector3 GetRandomVector();
 
@@ -104,8 +109,8 @@ private:
 	uint32_t appParticleNumMin_;
 	uint32_t appParticleNumMax_;
 
-	Vector3 scaleMin;
-	Vector3 scaleMax;
+	Vector3 scaleMin_;
+	Vector3 scaleMax_;
 
 	Vector2 deathTime_;
 

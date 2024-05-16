@@ -1,15 +1,10 @@
 #pragma once
 #include "Scenes/Manager/SceneManager.h"
-#include "Drawers/Model/Model.h"
-#include "Drawers/Texture2D/Texture2D.h"
-#include "Drawers/PeraRender/PeraRender.h"
 #include "Drawers/Particle/Particle.h"
-#include "Drawers/StringOut/StringOut.h"
-#include "GlobalVariables/GlobalVariables.h"
-#include "Game/CollisionManager/Collider/Collider.h"
 #include "Utils/Easeing/Easeing.h"
-#include "Game/SkyDome/SkyDome.h"
-#include "Game/CollisionManager/Sphere/Sphere.h"
+#include "Game/FlaskParticle/FlaskParticle.h"
+#include "Math/Transform.h"
+
 
 class ResultScene : public BaseScene{
 public:
@@ -32,9 +27,13 @@ public:
 
 	void Debug();
 private:
-	//std::unique_ptr<Texture2D> tex_;
+	Lamb::SafePtr<Texture2D> tex2D_;
+	Transform backGround_;
+	uint32_t backGroundTextureID_;
+	std::unique_ptr<Particle> backGroundParticle_;
 
 
-
+	std::array<FlaskParticle, 4> flaskParticles_;
+	std::array<uint32_t, 4> flaskTextureID_;
 };
 
