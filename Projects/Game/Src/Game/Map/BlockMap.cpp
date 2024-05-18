@@ -257,7 +257,7 @@ void BlockMap::BreakUpdate([[maybe_unused]] const float deltaTime)
 
 }
 
-BlockMap::BlockBitMap &&BlockMap::FindChainBlocks(POINTS localPos, const std::unordered_set<POINTS> &set, BlockBitMap &&result) const
+BlockMap::BlockBitMap &&BlockMap::FindChainBlocks(POINTS localPos, const Block::BlockType originType, const std::unordered_set<POINTS> &set, BlockBitMap &&result) const
 {
 	static constexpr std::array<POINTS, 4u> kMoveDir{
 		{{-1, 0},
@@ -288,8 +288,8 @@ BlockMap::BlockBitMap &&BlockMap::FindChainBlocks(POINTS localPos, const std::un
 		if (isOutMap) { continue; }
 
 		// 移動先のブロックが現在と一致してたら
-		if ((set.contains(targetPos) or targetType == localType) and result[targetPos.y][targetPos.x] == false) {
-			result = FindChainBlocks(targetPos, set, std::move(result));
+		if ((set.contains(targetPos) or targetType == originType) and result[targetPos.y][targetPos.x] == false) {
+			result = FindChainBlocks(targetPos, originType, set, std::move(result));
 		}
 	}
 

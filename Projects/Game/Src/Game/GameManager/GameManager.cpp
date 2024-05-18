@@ -441,7 +441,7 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 
 
 
-	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, GetDwarfPos());
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
 
 	for (const auto &line : chainBlockMap) {
 		// どこか1つでも壊れてたらタイマー開始
@@ -508,12 +508,12 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::HitChainBlocks(POINTS localPos) {
 
 	if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
-		GetMap()->SetDamageColor(block.GetColor());
+		blockMap_->SetDamageColor(block.GetColor());
 	}
 
-	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, GetDwarfPos());
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
 
-	GetMap()->SetHitMap(chainBlockMap);
+	blockMap_->SetHitMap(chainBlockMap);
 
 	return std::move(chainBlockMap);
 }
