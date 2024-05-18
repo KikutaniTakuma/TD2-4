@@ -35,6 +35,8 @@ private:
 public:
 	inline static const char *kDwarfModelName = "Resources/Cube.obj";
 
+	using DwarfPick = std::pair<Vector2, std::unique_ptr<GameObject>>;
+
 public:
 	void Init();
 
@@ -70,6 +72,7 @@ public:
 	GameObject *AddDwarf(Vector2 centerPos);
 
 	GameObject *AddDarkDwarf(Vector2 centerPos);
+	GameObject *AddDwarf(std::unique_ptr<GameObject> dwarf);
 
 	/// @brief 指定した座標のブロックを持ち上げる
 	/// @param localPos 指定先
@@ -87,6 +90,8 @@ public:
 
 	//弾が当たったときに当たった個所からつながっているブロックを検索して色を変化させる
 	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&HitChainBlocks(POINTS localPos);
+
+	std::list<DwarfPick> PickUpBlockSideObject(const POINTS localPos);
 
 	void RandomDwarfSpawn();
 

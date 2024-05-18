@@ -136,6 +136,9 @@ public:
 	template <SoLib::IsBased<IComponent> T>
 	inline T *const AddComponent();
 
+	template <SoLib::IsBased<IComponent> T>
+	inline bool const RemoveComponent();
+
 	/// @brief コンポーネントの取得
 	/// @tparam T コンポーネント型
 	/// @return コンポーネントのポインタ (存在しない場合、nullptr)
@@ -194,6 +197,12 @@ T *const GameObject::AddComponent() {
 	componentMap_[key]->Init();
 
 	return GetComponent<T>();
+}
+
+template<SoLib::IsBased<IComponent> T>
+inline bool const GameObject::RemoveComponent()
+{
+	return nullptr;
 }
 
 
