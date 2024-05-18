@@ -80,8 +80,13 @@ private:
 	Lamb::Flg isOutStart_;
 
 	Lamb::SafePtr<Texture2D> tex_;
-	std::unique_ptr<Transform> transform;
+	std::unique_ptr<Transform> transform_;
 	uint32_t color_;
+	static constexpr size_t kSlimeNum = 5;
+	std::array<std::unique_ptr<Transform>, kSlimeNum> slimeTransform_;
+	std::array<std::pair<Vector3, Vector3>, kSlimeNum> slimePositions_;
+	uint32_t slimeTexID_;
+
 
 	Easeing ease_;
 	/// <summary>
