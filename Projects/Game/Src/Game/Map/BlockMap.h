@@ -170,7 +170,7 @@ public:
 		return Vector2{ kMapX, kMapY };
 	}
 
-	BlockBitMap &&FindChainBlocks(POINTS localPos, const std::unordered_set<POINTS> &set, BlockBitMap &&result = {}) const;
+	BlockBitMap &&FindChainBlocks(POINTS localPos, const Block::BlockType originType, const std::unordered_set<POINTS> &set, BlockBitMap &&result = {}) const;
 
 	void SetBreakMap(const BlockBitMap &map) { breakMap_ = map; }
 	const BlockBitMap &GetBreakMap() const { return breakMap_; }

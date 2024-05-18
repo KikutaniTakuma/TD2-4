@@ -76,7 +76,7 @@ void DwarfComp::Update()
 
 void DwarfComp::ClimbUp()
 {
-	const Vector2 localPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * 0.5f;
+	const Vector2 localPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * (0.5f + 0.25f * facing_);
 	// 現在のブロック
 	auto blockType = LocalBodyComp::pMap_->GetBlockType(localPos);
 
@@ -102,11 +102,12 @@ bool DwarfComp::FallDown()
 	// 落下先の座標
 	const Vector2 downSide = Vector2{ pLocalBodyComp_->localPos_.x + 0.5f, afterPosY };
 	if (afterPosY > 0) {
-		// 落下先がブロックでない場合
-		if (LocalBodyComp::pMap_->GetBlockType(downSide) == Block::BlockType::kNone) {
+		// 落下先がブロックでない場合 なおかつ前がブロックでない場合
+		if (LocalBodyComp::pMap_->GetBlockType(downSide) == Block::BlockType::kNone and LocalBodyComp::pMap_->GetBlockType(downSide + Vector2::kXIdentity * (0.25f * facing_)) == Block::BlockType::kNone) {
 			// 下げる
 			pLocalBodyComp_->localPos_.y -= downPower;
 			return true;
+
 		}
 		// 足場があった場合
 		else {
@@ -124,13 +125,13 @@ bool DwarfComp::FallDown()
 void DwarfComp::ChangeMovementTarget()
 {
 	// 現在の中心座標
-	const Vector2 localPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * 0.5f;
+	//const Vector2 localPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * 0.5f;
 
 	// ブロックを持っていたら帰る
-	CarryBlockForHouse();
+	//CarryBlockForHouse();
 
 	// 自分の位置が拠点の場合
-	LocateOnHouse();
+	//LocateOnHouse();
 
 	// 自由に動き回る
 	FreeTargetMove();
