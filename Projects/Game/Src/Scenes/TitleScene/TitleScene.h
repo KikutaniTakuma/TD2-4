@@ -10,6 +10,7 @@
 #include "Utils/Easeing/Easeing.h"
 #include "Game/SkyDome/SkyDome.h"
 #include "Game/CollisionManager/Sphere/Sphere.h"
+#include"Editor/CatmullRomEditor/CatmullRomEditor.h"
 
 class TitleScene : public BaseScene {
 public:
@@ -42,23 +43,19 @@ public:
 
 	void Debug();
 
-public:
+private:
 	Texture2D* tex2D_;
-
-	std::vector< std::unique_ptr<Tex2DState>> spheres_;
 
 	//線上を走るテクスチャ
 	std::unique_ptr<Tex2DState> runTexture_;
+
+	std::unique_ptr<CatmullRomEditor> catmullRom_;
 
 	bool isCollision_;
 
 	Audio* titleBGM_ = nullptr;
 
 	Audio* beginGame_ = nullptr;
-
-
-	/*CatmullRom*/
-	std::vector<std::unique_ptr<Line>> lines_;
 
 	const Vector2 minusPos_ = { -540.0f,-260.0f };
 
@@ -72,15 +69,12 @@ public:
 		{700.0f + minusPos_.x,100.0f + minusPos_.y},
 		{1000.0f + minusPos_.x,200.0f + minusPos_.y}
 	};
+
+
 	//制御点
 	std::vector<Vector2> ControlPoints_;
 
 	std::vector<float> moveSpeeds_;
-
-	//線の色
-	uint32_t Linecolor_ = 0x000000ff;
-	//分割数
-	const uint32_t divisionNumber_ = 8;
 
 	float point_ = 0.0f;
 	//補完変数
@@ -89,30 +83,8 @@ public:
 
 	//現在移動しているライン
 	uint32_t linePass_ = 0;
-	//初期ライン
-	const uint32_t firstLinePass_ = 0;
-	//最終ライン
-	uint32_t LastLinePass_ = 2;
 	//移動するかどうか
 	bool isMove_ = false;
-	//描画している数
-	uint32_t drawCount_ = 0;
-	//追加する数
-	int addElementsNum_ = 1;
-	//減らす数
-	int subtractionElementsNum_ = 1;
-	//下のenumに対応させるための変数
-	int mode_ = 0;
-
-	enum {
-		First,
-		Last,
-	};
-
-	//曲線一本の長さを調べるための変数群
-	std::vector<float> catMullLength_;
-
-	float length_;
 
 
 };

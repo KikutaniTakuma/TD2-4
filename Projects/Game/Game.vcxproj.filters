@@ -182,6 +182,9 @@
     <ClCompile Include="Src\GameObject\Component\PlayerAnimator.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Editor\CatmullRomEditor\CatmullRomEditor.cpp">
+      <Filter>Editor\CatmullRomEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -312,6 +315,9 @@
     </Filter>
     <Filter Include="Game\FlaskParticle">
       <UniqueIdentifier>{6697558b-a808-424a-9fc3-805e0491fdfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\CatmullRomEditor">
+      <UniqueIdentifier>{b36bb0bc-c4f4-4329-8c34-f3d546817030}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -506,6 +512,9 @@
     </ClInclude>
     <ClInclude Include="Src\GameObject\Component\PlayerAnimator.h">
       <Filter>GameObject\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Editor\CatmullRomEditor\CatmullRomEditor.h">
+      <Filter>Editor\CatmullRomEditor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

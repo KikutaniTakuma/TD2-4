@@ -130,6 +130,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Camera\Camera.cpp" />
     <ClCompile Include="Src\Camera\DebugCamera\DebugCamera.cpp" />
     <ClCompile Include="Src\Editor\BlockEditor\BlockEditor.cpp" />
+    <ClCompile Include="Src\Editor\CatmullRomEditor\CatmullRomEditor.cpp" />
     <ClCompile Include="Src\Editor\EnemyEditor\EnemyEditor.cpp" />
     <ClCompile Include="Src\Editor\ParticleEditor\ParticleEditor.cpp" />
     <ClCompile Include="Src\GameObject\Component\DwarfAnimator.cpp" />
@@ -193,6 +194,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Camera\DebugCamera\DebugCamera.h" />
     <ClInclude Include="Src\Editor\BlockEditor\BlockEditor.h" />
+    <ClInclude Include="Src\Editor\CatmullRomEditor\CatmullRomEditor.h" />
     <ClInclude Include="Src\Editor\EnemyEditor\EnemyEditor.h" />
     <ClInclude Include="Src\Editor\ParticleEditor\ParticleEditor.h" />
     <ClInclude Include="Src\Editor\UIEditor\UIEditor.h" />
