@@ -108,6 +108,8 @@ void GameScene::Initialize() {
 	gameManager_ = GameManager::GetInstance();
 	gameManager_->Init();
 
+	gameManager_->SetGameScene(this);
+
 	//aabb_ = AABB::Create({ 0.0f,-0.5f,0.0f }, { 20.0f,1.0f,20.0f });
 
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
