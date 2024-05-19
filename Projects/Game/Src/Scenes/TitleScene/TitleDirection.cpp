@@ -108,6 +108,15 @@ void TitleDirection::Update(){
 	i_Status_.easing ->Update();
 	n_Status_.easing ->Update();
 
+	if (e_Status_.easing->ActiveExit()) {
+		isMoveTex_others_ = true;
+	}
+
+	if (n_Status_.easing->ActiveExit()) {
+		linePass_ = 0;
+		isMove_ = true;
+	}
+
 	titleTex_ti_->transform.translate.y = ti_Status_.easing->Get(ti_Status_.easePos.x, ti_Status_.easePos.y);
 	titleTex_e_->transform.translate.y = e_Status_.easing->Get(e_Status_.easePos.x, e_Status_.easePos.y);
 	titleTex_i_->transform.translate.y = i_Status_.easing->Get(i_Status_.easePos.x, i_Status_.easePos.y);
@@ -161,12 +170,15 @@ void TitleDirection::MoveTextureChain(){
 		e_Status_.easing->Start(false,1.0f,Easeing::InOutBack);
 		isMoveTex_e_ = false;
 	}
+	
 	if (isMoveTex_others_) {
 		ti_Status_.easing->Start(false, 0.3f, Easeing::InSine);
 		i_Status_.easing->Start(false, 0.35f, Easeing::InSine);
 		n_Status_.easing->Start(false, 0.4f, Easeing::InSine);
 		isMoveTex_others_ = false;
 	}
+
+
 
 	/*if (e_Status_.easing->ActiveExit()) {
 		isMoveTex_e_ = false;
