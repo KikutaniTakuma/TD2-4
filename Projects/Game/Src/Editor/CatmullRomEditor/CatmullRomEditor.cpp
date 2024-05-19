@@ -24,38 +24,32 @@ void CatmullRomEditor::Initialize(){
 
 			ControlPoints_.push_back(controlPoint_[i]);
 		}
-	}
-	else {
-		if (ControlPoints_.size() < 4) {
-			for (int i = 0; i < 4; i++) {
-				std::unique_ptr<Tex2DState> setTex_ = std::make_unique<Tex2DState>();
-				setTex_->color = 0x000000ff;
-				setTex_->transform.scale = { 10.0f, 10.0f };
-				setTex_->transform.translate = { 10.0f, 10.0f };
-				setTex_->uvTrnasform.scale = { 0.0f, 0.0f };
-				setTex_->uvTrnasform.translate = { 0.0f, 0.0f };
-				setTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png");
-				setTex_->textureFullPath = "./Resources/Ball.png";
-				setTex_->textureName = "Ball";
-				spheres_.emplace_back(std::move(setTex_));
-
-				ControlPoints_.push_back(controlPoint_[i]);
-			}
+		for (size_t i = 0; i < (ControlPoints_.size() - 1); i++) {
+			moveSpeeds_.push_back(0.01f);
 		}
-		
-	}
 
-	for (size_t i = 0; i < (ControlPoints_.size() - 1) * divisionNumber_; i++) {
-		lines_.push_back(std::make_unique<Line>());
-	}
+		for (size_t i = 0; i < (ControlPoints_.size() - 1) * divisionNumber_; i++) {
+			lines_.push_back(std::make_unique<Line>());
+		}
 
-	LastLinePass_ = static_cast<int>(ControlPoints_.size()) - 2;
+		LastLinePass_ = static_cast<int>(ControlPoints_.size()) - 2;
+
+	}
+	
+
 
 	mode_ = First;
 
 }
 
 void CatmullRomEditor::Update(){
+	while (ControlPoints_.size() - 1 > moveSpeeds_.size()) {
+		moveSpeeds_.push_back(0.01f);
+	}
+	while (ControlPoints_.size() - 1 < moveSpeeds_.size()) {
+		moveSpeeds_.pop_back();
+	}
+
 	for (size_t i = 0; i < spheres_.size(); i++) {
 		spheres_[i]->transform.translate = ControlPoints_[i];
 		spheres_[i]->transform.CalcMatrix();
@@ -88,6 +82,13 @@ void CatmullRomEditor::Debug(){
 			}
 			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("区間ごとの速度")) {
+			for (size_t i = 0; i < moveSpeeds_.size(); i++) {
+				ImGui::DragFloat(("第" + std::to_string(i + 1) + "区間のテクスチャの動く速度").c_str(), &moveSpeeds_[i], 0.001f, 0.001f, 0.2f);
+			}
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("線の増減")) {			
 			ImGui::InputInt("何個追加するか", &addElementsNum_);
 
@@ -174,6 +175,12 @@ void CatmullRomEditor::Debug(){
 					SaveFile();
 				}
 			}
+
+			if (ImGui::Button("保存したものを読み込む")) {
+				if (OperationConfirmation()) {
+					LoadFiles();
+				}
+			}
 			ImGui::EndMenu();
 		}
 
@@ -242,8 +249,13 @@ void CatmullRomEditor::SaveFile(){
 		root[kItemName_][i]["translate"] = json::array({
 			   point.x,
 			   point.y
-			});
+		});
+	}
 
+	for (size_t i = 0; i < moveSpeeds_.size(); i++) {
+		float& speed = moveSpeeds_[i];
+
+		root["moveSpeed"][i] = speed;
 	}
 
 	std::filesystem::path dir(kDirectoryPath_);
@@ -268,10 +280,6 @@ void CatmullRomEditor::SaveFile(){
 
 	std::string message = "File save completed.";
 	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
-
-}
-
-void CatmullRomEditor::ChackFiles(){
 
 }
 
@@ -309,14 +317,108 @@ bool CatmullRomEditor::LoadFiles(){
 }
 
 bool CatmullRomEditor::LoadFile(const std::string& groupName){
-	groupName;
-	return false;
+	if (!LoadChackItem(groupName))
+		return false;
+	//読み込むjsonファイルのフルパスを合成する
+	std::string filePath = groupName;
+	//読み込み用のファイルストリーム
+	std::ifstream ifs;
+	//ファイルを読み込み用に開く
+	ifs.open(filePath);
+	// ファイルオープン失敗
+	if (ifs.fail()) {
+		std::wstring message = L"ファイルが見つかりませんでした。";
+		MessageBoxW(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), L"Lineないよぉ！", 0);
+		return false;
+	}
+
+	nlohmann::json root;
+
+	//json文字列からjsonのデータ構造に展開
+	ifs >> root;
+	//ファイルを閉じる
+	ifs.close();
+
+	//グループを検索
+	nlohmann::json::iterator itGroupUI = root.find(kItemName_);
+	//未登録チェック
+	assert(itGroupUI != root.end());
+
+
+	ControlPoints_.clear();
+	moveSpeeds_.clear();
+	spheres_.clear();
+	lines_.clear();
+
+	for (const auto& i : root[kItemName_]) {
+		Vector2 pos;
+		from_json(i["translate"], pos);
+		ControlPoints_.push_back(pos);
+
+		std::unique_ptr<Tex2DState> setTex_ = std::make_unique<Tex2DState>();
+		setTex_->color = 0x000000ff;
+		setTex_->transform.scale = { 10.0f, 10.0f };
+		setTex_->transform.translate = { 10.0f, 10.0f };
+		setTex_->uvTrnasform.scale = { 0.0f, 0.0f };
+		setTex_->uvTrnasform.translate = { 0.0f, 0.0f };
+		setTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png");
+		setTex_->textureFullPath = "./Resources/Ball.png";
+		setTex_->textureName = "Ball";
+		spheres_.emplace_back(std::move(setTex_));
+
+	}
+
+	for (const auto& i : root["moveSpeed"]) {
+		float speed;
+		speed = i.get<float>();
+		moveSpeeds_.push_back(speed);
+	}
+
+	for (size_t i = 0; i < (ControlPoints_.size() - 1) * divisionNumber_; i++) {
+		lines_.push_back(std::make_unique<Line>());
+	}
+
+	LastLinePass_ = static_cast<int>(ControlPoints_.size()) - 2;
+
+
+
+
+#ifdef _DEBUG
+
+#endif // _DEBUG
+	return true;
 }
 
-bool CatmullRomEditor::LoadChackItem(const std::string& directoryPath, const std::string& itemName){
+bool CatmullRomEditor::LoadChackItem(const std::string& fileName){
 
-	directoryPath; itemName;
-	return false;
+	// 書き込むjsonファイルのフルパスを合成する
+	std::string filePath = fileName;
+	//読み込み用のファイルストリーム
+	std::ifstream ifs;
+	//ファイルを読み込み用に開く
+	ifs.open(filePath);
+	// ファイルオープン失敗
+	if (ifs.fail()) {
+		std::string message = "Failed open data file for write.";
+		MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
+		ifs.close();
+		return false;
+	}
+	nlohmann::json root;
+
+	//json文字列からjsonのデータ構造に展開
+	ifs >> root;
+	//ファイルを閉じる
+	ifs.close();
+	//グループを検索
+	nlohmann::json::iterator itGroup = root.find(kItemName_);
+	//未登録チェック
+	if (itGroup != root.end()) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 bool CatmullRomEditor::OperationConfirmation(){

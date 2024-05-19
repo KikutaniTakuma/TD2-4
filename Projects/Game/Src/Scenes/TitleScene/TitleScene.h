@@ -10,7 +10,7 @@
 #include "Utils/Easeing/Easeing.h"
 #include "Game/SkyDome/SkyDome.h"
 #include "Game/CollisionManager/Sphere/Sphere.h"
-#include"Editor/CatmullRomEditor/CatmullRomEditor.h"
+#include"Scenes/TitleScene/TitleDirection.h"
 
 class TitleScene : public BaseScene {
 public:
@@ -23,7 +23,7 @@ public:
 	TitleScene& operator=(TitleScene&&) = delete;
 
 public:
-	void Initialize() override;
+	void Initialize() override;	
 
 	void Finalize() override;
 
@@ -31,12 +31,6 @@ public:
 
 	void Draw() override;
 
-	//キャトムルロム曲線の描画
-	void DrawCatmullRom(const Vector2& controlPoint0, const Vector2& controlPoint1, const Vector2& controlPoint2, 
-		const Vector2& controlPoint3, const Mat4x4& viewProjectionMatrix);
-
-	//テクスチャの動き
-	void MoveTexture();
 
 	//始点と終点の位置関係で第二、第三点目の座標を設定
 	void SetControlPoint();
@@ -45,11 +39,9 @@ public:
 
 private:
 	Texture2D* tex2D_;
+	
+	TitleDirection*  titleDirection_;
 
-	//線上を走るテクスチャ
-	std::unique_ptr<Tex2DState> runTexture_;
-
-	std::unique_ptr<CatmullRomEditor> catmullRom_;
 
 	bool isCollision_;
 
@@ -69,22 +61,6 @@ private:
 		{700.0f + minusPos_.x,100.0f + minusPos_.y},
 		{1000.0f + minusPos_.x,200.0f + minusPos_.y}
 	};
-
-
-	//制御点
-	std::vector<Vector2> ControlPoints_;
-
-	std::vector<float> moveSpeeds_;
-
-	float point_ = 0.0f;
-	//補完変数
-	float t_ = 0.0f;
-
-
-	//現在移動しているライン
-	uint32_t linePass_ = 0;
-	//移動するかどうか
-	bool isMove_ = false;
 
 
 };

@@ -24,13 +24,15 @@ public:
 	void Debug();
 
 
-	uint32_t GetControlPointsNum() { return static_cast<uint32_t>(ControlPoints_.size()); }
+	const uint32_t GetControlPointsNum() { return static_cast<uint32_t>(ControlPoints_.size()); }
 
-	std::vector<Vector2> GetControlPoints() { return ControlPoints_; }
+	const std::vector<Vector2> GetControlPoints() const { return ControlPoints_; }
 
-	Vector2 GetFirstControlPoint() { return ControlPoints_[0]; }
+	const std::vector<float> GetMoveSpeeds()const { return moveSpeeds_; }
 
-	uint32_t GetLastLinePass() { return LastLinePass_; }
+	const Vector2 GetFirstControlPoint() { return ControlPoints_[0]; }
+
+	const uint32_t GetLastLinePass() { return LastLinePass_; }
 
 private:
 	//キャトムルロム曲線の描画
@@ -65,6 +67,9 @@ private:
 	};
 	//制御点
 	std::vector<Vector2> ControlPoints_;
+	//区間ごとの速度
+	std::vector<float> moveSpeeds_;
+
 	//線の色
 	uint32_t Linecolor_ = 0x000000ff;
 	//分割数
@@ -119,14 +124,12 @@ private:
 
 	//ファイルに保存する
 	void SaveFile();
-	//ファイルが存在するか確認する
-	void ChackFiles();
 
 	bool LoadFiles();
 
 	bool LoadFile(const std::string& groupName);
 
-	bool LoadChackItem(const std::string& directoryPath, const std::string& itemName);
+	bool LoadChackItem(const std::string& fileName);
 
 	//imguiの操作をそのまま続けるかどうかのメッセージボックスを表示
 	bool OperationConfirmation();

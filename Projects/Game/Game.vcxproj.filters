@@ -185,6 +185,9 @@
     <ClCompile Include="Src\Editor\CatmullRomEditor\CatmullRomEditor.cpp">
       <Filter>Editor\CatmullRomEditor</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Scenes\TitleScene\TitleDirection.cpp">
+      <Filter>Scenes\TitleScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -515,6 +518,9 @@
     </ClInclude>
     <ClInclude Include="Src\Editor\CatmullRomEditor\CatmullRomEditor.h">
       <Filter>Editor\CatmullRomEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\TitleScene\TitleDirection.h">
+      <Filter>Scenes\TitleScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
