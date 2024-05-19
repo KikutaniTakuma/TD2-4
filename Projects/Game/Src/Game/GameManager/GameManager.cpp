@@ -94,13 +94,15 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	GetMap()->SetHitMap({});
 
-	blockMap_->Update(deltaTime);
-	blockBreakTimer_.Update(deltaTime);
+	const float fixDeltaTime = std::clamp(deltaTime, 0.f, 0.1f);
 
-	float localDeltaTime = deltaTime;
+	blockMap_->Update(fixDeltaTime);
+	blockBreakTimer_.Update(fixDeltaTime);
+
+	float localDeltaTime = fixDeltaTime;
 
 	if (blockBreakTimer_.IsActive()) {
-		localDeltaTime = deltaTime * std::lerp(0.3f, 0.8f, blockBreakTimer_.GetProgress());
+		localDeltaTime = fixDeltaTime * std::lerp(0.3f, 0.8f, blockBreakTimer_.GetProgress());
 		if (blockBreakTimer_.IsFinish()) {
 
 			gameEffectManager_->blockBreakPos_.first = blockMap_->GetBreakBlockType();
@@ -109,9 +111,6 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			blockMap_->SetBreakMap({});
 			blockMap_->SetBreakBlockMap({});
 		}
-	}
-	else {
-
 	}
 
 	//if (not blockBreakTimer_.IsActive()) {
@@ -265,7 +264,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	//}
 	//gameEffectManager_->fallingBlock_ = spawner_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
 
-	gameEffectManager_->Update(deltaTime);
+	gameEffectManager_->Update(fixDeltaTime);
 
 	// AABBのデータを転送
 	blockMap_->TransferBoxData();
@@ -434,6 +433,18 @@ GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
 	return darkDwarfList_.back().get();
 }
 
+GameObject *GameManager::AddDwarf(std::unique_ptr<GameObject> dwarf)
+{
+	if (dwarf->GetComponent<DwarfComp>()->GetIsDarkDwarf()) {
+		darkDwarfList_.push_back(std::move(dwarf));
+		return darkDwarfList_.back().get();
+	}
+	else {
+		dwarfList_.push_back(std::move(dwarf));
+		return dwarfList_.back().get();
+	}
+}
+
 
 std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakChainBlocks(POINTS localPos)
 {
@@ -517,6 +528,55 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::HitChai
 
 	return std::move(chainBlockMap);
 }
+std::list<GameManager::DwarfPick> GameManager::PickUpBlockSideObject(const POINTS localPos)
+{
+	std::list<DwarfPick> result;
+
+	Lamb::SafePtr localBody = player_->GetComponent<LocalBodyComp>();
+
+	{
+		for (auto dwarfItr = dwarfList_.begin(); dwarfItr != dwarfList_.end();) {
+			Lamb::SafePtr dwarfObject = dwarfItr->get();
+			Lamb::SafePtr body = dwarfObject->GetComponent<LocalBodyComp>();
+			const POINTS bodyPos = body->GetMapPos();
+
+			// もし隣であったら取る
+	//		if (std::abs(bodyPos.x - localPos.x) + std::abs(bodyPos.y - localPos.y) <= 1) {
+			if (bodyPos.x == localPos.x and bodyPos.y - localPos.y == 1) {
+
+				result.push_back({ body->localPos_ - Vector2{static_cast<float>(localPos.x), static_cast<float>(localPos.y)}, std::move(*dwarfItr) });
+
+				dwarfItr = dwarfList_.erase(dwarfItr); // オブジェクトを破棄してイテレータを変更
+				continue;
+			}
+
+			// 何もなかったら次へ
+			++dwarfItr;
+		}
+		for (auto dwarfItr = darkDwarfList_.begin(); dwarfItr != darkDwarfList_.end();) {
+			Lamb::SafePtr dwarfObject = dwarfItr->get();
+			Lamb::SafePtr body = dwarfObject->GetComponent<LocalBodyComp>();
+			const POINTS bodyPos = body->GetMapPos();
+
+			// もし隣であったら取る
+	//		if (std::abs(bodyPos.x - localPos.x) + std::abs(bodyPos.y - localPos.y) <= 1) {
+			if (bodyPos.x == localPos.x and bodyPos.y - localPos.y == 1) {
+
+				result.push_back({ body->localPos_ - Vector2{static_cast<float>(localPos.x), static_cast<float>(localPos.y)}, std::move(*dwarfItr) });
+
+				dwarfItr = darkDwarfList_.erase(dwarfItr); // オブジェクトを破棄してイテレータを変更
+				continue;
+			}
+
+			// 何もなかったら次へ
+			++dwarfItr;
+		}
+	}
+
+
+	return result;
+}
+
 void GameManager::RandomDwarfSpawn()
 {
 	if (not dwarfSpawnTimer_.IsActive()) {

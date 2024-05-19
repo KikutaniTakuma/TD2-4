@@ -32,4 +32,6 @@ private:
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;
 	Lamb::SafePtr<BlockMap> pBlockMap_ = nullptr;
 
+	std::list<GameManager::DwarfPick> dwarfList_;
+
 };
