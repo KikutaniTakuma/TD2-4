@@ -37,6 +37,10 @@ public:
 	//始点と終点の位置関係で第二、第三点目の座標を設定
 	void SetControlPoint();
 
+	bool GetIsActiveExit() {
+		return n_Status_.easing->ActiveExit();
+	}
+
 	void Debug();
 
 private:
@@ -51,14 +55,16 @@ private:
 
 	std::unique_ptr<CatmullRomEditor> catmullRom_;
 
+	bool isMoveTex_e_ = false;
+
+	bool isMoveTex_others_ = false;
+
+	bool isShake_ = false;
 	//タイトルテクスチャ
 	//チの箱
 	std::unique_ptr<Tex2DState> titleTex_ti_;
 	TitleEaseStatus ti_Status_;
 
-	bool isMoveTex_e_ = false;
-
-	bool isMoveTex_others_ = false;
 	
 	//ェの箱
 	std::unique_ptr<Tex2DState> titleTex_e_;

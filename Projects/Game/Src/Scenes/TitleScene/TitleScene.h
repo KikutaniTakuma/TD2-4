@@ -42,6 +42,7 @@ private:
 	
 	TitleDirection*  titleDirection_;
 
+	Vector2 shakePower_;
 
 	bool isCollision_;
 

@@ -17,6 +17,7 @@ void TitleScene::Initialize(){
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();	
 
 	currentCamera_->pos = { 0.f, 0.f ,-1.0f };
+	shakePower_ = { 5.0f,10.0f };
 
 	titleBGM_ = audioManager_->Load("./Resources/Sounds/BGM/title.mp3");
 	beginGame_ = audioManager_->Load("./Resources/Sounds/SE/choice.mp3");
@@ -36,6 +37,7 @@ void TitleScene::Finalize(){
 void TitleScene::Update()
 {
 	currentCamera_->Debug("カメラ");
+	currentCamera_->Shake(1.0f);
 	currentCamera_->Update();
 
 	auto* const key = input_->GetKey();
@@ -47,6 +49,9 @@ void TitleScene::Update()
 	}
 
 	titleDirection_->Update();
+	if (titleDirection_->GetIsActiveExit()){
+		currentCamera_->BeginShake(shakePower_);
+	}
 	
 	Debug();
 

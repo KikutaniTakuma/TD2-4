@@ -14,7 +14,7 @@ void CatmullRomEditor::Initialize(){
 			std::unique_ptr<Tex2DState> setTex_ = std::make_unique<Tex2DState>();
 			setTex_->color = 0x000000ff;
 			setTex_->transform.scale = { 10.0f, 10.0f };
-			setTex_->transform.translate = { 10.0f, 10.0f };
+			setTex_->transform.translate = { 10.0f, 10.0f ,0.5f };
 			setTex_->uvTrnasform.scale = { 0.0f, 0.0f };
 			setTex_->uvTrnasform.translate = { 0.0f, 0.0f };
 			setTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png");
@@ -112,7 +112,7 @@ void CatmullRomEditor::Debug(){
 					std::unique_ptr<Tex2DState> setTex_ = std::make_unique<Tex2DState>();
 					setTex_->color = 0x000000ff;
 					setTex_->transform.scale = { 10.0f, 10.0f };
-					setTex_->transform.translate = newPoint;
+					setTex_->transform.translate = { newPoint.x,newPoint.y,0.5f };
 					setTex_->uvTrnasform.scale = { 0.0f, 0.0f };
 					setTex_->uvTrnasform.translate = { 0.0f, 0.0f };
 					setTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png");
@@ -358,7 +358,7 @@ bool CatmullRomEditor::LoadFile(const std::string& groupName){
 		std::unique_ptr<Tex2DState> setTex_ = std::make_unique<Tex2DState>();
 		setTex_->color = 0x000000ff;
 		setTex_->transform.scale = { 10.0f, 10.0f };
-		setTex_->transform.translate = { 10.0f, 10.0f };
+		setTex_->transform.translate = { 10.0f, 10.0f ,0.5f };
 		setTex_->uvTrnasform.scale = { 0.0f, 0.0f };
 		setTex_->uvTrnasform.translate = { 0.0f, 0.0f };
 		setTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png");

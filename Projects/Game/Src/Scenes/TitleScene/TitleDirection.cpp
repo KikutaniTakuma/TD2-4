@@ -174,7 +174,7 @@ void TitleDirection::MoveTextureChain(){
 	if (isMoveTex_others_) {
 		ti_Status_.easing->Start(false, 0.3f, Easeing::InSine);
 		i_Status_.easing->Start(false, 0.35f, Easeing::InSine);
-		n_Status_.easing->Start(false, 0.4f, Easeing::InSine);
+		n_Status_.easing->Start(false, 0.35f, Easeing::InSine);
 		isMoveTex_others_ = false;
 	}
 
