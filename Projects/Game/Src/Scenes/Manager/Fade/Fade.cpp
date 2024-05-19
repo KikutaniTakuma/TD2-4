@@ -49,6 +49,13 @@ Fade::Fade() :
 	starPositions_[3].second.x = offset.x *  1.0f + Lamb::ClientSize().x;
 	starPositions_[4].second.x = offset.x *  1.0f + Lamb::ClientSize().x;
 
+	for (size_t index = 0; auto & i : fadePositions_) {
+		i.max = Lamb::ClientSize().x * 0.7f;
+		i.min = 0.0f;
+
+		index++;
+	}
+
 
 	starTexID_ = DrawerManager::GetInstance()->LoadTexture("./Resources/star.png");
 }
@@ -126,6 +133,23 @@ void Fade::Update() {
 void Fade::Draw([[maybe_unused]]const Mat4x4& viewProjection) {
 	if (isInStart_ or isOutStart_) {
 		tex_->Draw(transform_->matWorld_, Mat4x4::kIdentity, viewProjection, 0u, color_, BlendType::kUnenableDepthNormal);
+
+		for (size_t index = 0; auto & i : starTransform_) {
+			float startPos = Lamb::ClientSize().x * -0.5f;
+			float xSize = i->translate.x - startPos;
+			xSize = std::max(0.0f, xSize);
+			tex_->Draw(
+				Mat4x4::MakeTranslate(Vector3::kXIdentity * 0.5f) * 
+				Mat4x4::MakeAffin(
+					Vector3(xSize, i->scale.y, i->scale.z),
+					Vector3::kZero, 
+					Vector3(Lamb::ClientSize().x * -0.5f, i->translate.y, i->translate.z)
+				),
+				Mat4x4::kIdentity,
+				viewProjection, 0, 0xff, BlendType::kUnenableDepthNormal
+			);
+			index++;
+		}
 
 
 		for (auto& i : starTransform_) {

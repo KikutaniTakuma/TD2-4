@@ -85,6 +85,7 @@ private:
 	static constexpr size_t kStarNum = 5;
 	std::array<std::unique_ptr<Transform>, kStarNum> starTransform_;
 	std::array<std::pair<Vector3, Vector3>, kStarNum> starPositions_;
+	std::array<Vector2, kStarNum> fadePositions_;
 	uint32_t starTexID_;
 
 
