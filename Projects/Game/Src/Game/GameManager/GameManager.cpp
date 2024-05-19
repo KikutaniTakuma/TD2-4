@@ -150,6 +150,11 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		dwarf->Update(localDeltaTime);
 	}
 
+	for (auto &item : itemMovingTimer_) {
+		item -= fixDeltaTime;
+	}
+	AddPoint();
+
 	for (auto &fallingBlock : fallingBlocks_) {
 		// 落下しているブロックのコンポーネント
 		Lamb::SafePtr fallComp = fallingBlock->GetComponent<FallingBlockComp>();
@@ -719,8 +724,29 @@ void GameManager::AddItem(const Block::BlockType blockType)
 	// もしブロックが無効であったら飛ばす
 	if (blockType == Block::BlockType::kNone) { return; }
 
-	// とりあえずカウントを純粋に増やす
-	itemCount_ += 2;
+	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
+	itemMovingTimer_.push_back(1.f);
+	// ↑ アイテムのクラスができたら､この処理を置き換える
+}
+
+void GameManager::AddPoint()
+{
+	// for文を回して､1つずつ時間が終わっていないか確認する｡
+	for (auto item = itemMovingTimer_.cbegin(); item != itemMovingTimer_.end();) {
+
+		// 時間が0以下になってたら消す
+		if (*item <= 0.f) {
+
+			// 破壊時の処理
+			itemCount_ += 2;
+
+			item = itemMovingTimer_.erase(item); // オブジェクトを破棄してイテレータを変更
+			continue;
+		}
+
+		// 何もなかったら次へ
+		++item;
+	}
 }
 
 void GameManager::InputAction()

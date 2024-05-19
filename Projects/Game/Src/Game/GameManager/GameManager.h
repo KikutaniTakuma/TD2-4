@@ -115,6 +115,8 @@ public:
 	/// @brief ブロック破壊時のアイテム追加
 	void AddItem(const Block::BlockType blockType);
 
+	void AddPoint();
+
 public:
 	/// @brief 入力動作
 	void InputAction();
@@ -127,6 +129,8 @@ private:
 	void ClearCheck();
 
 private:
+
+	std::list<float> itemMovingTimer_;
 
 	int32_t itemCount_;
 
