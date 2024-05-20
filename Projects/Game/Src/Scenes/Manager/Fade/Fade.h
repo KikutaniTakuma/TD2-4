@@ -61,7 +61,7 @@ public:
 	}
 
 	void SetTransZ(const float posZ) {
-		transform->translate.z = posZ;
+		transform_->translate.z = posZ;
 	}
 
 	/// <summary>
