@@ -188,6 +188,9 @@
     <ClCompile Include="Src\Scenes\TitleScene\TitleDirection.cpp">
       <Filter>Scenes\TitleScene</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Scenes\Manager\Fade\SimpleFade.cpp">
+      <Filter>Scenes\Manager\Fade</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -521,6 +524,9 @@
     </ClInclude>
     <ClInclude Include="Src\Scenes\TitleScene\TitleDirection.h">
       <Filter>Scenes\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\Manager\Fade\SimpleFade.h">
+      <Filter>Scenes\Manager\Fade</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

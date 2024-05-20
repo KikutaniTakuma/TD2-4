@@ -2,7 +2,7 @@
 #include "Editor/CatmullRomEditor/CatmullRomEditor.h"
 #include "Drawers/Texture2D/Texture2D.h"
 #include "Drawers/PeraRender/PeraRender.h"
-#include"Scenes/Manager/Fade/Fade.h"
+#include"Scenes/Manager/Fade/SimpleFade.h"
 
 class TitleDirection{
 public:
@@ -56,7 +56,7 @@ private:
 
 	Texture2D* tex2D_;
 
-	//std::unique_ptr<Fade> fade_;
+	std::unique_ptr<SimpleFade> fade_;
 
 	std::unique_ptr<CatmullRomEditor> catmullRom_;
 

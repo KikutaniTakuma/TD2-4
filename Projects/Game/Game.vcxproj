@@ -180,6 +180,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Scenes\GameScene\GameScene.cpp" />
     <ClCompile Include="Src\Scenes\Manager\BaseScene\BaseScene.cpp" />
     <ClCompile Include="Src\Scenes\Manager\Fade\Fade.cpp" />
+    <ClCompile Include="Src\Scenes\Manager\Fade\SimpleFade.cpp" />
     <ClCompile Include="Src\Scenes\Manager\SceneFactory\SceneFactory.cpp" />
     <ClCompile Include="Src\Scenes\Manager\SceneLoad\SceneLoad.cpp" />
     <ClCompile Include="Src\Scenes\Manager\SceneManager.cpp" />
@@ -248,6 +249,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Scenes\GameScene\GameScene.h" />
     <ClInclude Include="Src\Scenes\Manager\BaseScene\BaseScene.h" />
     <ClInclude Include="Src\Scenes\Manager\Fade\Fade.h" />
+    <ClInclude Include="Src\Scenes\Manager\Fade\SimpleFade.h" />
     <ClInclude Include="Src\Scenes\Manager\SceneFactory\SceneFactory.h" />
     <ClInclude Include="Src\Scenes\Manager\SceneLoad\SceneLoad.h" />
     <ClInclude Include="Src\Scenes\Manager\SceneManager.h" />
