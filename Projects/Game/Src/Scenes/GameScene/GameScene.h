@@ -43,6 +43,8 @@ public:
 
 	void Draw() override;
 
+	void ChangeToResult() { sceneManager_->SceneChange(BaseScene::ID::Result); }
+
 private:
 	void TextureInitialize();
 
@@ -53,6 +55,7 @@ private:
 	void TextureDraw();
 
 	void Debug();
+
 
 private:
 	//class Water *water_ = nullptr;

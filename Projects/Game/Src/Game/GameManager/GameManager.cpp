@@ -23,6 +23,7 @@
 #include <GameObject/Component/PlayerAnimator.h>
 
 #include "Drawers/Particle/Particle.h"
+#include "Scenes/GameScene/GameScene.h"
 
 
 void GameManager::Init()
@@ -87,6 +88,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 {
 	Debug("GameManager");
 
+	ClearCheck();
+
 	// 演出用のデータの破棄
 	gameEffectManager_->Clear();
 
@@ -146,6 +149,11 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	for (auto &dwarf : darkDwarfList_) {
 		dwarf->Update(localDeltaTime);
 	}
+
+	for (auto &item : itemMovingTimer_) {
+		item -= fixDeltaTime;
+	}
+	AddPoint();
 
 	for (auto &fallingBlock : fallingBlocks_) {
 		// 落下しているブロックのコンポーネント
@@ -306,6 +314,7 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 
 	//blockMap_->Debug("BlockMap");
 	SoLib::ImGuiWidget(vFallSpan_.c_str(), &*vFallSpan_);
+	SoLib::ImGuiText("アイテム数", std::to_string(itemCount_) + '/' + std::to_string(vClearItemCount_));
 
 	ImGui::End();
 
@@ -446,7 +455,7 @@ GameObject *GameManager::AddDwarf(std::unique_ptr<GameObject> dwarf)
 }
 
 
-std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakChainBlocks(POINTS localPos)
+BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 {
 	auto block = blockMap_->GetBlockType(localPos);
 
@@ -473,8 +482,9 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 		const auto &breakLine = chainBlockMap[targetPos.y];
 		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
 			if (breakLine[targetPos.x]) {
-				if (blockMap_->GetBlockType(targetPos) != Block::BlockType::kNone) {
+				if (auto blockType = blockMap_->GetBlockType(targetPos); blockType != Block::BlockType::kNone) {
 					breakBlock[targetPos.y][targetPos.x] = true;
+					AddItem(blockType);
 					blockMap_->BreakBlock(targetPos);
 				}
 			}
@@ -516,7 +526,7 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 
 	return std::move(chainBlockMap);
 }
-std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::HitChainBlocks(POINTS localPos) {
+BlockMap::BlockBitMap &&GameManager::HitChainBlocks(POINTS localPos) {
 
 	if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
 		blockMap_->SetDamageColor(block.GetColor());
@@ -709,6 +719,36 @@ std::unordered_set<POINTS> GameManager::GetDwarfPos() const
 	return result;
 }
 
+void GameManager::AddItem(const Block::BlockType blockType)
+{
+	// もしブロックが無効であったら飛ばす
+	if (blockType == Block::BlockType::kNone) { return; }
+
+	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
+	itemMovingTimer_.push_back(1.f);
+	// ↑ アイテムのクラスができたら､この処理を置き換える
+}
+
+void GameManager::AddPoint()
+{
+	// for文を回して､1つずつ時間が終わっていないか確認する｡
+	for (auto item = itemMovingTimer_.cbegin(); item != itemMovingTimer_.end();) {
+
+		// 時間が0以下になってたら消す
+		if (*item <= 0.f) {
+
+			// 破壊時の処理
+			itemCount_ += 2;
+
+			item = itemMovingTimer_.erase(item); // オブジェクトを破棄してイテレータを変更
+			continue;
+		}
+
+		// 何もなかったら次へ
+		++item;
+	}
+}
+
 void GameManager::InputAction()
 {
 	{
@@ -813,4 +853,12 @@ void GameManager::MargeDwarf()
 			}
 		}
 	}
+}
+
+void GameManager::ClearCheck()
+{
+	if (vClearItemCount_ < itemCount_) {
+		pGameScene_->ChangeToResult();
+	}
+
 }

@@ -16,6 +16,8 @@
 #include <Game/CollisionManager/AABB/AABB.h>
 #include <Game/GameEffectManager/GameEffectManager.h>
 
+class GameScene;
+
 // ダメージ判定
 struct DamageArea
 {
@@ -47,6 +49,8 @@ public:
 public:
 	bool Debug(const char *const str);
 
+	void SetGameScene(GameScene *gameScene) { pGameScene_ = gameScene; }
+
 	// マップのデータを取得
 	BlockMap *GetMap() { return blockMap_.get(); }
 
@@ -72,6 +76,7 @@ public:
 	GameObject *AddDwarf(Vector2 centerPos);
 
 	GameObject *AddDarkDwarf(Vector2 centerPos);
+
 	GameObject *AddDwarf(std::unique_ptr<GameObject> dwarf);
 
 	/// @brief 指定した座標のブロックを持ち上げる
@@ -86,10 +91,10 @@ public:
 
 	std::unordered_set<POINTS> GetDwarfPos() const;
 
-	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&BreakChainBlocks(POINTS localPos);
+	BlockMap::BlockBitMap &&BreakChainBlocks(POINTS localPos);
 
 	//弾が当たったときに当たった個所からつながっているブロックを検索して色を変化させる
-	std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&HitChainBlocks(POINTS localPos);
+	BlockMap::BlockBitMap &&HitChainBlocks(POINTS localPos);
 
 	std::list<DwarfPick> PickUpBlockSideObject(const POINTS localPos);
 
@@ -101,9 +106,16 @@ public:
 
 	SoLib::VItem<"落下するまでの間隔(sec)", float> vFallSpan_{ 2.5f };
 
+	SoLib::VItem<"クリアに必要なアイテムの数", int32_t> vClearItemCount_{ 150 };
+
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }
 
 	GameObject *GetPlayer() { return player_.get(); }
+
+	/// @brief ブロック破壊時のアイテム追加
+	void AddItem(const Block::BlockType blockType);
+
+	void AddPoint();
 
 public:
 	/// @brief 入力動作
@@ -114,7 +126,13 @@ private:
 
 	void MargeDwarf();
 
+	void ClearCheck();
+
 private:
+
+	std::list<float> itemMovingTimer_;
+
+	int32_t itemCount_;
 
 	SoLib::Time::DeltaTimer blockBreakTimer_;
 
@@ -148,4 +166,6 @@ private:
 	std::list<std::unique_ptr<GameObject>> darkDwarfList_;
 
 	std::unique_ptr<GameEffectManager> gameEffectManager_ = nullptr;
+
+	GameScene *pGameScene_ = nullptr;
 };
