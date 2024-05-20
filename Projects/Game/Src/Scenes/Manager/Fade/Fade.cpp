@@ -99,10 +99,10 @@ bool Fade::IsActive() const
 
 void Fade::Update() {
 	if (isInStart_) {
-		color_ = ColorLerp(0xff, 0x00, ease_.GetT());
+		color_ = ColorLerp(fadeOutColor_, fadeInColor_, ease_.GetT());
 	}
 	else if (isOutStart_) {
-		color_ = ColorLerp(0x00, 0xff, ease_.GetT());
+		color_ = ColorLerp(fadeInColor_, fadeOutColor_, ease_.GetT());
 	}
 
 	ease_.Update();

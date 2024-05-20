@@ -70,6 +70,8 @@ void PlayerBlockPickerComp::Drop(int32_t facing)
 	if (pickingBlock_) {
 		Vector2 targetPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * static_cast<float>(facing) + Vector2::kIdentity * 0.5f;
 
+		if (BlockMap::IsOutSide(targetPos)) { return; }
+
 		auto block = pBlockMap_->GetBlockType(targetPos);
 
 		if (block == Block::BlockType::kNone) {

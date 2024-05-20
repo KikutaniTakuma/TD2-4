@@ -6,15 +6,15 @@
 #include "Math/Transform.h"
 #include <memory>
 
-class Fade {
+class SimpleFade{
 public:
-	Fade();
-	Fade(const Fade&) = default;
-	Fade(Fade&&) = default;
-	~Fade() = default;
+	SimpleFade();
+	SimpleFade(const SimpleFade&) = default;
+	SimpleFade(SimpleFade&&) = default;
+	~SimpleFade() = default;
 
-	Fade& operator=(const Fade&) = default;
-	Fade& operator=(Fade&&) = default;
+	SimpleFade& operator=(const SimpleFade&) = default;
+	SimpleFade& operator=(SimpleFade&&) = default;
 
 public:
 	/// <summary>
@@ -95,12 +95,6 @@ private:
 	Lamb::SafePtr<Texture2D> tex_;
 	std::unique_ptr<Transform> transform_;
 	uint32_t color_;
-	static constexpr size_t kStarNum = 5;
-	std::array<std::unique_ptr<Transform>, kStarNum> starTransform_;
-	std::array<std::pair<Vector3, Vector3>, kStarNum> starPositions_;
-	std::array<Vector2, kStarNum> fadePositions_;
-	uint32_t starTexID_;
-
 
 	uint32_t fadeInColor_;
 	uint32_t fadeOutColor_;
@@ -110,4 +104,6 @@ private:
 	/// seconds
 	/// </summary>
 	float fadeTime_;
+
 };
+

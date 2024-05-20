@@ -129,7 +129,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	MargeDwarf();
 
-	player_->Update(localDeltaTime);
+	if (player_) {
+		player_->Update(localDeltaTime);
+	}
 
 	//spawner_->Update(localDeltaTime);
 	for (auto &bullet : plBulletList_) {
@@ -162,13 +164,15 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		Lamb::SafePtr blockBody = fallComp->pLocalPos_;
 
 		if (fallingBlock->GetActive()) {
-			Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
-			const Vector2 centorDiff = blockBody->localPos_ - playerBody->localPos_;
-			const Vector2 sizeSum = (blockBody->size_ + playerBody->size_) / 2.f;
-			if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
-				fallingBlock->OnCollision(player_.get());
-				player_->OnCollision(fallingBlock.get());
-				player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{ SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f });
+			if (player_) {
+				Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
+				const Vector2 centorDiff = blockBody->localPos_ - playerBody->localPos_;
+				const Vector2 sizeSum = (blockBody->size_ + playerBody->size_) / 2.f;
+				if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
+					fallingBlock->OnCollision(player_.get());
+					player_->OnCollision(fallingBlock.get());
+					player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{ SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f });
+				}
 			}
 		}
 
@@ -182,18 +186,20 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	}
 
 	for (auto &bullet : enemyBulletList_) {
-		if (bullet->GetActive()) {
+		if (player_) {
+			if (bullet->GetActive()) {
 
-			Lamb::SafePtr bulletBody = bullet->GetComponent<LocalBodyComp>();
+				Lamb::SafePtr bulletBody = bullet->GetComponent<LocalBodyComp>();
 
 
-			Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
-			const Vector2 centorDiff = bulletBody->localPos_ - playerBody->localPos_;
-			const Vector2 sizeSum = (bulletBody->size_ + playerBody->size_) / 2.f;
-			if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
-				bullet->OnCollision(player_.get());
-				player_->OnCollision(bullet.get());
+				Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
+				const Vector2 centorDiff = bulletBody->localPos_ - playerBody->localPos_;
+				const Vector2 sizeSum = (bulletBody->size_ + playerBody->size_) / 2.f;
+				if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
+					bullet->OnCollision(player_.get());
+					player_->OnCollision(bullet.get());
 
+				}
 			}
 		}
 	}
@@ -268,6 +274,13 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		blockGauge_->EnergyRecovery(localDeltaTime);
 	}
 
+	if (player_) {
+		// プレイヤの体力が0になっていたら終わる
+		if (player_->GetComponent<HealthComp>()->GetNowHealth() <= 0.f) {
+			player_.reset();
+		}
+	}
+
 	blockGauge_->Update(localDeltaTime);
 	//}
 	//gameEffectManager_->fallingBlock_ = spawner_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
@@ -281,7 +294,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 {
 	blockMap_->Draw(camera);
-	player_->Draw(camera);
+	if (player_) {
+		player_->Draw(camera);
+	}
 	//spawner_->Draw(camera);
 	for (const auto &bullet : plBulletList_) {
 		bullet->Draw(camera);
@@ -857,6 +872,10 @@ void GameManager::MargeDwarf()
 
 void GameManager::ClearCheck()
 {
+	if (not player_) {
+		pGameScene_->ChangeToResult();
+	}
+
 	if (vClearItemCount_ < itemCount_) {
 		pGameScene_->ChangeToResult();
 	}
