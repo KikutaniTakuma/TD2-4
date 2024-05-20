@@ -13,10 +13,10 @@ void TitleDirection::Initialize(){
 	ControlPoints_ = catmullRom_->GetControlPoints();
 	moveSpeeds_ = catmullRom_->GetMoveSpeeds();
 
-	fade_ = std::make_unique<Fade>();
+	/*fade_ = std::make_unique<Fade>();
 	fade_->SetTransZ(-0.2f);
 	fade_->SetInOutColor(0x00, 0xffffffff);
-	fade_->SetFadeTime(0.5f);
+	fade_->SetFadeTime(0.5f);*/
 
 	TextureInitialize();
 
@@ -141,10 +141,10 @@ void TitleDirection::Update(){
 
 
 	titleTex_text_->transform.translate = titleTex_hut_->transform.translate;
-	if (isFirstFade_){
+	/*if (isFirstFade_){
 		fade_->Update();
 		FadeProcess();
-	}
+	}*/
 	titleTex_ti_->transform.CalcMatrix();
 	titleTex_e_->transform.CalcMatrix();
 	titleTex_i_->transform.CalcMatrix();
@@ -184,7 +184,7 @@ void TitleDirection::Draw(const Mat4x4& cameraMat){
 		, titleTex_start_->textureID, titleTex_start_->color, BlendType::kNormal);
 
 
-	fade_->Draw(cameraMat);
+	//fade_->Draw(cameraMat);
 
 #ifdef _DEBUG
 
@@ -239,15 +239,15 @@ void TitleDirection::MoveTextureHut(){
 	}
 	else {
 		isMove_ = false;
-		if (not fade_->IsActive()){
+		/*if (not fade_->IsActive()){
 			fade_->OutStart();
 
-		}
+		}*/
 	}
 }
 
 void TitleDirection::FadeProcess(){
-	if (fade_->OutEnd()){
+	/*if (fade_->OutEnd()){
 		titleTex_text_->color = 0xffffffff;
 		titleTex_start_->color = 0xffffffff;
 		fade_->InStart();
@@ -255,7 +255,7 @@ void TitleDirection::FadeProcess(){
 
 	if (fade_->InEnd()){
 		isFirstFade_ = false;
-	}
+	}*/
 }
 
 void TitleDirection::SetControlPoint(){

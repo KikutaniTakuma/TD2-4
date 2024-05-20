@@ -56,7 +56,7 @@ private:
 
 	Texture2D* tex2D_;
 
-	std::unique_ptr<Fade> fade_;
+	//std::unique_ptr<Fade> fade_;
 
 	std::unique_ptr<CatmullRomEditor> catmullRom_;
 
