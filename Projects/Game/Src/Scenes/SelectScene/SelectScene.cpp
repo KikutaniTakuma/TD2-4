@@ -42,8 +42,9 @@ void SelectScene::Initialize() {
 }
 
 void SelectScene::Finalize(){
-	selectBGM_->Stop();
-
+	if (selectBGM_) {
+		selectBGM_->Stop();
+	}
 }
 
 void SelectScene::Update(){

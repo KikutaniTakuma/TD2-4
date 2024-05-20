@@ -23,6 +23,7 @@
 #include <GameObject/Component/PlayerAnimator.h>
 
 #include "Drawers/Particle/Particle.h"
+#include "Scenes/GameScene/GameScene.h"
 
 
 void GameManager::Init()
@@ -87,6 +88,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 {
 	Debug("GameManager");
 
+	ClearCheck();
+
 	// 演出用のデータの破棄
 	gameEffectManager_->Clear();
 
@@ -94,13 +97,15 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	GetMap()->SetHitMap({});
 
-	blockMap_->Update(deltaTime);
-	blockBreakTimer_.Update(deltaTime);
+	const float fixDeltaTime = std::clamp(deltaTime, 0.f, 0.1f);
 
-	float localDeltaTime = deltaTime;
+	blockMap_->Update(fixDeltaTime);
+	blockBreakTimer_.Update(fixDeltaTime);
+
+	float localDeltaTime = fixDeltaTime;
 
 	if (blockBreakTimer_.IsActive()) {
-		localDeltaTime = deltaTime * std::lerp(0.3f, 0.8f, blockBreakTimer_.GetProgress());
+		localDeltaTime = fixDeltaTime * std::lerp(0.3f, 0.8f, blockBreakTimer_.GetProgress());
 		if (blockBreakTimer_.IsFinish()) {
 
 			gameEffectManager_->blockBreakPos_.first = blockMap_->GetBreakBlockType();
@@ -109,9 +114,6 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			blockMap_->SetBreakMap({});
 			blockMap_->SetBreakBlockMap({});
 		}
-	}
-	else {
-
 	}
 
 	//if (not blockBreakTimer_.IsActive()) {
@@ -127,7 +129,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	MargeDwarf();
 
-	player_->Update(localDeltaTime);
+	if (player_) {
+		player_->Update(localDeltaTime);
+	}
 
 	//spawner_->Update(localDeltaTime);
 	for (auto &bullet : plBulletList_) {
@@ -148,6 +152,11 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		dwarf->Update(localDeltaTime);
 	}
 
+	for (auto &item : itemMovingTimer_) {
+		item -= fixDeltaTime;
+	}
+	AddPoint();
+
 	for (auto &fallingBlock : fallingBlocks_) {
 		// 落下しているブロックのコンポーネント
 		Lamb::SafePtr fallComp = fallingBlock->GetComponent<FallingBlockComp>();
@@ -155,13 +164,15 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		Lamb::SafePtr blockBody = fallComp->pLocalPos_;
 
 		if (fallingBlock->GetActive()) {
-			Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
-			const Vector2 centorDiff = blockBody->localPos_ - playerBody->localPos_;
-			const Vector2 sizeSum = (blockBody->size_ + playerBody->size_) / 2.f;
-			if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
-				fallingBlock->OnCollision(player_.get());
-				player_->OnCollision(fallingBlock.get());
-				player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{ SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f });
+			if (player_) {
+				Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
+				const Vector2 centorDiff = blockBody->localPos_ - playerBody->localPos_;
+				const Vector2 sizeSum = (blockBody->size_ + playerBody->size_) / 2.f;
+				if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
+					fallingBlock->OnCollision(player_.get());
+					player_->OnCollision(fallingBlock.get());
+					player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{ SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f });
+				}
 			}
 		}
 
@@ -175,18 +186,20 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	}
 
 	for (auto &bullet : enemyBulletList_) {
-		if (bullet->GetActive()) {
+		if (player_) {
+			if (bullet->GetActive()) {
 
-			Lamb::SafePtr bulletBody = bullet->GetComponent<LocalBodyComp>();
+				Lamb::SafePtr bulletBody = bullet->GetComponent<LocalBodyComp>();
 
 
-			Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
-			const Vector2 centorDiff = bulletBody->localPos_ - playerBody->localPos_;
-			const Vector2 sizeSum = (bulletBody->size_ + playerBody->size_) / 2.f;
-			if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
-				bullet->OnCollision(player_.get());
-				player_->OnCollision(bullet.get());
+				Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
+				const Vector2 centorDiff = bulletBody->localPos_ - playerBody->localPos_;
+				const Vector2 sizeSum = (bulletBody->size_ + playerBody->size_) / 2.f;
+				if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
+					bullet->OnCollision(player_.get());
+					player_->OnCollision(bullet.get());
 
+				}
 			}
 		}
 	}
@@ -261,11 +274,18 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		blockGauge_->EnergyRecovery(localDeltaTime);
 	}
 
+	if (player_) {
+		// プレイヤの体力が0になっていたら終わる
+		if (player_->GetComponent<HealthComp>()->GetNowHealth() <= 0.f) {
+			player_.reset();
+		}
+	}
+
 	blockGauge_->Update(localDeltaTime);
 	//}
 	//gameEffectManager_->fallingBlock_ = spawner_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
 
-	gameEffectManager_->Update(deltaTime);
+	gameEffectManager_->Update(fixDeltaTime);
 
 	// AABBのデータを転送
 	blockMap_->TransferBoxData();
@@ -274,7 +294,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 {
 	blockMap_->Draw(camera);
-	player_->Draw(camera);
+	if (player_) {
+		player_->Draw(camera);
+	}
 	//spawner_->Draw(camera);
 	for (const auto &bullet : plBulletList_) {
 		bullet->Draw(camera);
@@ -307,6 +329,7 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 
 	//blockMap_->Debug("BlockMap");
 	SoLib::ImGuiWidget(vFallSpan_.c_str(), &*vFallSpan_);
+	SoLib::ImGuiText("アイテム数", std::to_string(itemCount_) + '/' + std::to_string(vClearItemCount_));
 
 	ImGui::End();
 
@@ -434,14 +457,26 @@ GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
 	return darkDwarfList_.back().get();
 }
 
+GameObject *GameManager::AddDwarf(std::unique_ptr<GameObject> dwarf)
+{
+	if (dwarf->GetComponent<DwarfComp>()->GetIsDarkDwarf()) {
+		darkDwarfList_.push_back(std::move(dwarf));
+		return darkDwarfList_.back().get();
+	}
+	else {
+		dwarfList_.push_back(std::move(dwarf));
+		return dwarfList_.back().get();
+	}
+}
 
-std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakChainBlocks(POINTS localPos)
+
+BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 {
 	auto block = blockMap_->GetBlockType(localPos);
 
 
 
-	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, GetDwarfPos());
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
 
 	for (const auto &line : chainBlockMap) {
 		// どこか1つでも壊れてたらタイマー開始
@@ -462,8 +497,9 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 		const auto &breakLine = chainBlockMap[targetPos.y];
 		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
 			if (breakLine[targetPos.x]) {
-				if (blockMap_->GetBlockType(targetPos) != Block::BlockType::kNone) {
+				if (auto blockType = blockMap_->GetBlockType(targetPos); blockType != Block::BlockType::kNone) {
 					breakBlock[targetPos.y][targetPos.x] = true;
+					AddItem(blockType);
 					blockMap_->BreakBlock(targetPos);
 				}
 			}
@@ -505,18 +541,67 @@ std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::BreakCh
 
 	return std::move(chainBlockMap);
 }
-std::array<std::bitset<BlockMap::kMapX>, BlockMap::kMapY> &&GameManager::HitChainBlocks(POINTS localPos) {
+BlockMap::BlockBitMap &&GameManager::HitChainBlocks(POINTS localPos) {
 
 	if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
-		GetMap()->SetDamageColor(block.GetColor());
+		blockMap_->SetDamageColor(block.GetColor());
 	}
 
-	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, GetDwarfPos());
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
 
-	GetMap()->SetHitMap(chainBlockMap);
+	blockMap_->SetHitMap(chainBlockMap);
 
 	return std::move(chainBlockMap);
 }
+std::list<GameManager::DwarfPick> GameManager::PickUpBlockSideObject(const POINTS localPos)
+{
+	std::list<DwarfPick> result;
+
+	Lamb::SafePtr localBody = player_->GetComponent<LocalBodyComp>();
+
+	{
+		for (auto dwarfItr = dwarfList_.begin(); dwarfItr != dwarfList_.end();) {
+			Lamb::SafePtr dwarfObject = dwarfItr->get();
+			Lamb::SafePtr body = dwarfObject->GetComponent<LocalBodyComp>();
+			const POINTS bodyPos = body->GetMapPos();
+
+			// もし隣であったら取る
+	//		if (std::abs(bodyPos.x - localPos.x) + std::abs(bodyPos.y - localPos.y) <= 1) {
+			if (bodyPos.x == localPos.x and bodyPos.y - localPos.y == 1) {
+
+				result.push_back({ body->localPos_ - Vector2{static_cast<float>(localPos.x), static_cast<float>(localPos.y)}, std::move(*dwarfItr) });
+
+				dwarfItr = dwarfList_.erase(dwarfItr); // オブジェクトを破棄してイテレータを変更
+				continue;
+			}
+
+			// 何もなかったら次へ
+			++dwarfItr;
+		}
+		for (auto dwarfItr = darkDwarfList_.begin(); dwarfItr != darkDwarfList_.end();) {
+			Lamb::SafePtr dwarfObject = dwarfItr->get();
+			Lamb::SafePtr body = dwarfObject->GetComponent<LocalBodyComp>();
+			const POINTS bodyPos = body->GetMapPos();
+
+			// もし隣であったら取る
+	//		if (std::abs(bodyPos.x - localPos.x) + std::abs(bodyPos.y - localPos.y) <= 1) {
+			if (bodyPos.x == localPos.x and bodyPos.y - localPos.y == 1) {
+
+				result.push_back({ body->localPos_ - Vector2{static_cast<float>(localPos.x), static_cast<float>(localPos.y)}, std::move(*dwarfItr) });
+
+				dwarfItr = darkDwarfList_.erase(dwarfItr); // オブジェクトを破棄してイテレータを変更
+				continue;
+			}
+
+			// 何もなかったら次へ
+			++dwarfItr;
+		}
+	}
+
+
+	return result;
+}
+
 void GameManager::RandomDwarfSpawn()
 {
 	if (not dwarfSpawnTimer_.IsActive()) {
@@ -649,6 +734,36 @@ std::unordered_set<POINTS> GameManager::GetDwarfPos() const
 	return result;
 }
 
+void GameManager::AddItem(const Block::BlockType blockType)
+{
+	// もしブロックが無効であったら飛ばす
+	if (blockType == Block::BlockType::kNone) { return; }
+
+	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
+	itemMovingTimer_.push_back(1.f);
+	// ↑ アイテムのクラスができたら､この処理を置き換える
+}
+
+void GameManager::AddPoint()
+{
+	// for文を回して､1つずつ時間が終わっていないか確認する｡
+	for (auto item = itemMovingTimer_.cbegin(); item != itemMovingTimer_.end();) {
+
+		// 時間が0以下になってたら消す
+		if (*item <= 0.f) {
+
+			// 破壊時の処理
+			itemCount_ += 2;
+
+			item = itemMovingTimer_.erase(item); // オブジェクトを破棄してイテレータを変更
+			continue;
+		}
+
+		// 何もなかったら次へ
+		++item;
+	}
+}
+
 void GameManager::InputAction()
 {
 	{
@@ -753,4 +868,16 @@ void GameManager::MargeDwarf()
 			}
 		}
 	}
+}
+
+void GameManager::ClearCheck()
+{
+	if (not player_) {
+		pGameScene_->ChangeToResult();
+	}
+
+	if (vClearItemCount_ < itemCount_) {
+		pGameScene_->ChangeToResult();
+	}
+
 }

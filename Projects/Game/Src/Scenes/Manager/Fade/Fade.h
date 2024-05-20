@@ -93,8 +93,14 @@ private:
 	Lamb::Flg isOutStart_;
 
 	Lamb::SafePtr<Texture2D> tex_;
-	std::unique_ptr<Transform> transform;
+	std::unique_ptr<Transform> transform_;
 	uint32_t color_;
+	static constexpr size_t kStarNum = 5;
+	std::array<std::unique_ptr<Transform>, kStarNum> starTransform_;
+	std::array<std::pair<Vector3, Vector3>, kStarNum> starPositions_;
+	std::array<Vector2, kStarNum> fadePositions_;
+	uint32_t starTexID_;
+
 
 	uint32_t fadeInColor_;
 	uint32_t fadeOutColor_;
