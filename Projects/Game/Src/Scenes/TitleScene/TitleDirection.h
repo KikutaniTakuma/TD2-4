@@ -2,6 +2,7 @@
 #include "Editor/CatmullRomEditor/CatmullRomEditor.h"
 #include "Drawers/Texture2D/Texture2D.h"
 #include "Drawers/PeraRender/PeraRender.h"
+#include"Scenes/Manager/Fade/Fade.h"
 
 class TitleDirection{
 public:
@@ -33,6 +34,8 @@ public:
 	void MoveTextureChain();
 
 	void MoveTextureHut();
+	//フェードの処理
+	void FadeProcess();
 
 	//始点と終点の位置関係で第二、第三点目の座標を設定
 	void SetControlPoint();
@@ -53,6 +56,8 @@ private:
 
 	Texture2D* tex2D_;
 
+	std::unique_ptr<Fade> fade_;
+
 	std::unique_ptr<CatmullRomEditor> catmullRom_;
 
 	bool isMoveTex_e_ = false;
@@ -63,9 +68,7 @@ private:
 	//タイトルテクスチャ
 	//チの箱
 	std::unique_ptr<Tex2DState> titleTex_ti_;
-	TitleEaseStatus ti_Status_;
-
-	
+	TitleEaseStatus ti_Status_;	
 	//ェの箱
 	std::unique_ptr<Tex2DState> titleTex_e_;
 	TitleEaseStatus e_Status_;
@@ -80,21 +83,10 @@ private:
 	//魔女娘テキスト
 	std::unique_ptr<Tex2DState> titleTex_text_;
 
+	std::unique_ptr<Tex2DState> titleTex_start_;
+
+
 	Vector2 texScale_ = { 128.0f,128.0f };
-
-
-	const Vector2 minusPos_ = { -540.0f,-260.0f };
-
-	Vector2 secondPointPos_ = { 50.0f,100.0f };
-
-	Vector2 thirdPointPos_ = { 100.0f,50.0f };
-
-	Vector2 controlPoint_[4] = {
-		{100.0f + minusPos_.x,100.0f + minusPos_.y},
-		{400.0f + minusPos_.x,400.0f + minusPos_.y},
-		{700.0f + minusPos_.x,100.0f + minusPos_.y},
-		{1000.0f + minusPos_.x,200.0f + minusPos_.y}
-	};
 
 private:
 
@@ -102,7 +94,6 @@ private:
 	std::vector<Vector2> ControlPoints_;
 
 	std::vector<float> moveSpeeds_;
-
 
 
 	float point_ = 0.0f;
@@ -114,5 +105,7 @@ private:
 	uint32_t linePass_ = 0;
 	//移動するかどうか
 	bool isMove_ = false;
+	//初回のフェードかどうか
+	bool isFirstFade_ = true;
 };
 

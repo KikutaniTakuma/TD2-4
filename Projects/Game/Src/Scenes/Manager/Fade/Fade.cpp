@@ -17,6 +17,8 @@ Fade::Fade() :
 	transform = std::make_unique<Transform>();
 	transform->scale = Lamb::ClientSize();
 	transform->translate.z = -10.0f + static_cast<float>(10e-5);
+	fadeInColor_ = 0x00000000;
+	fadeOutColor_ = 0x000000FF;
 }
 
 void Fade::OutStart() {
@@ -58,13 +60,14 @@ bool Fade::IsActive() const
 
 void Fade::Update() {
 	if (isInStart_) {
-		color_ = ColorLerp(0xff, 0x00, ease_.GetT());
+		color_ = ColorLerp(fadeOutColor_, fadeInColor_, ease_.GetT());
 	}
 	else if (isOutStart_) {
-		color_ = ColorLerp(0x00, 0xff, ease_.GetT());
+		color_ = ColorLerp(fadeInColor_, fadeOutColor_, ease_.GetT());
 	}
 
 	ease_.Update();
+	transform->CalcMatrix();
 
 	if (ease_.ActiveExit()) {
 		isInStart_ = false;

@@ -51,6 +51,19 @@ public:
 	/// <returns>フェードイン中はtrue</returns>
 	bool InStay() const;
 
+	void SetFadeTime(const float fadeTime) {
+		fadeTime_ = fadeTime;
+	}
+
+	void SetInOutColor(const uint32_t inColor, const uint32_t outColor) {
+		fadeInColor_ = inColor;
+		fadeOutColor_ = outColor;
+	}
+
+	void SetTransZ(const float posZ) {
+		transform->translate.z = posZ;
+	}
+
 	/// <summary>
 	/// フェード中か
 	/// </summary>
@@ -82,6 +95,9 @@ private:
 	Lamb::SafePtr<Texture2D> tex_;
 	std::unique_ptr<Transform> transform;
 	uint32_t color_;
+
+	uint32_t fadeInColor_;
+	uint32_t fadeOutColor_;
 
 	Easeing ease_;
 	/// <summary>

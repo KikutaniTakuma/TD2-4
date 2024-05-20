@@ -13,6 +13,11 @@ void TitleDirection::Initialize(){
 	ControlPoints_ = catmullRom_->GetControlPoints();
 	moveSpeeds_ = catmullRom_->GetMoveSpeeds();
 
+	fade_ = std::make_unique<Fade>();
+	fade_->SetTransZ(-0.2f);
+	fade_->SetInOutColor(0x00, 0xffffffff);
+	fade_->SetFadeTime(0.5f);
+
 	TextureInitialize();
 
 	ti_Status_.easePos = { 500.0f,120.0f };
@@ -24,6 +29,8 @@ void TitleDirection::Initialize(){
 	e_Status_.easing = std::make_unique<Easeing>();
 	i_Status_.easing = std::make_unique<Easeing>();
 	n_Status_.easing = std::make_unique<Easeing>();
+
+	isMoveTex_e_ = true;
 }
 
 void TitleDirection::TextureInitialize(){
@@ -78,7 +85,7 @@ void TitleDirection::TextureInitialize(){
 	titleTex_hut_->textureName = "titleHat";
 
 	titleTex_text_ = std::make_unique<Tex2DState>();
-	titleTex_text_->color = 0xffffffff;
+	titleTex_text_->color = 0xffffff00;
 	titleTex_text_->transform.scale = texScale_;
 	titleTex_text_->transform.translate = { 10.0f, 10.0f };
 	titleTex_text_->uvTrnasform.scale.kIdentity;
@@ -86,6 +93,16 @@ void TitleDirection::TextureInitialize(){
 	titleTex_text_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/titleWitch.png");
 	titleTex_text_->textureFullPath = "./Resources/UI/titleWitch.png";
 	titleTex_text_->textureName = "titleWitch";
+
+	titleTex_start_ = std::make_unique<Tex2DState>();
+	titleTex_start_->color = 0xffffff00;
+	titleTex_start_->transform.scale = { 256.0f,128.0f };
+	titleTex_start_->transform.translate = { 0.0f, -200.0f };
+	titleTex_start_->uvTrnasform.scale.kIdentity;
+	titleTex_start_->uvTrnasform.translate = { 0.0f, 0.0f };
+	titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/gameStartUi.png");
+	titleTex_start_->textureFullPath = "./Resources/UI/gameStartUi.png";
+	titleTex_start_->textureName = "gameStartUi";
 }
 
 void TitleDirection::Finalize(){
@@ -124,19 +141,24 @@ void TitleDirection::Update(){
 
 
 	titleTex_text_->transform.translate = titleTex_hut_->transform.translate;
-
+	if (isFirstFade_){
+		fade_->Update();
+		FadeProcess();
+	}
 	titleTex_ti_->transform.CalcMatrix();
 	titleTex_e_->transform.CalcMatrix();
 	titleTex_i_->transform.CalcMatrix();
 	titleTex_n_->transform.CalcMatrix();
 	titleTex_text_->transform.CalcMatrix();
 	titleTex_hut_->transform.CalcMatrix();
+	titleTex_start_->transform.CalcMatrix();
 	titleTex_ti_->uvTrnasform.CalcMatrix();
 	titleTex_e_->uvTrnasform.CalcMatrix();
 	titleTex_i_->uvTrnasform.CalcMatrix();
 	titleTex_n_->uvTrnasform.CalcMatrix();
 	titleTex_text_->uvTrnasform.CalcMatrix();
 	titleTex_hut_->uvTrnasform.CalcMatrix();
+	titleTex_start_->uvTrnasform.CalcMatrix();
 }
 
 void TitleDirection::Draw(const Mat4x4& cameraMat){
@@ -157,6 +179,12 @@ void TitleDirection::Draw(const Mat4x4& cameraMat){
 
 	tex2D_->Draw(titleTex_text_->transform.matWorld_, titleTex_text_->uvTrnasform.matWorld_, cameraMat
 		, titleTex_text_->textureID, titleTex_text_->color, BlendType::kNormal);
+
+	tex2D_->Draw(titleTex_start_->transform.matWorld_, titleTex_start_->uvTrnasform.matWorld_, cameraMat
+		, titleTex_start_->textureID, titleTex_start_->color, BlendType::kNormal);
+
+
+	fade_->Draw(cameraMat);
 
 #ifdef _DEBUG
 
@@ -211,6 +239,22 @@ void TitleDirection::MoveTextureHut(){
 	}
 	else {
 		isMove_ = false;
+		if (not fade_->IsActive()){
+			fade_->OutStart();
+
+		}
+	}
+}
+
+void TitleDirection::FadeProcess(){
+	if (fade_->OutEnd()){
+		titleTex_text_->color = 0xffffffff;
+		titleTex_start_->color = 0xffffffff;
+		fade_->InStart();
+	}
+
+	if (fade_->InEnd()){
+		isFirstFade_ = false;
 	}
 }
 
@@ -235,9 +279,18 @@ void TitleDirection::Debug(){
 
 	ImGui::Begin("タイトルの動き");
 
-	if (ImGui::Button("テクスチャ[ェ]を動かす")) {
+	if (ImGui::Button("全体をリセットする")) {
 		isMoveTex_e_ = true;
 		e_Status_.easing->Restart();
+		ti_Status_.easing->Start(false, 0.3f, Easeing::InSine);
+		i_Status_.easing->Start(false, 0.35f, Easeing::InSine);
+		n_Status_.easing->Start(false, 0.35f, Easeing::InSine);
+		ti_Status_.easing->Stop();
+		i_Status_.easing->Stop();
+		n_Status_.easing->Stop();
+		isMove_ = false;
+		isMoveTex_others_ = false;
+		linePass_ = 0;
 	}
 	if (ImGui::Button("テクスチャ[ェ]以外を動かす")) {
 		isMoveTex_others_ = true;
@@ -245,7 +298,7 @@ void TitleDirection::Debug(){
 		i_Status_.easing->Restart();
 		n_Status_.easing->Restart();
 	}
-
+	
 
 	ImGui::End();
 
