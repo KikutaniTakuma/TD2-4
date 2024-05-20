@@ -20,6 +20,8 @@ BaseScene{ BaseScene::ID::Result }
 }
 
 void ResultScene::Initialize(){
+	effectStatus_ = EffectState::kFirst;
+
 	currentCamera_->pos = { 0.f, 0.f ,-10.0f };
 
 	tex2D_ = drawerManager_->GetTexture2D();
@@ -41,7 +43,10 @@ void ResultScene::Initialize(){
 	for (auto texID = flaskTextureID_.begin(); auto & i : flaskParticles_) {
 		i = std::make_unique<FlaskParticle>();
 		i->SetParticleSize(Vector3::kIdentity * 50.0f, Vector3::kIdentity * 80.0f);
+
+		// ここでゲームプレイ中のデータを入れる予定
 		i->Resize(20);
+
 		i->SetDeathTime({2.0f, 3.0f});
 		i->SetRotate(Vector2(15_deg, 165_deg));
 		i->SetRadius(Vector2(300.0f, 400.0f));
@@ -71,19 +76,30 @@ void ResultScene::Update(){
 	currentCamera_->Debug("カメラ");
 	currentCamera_->Update();
 
-	if (not backGroundEase_->GetIsActive()) {
-		isActiveParticle_ = true;
-		bool isActive = false;
-		for (auto& i : flaskParticles_) {
-			i->Update();
-			if (i->GetIsActive()) {
-				isActive = true;
-			}
-		}
-		isActiveParticle_ = isActive;
+	switch (effectStatus_)
+	{
+	case ResultScene::EffectState::kFirst:
+		FirstEffect();
+		break;
+	case ResultScene::EffectState::kGameOver:
+		GameOverEffect();
+		break;
+	case ResultScene::EffectState::kGameClear:
+		GameClearEffect();
+		break;
+	default:
+		break;
 	}
 
 	if (isActiveParticle_.OnExit()) {
+		//if(もしゲームクリアなら){
+		//effectStatus_ = EffectState::kGameClear;
+		//}
+		// もしゲームオーバーなら
+		//else{
+		// effectStatus_ = EffectState::kGameOver;
+		//}
+
 		backGroundEase_->Start(
 			false,
 			0.8f,
@@ -97,7 +113,6 @@ void ResultScene::Update(){
 }
 
 void ResultScene::Draw(){
-	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	tex2D_->Draw(
 		backGround_.matWorld_,
 		Mat4x4::kIdentity,
@@ -111,12 +126,39 @@ void ResultScene::Draw(){
 		i->Draw(currentCamera_->GetViewOthographics());
 	}
 
-#ifdef _DEBUG
-
-	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
-#endif // _DEBUG
+	DrawUI();
 }
 
 void ResultScene::Debug(){
 
+}
+
+void ResultScene::FirstEffect()
+{
+	if (not backGroundEase_->GetIsActive()) {
+		isActiveParticle_ = true;
+		bool isActive = false;
+		for (auto& i : flaskParticles_) {
+			i->Update();
+			if (i->GetIsActive()) {
+				isActive = true;
+			}
+		}
+		isActiveParticle_ = isActive;
+	}
+}
+
+void ResultScene::GameClearEffect()
+{
+}
+
+void ResultScene::GameOverEffect()
+{
+}
+
+void ResultScene::DrawUI() {
+	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
+#ifdef _DEBUG
+	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
+#endif // _DEBUG
 }
