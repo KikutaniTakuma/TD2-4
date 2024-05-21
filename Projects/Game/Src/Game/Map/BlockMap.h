@@ -155,6 +155,11 @@ public:
 		return localPos - Vector2::kXIdentity * vBlockScale_->x * ((kMapX - 1) / 2.f);
 	}
 
+	static Vector2 GetGlobalPos(const POINTS localPos) noexcept
+	{
+		return Vector2{ static_cast<float>(localPos.x), static_cast<float>(localPos.y) } - Vector2::kXIdentity * vBlockScale_->x * ((kMapX - 1) / 2.f);
+	}
+
 	static Vector2 LocalPos(const Vector2 gPos) noexcept
 	{
 		return Vector2{ gPos.x / vBlockScale_->x, gPos.y / vBlockScale_->y } + Vector2::kXIdentity * vBlockScale_->x / ((kMapX - 1) / 2.f);
