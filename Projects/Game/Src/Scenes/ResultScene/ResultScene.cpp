@@ -28,6 +28,11 @@ void ResultScene::Initialize(){
 	backGround_.translate.z = 50.0f;
 	backGround_.scale = Lamb::ClientSize();
 	backGroundTextureID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
+	zanennTexID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverEffect.png");
+	//clearTextureID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
+
+	cauldronParticle_ = std::make_unique<Particle>();
+	cauldronParticle_->LoadSettingDirectory("Bomb");
 
 	for (size_t index = 0; const auto& i : std::filesystem::directory_iterator("./Resources/Item/")) {
 		if (not i.path().has_extension()) {
@@ -76,6 +81,8 @@ void ResultScene::Update(){
 	currentCamera_->Debug("カメラ");
 	currentCamera_->Update();
 
+	cauldronParticle_->Update();
+
 	switch (effectStatus_)
 	{
 	case ResultScene::EffectState::kFirst:
@@ -88,6 +95,7 @@ void ResultScene::Update(){
 		GameClearEffect();
 		break;
 	default:
+		throw Lamb::Error::Code<ResultScene>("effectStatus is abnormal condition", ErrorPlace);
 		break;
 	}
 
@@ -97,36 +105,44 @@ void ResultScene::Update(){
 		//}
 		// もしゲームオーバーなら
 		//else{
-		// effectStatus_ = EffectState::kGameOver;
+		effectStatus_ = EffectState::kGameOver;
 		//}
 
+		cauldronParticle_->ParticleStart();
+		cauldronParticle_->emitterPos.z = currentCamera_->pos.z + 1.0f;
+	}
+	else if (cauldronParticle_->GetIsParticleStart().OnExit()) {
 		backGroundEase_->Start(
 			false,
 			0.8f,
 			Easeing::OutBounce
 		);
 	}
-
 	backGroundEase_->Update();
 	backGround_.translate = backGroundEase_->Get(backGroundStartPos_, backGroundEndPos_);
 	backGround_.CalcMatrix();
 }
 
 void ResultScene::Draw(){
-	tex2D_->Draw(
-		backGround_.matWorld_,
-		Mat4x4::kIdentity,
-		currentCamera_->GetViewOthographics(),
-		backGroundTextureID_,
-		std::numeric_limits<uint32_t>::max(),
-		BlendType::kNone
-	);
-
-	for (auto& i : flaskParticles_) {
-		i->Draw(currentCamera_->GetViewOthographics());
+	DrawUI();
+	switch (effectStatus_)
+	{
+	case ResultScene::EffectState::kFirst:
+		FirstDraw();
+		break;
+	case ResultScene::EffectState::kGameOver:
+		GameOverDraw();
+		break;
+	case ResultScene::EffectState::kGameClear:
+		GameClearDraw();
+		break;
+	default:
+		throw Lamb::Error::Code<ResultScene>("effectStatus is abnormal condition", ErrorPlace);
+		break;
 	}
 
-	DrawUI();
+
+	cauldronParticle_->Draw(currentCamera_->rotate, currentCamera_->GetViewOthographics());
 }
 
 void ResultScene::Debug(){
@@ -148,12 +164,47 @@ void ResultScene::FirstEffect()
 	}
 }
 
-void ResultScene::GameClearEffect()
-{
+void ResultScene::FirstDraw() {
+	for (auto& i : flaskParticles_) {
+		i->Draw(currentCamera_->GetViewOthographics());
+	}
 }
 
-void ResultScene::GameOverEffect()
-{
+void ResultScene::GameClearEffect() {
+}
+
+void ResultScene::GameClearDraw() {
+	tex2D_->Draw(
+		backGround_.matWorld_,
+		Mat4x4::kIdentity,
+		currentCamera_->GetViewOthographics(),
+		backGroundTextureID_,
+		std::numeric_limits<uint32_t>::max(),
+		BlendType::kNone
+	);
+}
+
+void ResultScene::GameOverEffect() {
+
+}
+
+void ResultScene::GameOverDraw() {
+	tex2D_->Draw(
+		backGround_.matWorld_,
+		Mat4x4::kIdentity,
+		currentCamera_->GetViewOthographics(),
+		backGroundTextureID_,
+		std::numeric_limits<uint32_t>::max(),
+		BlendType::kNone
+	);
+	tex2D_->Draw(
+		backGround_.matWorld_ * Mat4x4::MakeTranslate(-Vector3::kZIdentity),
+		Mat4x4::kIdentity,
+		currentCamera_->GetViewOthographics(),
+		zanennTexID_,
+		std::numeric_limits<uint32_t>::max(),
+		BlendType::kNone
+	);
 }
 
 void ResultScene::DrawUI() {
