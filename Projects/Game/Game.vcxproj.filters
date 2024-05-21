@@ -546,5 +546,8 @@
     <ClInclude Include="Src\Game\Timer\Timer.h">
       <Filter>Game\Timer</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Game\UIscreen\UIscreen.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

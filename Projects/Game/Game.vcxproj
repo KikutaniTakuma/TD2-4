@@ -248,6 +248,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\Map\BlockMap.h" />
     <ClInclude Include="Src\Game\SkyDome\SkyDome.h" />
     <ClInclude Include="Src\Game\Timer\Timer.h" />
+    <ClInclude Include="Src\Game\UIscreen\UIscreen.h" />
     <ClInclude Include="Src\Game\Water\Water.h" />
     <ClInclude Include="Src\GlobalVariables\GlobalVariables.h" />
     <ClInclude Include="Src\Scenes\GameScene\GameScene.h" />
