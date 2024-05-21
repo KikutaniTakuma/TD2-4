@@ -85,8 +85,12 @@ private:
 
 	std::unique_ptr<Tex2DState> titleTex_start_;
 
+	std::unique_ptr<Tex2DState> titleTex_startText_;
+
 
 	Vector2 texScale_ = { 128.0f,128.0f };
+
+	Vector2 texHutScale_ = { 192.0f,192.0f };
 
 private:
 

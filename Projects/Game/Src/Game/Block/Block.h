@@ -3,6 +3,9 @@
 #include <array>
 #include "Math/Vector2.h"
 #include <Engine/Graphics/TextureManager/TextureManager.h>
+#include "Math/Mat4x4.h"
+#include "Math/Vector3.h"
+
 
 /// @brief ブロックのデータ。
 class Block {
@@ -27,9 +30,9 @@ public:
 		0xFFFF00FF,
 	};
 	inline static const std::array<Mat4x4, 3> kUvMatrix_{
-		Mat4x4::MakeScalar({1.f / 3.f,1,1}),
-		Mat4x4::MakeScalar({1.f / 3.f,1,1}) * Mat4x4::MakeTranslate({1.f / 3.f,0,0}),
-		Mat4x4::MakeScalar({1.f / 3.f,1,1}) * Mat4x4::MakeTranslate({2.f / 3.f,0,0}),
+		Mat4x4::MakeScalar(Vector3{1.f / 3.f,1,1}),
+		Mat4x4::MakeScalar(Vector3{1.f / 3.f,1,1}) * Mat4x4::MakeTranslate(Vector3{1.f / 3.f,0,0}),
+		Mat4x4::MakeScalar(Vector3{1.f / 3.f,1,1}) * Mat4x4::MakeTranslate(Vector3{2.f / 3.f,0,0}),
 	};
 
 	// ブロックのテクスチャ

@@ -20,10 +20,10 @@ void TitleDirection::Initialize(){
 
 	TextureInitialize();
 
-	ti_Status_.easePos = { 500.0f,120.0f };
-	e_Status_.easePos = { -500.0,100.0f };
-	i_Status_.easePos = { 500.0f,120.0f };
-	n_Status_.easePos = { 500.0f,120.0f };
+	ti_Status_.easePos = { 500.0f,70.0f };
+	e_Status_.easePos = { -500.0,50.0f };
+	i_Status_.easePos = { 500.0f,70.0f };
+	n_Status_.easePos = { 500.0f,70.0f };
 
 	ti_Status_.easing = std::make_unique<Easeing>();
 	e_Status_.easing = std::make_unique<Easeing>();
@@ -76,7 +76,7 @@ void TitleDirection::TextureInitialize(){
 
 	titleTex_hut_ = std::make_unique<Tex2DState>();
 	titleTex_hut_->color = 0xffffffff;
-	titleTex_hut_->transform.scale = texScale_;
+	titleTex_hut_->transform.scale = { 288.0f,240.0f };
 	titleTex_hut_->transform.translate = { 10.0f, 10.0f };
 	titleTex_hut_->uvTrnasform.scale.kIdentity;
 	titleTex_hut_->uvTrnasform.translate = { 0.0f, 0.0f };
@@ -86,7 +86,7 @@ void TitleDirection::TextureInitialize(){
 
 	titleTex_text_ = std::make_unique<Tex2DState>();
 	titleTex_text_->color = 0xffffff00;
-	titleTex_text_->transform.scale = texScale_;
+	titleTex_text_->transform.scale = { 304.0f,192.0f };
 	titleTex_text_->transform.translate = { 10.0f, 10.0f };
 	titleTex_text_->uvTrnasform.scale.kIdentity;
 	titleTex_text_->uvTrnasform.translate = { 0.0f, 0.0f };
@@ -96,13 +96,23 @@ void TitleDirection::TextureInitialize(){
 
 	titleTex_start_ = std::make_unique<Tex2DState>();
 	titleTex_start_->color = 0xffffff00;
-	titleTex_start_->transform.scale = { 256.0f,128.0f };
-	titleTex_start_->transform.translate = { 0.0f, -200.0f };
-	titleTex_start_->uvTrnasform.scale.kIdentity;
+	titleTex_start_->transform.scale = { 320.0f,96.0f };
+	titleTex_start_->transform.translate = { 0.0f, -125.0f };
+	titleTex_start_->uvTrnasform.scale = { 0.5f,1.0f };
 	titleTex_start_->uvTrnasform.translate = { 0.0f, 0.0f };
-	titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/gameStartUi.png");
-	titleTex_start_->textureFullPath = "./Resources/UI/gameStartUi.png";
-	titleTex_start_->textureName = "gameStartUi";
+	titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/attackButton.png");
+	titleTex_start_->textureFullPath = "./Resources/UI/attackButton.png";
+	titleTex_start_->textureName = "attackButton";
+
+	titleTex_startText_ = std::make_unique<Tex2DState>();
+	titleTex_startText_->color = 0xffffff00;
+	titleTex_startText_->transform.scale = { 384.0f,64.0f };
+	titleTex_startText_->transform.translate = { 0.0f, -250.0f };
+	titleTex_startText_->uvTrnasform.scale.kIdentity;
+	titleTex_startText_->uvTrnasform.translate = { 0.0f, 0.0f };
+	titleTex_startText_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/gameStart.png");
+	titleTex_startText_->textureFullPath = "./Resources/UI/gameStart.png";
+	titleTex_startText_->textureName = "gameStart";
 }
 
 void TitleDirection::Finalize(){
@@ -152,6 +162,7 @@ void TitleDirection::Update(){
 	titleTex_text_->transform.CalcMatrix();
 	titleTex_hut_->transform.CalcMatrix();
 	titleTex_start_->transform.CalcMatrix();
+	titleTex_startText_->transform.CalcMatrix();
 	titleTex_ti_->uvTrnasform.CalcMatrix();
 	titleTex_e_->uvTrnasform.CalcMatrix();
 	titleTex_i_->uvTrnasform.CalcMatrix();
@@ -159,6 +170,7 @@ void TitleDirection::Update(){
 	titleTex_text_->uvTrnasform.CalcMatrix();
 	titleTex_hut_->uvTrnasform.CalcMatrix();
 	titleTex_start_->uvTrnasform.CalcMatrix();
+	titleTex_startText_->uvTrnasform.CalcMatrix();
 }
 
 void TitleDirection::Draw(const Mat4x4& cameraMat){
@@ -182,6 +194,9 @@ void TitleDirection::Draw(const Mat4x4& cameraMat){
 
 	tex2D_->Draw(titleTex_start_->transform.matWorld_, titleTex_start_->uvTrnasform.matWorld_, cameraMat
 		, titleTex_start_->textureID, titleTex_start_->color, BlendType::kNormal);
+
+	tex2D_->Draw(titleTex_startText_->transform.matWorld_, titleTex_startText_->uvTrnasform.matWorld_, cameraMat
+		, titleTex_startText_->textureID, titleTex_startText_->color, BlendType::kNormal);
 
 
 	fade_->Draw(cameraMat);
@@ -250,6 +265,7 @@ void TitleDirection::FadeProcess(){
 	if (fade_->OutEnd()){
 		titleTex_text_->color = 0xffffffff;
 		titleTex_start_->color = 0xffffffff;
+		titleTex_startText_->color = 0xffffffff;
 		fade_->InStart();
 	}
 
@@ -303,27 +319,17 @@ void TitleDirection::Debug(){
 	ImGui::End();
 
 	ImGui::Begin("各テクスチャの大きさ座標");
-	ImGui::DragFloat2("チの大きさ", titleTex_ti_->transform.scale.data(), 1.0f, 0.0f, 1280.0f);
-	ImGui::DragFloat2("チの座標", titleTex_ti_->transform.translate.data(), 1.0f);
-	ImGui::DragFloat2("チのUV大きさ", titleTex_ti_->uvTrnasform.scale.data(), 0.001f, 0.0f, 1280.0f);
-	ImGui::DragFloat2("チのUV座標", titleTex_ti_->uvTrnasform.translate.data(), 0.001f, 0.0f, 1280.0f);
+	ImGui::DragFloat2("帽子の大きさ", titleTex_hut_->transform.scale.data(), 1.0f, 0.0f, 1280.0f);
+	ImGui::DragFloat2("帽子の座標", titleTex_hut_->transform.translate.data(), 1.0f);
 
-	ImGui::DragFloat2("ェの大きさ", titleTex_e_->transform.scale.data(), 1.0f, 0.0f, 1280.0f);
-	ImGui::DragFloat2("ェの座標", titleTex_e_->transform.translate.data(), 1.0f);
-	ImGui::DragFloat2("ェのUV大きさ", titleTex_e_->uvTrnasform.scale.data(), 0.001f, 0.0f, 1280.0f);
-	ImGui::DragFloat2("ェのUV座標", titleTex_e_->uvTrnasform.translate.data(), 0.001f, 0.0f, 1280.0f);
+	ImGui::DragFloat2("帽子文字の大きさ", titleTex_text_->transform.scale.data(), 1.0f, 0.0f, 1280.0f);
+	ImGui::DragFloat2("帽子文字の座標", titleTex_text_->transform.translate.data(), 1.0f);
 
-	ImGui::DragFloat2("イの大きさ", titleTex_i_->transform.scale.data(), 1.0f, 0.0f, 1280.0f);
-	ImGui::DragFloat2("イの座標", titleTex_i_->transform.translate.data(), 1.0f);
-	ImGui::DragFloat2("イのUV大きさ", titleTex_i_->uvTrnasform.scale.data(), 0.001f, 0.0f, 1280.0f);
-	ImGui::DragFloat2("イのUV座標", titleTex_i_->uvTrnasform.translate.data(), 0.001f, 0.0f, 1280.0f);
+	ImGui::DragFloat2("Startボタンの大きさ", titleTex_start_->transform.scale.data(), 1.0f, 0.0f, 1280.0f);
+	ImGui::DragFloat2("Startボタンの座標", titleTex_start_->transform.translate.data(), 1.0f);
 
-	ImGui::DragFloat2("ンの大きさ", titleTex_n_->transform.scale.data(), 1.0f, 0.0f, 1280.0f);
-	ImGui::DragFloat2("ンの座標", titleTex_n_->transform.translate.data(), 1.0f);
-	ImGui::DragFloat2("ンのUV大きさ", titleTex_n_->uvTrnasform.scale.data(), 0.001f, 0.0f, 1280.0f);
-	ImGui::DragFloat2("ンのUV座標", titleTex_n_->uvTrnasform.translate.data(), 0.001f, 0.0f, 1280.0f);
-
-
+	ImGui::DragFloat2("スタート文字の大きさ", titleTex_startText_->transform.scale.data(), 1.0f, 0.0f, 1280.0f);
+	ImGui::DragFloat2("スタート文字の座標", titleTex_startText_->transform.translate.data(), 1.0f);
 
 	ImGui::End();
 #endif // 
