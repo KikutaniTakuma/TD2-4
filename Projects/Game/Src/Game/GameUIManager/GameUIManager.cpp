@@ -15,7 +15,7 @@ void GameUIManager::Init(GameManager *pGameManager)
 void GameUIManager::Update([[maybe_unused]] const float deltaTime)
 {
 	gameTimerRender_->Update(deltaTime);
-	itemGauge_->Update();
+	itemGauge_->Update(pGameManager_->GetItemCount(), pGameManager_->GetClearItemCount());
 	itemGauge_->Debug();
 }
 

@@ -21,7 +21,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(const int32_t& nowCount, const int32_t& maxCount);
 
 
 	void Draw(const Camera& camera)const;

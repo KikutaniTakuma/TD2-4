@@ -25,7 +25,9 @@ void ItemGauge::Initialize(){
 
 }
 
-void ItemGauge::Update(){
+void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
+	num_ = static_cast<float>(nowCount) / static_cast<float>(maxCount);
+
 	MoveGauge();
 
 	gaugeState_->transform.CalcMatrix();

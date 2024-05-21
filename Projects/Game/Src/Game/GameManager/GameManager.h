@@ -129,6 +129,10 @@ public:
 
 	GameTimer *GetGameTimer() const { return gameTimer_.get(); }
 
+	const int32_t GetClearItemCount() const { return vClearItemCount_.item; }
+
+	const int32_t GetItemCount()const { return itemCount_; }
+
 private:
 	void BlockMapDropDown();
 
