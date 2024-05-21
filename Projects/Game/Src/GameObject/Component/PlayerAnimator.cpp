@@ -117,6 +117,13 @@ void PlayerAnimatorComp::Update()
 	shotParticle_->Update();
 
 	haveParticle_->Update();
+
+	if (float time = pPlayerComp_->GetInvincibleTime(); time) {
+		pSpriteComp_->color_ = (0xFFFFFF00 | static_cast<uint32_t>(std::lerp(0x33, 0xFF, std::round(std::fmodf(time, 0.2f) / 0.2f))));
+	}
+	else {
+		pSpriteComp_->color_ = 0xFFFFFFFF;
+	}
 }
 
 void PlayerAnimatorComp::Draw(const Camera &camera) const {

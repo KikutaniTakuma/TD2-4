@@ -171,7 +171,6 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 				if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
 					fallingBlock->OnCollision(player_.get());
 					player_->OnCollision(fallingBlock.get());
-					player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{ SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f });
 				}
 			}
 		}

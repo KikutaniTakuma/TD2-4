@@ -34,6 +34,8 @@ public:
 
 	const Vector2 GetInputVec() const { return inputVec_; }
 
+	const float GetInvincibleTime() const { return invincibleTime_; }
+
 private:
 
 	float invincibleTime_ = 0.f;
