@@ -41,7 +41,7 @@ BlockItem::BlockItem(const Vector2& startPos, const Vector2& endPos, const Block
 		throw Lamb::Error::Code<BlockItem>(message, ErrorPlace);
 	}
 
-	moveSpeeds_ = { 0.3f,0.3f,0.3f };
+	moveSpeeds_ = { 2.0f,2.0f,2.0f };
 
 	isMove_ = true;
 	
