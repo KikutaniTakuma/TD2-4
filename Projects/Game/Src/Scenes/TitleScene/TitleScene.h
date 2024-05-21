@@ -31,6 +31,7 @@ public:
 
 	void Draw() override;
 
+	void TimerMove();
 
 	//始点と終点の位置関係で第二、第三点目の座標を設定
 	void SetControlPoint();
@@ -63,5 +64,6 @@ private:
 		{1000.0f + minusPos_.x,200.0f + minusPos_.y}
 	};
 
-
+	//タイマー関連
+	Tex2DState timerState_;
 };

@@ -16,6 +16,7 @@
 #include <Game/CollisionManager/AABB/AABB.h>
 #include <Game/GameEffectManager/GameEffectManager.h>
 #include <Game/Timer/Timer.h>
+#include"Game/Item/BlockItem.h"
 
 class GameScene;
 
@@ -134,7 +135,7 @@ private:
 
 private:
 
-	std::list<float> itemMovingTimer_;
+	std::list<std::unique_ptr<BlockItem>> itemList_;
 
 	int32_t itemCount_;
 

@@ -144,6 +144,19 @@ void TitleDirection::Update(){
 		isMove_ = true;
 	}
 
+
+	time_++;
+	if (time_ < 30) {
+		titleTex_start_->uvTrnasform.translate.x = 0.0f;
+	}
+	else if (time_ >= 30) {
+		titleTex_start_->uvTrnasform.translate.x = 0.5f;
+	}
+
+	if (time_ >= 60) {
+		time_ = 0;
+	}
+
 	titleTex_ti_->transform.translate.y = ti_Status_.easing->Get(ti_Status_.easePos.x, ti_Status_.easePos.y);
 	titleTex_e_->transform.translate.y = e_Status_.easing->Get(e_Status_.easePos.x, e_Status_.easePos.y);
 	titleTex_i_->transform.translate.y = i_Status_.easing->Get(i_Status_.easePos.x, i_Status_.easePos.y);
