@@ -246,7 +246,7 @@ void GameScene::Draw() {
 	}
 
 	gameManager_->Draw(*currentCamera_);
-	gameUIManager_->Draw(*currentCamera_);
+	gameUIManager_->Draw(*currentTexCamera_);
 
 	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	/*if (editorMode_) {

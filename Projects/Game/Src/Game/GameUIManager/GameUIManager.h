@@ -1,6 +1,7 @@
 #pragma once
 #include <Camera/Camera.h>
 #include <Game/Timer/Timer.h>
+#include"Game/ItemGauge/ItemGauge.h"
 
 class GameManager;
 
@@ -20,6 +21,8 @@ private:
 
 	// タイマーの表示関数
 	std::unique_ptr<GameTimerRender> gameTimerRender_;
+
+	std::unique_ptr<ItemGauge> itemGauge_;
 
 	GameManager *pGameManager_;
 };

@@ -927,7 +927,7 @@ void GameManager::MargeDwarf()
 
 void GameManager::ClearCheck()
 {
-	if (not player_) {
+	/*if (not player_) {
 		pGameScene_->ChangeToResult();
 	}
 	if (vClearItemCount_ < itemCount_) {
@@ -935,6 +935,6 @@ void GameManager::ClearCheck()
 	}
 	if (gameTimer_->IsFinish()) {
 		pGameScene_->ChangeToResult();
-	}
+	}*/
 
 }

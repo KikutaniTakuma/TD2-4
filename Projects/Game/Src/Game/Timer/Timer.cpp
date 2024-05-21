@@ -6,7 +6,8 @@ void GameTimer::Init()
 
 void GameTimer::Update(const float deltaTime)
 {
-	timer_.Update(deltaTime);
+	deltaTime;
+	//timer_.Update(deltaTime);
 }
 
 
