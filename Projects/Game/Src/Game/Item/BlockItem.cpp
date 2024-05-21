@@ -6,7 +6,7 @@ BlockItem::BlockItem(const Vector2& startPos, const Vector2& endPos, const Block
 	texState_ = std::make_unique<Tex2DState>();
 	texState_->color = 0xffffffff;
 	texState_->transform.scale = Vector2::kIdentity;
-	texState_->transform.translate = startPos;
+	texState_->transform.translate = { startPos.x,startPos.y,-1.0f };
 	controlPoints_[0] = startPos;
 	controlPoints_[3] = endPos;
 
