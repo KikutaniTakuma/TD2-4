@@ -1,6 +1,9 @@
 #pragma once
 #include "SoLib/SoLib/SoLib_Timer.h"
 #include <Camera/Camera.h>
+#include "SoLib/Containers/VItem.h"
+#include "Drawers/Texture2D/Texture2D.h"
+#include"SoLib/Math/Angle.h"
 
 class GameTimer
 {
@@ -46,5 +49,17 @@ public:
 private:
 
 	GameTimer *pGameTimer_;
+
+	Texture2D* tex2D_;
+
+	Vector2 timerPos_;
+
+	//時計本体
+	std::unique_ptr<Tex2DState> timerState_;
+	//時計の針
+	std::unique_ptr<Tex2DState> clockHandsState_;
+	//時計の動く針
+	std::unique_ptr<Tex2DState> moveClockHandsState_;
+
 
 };

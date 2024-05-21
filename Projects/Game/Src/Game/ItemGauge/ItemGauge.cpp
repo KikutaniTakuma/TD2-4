@@ -50,6 +50,9 @@ void ItemGauge::Draw(const Camera& camera) const{
 }
 
 void ItemGauge::Debug(){
+#ifdef _DEBUG
+
+
 	ImGui::Begin("ゲージ関連");
 	ImGui::DragFloat("ゲージ増加割合", &num_, 0.001f, 0.0f, 1.0f);
 	ImGui::DragFloat3("縁の座標", gaugeState_->transform.translate.data(), 1.0f);
@@ -59,6 +62,7 @@ void ItemGauge::Debug(){
 	ImGui::DragFloat3("ゲージ本体中央の座標", moveGaugeCenterState_->transform.translate.data(), 0.1f);
 	ImGui::DragFloat2("ゲージ本体中央の大きさ", moveGaugeCenterState_->transform.scale.data(), 0.1f);
 	ImGui::End();
+#endif // _DEBUG
 }
 
 void ItemGauge::MoveGauge(){
