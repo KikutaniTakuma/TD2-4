@@ -740,7 +740,7 @@ void GameManager::AddItem(const Block::BlockType blockType)
 	if (blockType == Block::BlockType::kNone) { return; }
 
 	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
-	itemMovingTimer_.push_back(1.f);
+	for (uint32_t i = 0; i < 2u; i++) { itemMovingTimer_.push_back(1.f); }
 	// ↑ アイテムのクラスができたら､この処理を置き換える
 }
 
@@ -753,7 +753,7 @@ void GameManager::AddPoint()
 		if (*item <= 0.f) {
 
 			// 破壊時の処理
-			itemCount_ += 2;
+			itemCount_++;
 
 			item = itemMovingTimer_.erase(item); // オブジェクトを破棄してイテレータを変更
 			continue;

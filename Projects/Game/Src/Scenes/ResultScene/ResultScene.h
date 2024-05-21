@@ -7,6 +7,12 @@
 
 
 class ResultScene : public BaseScene{
+	enum class EffectState{
+		kFirst,
+		kGameOver,
+		kGameClear	
+	};
+
 public:
 	ResultScene();
 	ResultScene(const ResultScene&) = delete;
@@ -39,5 +45,32 @@ private:
 
 	std::array<std::unique_ptr<FlaskParticle>, 4> flaskParticles_;
 	std::array<uint32_t, 4> flaskTextureID_;
+
+	std::unique_ptr<Particle> cauldronParticle_;
+
+	uint32_t zanennTexID_;
+	//uint32_t clearTextureID_;
+
+	// ゲームクリアならture。falseならゲームオーバー
+	bool isGameClear_;
+
+	EffectState effectStatus_;
+
+
+private:
+	// 最初の演出(大釜に素材が集まる)
+	void FirstEffect();
+	void FirstDraw();
+
+	// ゲームクリア時の演出(何かが錬成される)
+	void GameClearEffect();
+	void GameClearDraw();
+
+	// ゲームオーバー時の演出
+	void GameOverEffect();
+	void GameOverDraw();
+
+	// UIの描画
+	void DrawUI();
 };
 
