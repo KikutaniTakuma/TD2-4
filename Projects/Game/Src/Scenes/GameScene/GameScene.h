@@ -23,6 +23,7 @@
 
 #include "Editor/BlockEditor/BlockEditor.h"
 #include "Editor/EnemyEditor/EnemyEditor.h"
+#include <Game/GameUIManager/GameUIManager.h>
 
 class GameScene : public BaseScene {
 public:
@@ -63,6 +64,8 @@ private:
 	
 
 	GameManager* gameManager_ = nullptr;
+
+	std::unique_ptr<GameUIManager> gameUIManager_ = nullptr;
 
 	Vector2 shakePower_;
 

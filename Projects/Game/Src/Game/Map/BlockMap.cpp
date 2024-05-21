@@ -17,8 +17,8 @@ void BlockMap::Init()
 	drawerManager->LoadModel("Resources/Cube.obj");
 	model_ = drawerManager->GetModel("Resources/Cube.obj");
 
-	ground_ = std::make_unique<Ground>();
-	ground_->Init();
+	//ground_ = std::make_unique<Ground>();
+	//ground_->Init();
 
 }
 
@@ -74,7 +74,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 		}
 		yi++;
 	}
-	ground_->Draw(camera);
+	//ground_->Draw(camera);
 }
 
 bool BlockMap::Debug(const char *const str)

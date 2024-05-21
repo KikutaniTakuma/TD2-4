@@ -227,7 +227,7 @@ private:
 	Map2dMap<std::unique_ptr<MatrixModelState>> modelStateMap_;
 
 	// 床のクラス
-	std::unique_ptr<Ground> ground_;
+	// std::unique_ptr<Ground> ground_;
 
 	Texture2D *pTexture2d_ = nullptr;
 

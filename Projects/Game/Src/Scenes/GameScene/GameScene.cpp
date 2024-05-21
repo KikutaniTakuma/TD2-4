@@ -139,6 +139,9 @@ void GameScene::Initialize() {
 	gameBGM_->Start(0.1f, true);
 
 	shakePower_ = { 3.0f,3.0f };
+
+	gameUIManager_ = std::make_unique<GameUIManager>();
+	gameUIManager_->Init(gameManager_);
 }
 
 void GameScene::Finalize() {
@@ -184,6 +187,8 @@ void GameScene::Update() {
 	//	}
 	//}
 	//player_->AllTrade();
+
+	gameUIManager_->Update(deltaTime);
 
 	if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
 		Audio *cancel = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
@@ -241,6 +246,7 @@ void GameScene::Draw() {
 	}
 
 	gameManager_->Draw(*currentCamera_);
+	gameUIManager_->Draw(*currentCamera_);
 
 	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	/*if (editorMode_) {

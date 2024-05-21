@@ -18,10 +18,6 @@ void GameEffectManager::Init()
 
 	whiteTex_ = TextureManager::GetInstance()->GetWhiteTex();
 
-
-	gameTimerRender_ = std::make_unique<GameTimerRender>();
-	gameTimerRender_->Init(pGameManager_->GetGameTimer());
-
 }
 
 void GameEffectManager::Update([[maybe_unused]] float deltaTime)
@@ -59,8 +55,6 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 	for (auto &i : particles_) {
 		i->Update();
 	}
-
-	gameTimerRender_->Update(deltaTime);
 }
 
 void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
@@ -87,7 +81,6 @@ void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
 		pSpriteDrawer->Draw(affineMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex_, 0x55005555, BlendType::kNormal);
 	}
 
-	gameTimerRender_->Draw(camera);
 }
 
 void GameEffectManager::Clear()

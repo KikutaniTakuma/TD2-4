@@ -16,6 +16,7 @@
 #include <Game/CollisionManager/AABB/AABB.h>
 #include <Game/GameEffectManager/GameEffectManager.h>
 #include <Game/Timer/Timer.h>
+#include <Game/GameUIManager/GameUIManager.h>
 
 class GameScene;
 
@@ -46,6 +47,8 @@ public:
 	void Update(const float deltaTime);
 
 	void Draw(const Camera &camera) const;
+
+	void SetUIManager(GameUIManager *uiManager) { pGameUIManager_ = uiManager; }
 
 public:
 	bool Debug(const char *const str);
@@ -172,6 +175,7 @@ private:
 	std::list<std::unique_ptr<GameObject>> darkDwarfList_;
 
 	std::unique_ptr<GameEffectManager> gameEffectManager_ = nullptr;
+	Lamb::SafePtr<GameUIManager> pGameUIManager_ = nullptr;
 
 	GameScene *pGameScene_ = nullptr;
 };

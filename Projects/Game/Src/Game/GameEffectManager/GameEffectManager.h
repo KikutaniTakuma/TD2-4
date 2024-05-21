@@ -48,9 +48,5 @@ private:
 	// 落下ブロックの予測
 	std::pair<int32_t, int32_t> fallingBlock_;	// -1なら無効
 
-	// タイマーの表示関数
-	std::unique_ptr<GameTimerRender> gameTimerRender_;
-
-
 	std::vector<std::unique_ptr<Particle>> particles_;
 };
