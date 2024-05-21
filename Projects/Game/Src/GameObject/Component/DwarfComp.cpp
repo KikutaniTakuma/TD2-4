@@ -146,15 +146,16 @@ void DwarfComp::FireBullet()
 		if (player) {
 			Lamb::SafePtr plBody = player->GetComponent<LocalBodyComp>();
 
-			facing_ = SoLib::Math::Sign(static_cast<int32_t>(plBody->localPos_.x - pLocalBodyComp_->localPos_.x));
+			facing_ = static_cast<int32_t>(SoLib::Math::Sign(plBody->localPos_.x - pLocalBodyComp_->localPos_.x));
 
 			timer_.Start(5.f);
 
 			Lamb::SafePtr pGManager = GameManager::GetInstance();
 
 			Vector2 facingVec = Vector2::kXIdentity * static_cast<float>(facing_);
-
-			pGManager->AddEnemyBullet(pLocalBodyComp_->localPos_ + facingVec, Vector2::kXIdentity * (facing_ * 5.f));
+			if (facing_) {
+				pGManager->AddEnemyBullet(pLocalBodyComp_->localPos_ + facingVec, Vector2::kXIdentity * (facing_ * 5.f));
+			}
 		}
 	}
 }
