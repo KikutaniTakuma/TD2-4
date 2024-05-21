@@ -34,19 +34,28 @@ public:
 	void Debug();
 private:
 	Lamb::SafePtr<Texture2D> tex2D_;
-	Transform backGround_;
+	std::unique_ptr<Transform> backGround_;
 	uint32_t backGroundTextureID_;
 	//std::unique_ptr<Particle> backGroundParticle_;
 	std::unique_ptr<Easeing> backGroundEase_;
 	Vector3 backGroundStartPos_;
 	Vector3 backGroundEndPos_;
-	Lamb::Flg isActiveParticle_;
+	Lamb::Flg isFirstActive_;
 
 
 	std::array<std::unique_ptr<FlaskParticle>, 4> flaskParticles_;
 	std::array<uint32_t, 4> flaskTextureID_;
+	float curretnActiveFlaskParticleNum_;
+	float allFlaskParticleNum_;
 
 	std::unique_ptr<Particle> cauldronParticle_;
+	std::unique_ptr<Transform> cauldronTransform_;
+	uint32_t cauldronTextureID_;
+	Vector3 cauldronBasisPos_;
+	std::pair<Vector3, Vector3> cauldronShake_;
+	std::pair<Vector3, Vector3> cauldronScale_;
+	std::unique_ptr<Easeing> cauldronEase_;
+	
 
 	uint32_t zanennTexID_;
 	//uint32_t clearTextureID_;

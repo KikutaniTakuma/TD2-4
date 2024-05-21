@@ -64,6 +64,10 @@ public:
 		particles_.resize(size);
 	}
 
+	size_t GetSize() const {
+		return particles_.size();
+	}
+
 	void SetEmitter(const Emitter& emitter) {
 		emitter_ = emitter;
 	}
@@ -101,6 +105,10 @@ public:
 		freq_ = freq;
 	}
 
+	size_t GetCurrentActiveParticleNum() const {
+		return currentActiveParticleCount_;
+	}
+
 private:
 	Vector3 GetRandomVector();
 
@@ -129,4 +137,6 @@ private:
 
 	Lamb::SafePtr<Texture2D> texture2D_;
 	uint32_t textureID_;
+
+	size_t currentActiveParticleCount_;
 };

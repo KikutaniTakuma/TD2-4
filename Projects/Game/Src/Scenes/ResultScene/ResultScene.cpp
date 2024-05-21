@@ -25,14 +25,24 @@ void ResultScene::Initialize(){
 	currentCamera_->pos = { 0.f, 0.f ,-10.0f };
 
 	tex2D_ = drawerManager_->GetTexture2D();
-	backGround_.translate.z = 50.0f;
-	backGround_.scale = Lamb::ClientSize();
+	backGround_ = std::make_unique<Transform>();
+	backGround_->translate.z = 50.0f;
+	backGround_->scale = Lamb::ClientSize();
 	backGroundTextureID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
 	zanennTexID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverEffect.png");
 	//clearTextureID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
 
 	cauldronParticle_ = std::make_unique<Particle>();
 	cauldronParticle_->LoadSettingDirectory("Bomb");
+	cauldronTextureID_ = drawerManager_->LoadTexture("./Resources/UI/pot.png");
+	cauldronTransform_ = std::make_unique<Transform>();
+	cauldronBasisPos_ = Vector3::kYIdentity * -128.0f;
+	cauldronShake_.first = (Vector3::kXIdentity + Vector3::kYIdentity) * -20.0f;
+	cauldronShake_.second = (Vector3::kXIdentity + Vector3::kYIdentity) * 20.0f;
+	cauldronScale_.first = (Vector3::kXIdentity + Vector3::kYIdentity) * 450.0f;
+	cauldronScale_.second = cauldronScale_.first * 1.5f;
+	cauldronEase_ = std::make_unique<Easeing>();
+
 
 	for (size_t index = 0; const auto& i : std::filesystem::directory_iterator("./Resources/Item/")) {
 		if (not i.path().has_extension()) {
@@ -51,12 +61,14 @@ void ResultScene::Initialize(){
 
 		// ここでゲームプレイ中のデータを入れる予定
 		i->Resize(20);
+		allFlaskParticleNum_ += static_cast<float>(i->GetSize());
 
-		i->SetDeathTime({2.0f, 3.0f});
+
+		i->SetDeathTime({1.0f, 1.5f});
 		i->SetRotate(Vector2(15_deg, 165_deg));
 		i->SetRadius(Vector2(300.0f, 400.0f));
-		i->SetFreq(Vector2(0.2f, 1.0f));
-		//i->SetEndTranslate(Vector3::kYIdentity * -200.0f);
+		i->SetFreq(Vector2(0.3f, 0.8f));
+		i->SetEndTranslate(Vector3::kYIdentity * 60.0f);
 		i->SetTextureID(*texID);
 		i->Start();
 		texID++;
@@ -64,13 +76,13 @@ void ResultScene::Initialize(){
 			break;
 		}
 	}
-	backGroundStartPos_ = backGround_.translate;
+	backGroundStartPos_ = backGround_->translate;
 	backGroundStartPos_.y = Lamb::ClientSize().y;
-	backGroundEndPos_ = backGround_.translate;
+	backGroundEndPos_ = backGround_->translate;
 
 	backGroundEase_ = std::make_unique<Easeing>();
 
-	isActiveParticle_ = true;
+	isFirstActive_ = true;
 }
 
 void ResultScene::Finalize(){
@@ -81,7 +93,6 @@ void ResultScene::Update(){
 	currentCamera_->Debug("カメラ");
 	currentCamera_->Update();
 
-	cauldronParticle_->Update();
 
 	switch (effectStatus_)
 	{
@@ -99,7 +110,8 @@ void ResultScene::Update(){
 		break;
 	}
 
-	if (isActiveParticle_.OnExit()) {
+
+	if (isFirstActive_.OnExit()) {
 		//if(もしゲームクリアなら){
 		//effectStatus_ = EffectState::kGameClear;
 		//}
@@ -111,7 +123,10 @@ void ResultScene::Update(){
 		cauldronParticle_->ParticleStart();
 		cauldronParticle_->emitterPos.z = currentCamera_->pos.z + 1.0f;
 	}
-	else if (cauldronParticle_->GetIsParticleStart().OnExit()) {
+
+	cauldronParticle_->Update();
+
+	if (cauldronParticle_->GetIsParticleStart().OnExit()) {
 		backGroundEase_->Start(
 			false,
 			0.8f,
@@ -119,12 +134,23 @@ void ResultScene::Update(){
 		);
 	}
 	backGroundEase_->Update();
-	backGround_.translate = backGroundEase_->Get(backGroundStartPos_, backGroundEndPos_);
-	backGround_.CalcMatrix();
+	backGround_->translate = backGroundEase_->Get(backGroundStartPos_, backGroundEndPos_);
+	backGround_->CalcMatrix();
+	cauldronTransform_->CalcMatrix();
 }
 
 void ResultScene::Draw(){
 	DrawUI();
+
+	tex2D_->Draw(
+		cauldronTransform_->matWorld_,
+		Mat4x4::kIdentity,
+		currentCamera_->GetViewOthographics(),
+		cauldronTextureID_,
+		std::numeric_limits<uint32_t>::max(),
+		BlendType::kNormal
+	);
+	
 	switch (effectStatus_)
 	{
 	case ResultScene::EffectState::kFirst:
@@ -149,21 +175,42 @@ void ResultScene::Debug(){
 
 }
 
-void ResultScene::FirstEffect()
-{
-	if (not backGroundEase_->GetIsActive()) {
-		isActiveParticle_ = true;
-		bool isActive = false;
-		for (auto& i : flaskParticles_) {
-			i->Update();
-			if (i->GetIsActive()) {
-				isActive = true;
-			}
+void ResultScene::FirstEffect() {
+	curretnActiveFlaskParticleNum_ = 0.0f;
+	bool isActive = false;
+	for (auto& i : flaskParticles_) {
+		i->Update();
+		if (not isActive) {
+			isActive = !!i->GetIsActive();
 		}
-		isActiveParticle_ = isActive;
+		curretnActiveFlaskParticleNum_ += static_cast<float>(i->GetCurrentActiveParticleNum());
+	}
+	if (not isActive and not cauldronEase_->GetIsActive()) {
+		cauldronEase_->Start(
+			false,
+			0.3f,
+			Easeing::OutBounce
+		);
+	}
+
+	cauldronEase_->Update();
+	if (cauldronEase_->GetIsActive()) {
+		cauldronTransform_->scale = cauldronEase_->Get(cauldronScale_.second, cauldronScale_.first);
+		cauldronTransform_->translate = cauldronBasisPos_;
+	}
+	else if (curretnActiveFlaskParticleNum_ != 0.0f) {
+		cauldronTransform_->scale = Vector3::Lerp(cauldronScale_.first, cauldronScale_.second, curretnActiveFlaskParticleNum_ / allFlaskParticleNum_);
+		cauldronTransform_->translate = cauldronBasisPos_ + Lamb::Random(cauldronShake_.first, cauldronShake_.second);
+	}
+	else {
+		cauldronTransform_->scale = cauldronScale_.first;
+		cauldronTransform_->translate = cauldronBasisPos_;
+	}
+
+	if (cauldronEase_->ActiveExit()) {
+		isFirstActive_ = false;
 	}
 }
-
 void ResultScene::FirstDraw() {
 	for (auto& i : flaskParticles_) {
 		i->Draw(currentCamera_->GetViewOthographics());
@@ -175,7 +222,7 @@ void ResultScene::GameClearEffect() {
 
 void ResultScene::GameClearDraw() {
 	tex2D_->Draw(
-		backGround_.matWorld_,
+		backGround_->matWorld_,
 		Mat4x4::kIdentity,
 		currentCamera_->GetViewOthographics(),
 		backGroundTextureID_,
@@ -190,7 +237,7 @@ void ResultScene::GameOverEffect() {
 
 void ResultScene::GameOverDraw() {
 	tex2D_->Draw(
-		backGround_.matWorld_,
+		backGround_->matWorld_,
 		Mat4x4::kIdentity,
 		currentCamera_->GetViewOthographics(),
 		backGroundTextureID_,
@@ -198,7 +245,7 @@ void ResultScene::GameOverDraw() {
 		BlendType::kNone
 	);
 	tex2D_->Draw(
-		backGround_.matWorld_ * Mat4x4::MakeTranslate(-Vector3::kZIdentity),
+		backGround_->matWorld_ * Mat4x4::MakeTranslate(-Vector3::kZIdentity),
 		Mat4x4::kIdentity,
 		currentCamera_->GetViewOthographics(),
 		zanennTexID_,

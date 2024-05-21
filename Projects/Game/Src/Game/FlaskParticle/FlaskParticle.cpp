@@ -14,7 +14,8 @@ FlaskParticle::FlaskParticle():
     appParticleNumMax_(10),
     particles_(100),
     curentParticleIndex_(0u),
-    isActive_()
+    isActive_(),
+    currentActiveParticleCount_(0u)
 {
     texture2D_ = DrawerManager::GetInstance()->GetTexture2D();
     textureID_ = DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png");
@@ -35,6 +36,7 @@ void FlaskParticle::Update() {
             uint32_t appParticle = Lamb::Random(appParticleNumMin_, appParticleNumMax_);
 
             for (size_t index = curentParticleIndex_; index < (curentParticleIndex_ + appParticle) and index < particles_.size(); index++) {
+                currentActiveParticleCount_++;
                 particles_[index].isActive = true;
                 particles_[index].activeTime = 0.0f;
                 particles_[index].startScale = Lamb::Random(scaleMin_, scaleMax_);
@@ -57,7 +59,8 @@ void FlaskParticle::Update() {
                 i->scale= Vector3::Lerp(i->startScale, i->startScale * 0.1f, t);
                 if (1.0f <= t) {
                     i->isActive = false;
-                    if (i == (--particles_.end())) {
+                    currentActiveParticleCount_--;
+                    if (currentActiveParticleCount_ == 0.0f) {
                         isActive_ = false;
                     }
                 }
