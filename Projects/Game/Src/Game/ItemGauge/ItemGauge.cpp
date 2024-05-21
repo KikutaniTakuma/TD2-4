@@ -7,22 +7,24 @@ void ItemGauge::Initialize(){
 
 	gaugeState_ = std::make_unique<Tex2DState>();
 	gaugeState_->color = 0xffffffff;
-	gaugeState_->transform.scale = { 1040.0f,96.0f };
-	gaugeState_->transform.translate = { 0.0f, 300.0f };
+	gaugeState_->transform.scale = { 780.0f,72.0f };
+	gaugeState_->transform.translate = { -50.0f, 300.0f };
 	gaugeState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeFrame.png");
 
 	moveGaugeLeftState_ = std::make_unique<Tex2DState>();
 	moveGaugeLeftState_->color = 0xffffffff;
-	moveGaugeLeftState_->transform.scale = { 48.0f,64.0f };
-	moveGaugeLeftState_->transform.translate = { -300.0f, 300.0f };
+	moveGaugeLeftState_->transform.scale = { 36.0f,48.0f };
+	moveGaugeLeftState_->transform.translate = { 200.0f, 300.0f };
 	moveGaugeLeftState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeSide.png");
 
 	moveGaugeCenterState_ = std::make_unique<Tex2DState>();
 	moveGaugeCenterState_->color = 0xffffffff;
-	moveGaugeCenterState_->transform.scale = { 0.0f,96.0f };
+	moveGaugeCenterState_->transform.scale = { 0.0f,72.0f };
 	moveGaugeCenterState_->transform.translate = { 0.0f, 300.0f };
 	moveGaugeCenterState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeCenter.png");
 
+	gaugePosLength_ = kGaugePosX_.x - kGaugePosX_.y;
+	gaugePosCenterLength_ = kGaugeCenterPosX_.x - kGaugeCenterPosX_.y;
 }
 
 void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
@@ -68,14 +70,14 @@ void ItemGauge::Debug(){
 void ItemGauge::MoveGauge(){
 	float& leftPos = moveGaugeLeftState_->transform.translate.x;
 
-	leftPos = kGaugePosX_.x - (kGaugePosLength_ * (num_));
+	leftPos = kGaugePosX_.x - (gaugePosLength_ * (num_));
 
-	moveGaugeCenterState_->transform.translate.x = kGaugeCenterPosX_.x - (kGaugePosCenterLength_ * (num_));
+	moveGaugeCenterState_->transform.translate.x = kGaugeCenterPosX_.x - (gaugePosCenterLength_ * (num_));
 	moveGaugeCenterState_->transform.scale.x = (kGaugeScale_ * (num_));
 	if (num_ >= 0.02f && num_ < 0.04f) {
-		moveGaugeCenterState_->transform.scale.y = 64.0f;
+		moveGaugeCenterState_->transform.scale.y = 48.0f;
 	}
 	else {
-		moveGaugeCenterState_->transform.scale.y = 96.0f;
+		moveGaugeCenterState_->transform.scale.y = 72.0f;
 	}
 }

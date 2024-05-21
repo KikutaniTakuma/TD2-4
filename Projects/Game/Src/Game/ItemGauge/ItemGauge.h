@@ -40,13 +40,13 @@ private:
 private:
 	Texture2D* tex2D_;
 	//始点終点
-	const Vector2 kGaugePosX_ = { 495.0f,-384.0f };
-	const float kGaugePosLength_ = 879.0f;
+	const Vector2 kGaugePosX_ = { 321.0f,-338.0f };
+	float gaugePosLength_ = 659.0f;
 
 	//始点終点
-	const Vector2 kGaugeCenterPosX_ = { 504.5f,16.5f };
-	const float kGaugePosCenterLength_ = 488.0f;
-	const float kGaugeScale_ = 1088.0f;
+	const Vector2 kGaugeCenterPosX_ = { 320.0f,-38.0f };
+	float gaugePosCenterLength_ = 358.0f;
+	const float kGaugeScale_ = 814.0f;
 
 	float num_ = 0.0f;
 	//外側の縁
