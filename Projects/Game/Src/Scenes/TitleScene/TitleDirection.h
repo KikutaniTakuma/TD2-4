@@ -104,6 +104,8 @@ private:
 	//補完変数
 	float t_ = 0.0f;
 
+	uint32_t time_;
+
 
 	//現在移動しているライン
 	uint32_t linePass_ = 0;
