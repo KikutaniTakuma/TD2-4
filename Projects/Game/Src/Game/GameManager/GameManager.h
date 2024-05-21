@@ -15,6 +15,7 @@
 #include <Drawers/Model/Model.h>
 #include <Game/CollisionManager/AABB/AABB.h>
 #include <Game/GameEffectManager/GameEffectManager.h>
+#include <Game/Timer/Timer.h>
 
 class GameScene;
 
@@ -107,6 +108,7 @@ public:
 	SoLib::VItem<"落下するまでの間隔(sec)", float> vFallSpan_{ 2.5f };
 
 	SoLib::VItem<"クリアに必要なアイテムの数", int32_t> vClearItemCount_{ 150 };
+	SoLib::VItem<"最大時間", float> vMaxTime_{ 90.f };
 
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }
 
@@ -120,6 +122,8 @@ public:
 public:
 	/// @brief 入力動作
 	void InputAction();
+
+	GameTimer *GetGameTimer() const { return gameTimer_.get(); }
 
 private:
 	void BlockMapDropDown();
@@ -140,6 +144,8 @@ private:
 	SoLib::Time::DeltaTimer fallBlockSpawnTimer_;
 	// 入力マネージャ
 	Input *input_ = nullptr;
+
+	std::unique_ptr<GameTimer> gameTimer_;
 
 	std::unique_ptr<BlockGauge> blockGauge_ = nullptr;
 

@@ -194,6 +194,9 @@
     <ClCompile Include="BlockItem.cpp">
       <Filter>Game\Item</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\Timer\Timer.cpp">
+      <Filter>Game\Timer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -330,6 +333,9 @@
     </Filter>
     <Filter Include="Game\Item">
       <UniqueIdentifier>{fceb8355-3f72-4d68-ab50-01ce12dddd4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Timer">
+      <UniqueIdentifier>{af5ee753-ca06-40f6-9a67-3325f7815c4f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -536,6 +542,9 @@
     </ClInclude>
     <ClInclude Include="BlockItem.h">
       <Filter>Game\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Timer\Timer.h">
+      <Filter>Game\Timer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

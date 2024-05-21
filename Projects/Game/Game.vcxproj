@@ -175,6 +175,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Game\Ground\Ground.cpp" />
     <ClCompile Include="Src\Game\Map\BlockMap.cpp" />
     <ClCompile Include="Src\Game\SkyDome\SkyDome.cpp" />
+    <ClCompile Include="Src\Game\Timer\Timer.cpp" />
     <ClCompile Include="Src\Game\Water\Water.cpp" />
     <ClCompile Include="Src\GlobalVariables\GlobalVariables.cpp" />
     <ClCompile Include="Src\main.cpp" />
@@ -246,6 +247,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\Ground\Ground.h" />
     <ClInclude Include="Src\Game\Map\BlockMap.h" />
     <ClInclude Include="Src\Game\SkyDome\SkyDome.h" />
+    <ClInclude Include="Src\Game\Timer\Timer.h" />
     <ClInclude Include="Src\Game\Water\Water.h" />
     <ClInclude Include="Src\GlobalVariables\GlobalVariables.h" />
     <ClInclude Include="Src\Scenes\GameScene\GameScene.h" />

@@ -4,6 +4,7 @@
 #include <Drawers/Texture2D/Texture2D.h>
 
 #include "Drawers/Particle/Particle.h"
+#include <Game/Timer/Timer.h>
 
 // ゲームマネージャ
 class GameManager;	// シングルトン。前方宣言なのでSafePtrは使えない。
@@ -46,6 +47,9 @@ private:
 
 	// 落下ブロックの予測
 	std::pair<int32_t, int32_t> fallingBlock_;	// -1なら無効
+
+	// タイマーの表示関数
+	std::unique_ptr<GameTimerRender> gameTimerRender_;
 
 
 	std::vector<std::unique_ptr<Particle>> particles_;

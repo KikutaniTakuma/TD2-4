@@ -45,26 +45,16 @@ void GameManager::Init()
 	LocalBodyComp::pGameManager_ = this;
 	LocalBodyComp::pMap_ = GetMap();
 
-	//spawner_ = std::make_unique<GameObject>();
-
-	/*{
-		Lamb::SafePtr spriteComp = spawner_->AddComponent<SpriteComp>();
-		spriteComp->SetTexture("./Resources/uvChecker.png");
-		spriteComp->CalcTexUv();
-	}
-
-	{
-		Lamb::SafePtr playerComp = spawner_->AddComponent<FallingBlockSpawnerComp>();
-		playerComp->SetGauge(blockGauge_.get());
-	}*/
-
 	player_ = std::make_unique<GameObject>();
 	player_->AddComponent<PlayerComp>();
 	player_->AddComponent<PlayerAnimatorComp>();
 
-	//for (float i = 0; i < 15.f; i++) {
-	//	AddDwarf(Vector2::kXIdentity * i);
-	//}
+	// タイマーを用意
+	gameTimer_ = std::make_unique<GameTimer>();
+
+	// 初期化する
+	gameTimer_->Init();
+	gameTimer_->TimerStart(vMaxTime_);
 
 	for (int32_t yi = 0; yi < 3; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
@@ -280,6 +270,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		}
 	}
 
+	gameTimer_->Update(localDeltaTime);
+
 	blockGauge_->Update(localDeltaTime);
 	//}
 	//gameEffectManager_->fallingBlock_ = spawner_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
@@ -329,6 +321,7 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 	//blockMap_->Debug("BlockMap");
 	SoLib::ImGuiWidget(vFallSpan_.c_str(), &*vFallSpan_);
 	SoLib::ImGuiText("アイテム数", std::to_string(itemCount_) + '/' + std::to_string(vClearItemCount_));
+	SoLib::ImGuiText("残り時間", std::to_string(gameTimer_->GetDeltaTimer().GetNowFlame()) + '/' + std::to_string(gameTimer_->GetDeltaTimer().GetGoalFlame()));
 
 	ImGui::End();
 
@@ -930,8 +923,10 @@ void GameManager::ClearCheck()
 	if (not player_) {
 		pGameScene_->ChangeToResult();
 	}
-
 	if (vClearItemCount_ < itemCount_) {
+		pGameScene_->ChangeToResult();
+	}
+	if (gameTimer_->IsFinish()) {
 		pGameScene_->ChangeToResult();
 	}
 
