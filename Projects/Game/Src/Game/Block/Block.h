@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <array>
 #include "Math/Vector2.h"
+#include <Engine/Graphics/TextureManager/TextureManager.h>
 
 /// @brief ブロックのデータ。
 class Block {
