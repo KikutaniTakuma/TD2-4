@@ -152,8 +152,9 @@ void DwarfComp::FireBullet()
 
 			Lamb::SafePtr pGManager = GameManager::GetInstance();
 
-			Vector2 facingVec = Vector2::kXIdentity * static_cast<float>(facing_);
 			if (facing_) {
+				const Vector2 facingVec = Vector2::kXIdentity * static_cast<float>(facing_);
+
 				pGManager->AddEnemyBullet(pLocalBodyComp_->localPos_ + facingVec, Vector2::kXIdentity * (facing_ * 5.f));
 			}
 		}
