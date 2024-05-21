@@ -191,6 +191,9 @@
     <ClCompile Include="Src\Scenes\Manager\Fade\SimpleFade.cpp">
       <Filter>Scenes\Manager\Fade</Filter>
     </ClCompile>
+    <ClCompile Include="BlockItem.cpp">
+      <Filter>Game\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -324,6 +327,9 @@
     </Filter>
     <Filter Include="Editor\CatmullRomEditor">
       <UniqueIdentifier>{b36bb0bc-c4f4-4329-8c34-f3d546817030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Item">
+      <UniqueIdentifier>{fceb8355-3f72-4d68-ab50-01ce12dddd4f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -527,6 +533,9 @@
     </ClInclude>
     <ClInclude Include="Src\Scenes\Manager\Fade\SimpleFade.h">
       <Filter>Scenes\Manager\Fade</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockItem.h">
+      <Filter>Game\Item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
