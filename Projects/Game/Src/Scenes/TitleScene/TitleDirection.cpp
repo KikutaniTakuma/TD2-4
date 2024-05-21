@@ -17,7 +17,7 @@ void TitleDirection::Initialize(){
 	fade_->SetTransZ(-0.2f);
 	fade_->SetInOutColor(0x00, 0xffffffff);
 	fade_->SetFadeTime(0.5f);
-
+	
 	TextureInitialize();
 
 	ti_Status_.easePos = { 500.0f,70.0f };
@@ -31,6 +31,18 @@ void TitleDirection::Initialize(){
 	n_Status_.easing = std::make_unique<Easeing>();
 
 	isMoveTex_e_ = true;
+	isFirstFade_ = true;
+	e_Status_.easing->Restart();
+	ti_Status_.easing->Start(false, 0.3f, Easeing::InSine);
+	i_Status_.easing->Start(false, 0.35f, Easeing::InSine);
+	n_Status_.easing->Start(false, 0.35f, Easeing::InSine);
+	ti_Status_.easing->Stop();
+	i_Status_.easing->Stop();
+	n_Status_.easing->Stop();
+	isMove_ = false;
+	isMoveTex_others_ = false;
+	linePass_ = 0;
+
 }
 
 void TitleDirection::TextureInitialize(){

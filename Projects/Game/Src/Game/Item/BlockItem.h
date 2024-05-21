@@ -43,9 +43,9 @@ private:
 
 	std::array<float, 3> moveSpeeds_;
 
-	Vector2 secondPointPos_ = { 5.0f,10.0f };
+	Vector2 secondPointPos_ = { 1.0f,2.0f };
 
-	Vector2 thirdPointPos_ = { 10.0f,5.0f };
+	Vector2 thirdPointPos_ = { 2.0f,1.0f };
 
 	float point_ = 0.0f;
 	//補完変数
