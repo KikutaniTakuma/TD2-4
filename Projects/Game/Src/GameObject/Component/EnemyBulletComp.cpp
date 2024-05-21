@@ -8,7 +8,7 @@ void EnemyBulletComp::Init()
 	pLocalBodyComp_ = object_.AddComponent<LocalBodyComp>();
 	pLocalRigidbody_ = object_.AddComponent<LocalRigidbody>();
 	pSpriteComp_ = object_.AddComponent<SpriteComp>();
-	pSpriteComp_->SetTexture(TextureManager::GetInstance()->GetWhiteTex());
+	pSpriteComp_->SetTexture("./Resources/Bullet/Enemy/slimBullet.png");
 }
 
 void EnemyBulletComp::Update()
