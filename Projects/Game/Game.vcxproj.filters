@@ -191,7 +191,7 @@
     <ClCompile Include="Src\Scenes\Manager\Fade\SimpleFade.cpp">
       <Filter>Scenes\Manager\Fade</Filter>
     </ClCompile>
-    <ClCompile Include="BlockItem.cpp">
+    <ClCompile Include="Src\Game\Item\BlockItem.cpp">
       <Filter>Game\Item</Filter>
     </ClCompile>
   </ItemGroup>
@@ -534,7 +534,7 @@
     <ClInclude Include="Src\Scenes\Manager\Fade\SimpleFade.h">
       <Filter>Scenes\Manager\Fade</Filter>
     </ClInclude>
-    <ClInclude Include="BlockItem.h">
+    <ClInclude Include="Src\Game\Item\BlockItem.h">
       <Filter>Game\Item</Filter>
     </ClInclude>
   </ItemGroup>

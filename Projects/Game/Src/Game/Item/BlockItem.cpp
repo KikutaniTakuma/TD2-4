@@ -41,13 +41,15 @@ BlockItem::BlockItem(const Vector2& startPos, const Vector2& endPos, const Block
 		throw Lamb::Error::Code<BlockItem>(message, ErrorPlace);
 	}
 
-	moveSpeeds_ = { 0.1f,0.1f,0.1f};
+	moveSpeeds_ = { 0.3f,0.3f,0.3f };
+
+	isMove_ = true;
 	
 }
 
-void BlockItem::Update(){
+void BlockItem::Update(const float deltaTime){
 
-	MoveTexture();
+	MoveTexture(deltaTime);
 
 	texState_->transform.CalcMatrix();
 }
@@ -57,9 +59,9 @@ void BlockItem::Draw(const Mat4x4& cameraMat){
 		texState_->textureID, texState_->color, BlendType::kNormal);
 }
 
-void BlockItem::MoveTexture() {
+void BlockItem::MoveTexture(const float deltaTime) {
 	if (isMove_) {
-		t_ += moveSpeeds_[linePass_];
+		t_ += moveSpeeds_[linePass_] * deltaTime;
 	}
 	if (t_ >= 1.0f) {
 		t_ = 0.0f;

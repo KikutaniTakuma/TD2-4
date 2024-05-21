@@ -12,7 +12,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(const float deltaTime);
 
 	/// <summary>
 	/// 描画処理
@@ -21,7 +21,7 @@ public:
 
 
 private:
-	void MoveTexture();
+	void MoveTexture(const float deltaTime);
 
 	void SetControlPosition();
 
@@ -43,9 +43,9 @@ private:
 
 	std::array<float, 3> moveSpeeds_;
 
-	Vector2 secondPointPos_ = { 50.0f,100.0f };
+	Vector2 secondPointPos_ = { 5.0f,10.0f };
 
-	Vector2 thirdPointPos_ = { 100.0f,50.0f };
+	Vector2 thirdPointPos_ = { 10.0f,5.0f };
 
 	float point_ = 0.0f;
 	//補完変数

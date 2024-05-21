@@ -69,6 +69,10 @@ void TitleScene::Draw(){
 #endif // _DEBUG
 }
 
+void TitleScene::TimerMove(){
+
+}
+
 void TitleScene::SetControlPoint(){
 	////第一ポイントの位置によって+-を変更
 	////画面の左側なら

@@ -152,8 +152,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		dwarf->Update(localDeltaTime);
 	}
 
-	for (auto &item : itemMovingTimer_) {
-		item -= fixDeltaTime;
+	for (auto &item : itemList_) {
+		item->Update(fixDeltaTime);
 	}
 	AddPoint();
 
@@ -312,6 +312,9 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	}
 	for (const auto &dwarf : darkDwarfList_) {
 		dwarf->Draw(camera);
+	}
+	for (auto& item : itemList_) {
+		item->Draw(camera.GetViewOthographics());
 	}
 	blockGauge_->Draw(camera);
 
@@ -796,22 +799,26 @@ void GameManager::AddItem([[maybe_unused]] const Vector2 globalPos, const Block:
 	if (blockType == Block::BlockType::kNone) { return; }
 
 	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
-	for (uint32_t i = 0; i < count; i++) { itemMovingTimer_.push_back(1.f); }
+	for (uint32_t i = 0; i < count; i++) {
+		const Vector2 endPos = { -5.0f,5.0f };
+		std::unique_ptr<BlockItem> item = std::make_unique<BlockItem>(globalPos, endPos, blockType);
+		itemList_.emplace_back(std::move(item));
+	}
 	// ↑ アイテムのクラスができたら､この処理を置き換える
 }
 
 void GameManager::AddPoint()
 {
 	// for文を回して､1つずつ時間が終わっていないか確認する｡
-	for (auto item = itemMovingTimer_.cbegin(); item != itemMovingTimer_.end();) {
+	for (auto item = itemList_.cbegin(); item != itemList_.end();) {
 
 		// 時間が0以下になってたら消す
-		if (*item <= 0.f) {
+		if ((*item)->GetIsEnd()) {
 
 			// 破壊時の処理
 			itemCount_++;
 
-			item = itemMovingTimer_.erase(item); // オブジェクトを破棄してイテレータを変更
+			item = itemList_.erase(item); // オブジェクトを破棄してイテレータを変更
 			continue;
 		}
 
