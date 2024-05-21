@@ -113,7 +113,7 @@ public:
 	GameObject *GetPlayer() { return player_.get(); }
 
 	/// @brief ブロック破壊時のアイテム追加
-	void AddItem(const Block::BlockType blockType);
+	void AddItem(const Vector2 globalPos, const Block::BlockType blockType, const uint32_t count = 1);
 
 	void AddPoint();
 

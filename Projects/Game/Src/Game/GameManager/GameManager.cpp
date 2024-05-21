@@ -171,7 +171,6 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 				if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
 					fallingBlock->OnCollision(player_.get());
 					player_->OnCollision(fallingBlock.get());
-					player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{ SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f });
 				}
 			}
 		}
@@ -474,9 +473,9 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 {
 	auto block = blockMap_->GetBlockType(localPos);
 
+	const auto &dwarfPosSet = GetDwarfPos();
 
-
-	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
+	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), dwarfPosSet);
 
 	for (const auto &line : chainBlockMap) {
 		// どこか1つでも壊れてたらタイマー開始
@@ -489,49 +488,105 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 
 	POINTS targetPos{};
 
-
 	// 壊れたブロックだけのデータ
-	decltype(chainBlockMap) breakBlock = {};
+	BlockMap::BlockBitMap breakBlock = chainBlockMap;
+	// 何個壊したか
+	size_t breakCount = 0;
 
-	for (targetPos.y = 0; targetPos.y < BlockMap::kMapY; targetPos.y++) {
-		const auto &breakLine = chainBlockMap[targetPos.y];
-		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
-			if (breakLine[targetPos.x]) {
-				if (auto blockType = blockMap_->GetBlockType(targetPos); blockType != Block::BlockType::kNone) {
-					breakBlock[targetPos.y][targetPos.x] = true;
-					AddItem(blockType);
-					blockMap_->BreakBlock(targetPos);
-				}
+	std::vector<GameObject *> deadDwarfList; deadDwarfList.reserve(dwarfList_.size());
+	std::vector<GameObject *> deadDarkDwarfList; deadDarkDwarfList.reserve(darkDwarfList_.size());
+
+	for (const POINTS pos : dwarfPosSet) {
+		if (not BlockMap::IsOutSide(pos)) {
+			// もし、ブロックが存在しなかった場合はそこを折る
+			if (blockMap_->GetBlockType(pos) == Block::BlockType::kNone) {
+				breakBlock[pos.y][pos.x] = false;
 			}
 		}
 	}
 
+	// ブロックの数を保存
+	for (const decltype(breakBlock)::value_type line : breakBlock) {
+		breakCount += line.count();
+	}
+
+	// 通常小人の死亡検知
 	for (auto &dwarf : dwarfList_) {
 		auto localBody = dwarf->GetComponent<LocalBodyComp>();
 		if (localBody) {
 			POINTS mapIndex = localBody->GetMapPos();
 			if (not BlockMap::IsOutSide(mapIndex)) {
-				// そこが破壊対象なら死ぬ
+				// そこが破壊対象なら値を追加する
 				if (chainBlockMap[mapIndex.y][mapIndex.x]) {
-					Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
-					audio->Start(0.2f, false);
-
-					dwarf->SetActive(false);
+					deadDwarfList.push_back(dwarf.get());
+					breakCount++;
 				}
 			}
 		}
 	}
 
+	// 闇小人の死亡検知
 	for (auto &dwarf : darkDwarfList_) {
 		auto localBody = dwarf->GetComponent<LocalBodyComp>();
 		if (localBody) {
 			POINTS mapIndex = localBody->GetMapPos();
-			// そこが破壊対象なら死ぬ
-			if (chainBlockMap[mapIndex.y][mapIndex.x]) {
-				dwarf->SetActive(false);
+			if (not BlockMap::IsOutSide(mapIndex)) {
+				// そこが破壊対象なら値を追加する
+				if (chainBlockMap[mapIndex.y][mapIndex.x]) {
+					deadDarkDwarfList.push_back(dwarf.get());
+					breakCount++;
+				}
 			}
 		}
 	}
+
+	uint32_t itemSpawnCount = 0;
+	if (breakCount <= 4) {
+		itemSpawnCount = 1;
+	}
+	else if (breakCount <= 9) {
+		itemSpawnCount = 2;
+	}
+	else
+	{
+		itemSpawnCount = 3;
+	}
+
+
+	//Block::BlockType breakBlockType = Block::BlockType::kNone;
+
+	for (targetPos.y = 0; targetPos.y < BlockMap::kMapY; targetPos.y++) {
+		const auto &breakLine = chainBlockMap[targetPos.y];
+		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
+			if (breakLine[targetPos.x]) {
+				const auto blockType = blockMap_->GetBlockType(targetPos);
+				blockMap_->BreakBlock(targetPos);
+
+				AddItem(BlockMap::GetGlobalPos(targetPos), blockType, itemSpawnCount);
+				//breakBlockType = blockType;
+
+			}
+		}
+	}
+
+	for (auto *const dwarf : deadDwarfList) {
+
+		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kBlue, itemSpawnCount);
+		dwarf->SetActive(false);
+
+	}
+
+	for (auto *const dwarf : deadDarkDwarfList) {
+		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kRed, itemSpawnCount);
+		dwarf->SetActive(false);
+	}
+
+	// どれか一体でも死んでたら鳴らす
+	if (not deadDwarfList.empty() or not deadDarkDwarfList.empty()) {
+		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
+		audio->Start(0.2f, false);
+	}
+
 
 
 	blockMap_->SetBreakBlockType(block);
@@ -734,13 +789,13 @@ std::unordered_set<POINTS> GameManager::GetDwarfPos() const
 	return result;
 }
 
-void GameManager::AddItem(const Block::BlockType blockType)
+void GameManager::AddItem([[maybe_unused]] const Vector2 globalPos, const Block::BlockType blockType, const uint32_t count)
 {
 	// もしブロックが無効であったら飛ばす
 	if (blockType == Block::BlockType::kNone) { return; }
 
 	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
-	itemMovingTimer_.push_back(1.f);
+	for (uint32_t i = 0; i < count; i++) { itemMovingTimer_.push_back(1.f); }
 	// ↑ アイテムのクラスができたら､この処理を置き換える
 }
 
@@ -753,7 +808,7 @@ void GameManager::AddPoint()
 		if (*item <= 0.f) {
 
 			// 破壊時の処理
-			itemCount_ += 2;
+			itemCount_++;
 
 			item = itemMovingTimer_.erase(item); // オブジェクトを破棄してイテレータを変更
 			continue;

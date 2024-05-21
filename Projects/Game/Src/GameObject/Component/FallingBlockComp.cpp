@@ -9,12 +9,12 @@ void FallingBlockComp::Init()
 	pRigidbody_ = object_.AddComponent<LocalRigidbody>();
 	pHitMapComp_ = object_.AddComponent<LocalMapHitComp>();
 
-	
+
 }
 
 void FallingBlockComp::Start()
 {
-	
+
 }
 
 void FallingBlockComp::Update()
@@ -37,8 +37,9 @@ void FallingBlockComp::Draw(const Camera &camera) const
 void FallingBlockComp::OnCollision(GameObject *other)
 {
 	Lamb::SafePtr playerComp = other->GetComponent<PlayerComp>();
+
 	if (playerComp) {
-		playerComp->InflictDamage(1);
+		playerComp->InflictDamage(1, { SoLib::Math::Sign(other->GetComponent<LocalBodyComp>()->localPos_.x - pLocalPos_->localPos_.x) * -2.f, 2.f });
 	}
 
 }
