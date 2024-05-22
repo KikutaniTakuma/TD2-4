@@ -145,6 +145,15 @@ public:
 
 	const int32_t GetItemCount()const { return itemCount_; }
 
+	/// @brief 各アイテムごとの個数
+	/// @param blockType アイテムのタイプ
+	/// @return アイテムの個数
+	const uint32_t GetItemTypeCount(const Block::BlockType blockType) const {
+		uint32_t index = static_cast<uint32_t>(blockType);
+		index = std::clamp(index, 1u, static_cast<uint32_t>(Block::BlockType::kMax) - 1) - 1;
+		return itemTypeCount_[index];
+	}
+
 private:
 	void BlockMapDropDown();
 
@@ -153,6 +162,8 @@ private:
 	void ClearCheck();
 
 private:
+
+	std::array<uint32_t, 4u> itemTypeCount_;
 
 	std::list<std::unique_ptr<BlockItem>> itemList_;
 

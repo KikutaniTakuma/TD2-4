@@ -877,6 +877,12 @@ void GameManager::AddPoint()
 			// 破壊時の処理
 			itemCount_++;
 
+			// アイテムの属性で数値を増やす
+			uint32_t index = static_cast<uint32_t>((*item)->GetItemType());
+			index = std::clamp(index, 1u, static_cast<uint32_t>(Block::BlockType::kMax) - 1) - 1;
+			itemTypeCount_[index]++;
+
+
 			item = itemList_.erase(item); // オブジェクトを破棄してイテレータを変更
 			continue;
 		}
