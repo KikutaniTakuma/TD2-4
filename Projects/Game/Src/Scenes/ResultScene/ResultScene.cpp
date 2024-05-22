@@ -15,6 +15,7 @@
 #include "Utils/Random/Random.h"
 
 #include"Scenes/SelectToGame/SelectToGame.h"
+#include "Game/GameManager/GameManager.h"
 
 bool ResultScene::isGameClear_ = false;
 
@@ -25,7 +26,7 @@ BaseScene{ BaseScene::ID::Result }
 
 void ResultScene::Initialize(){
 	// ゲームのクリア状況入力
-	isGameClear_ = true;
+	//isGameClear_ = true;
 	
 	// ステージ番号入力
 	preGameStageNumber_ = static_cast<uint32_t>(SelectToGame::GetInstance()->GetSelect());
@@ -82,23 +83,18 @@ void ResultScene::Initialize(){
 	cauldronEase_ = std::make_unique<Easeing>();
 
 
-	for (size_t index = 0; const auto& i : std::filesystem::directory_iterator("./Resources/Item/")) {
-		if (not i.path().has_extension()) {
-			continue;
-		}
-		flaskTextureID_[index] = drawerManager_->LoadTexture(i.path().string());
-		index++;
-		if (flaskTextureID_.size() <= index) {
-			break;
-		}
-	}
-
+	flaskTextureID_[0] = drawerManager_->LoadTexture("./Resources/Item/lizardTail.png");
+	flaskTextureID_[1] = drawerManager_->LoadTexture("./Resources/Item/water.png");
+	flaskTextureID_[2] = drawerManager_->LoadTexture("./Resources/Item/herbs.png");
+	flaskTextureID_[3] = drawerManager_->LoadTexture("./Resources/Item/mineral.png");
+	uint32_t currentElementType = static_cast<uint32_t>(Block::BlockType::kRed);
 	for (auto texID = flaskTextureID_.begin(); auto & i : flaskParticles_) {
 		i = std::make_unique<FlaskParticle>();
 		i->SetParticleSize(Vector3::kIdentity * 50.0f, Vector3::kIdentity * 80.0f);
 
 		// ここでゲームプレイ中のデータを入れる予定
-		i->Resize(20);
+		i->Resize(GameManager::GetInstance()->GetItemTypeCount(static_cast<Block::BlockType>(currentElementType)));
+		currentElementType++;
 		allFlaskParticleNum_ += static_cast<float>(i->GetSize());
 
 
