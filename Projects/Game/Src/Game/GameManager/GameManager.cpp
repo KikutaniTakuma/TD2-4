@@ -328,9 +328,6 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 
 void GameManager::LoadGlobalVariant([[maybe_unused]] const uint32_t stageIndex)
 {
-
-#ifdef _DEBUG
-
 	const auto *const gVariable = GlobalVariables::GetInstance();
 	{
 		const auto *const group = gVariable->GetGroup("Stage" + std::to_string(stageIndex));
@@ -356,8 +353,6 @@ void GameManager::LoadGlobalVariant([[maybe_unused]] const uint32_t stageIndex)
 			LoadValue(*group, DwarfComp::vDwarfItems_);
 		}
 	}
-
-#endif // _DEBUG
 
 }
 
