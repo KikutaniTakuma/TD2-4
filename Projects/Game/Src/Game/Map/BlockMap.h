@@ -188,6 +188,7 @@ public:
 		}
 	}
 
+	inline static SoLib::VItem<"中心座標", Vector2> vCenterDiff_{ {} };
 
 private:
 
@@ -212,7 +213,6 @@ private:
 	//inline static SoLib::VItem<"ブロック1個のスクリーンサイズ", int32_t> vWindowSize_{ 64 };
 	//inline static SoLib::VItem<"敵拠点の横幅", int32_t> vEnemyHouseWidth_{ 3 };
 
-	inline static SoLib::VItem<"中心座標", Vector2> vCenterDiff_{ {} };
 
 	Model *model_;
 

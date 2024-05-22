@@ -51,6 +51,10 @@ public:
 
 	void SetUIManager(GameUIManager *uiManager) { pGameUIManager_ = uiManager; }
 
+	void LoadGlobalVariant(const uint32_t stageIndex = 0);
+
+	void SaveGlobalVariant(const uint32_t stageIndex = 0) const;
+
 public:
 	bool Debug(const char *const str);
 
@@ -113,6 +117,10 @@ public:
 
 	SoLib::VItem<"クリアに必要なアイテムの数", int32_t> vClearItemCount_{ 150 };
 	SoLib::VItem<"最大時間", float> vMaxTime_{ 90.f };
+
+	/// @brief 調整項目
+	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_ };
+	inline static constexpr SoLib::VItemList vBlockMapItems_{ &BlockMap::vCenterDiff_ };
 
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }
 

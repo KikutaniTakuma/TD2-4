@@ -28,6 +28,9 @@
 
 void GameManager::Init()
 {
+	SaveGlobalVariant();
+	LoadGlobalVariant();
+
 	Block::StaticLoad();
 
 	blockGauge_ = std::make_unique<BlockGauge>();
@@ -76,7 +79,10 @@ void GameManager::Init()
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
 {
+
 	Debug("GameManager");
+
+	LoadGlobalVariant();
 
 	ClearCheck();
 
@@ -310,6 +316,58 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	blockGauge_->Draw(camera);
 
 	gameEffectManager_->Draw(camera);
+}
+
+void GameManager::LoadGlobalVariant([[maybe_unused]] const uint32_t stageIndex)
+{
+
+#ifdef _DEBUG
+
+	const auto *const gVariable = GlobalVariables::GetInstance();
+	{
+		const auto *const group = gVariable->GetGroup("Stage" + std::to_string(stageIndex));
+		if (group) {
+			LoadValue(*group, *GetInstance(), vGameManagerItems_);
+			//*group >> std::make_pair<GameManager *const, decltype((vGameManagerItems_))>(GetInstance(), vGameManagerItems_);
+		}
+	}
+	{
+		//const auto *const group = gVariable->GetGroup("BlockMap");
+		//if (group) {
+		//	LoadValue(*group, *blockMap_, vBlockMapItems_);
+		//	//*group >> std::make_pair<BlockMap *const, decltype((vBlockMapItems_))>(blockMap_.get(), vBlockMapItems_);
+		//}
+	}
+
+#endif // _DEBUG
+
+}
+
+void GameManager::SaveGlobalVariant([[maybe_unused]] const uint32_t stageIndex) const
+{
+
+#ifdef _DEBUG
+
+	auto *const gVariable = GlobalVariables::GetInstance();
+	{
+		auto *const group = gVariable->AddGroup("Stage" + std::to_string(stageIndex));
+		if (group) {
+			SaveValue(*group, *GetInstance(), vGameManagerItems_);
+
+			//*group << std::make_pair<const GameManager *const, decltype((vGameManagerItems_))>(GetInstance(), vGameManagerItems_);
+		}
+	}
+	{
+		//auto *const group = gVariable->AddGroup("BlockMap");
+		//if (group) {
+		//	SaveValue(*group, *blockMap_, vBlockMapItems_);
+
+		//	//*group << std::make_pair<BlockMap *const, decltype((vBlockMapItems_))>(blockMap_.get(), vBlockMapItems_);
+		//}
+	}
+
+#endif // _DEBUG
+
 }
 
 bool GameManager::Debug([[maybe_unused]] const char *const str)
@@ -874,7 +932,7 @@ void GameManager::BlockMapDropDown()
 			}
 			// そこにブロックがあり、接地していない場合は虚空にして落下させる
 			else if (isFloatBlock[index]) {
-				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -10, Vector2::kZero);
+				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -5, Vector2::kZero);
 				block.SetBlockType(Block::BlockType::kNone);
 				blockMap_->GetBlockStatusMap()->at(static_cast<int32_t>(localPos.y)).at(static_cast<int32_t>(localPos.x)).reset();
 			}
