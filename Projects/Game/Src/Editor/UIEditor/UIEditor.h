@@ -89,6 +89,9 @@ public:
 	}
 
 private:
+	void GameControlUIMove(const size_t i, const size_t j);
+
+private:
 	Input* input_ = nullptr;
 
 	Texture2D* tex2D_ = nullptr;
