@@ -114,12 +114,15 @@ public:
 	SoLib::VItem<"破壊時の停止時間", float> vBreakStopTime_{ 0.5f };
 
 	SoLib::VItem<"落下するまでの間隔(sec)", float> vFallSpan_{ 2.5f };
+	SoLib::VItem<"敵の沸く間隔(sec)", float> vSpawnSpan_{ 2.5f };
 
 	SoLib::VItem<"クリアに必要なアイテムの数", int32_t> vClearItemCount_{ 150 };
-	SoLib::VItem<"最大時間", float> vMaxTime_{ 90.f };
+	SoLib::VItem<"最大時間", int32_t> vMaxTime_{ 90 };
+
+	SoLib::VItem<"ブロックの種類", int32_t> vBlockTypeCount_{ 4 };
 
 	/// @brief 調整項目
-	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_ };
+	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_ };
 	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_ };
 
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }

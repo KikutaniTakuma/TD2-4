@@ -24,12 +24,16 @@
 
 #include "Drawers/Particle/Particle.h"
 #include "Scenes/GameScene/GameScene.h"
+#include <Scenes/SelectToGame/SelectToGame.h>
 
 
 void GameManager::Init()
 {
-	SaveGlobalVariant();
-	LoadGlobalVariant();
+	GlobalVariables::GetInstance()->LoadFile();
+
+	const SelectToGame *select = SelectToGame::GetInstance();
+	LoadGlobalVariant(select->GetSelect());
+	SaveGlobalVariant(select->GetSelect());
 
 	Block::StaticLoad();
 
@@ -57,13 +61,13 @@ void GameManager::Init()
 
 	// 初期化する
 	gameTimer_->Init();
-	gameTimer_->TimerStart(vMaxTime_);
+	gameTimer_->TimerStart(static_cast<float>(vMaxTime_));
 
 	for (int32_t yi = 0; yi < 3; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
 			const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
 
-			Block::BlockType type = static_cast<Block::BlockType>(Lamb::Random(static_cast<uint32_t>(Block::BlockType::kNone) + 1, static_cast<uint32_t>(Block::BlockType::kMax) - 1));
+			Block::BlockType type = static_cast<Block::BlockType>(std::clamp(Lamb::Random(0, *vBlockTypeCount_), 0, static_cast<int32_t>(Block::BlockType::kMax) - 2) + 1);
 
 			blockMap_->SetBlocks(pos, Vector2::kIdentity, type);
 
@@ -80,9 +84,13 @@ void GameManager::Init()
 void GameManager::Update([[maybe_unused]] const float deltaTime)
 {
 
-	Debug("GameManager");
+#ifdef _DEBUG
 
-	LoadGlobalVariant();
+	Debug("GameManager");
+	const SelectToGame *select = SelectToGame::GetInstance();
+	LoadGlobalVariant(select->GetSelect());
+
+#endif // _DEBUG
 
 	ClearCheck();
 
@@ -715,7 +723,7 @@ std::list<GameManager::DwarfPick> GameManager::PickUpBlockSideObject(const POINT
 void GameManager::RandomDwarfSpawn()
 {
 	if (not dwarfSpawnTimer_.IsActive()) {
-		dwarfSpawnTimer_.Start(5.f);
+		dwarfSpawnTimer_.Start(vSpawnSpan_);
 		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
 		AddDwarf(Vector2{ static_cast<float>(spawnPos), 0 });
 	}
@@ -724,8 +732,8 @@ void GameManager::RandomFallBlockSpawn()
 {
 	if (not fallBlockSpawnTimer_.IsActive()) {
 		fallBlockSpawnTimer_.Start(vFallSpan_);
-		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
-		uint32_t blockType = Lamb::Random(static_cast<uint32_t>(Block::BlockType::kNone) + 1, static_cast<uint32_t>(Block::BlockType::kMax) - 1);
+		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX - 1);
+		uint32_t blockType = std::clamp(Lamb::Random(0, *vBlockTypeCount_), 0, static_cast<int32_t>(Block::BlockType::kMax) - 2) + 1;
 
 
 		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -5, Vector2::kZero);
