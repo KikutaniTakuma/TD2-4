@@ -29,6 +29,7 @@ void UIEditor::Initialize(){
 	newTex_->color = 0x000000ff;
 	newTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/white2x2.png");
 	
+	input_ = Input::GetInstance();
 	//texAnim_ = std::make_unique<Tex2DAniamtor>();
 
 	//texAnim_->SetStartPos(Vector2::kZero);
@@ -52,6 +53,7 @@ void UIEditor::Update(const BaseScene::ID id){
 		newTex_->transform.translate.y *= -1;
 		newTex_->transform.translate += Vector2{ -640, 360 };
 	}
+
 	
 	newTex_->transform.CalcMatrix();
 	
@@ -73,6 +75,8 @@ void UIEditor::Update(const BaseScene::ID id){
 					uvTranslate.y -= 1.0f;
 				}
 			}
+
+			GameControlUIMove(i, j);
 
 			texies_[i][j]->transform.CalcMatrix();
 			texies_[i][j]->uvTransform.CalcMatrix();
@@ -131,9 +135,17 @@ void UIEditor::Debug(const BaseScene::ID id){
 							std::string result;
 
 							size_t slashPos_ = i.string().find_last_of('/');
+							size_t lSlashPos_ = i.string().find_last_of('\\');
 							size_t dotPos_ = i.string().find_last_of('.');
-							if (slashPos_ != std::string::npos && dotPos_ != std::string::npos && dotPos_ > slashPos_) {
-								result = i.string().substr(slashPos_ + 1, dotPos_ - slashPos_ - 1);
+							if (lSlashPos_ > slashPos_) {
+								if (lSlashPos_ != std::string::npos && dotPos_ != std::string::npos && dotPos_ > lSlashPos_) {
+									result = i.string().substr(lSlashPos_ + 1, dotPos_ - lSlashPos_ - 1);
+								}
+							}
+							else {
+								if (slashPos_ != std::string::npos && dotPos_ != std::string::npos && dotPos_ > slashPos_) {
+									result = i.string().substr(slashPos_ + 1, dotPos_ - slashPos_ - 1);
+								}
 							}
 							setTex_->textureName = result;
 							texies_[static_cast<size_t>(id)].emplace_back(std::move(setTex_));
@@ -246,6 +258,59 @@ void UIEditor::LoadFiles(const std::string& fileName){
 	}
 	std::wstring message = L"ファイルが見つかりませんでした。";
 	MessageBoxW(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), L"UIないよぉ！", 0);
+}
+
+void UIEditor::GameControlUIMove(const size_t i, const size_t j){
+	const auto& key = input_->GetKey();
+
+	auto& tex = texies_[i][j];
+
+	if (tex->textureName == "attackButton") {
+		if (key->LongPush(DIK_SPACE)) {
+			tex->uvTransform.translate.x = 0.5f;
+		}
+		else {
+			tex->uvTransform.translate.x = 0.0f;
+		}
+	}
+
+	if (tex->textureName == "carryButton") {
+		if (key->LongPush(DIK_X)) {
+			tex->uvTransform.translate.x = 0.5f;
+		}
+		else {
+			tex->uvTransform.translate.x = 0.0f;
+		}
+	}
+
+	if (tex->textureName == "moveButton") {
+		if (tex->uvTransform.scale.x > 0) {
+			if (key->GetKey(DIK_LEFT)) {
+				tex->uvTransform.translate.x = 0.5f;
+			}
+			else {
+				tex->uvTransform.translate.x = 0.0f;
+			}
+		}
+		else {
+			if (key->GetKey(DIK_RIGHT)) {
+				tex->uvTransform.translate.x = 0.0f;
+			}
+			else {
+				tex->uvTransform.translate.x = 0.5f;
+			}
+		}
+	}
+
+	if (tex->textureName == "jumpButton") {
+		if (key->LongPush(DIK_Z)) {
+			tex->uvTransform.translate.x = 0.5f;
+		}
+		else {
+			tex->uvTransform.translate.x = 0.0f;
+		}
+	}
+
 }
 
 void UIEditor::SaveFile(const std::string& fileName){
