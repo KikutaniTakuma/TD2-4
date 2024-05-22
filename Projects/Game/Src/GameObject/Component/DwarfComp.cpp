@@ -86,7 +86,7 @@ void DwarfComp::ClimbUp()
 
 	// 登るフラグが立っていたら登る
 	if (climbFlag) {
-		pLocalBodyComp_->localPos_.y += GetDeltaTime() * 2.f;
+		pLocalBodyComp_->localPos_.y += GetDeltaTime() * vClimbSpeed_;
 		isClimbing_ = true;
 	}
 	// 折れていたら登っていない
@@ -148,14 +148,14 @@ void DwarfComp::FireBullet()
 
 			facing_ = static_cast<int32_t>(SoLib::Math::Sign(plBody->localPos_.x - pLocalBodyComp_->localPos_.x));
 
-			timer_.Start(5.f);
+			timer_.Start(vBulletFireSpan_);
 
 			Lamb::SafePtr pGManager = GameManager::GetInstance();
 
 			if (facing_) {
 				const Vector2 facingVec = Vector2::kXIdentity * static_cast<float>(facing_);
 
-				pGManager->AddEnemyBullet(pLocalBodyComp_->localPos_ + facingVec, Vector2::kXIdentity * (facing_ * 5.f));
+				pGManager->AddEnemyBullet(pLocalBodyComp_->localPos_ + facingVec, Vector2::kXIdentity * (facing_ * vBulletSpeed_));
 			}
 		}
 	}
