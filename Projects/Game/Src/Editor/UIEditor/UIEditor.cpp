@@ -62,7 +62,7 @@ void UIEditor::Update(const BaseScene::ID id){
 
 		for (size_t j = 0; j < texies_[i].size(); j++){
 			if (texies_[i][j]->textureName == "backGround") {
-				Vector3& uvTranslate = texies_[i][j]->uvTrnasform.translate;
+				Vector3& uvTranslate = texies_[i][j]->uvTransform.translate;
 
 				uvTranslate.x += 0.001f;
 				uvTranslate.y += 0.0005f;
@@ -75,7 +75,7 @@ void UIEditor::Update(const BaseScene::ID id){
 			}
 
 			texies_[i][j]->transform.CalcMatrix();
-			texies_[i][j]->uvTrnasform.CalcMatrix();
+			texies_[i][j]->uvTransform.CalcMatrix();
 		}
 	}
 
@@ -98,7 +98,7 @@ void UIEditor::Draw(const Mat4x4& camera, const BaseScene::ID id){
 		if (i != static_cast<size_t>(id))
 			continue;
 		for (size_t j = 0; j < texies_[i].size(); j++) {
-			tex2D_->Draw(texies_[i][j]->transform.matWorld_, texies_[i][j]->uvTrnasform.matWorld_, camera
+			tex2D_->Draw(texies_[i][j]->transform.matWorld_, texies_[i][j]->uvTransform.matWorld_, camera
 				, texies_[i][j]->textureID, texies_[i][j]->color, BlendType::kNormal);
 		}
 	}
@@ -152,8 +152,8 @@ void UIEditor::Debug(const BaseScene::ID id){
 				if (ImGui::TreeNode((texies_[static_cast<size_t>(id)][i]->textureName.c_str() + std::to_string(i)).c_str())) {
 					ImGui::DragFloat3("ポジション", texies_[static_cast<size_t>(id)][i]->transform.translate.data(), 1.0f);
 					ImGui::DragFloat2("大きさ", texies_[static_cast<size_t>(id)][i]->transform.scale.data(), 1.0f);
-					ImGui::DragFloat2("UVポジション", texies_[static_cast<size_t>(id)][i]->uvTrnasform.translate.data(), 1.0f);
-					ImGui::DragFloat2("UV大きさ",texies_[static_cast<size_t>(id)][i]->uvTrnasform.scale.data(), 1.0f);
+					ImGui::DragFloat2("UVポジション", texies_[static_cast<size_t>(id)][i]->uvTransform.translate.data(), 1.0f);
+					ImGui::DragFloat2("UV大きさ",texies_[static_cast<size_t>(id)][i]->uvTransform.scale.data(), 1.0f);
 					uint32_t colorInt = texies_[static_cast<size_t>(id)][i]->color;					
 					Vector4 color = colorInt;
 					 ImGui::ColorEdit4("テクスチャの色", &color.vec.x, true);
@@ -277,12 +277,12 @@ void UIEditor::SaveFile(const std::string& fileName){
 			   texies_[1][i]->transform.scale.z
 			});
 		root[kItemName_]["Title"][i]["UVTranslate"] = json::array({
-			   texies_[1][i]->uvTrnasform.translate.x,
-			   texies_[1][i]->uvTrnasform.translate.y
+			   texies_[1][i]->uvTransform.translate.x,
+			   texies_[1][i]->uvTransform.translate.y
 			});
 		root[kItemName_]["Title"][i]["UVScale"] = json::array({
-			   texies_[1][i]->uvTrnasform.scale.x,
-			   texies_[1][i]->uvTrnasform.scale.y
+			   texies_[1][i]->uvTransform.scale.x,
+			   texies_[1][i]->uvTransform.scale.y
 			});
 			root[kItemName_]["Title"][i]["color"] = texies_[1][i]->color;
 			root[kItemName_]["Title"][i]["TextureName"] = texies_[1][i]->textureName;
@@ -303,12 +303,12 @@ void UIEditor::SaveFile(const std::string& fileName){
 				   texies_[3][i]->transform.scale.z
 				});
 			root[kItemName_]["Game"][i]["UVTranslate"] = json::array({
-				   texies_[3][i]->uvTrnasform.translate.x,
-				   texies_[3][i]->uvTrnasform.translate.y
+				   texies_[3][i]->uvTransform.translate.x,
+				   texies_[3][i]->uvTransform.translate.y
 				});
 			root[kItemName_]["Game"][i]["UVScale"] = json::array({
-				   texies_[3][i]->uvTrnasform.scale.x,
-				   texies_[3][i]->uvTrnasform.scale.y
+				   texies_[3][i]->uvTransform.scale.x,
+				   texies_[3][i]->uvTransform.scale.y
 				});
 			root[kItemName_]["Game"][i]["color"] = texies_[3][i]->color;
 			root[kItemName_]["Game"][i]["TextureName"] = texies_[3][i]->textureName;
@@ -329,12 +329,12 @@ void UIEditor::SaveFile(const std::string& fileName){
 				   texies_[2][i]->transform.scale.z
 				});
 			root[kItemName_]["Select"][i]["UVTranslate"] = json::array({
-				   texies_[2][i]->uvTrnasform.translate.x,
-				   texies_[2][i]->uvTrnasform.translate.y
+				   texies_[2][i]->uvTransform.translate.x,
+				   texies_[2][i]->uvTransform.translate.y
 				});
 			root[kItemName_]["Select"][i]["UVScale"] = json::array({
-				   texies_[2][i]->uvTrnasform.scale.x,
-				   texies_[2][i]->uvTrnasform.scale.y
+				   texies_[2][i]->uvTransform.scale.x,
+				   texies_[2][i]->uvTransform.scale.y
 				});
 			root[kItemName_]["Select"][i]["color"] = texies_[2][i]->color;
 			root[kItemName_]["Select"][i]["TextureName"] = texies_[2][i]->textureName;
@@ -355,12 +355,12 @@ void UIEditor::SaveFile(const std::string& fileName){
 				   texies_[0][i]->transform.scale.z
 				});
 			root[kItemName_]["Result"][i]["UVTranslate"] = json::array({
-				   texies_[0][i]->uvTrnasform.translate.x,
-				   texies_[0][i]->uvTrnasform.translate.y
+				   texies_[0][i]->uvTransform.translate.x,
+				   texies_[0][i]->uvTransform.translate.y
 				});
 			root[kItemName_]["Result"][i]["UVScale"] = json::array({
-				   texies_[0][i]->uvTrnasform.scale.x,
-				   texies_[0][i]->uvTrnasform.scale.y
+				   texies_[0][i]->uvTransform.scale.x,
+				   texies_[0][i]->uvTransform.scale.y
 				});
 			root[kItemName_]["Result"][i]["color"] = texies_[0][i]->color;
 			root[kItemName_]["Result"][i]["TextureName"] = texies_[0][i]->textureName;
@@ -494,8 +494,8 @@ void UIEditor::LoadFile(const std::string& fileName){
 		setTex_->color = i["color"];
 		setTex_->transform.scale = scale;
 		setTex_->transform.translate = pos;
-		setTex_->uvTrnasform.scale = UVscale;
-		setTex_->uvTrnasform.translate = UVpos;
+		setTex_->uvTransform.scale = UVscale;
+		setTex_->uvTransform.translate = UVpos;
 		setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i["TextureFullPath"]);
 		setTex_->textureFullPath = i["TextureFullPath"];
 		setTex_->textureName = i["TextureName"];
@@ -558,8 +558,8 @@ void UIEditor::LoadFileAll(){
 			setTex_->color = i["color"];
 			setTex_->transform.scale = scale;
 			setTex_->transform.translate = pos;
-			setTex_->uvTrnasform.scale = UVscale;
-			setTex_->uvTrnasform.translate = UVpos;
+			setTex_->uvTransform.scale = UVscale;
+			setTex_->uvTransform.translate = UVpos;
 			setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i["TextureFullPath"]);
 			setTex_->textureFullPath = i["TextureFullPath"];
 			setTex_->textureName = i["TextureName"];

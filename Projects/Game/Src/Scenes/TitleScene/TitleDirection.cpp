@@ -50,8 +50,8 @@ void TitleDirection::TextureInitialize(){
 	titleTex_ti_->color = 0xffffffff;
 	titleTex_ti_->transform.scale = texScale_;
 	titleTex_ti_->transform.translate = { -200.0f, 120.0f };
-	titleTex_ti_->uvTrnasform.scale = { 0.25f,1.0f };
-	titleTex_ti_->uvTrnasform.translate = { 0.0f, 0.0f };
+	titleTex_ti_->uvTransform.scale = { 0.25f,1.0f };
+	titleTex_ti_->uvTransform.translate = { 0.0f, 0.0f };
 	titleTex_ti_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/titleChain.png");
 	titleTex_ti_->textureFullPath = "./Resources/UI/titleChain.png";
 	titleTex_ti_->textureName = "titleChain";
@@ -60,8 +60,8 @@ void TitleDirection::TextureInitialize(){
 	titleTex_e_->color = 0xffffffff;
 	titleTex_e_->transform.scale = texScale_;
 	titleTex_e_->transform.translate = { -75.0f, 100.0f };
-	titleTex_e_->uvTrnasform.scale = { 0.25f,1.0f };
-	titleTex_e_->uvTrnasform.translate = { 0.25f, 0.0f };
+	titleTex_e_->uvTransform.scale = { 0.25f,1.0f };
+	titleTex_e_->uvTransform.translate = { 0.25f, 0.0f };
 	titleTex_e_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/titleChain.png");
 	titleTex_e_->textureFullPath = "./Resources/UI/titleChain.png";
 	titleTex_e_->textureName = "titleChain";
@@ -70,8 +70,8 @@ void TitleDirection::TextureInitialize(){
 	titleTex_i_->color = 0xffffffff;
 	titleTex_i_->transform.scale = texScale_;
 	titleTex_i_->transform.translate = { 50.0f, 120.0f };
-	titleTex_i_->uvTrnasform.scale = { 0.25f,1.0f };
-	titleTex_i_->uvTrnasform.translate = { 0.5f, 0.0f };
+	titleTex_i_->uvTransform.scale = { 0.25f,1.0f };
+	titleTex_i_->uvTransform.translate = { 0.5f, 0.0f };
 	titleTex_i_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/titleChain.png");
 	titleTex_i_->textureFullPath = "./Resources/UI/titleChain.png";
 	titleTex_i_->textureName = "titleChain";
@@ -80,8 +80,8 @@ void TitleDirection::TextureInitialize(){
 	titleTex_n_->color = 0xffffffff;
 	titleTex_n_->transform.scale = texScale_;
 	titleTex_n_->transform.translate = { 185.0f, 120.0f };
-	titleTex_n_->uvTrnasform.scale = { 0.25f,1.0f };
-	titleTex_n_->uvTrnasform.translate = { 0.75f, 0.0f };
+	titleTex_n_->uvTransform.scale = { 0.25f,1.0f };
+	titleTex_n_->uvTransform.translate = { 0.75f, 0.0f };
 	titleTex_n_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/titleChain.png");
 	titleTex_n_->textureFullPath = "./Resources/UI/titleChain.png";
 	titleTex_n_->textureName = "titleChain";
@@ -90,8 +90,8 @@ void TitleDirection::TextureInitialize(){
 	titleTex_hut_->color = 0xffffffff;
 	titleTex_hut_->transform.scale = { 288.0f,240.0f };
 	titleTex_hut_->transform.translate = { 10.0f, 10.0f };
-	titleTex_hut_->uvTrnasform.scale.kIdentity;
-	titleTex_hut_->uvTrnasform.translate = { 0.0f, 0.0f };
+	titleTex_hut_->uvTransform.scale.kIdentity;
+	titleTex_hut_->uvTransform.translate = { 0.0f, 0.0f };
 	titleTex_hut_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/titleHat.png");
 	titleTex_hut_->textureFullPath = "./Resources/UI/titleHat.png";
 	titleTex_hut_->textureName = "titleHat";
@@ -100,8 +100,8 @@ void TitleDirection::TextureInitialize(){
 	titleTex_text_->color = 0xffffff00;
 	titleTex_text_->transform.scale = { 304.0f,192.0f };
 	titleTex_text_->transform.translate = { 10.0f, 10.0f };
-	titleTex_text_->uvTrnasform.scale.kIdentity;
-	titleTex_text_->uvTrnasform.translate = { 0.0f, 0.0f };
+	titleTex_text_->uvTransform.scale.kIdentity;
+	titleTex_text_->uvTransform.translate = { 0.0f, 0.0f };
 	titleTex_text_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/titleWitch.png");
 	titleTex_text_->textureFullPath = "./Resources/UI/titleWitch.png";
 	titleTex_text_->textureName = "titleWitch";
@@ -110,8 +110,8 @@ void TitleDirection::TextureInitialize(){
 	titleTex_start_->color = 0xffffff00;
 	titleTex_start_->transform.scale = { 320.0f,96.0f };
 	titleTex_start_->transform.translate = { 0.0f, -125.0f };
-	titleTex_start_->uvTrnasform.scale = { 0.5f,1.0f };
-	titleTex_start_->uvTrnasform.translate = { 0.0f, 0.0f };
+	titleTex_start_->uvTransform.scale = { 0.5f,1.0f };
+	titleTex_start_->uvTransform.translate = { 0.0f, 0.0f };
 	titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/attackButton.png");
 	titleTex_start_->textureFullPath = "./Resources/UI/attackButton.png";
 	titleTex_start_->textureName = "attackButton";
@@ -120,8 +120,8 @@ void TitleDirection::TextureInitialize(){
 	titleTex_startText_->color = 0xffffff00;
 	titleTex_startText_->transform.scale = { 384.0f,64.0f };
 	titleTex_startText_->transform.translate = { 0.0f, -250.0f };
-	titleTex_startText_->uvTrnasform.scale.kIdentity;
-	titleTex_startText_->uvTrnasform.translate = { 0.0f, 0.0f };
+	titleTex_startText_->uvTransform.scale.kIdentity;
+	titleTex_startText_->uvTransform.translate = { 0.0f, 0.0f };
 	titleTex_startText_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/gameStart.png");
 	titleTex_startText_->textureFullPath = "./Resources/UI/gameStart.png";
 	titleTex_startText_->textureName = "gameStart";
@@ -159,10 +159,10 @@ void TitleDirection::Update(){
 
 	time_++;
 	if (time_ < 30) {
-		titleTex_start_->uvTrnasform.translate.x = 0.0f;
+		titleTex_start_->uvTransform.translate.x = 0.0f;
 	}
 	else if (time_ >= 30) {
-		titleTex_start_->uvTrnasform.translate.x = 0.5f;
+		titleTex_start_->uvTransform.translate.x = 0.5f;
 	}
 
 	if (time_ >= 60) {
@@ -188,39 +188,39 @@ void TitleDirection::Update(){
 	titleTex_hut_->transform.CalcMatrix();
 	titleTex_start_->transform.CalcMatrix();
 	titleTex_startText_->transform.CalcMatrix();
-	titleTex_ti_->uvTrnasform.CalcMatrix();
-	titleTex_e_->uvTrnasform.CalcMatrix();
-	titleTex_i_->uvTrnasform.CalcMatrix();
-	titleTex_n_->uvTrnasform.CalcMatrix();
-	titleTex_text_->uvTrnasform.CalcMatrix();
-	titleTex_hut_->uvTrnasform.CalcMatrix();
-	titleTex_start_->uvTrnasform.CalcMatrix();
-	titleTex_startText_->uvTrnasform.CalcMatrix();
+	titleTex_ti_->uvTransform.CalcMatrix();
+	titleTex_e_->uvTransform.CalcMatrix();
+	titleTex_i_->uvTransform.CalcMatrix();
+	titleTex_n_->uvTransform.CalcMatrix();
+	titleTex_text_->uvTransform.CalcMatrix();
+	titleTex_hut_->uvTransform.CalcMatrix();
+	titleTex_start_->uvTransform.CalcMatrix();
+	titleTex_startText_->uvTransform.CalcMatrix();
 }
 
 void TitleDirection::Draw(const Mat4x4& cameraMat){
-	tex2D_->Draw(titleTex_ti_->transform.matWorld_, titleTex_ti_->uvTrnasform.matWorld_, cameraMat
+	tex2D_->Draw(titleTex_ti_->transform.matWorld_, titleTex_ti_->uvTransform.matWorld_, cameraMat
 		, titleTex_ti_->textureID, titleTex_ti_->color, BlendType::kNormal);
 
-	tex2D_->Draw(titleTex_e_->transform.matWorld_, titleTex_e_->uvTrnasform.matWorld_, cameraMat
+	tex2D_->Draw(titleTex_e_->transform.matWorld_, titleTex_e_->uvTransform.matWorld_, cameraMat
 		, titleTex_e_->textureID, titleTex_e_->color, BlendType::kNormal);
 
-	tex2D_->Draw(titleTex_i_->transform.matWorld_, titleTex_i_->uvTrnasform.matWorld_, cameraMat
+	tex2D_->Draw(titleTex_i_->transform.matWorld_, titleTex_i_->uvTransform.matWorld_, cameraMat
 		, titleTex_i_->textureID, titleTex_i_->color, BlendType::kNormal);
 
-	tex2D_->Draw(titleTex_n_->transform.matWorld_, titleTex_n_->uvTrnasform.matWorld_, cameraMat
+	tex2D_->Draw(titleTex_n_->transform.matWorld_, titleTex_n_->uvTransform.matWorld_, cameraMat
 		, titleTex_n_->textureID, titleTex_n_->color, BlendType::kNormal);
 
-	tex2D_->Draw(titleTex_hut_->transform.matWorld_,titleTex_hut_->uvTrnasform.matWorld_, cameraMat
+	tex2D_->Draw(titleTex_hut_->transform.matWorld_,titleTex_hut_->uvTransform.matWorld_, cameraMat
 		, titleTex_hut_->textureID, titleTex_hut_->color, BlendType::kNormal);
 
-	tex2D_->Draw(titleTex_text_->transform.matWorld_, titleTex_text_->uvTrnasform.matWorld_, cameraMat
+	tex2D_->Draw(titleTex_text_->transform.matWorld_, titleTex_text_->uvTransform.matWorld_, cameraMat
 		, titleTex_text_->textureID, titleTex_text_->color, BlendType::kNormal);
 
-	tex2D_->Draw(titleTex_start_->transform.matWorld_, titleTex_start_->uvTrnasform.matWorld_, cameraMat
+	tex2D_->Draw(titleTex_start_->transform.matWorld_, titleTex_start_->uvTransform.matWorld_, cameraMat
 		, titleTex_start_->textureID, titleTex_start_->color, BlendType::kNormal);
 
-	tex2D_->Draw(titleTex_startText_->transform.matWorld_, titleTex_startText_->uvTrnasform.matWorld_, cameraMat
+	tex2D_->Draw(titleTex_startText_->transform.matWorld_, titleTex_startText_->uvTransform.matWorld_, cameraMat
 		, titleTex_startText_->textureID, titleTex_startText_->color, BlendType::kNormal);
 
 

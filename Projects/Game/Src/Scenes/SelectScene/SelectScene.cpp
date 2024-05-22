@@ -27,8 +27,8 @@ void SelectScene::Initialize() {
 	selectTex_ = std::make_unique<Tex2DState>();
 	selectTex_->transform.scale = { 452.0f,72.0f };
 	selectTex_->transform.translate = { 0.0f, 282.0f ,0 };
-	selectTex_->uvTrnasform.translate = { 0.f, 0.01f };
-	selectTex_->uvTrnasform.scale.x = { 0.1f };
+	selectTex_->uvTransform.translate = { 0.f, 0.01f };
+	selectTex_->uvTransform.scale.x = { 0.1f };
 	selectTex_->color = 0xffffffff;
 	selectTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/stageNumber.png");
 
@@ -76,13 +76,13 @@ void SelectScene::Update(){
 	}
 
 	selectTex_->transform.CalcMatrix();
-	selectTex_->uvTrnasform.translate.x = 0.1f * selectNum_;
-	selectTex_->uvTrnasform.CalcMatrix();
+	selectTex_->uvTransform.translate.x = 0.1f * selectNum_;
+	selectTex_->uvTransform.CalcMatrix();
 }
 
 void SelectScene::Draw(){
 	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
-	tex2D_->Draw(selectTex_->transform.matWorld_, selectTex_->uvTrnasform.matWorld_ , currentCamera_->GetViewOthographics()
+	tex2D_->Draw(selectTex_->transform.matWorld_, selectTex_->uvTransform.matWorld_ , currentCamera_->GetViewOthographics()
 		, selectTex_->textureID, selectTex_->color, BlendType::kNormal);
 
 	for (size_t i = 0; i < texies_.size(); i++) {
@@ -134,12 +134,12 @@ void SelectScene::SelectMove(){
 		}		
 	}
 
-	if (input_->GetKey()->LongPush(DIK_LSHIFT)&& input_->GetKey()->Pushed(DIK_SPACE)){
+	if (input_->GetKey()->Pushed(DIK_SPACE)){
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
 		gameDecision_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Game);
 	}
-	if (input_->GetKey()->LongPush(DIK_LSHIFT) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
+	if (input_->GetKey()->Pushed(DIK_BACKSPACE)) {
 		cancel_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}

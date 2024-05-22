@@ -7,10 +7,17 @@
 
 
 class ResultScene : public BaseScene{
+private:
 	enum class EffectState{
 		kFirst,
 		kGameOver,
 		kGameClear	
+	};
+
+	enum class CurrentUIPick {
+		kToNext,
+		kRetry,
+		kToStageSelect,
 	};
 
 public:
@@ -66,6 +73,17 @@ private:
 	EffectState effectStatus_;
 
 
+	// UI関係
+	// 次へ
+	std::unique_ptr<Tex2DState> toNextUI_;
+	// タイトルへ
+	std::unique_ptr<Tex2DState> retryUI_;
+	// ステージセレクトへ
+	std::unique_ptr<Tex2DState> toStageSelectUI_;
+
+
+	CurrentUIPick currentUIPick_;
+
 private:
 	// 最初の演出(大釜に素材が集まる)
 	void FirstEffect();
@@ -78,6 +96,12 @@ private:
 	// ゲームオーバー時の演出
 	void GameOverEffect();
 	void GameOverDraw();
+
+	// 動かない板ポリの描画
+	void DrawConstantUI();
+
+	// UIの更新
+	void UpdateUI();
 
 	// UIの描画
 	void DrawUI();
