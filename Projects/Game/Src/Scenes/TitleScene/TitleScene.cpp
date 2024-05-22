@@ -43,12 +43,12 @@ void TitleScene::Update()
 	auto* const key = input_->GetKey();
 
 
-	if (key->Pushed(DIK_SPACE)) {
+	if (key->Pushed(DIK_SPACE) && !titleDirection_->GetIsFirstFade()) {
 		beginGame_->Start(0.1f, false);
 		sceneManager_->SceneChange(BaseScene::ID::StageSelect);
 	}
 
-	titleDirection_->Update();
+	titleDirection_->Update(input_);
 	if (titleDirection_->GetIsActiveExit()){
 		currentCamera_->BeginShake(shakePower_);
 	}
