@@ -322,7 +322,7 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 	ImGui::Begin(str);
 
 	//blockMap_->Debug("BlockMap");
-	SoLib::ImGuiWidget(vFallSpan_.c_str(), &*vFallSpan_);
+	SoLib::ImGuiWidget(&vFallSpan_);
 	SoLib::ImGuiText("アイテム数", std::to_string(itemCount_) + '/' + std::to_string(vClearItemCount_));
 	SoLib::ImGuiText("残り時間", std::to_string(gameTimer_->GetDeltaTimer().GetNowFlame()) + '/' + std::to_string(gameTimer_->GetDeltaTimer().GetGoalFlame()));
 
