@@ -285,7 +285,7 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 
 	if (tex->textureName == "moveButton") {
 		if (tex->uvTransform.scale.x > 0) {
-			if (key->GetKey(DIK_LEFT)) {
+			if (key->GetKey(DIK_A) or key->GetKey(DIK_LEFT)) {
 				tex->uvTransform.translate.x = 0.5f;
 			}
 			else {
@@ -293,7 +293,7 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 			}
 		}
 		else {
-			if (key->GetKey(DIK_RIGHT)) {
+			if (key->GetKey(DIK_D) or key->GetKey(DIK_RIGHT)) {
 				tex->uvTransform.translate.x = 0.0f;
 			}
 			else {

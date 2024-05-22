@@ -80,10 +80,10 @@ void PlayerComp::Input()
 
 	inputVec_ = {};
 
-	if (key->GetKey(DIK_A)) {
+	if (key->GetKey(DIK_A) or key->GetKey(DIK_LEFT)) {
 		inputVec_ = -Vector2::kXIdentity * vMoveSpeed_;
 	}
-	if (key->GetKey(DIK_D)) {
+	if (key->GetKey(DIK_D) or key->GetKey(DIK_RIGHT)) {
 		inputVec_ = +Vector2::kXIdentity * vMoveSpeed_;
 	}
 
@@ -93,7 +93,7 @@ void PlayerComp::Input()
 		facing_ = static_cast<int32_t>(SoLib::Math::Sign(inputVec_.x));
 	}
 
-	if (key->Pushed(DIK_Z)) {
+	if (key->Pushed(DIK_X)) {
 		if (not pPicker_->IsPicking()) {
 			pPicker_->PickUp(facing_);
 		}
@@ -102,7 +102,7 @@ void PlayerComp::Input()
 		}
 	}
 
-	if (key->Pushed(DIK_RETURN)) {
+	if (key->Pushed(DIK_SPACE)) {
 		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/shot.mp3");
 		audio->Start(0.2f, false);
 		isAttack_ = true;
@@ -115,7 +115,7 @@ void PlayerComp::Input()
 	// 着地している場合
 	if (pHitMapComp_->hitNormal_.y > 0)
 	{
-		if (key->Pushed(DIK_SPACE)) {
+		if (key->Pushed(DIK_Z)) {
 			pLocalRigidbody_->ApplyInstantForce(Vector2::kYIdentity * 13.f);
 		}
 	}
