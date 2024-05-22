@@ -105,6 +105,7 @@ void GameScene::Initialize() {
 	currentTexCamera_->rotate.x = 0_deg;
 	currentTexCamera_->drawScale = 1.0f;
 
+	GameManager::Finalize();
 	gameManager_ = GameManager::GetInstance();
 	gameManager_->Init();
 
