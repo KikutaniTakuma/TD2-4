@@ -43,7 +43,7 @@ void TitleScene::Update()
 	auto* const key = input_->GetKey();
 
 
-	if (key->Pushed(DIK_SPACE) && !titleDirection_->GetIsFirstFade()) {
+	if ((input_->GetGamepad()->GetButton(Gamepad::Button::A)||key->Pushed(DIK_SPACE)) && !titleDirection_->GetIsFirstFade()) {
 		beginGame_->Start(0.1f, false);
 		sceneManager_->SceneChange(BaseScene::ID::StageSelect);
 	}

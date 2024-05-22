@@ -108,7 +108,7 @@ void SelectScene::Debug(){
 }
 
 void SelectScene::SelectMove(){
-	if (input_->GetKey()->LongPush(DIK_A)) {
+	if (input_->GetKey()->LongPush(DIK_A)||input_->GetGamepad()->GetButton(Gamepad::Button::LEFT)) {
 		if (selectNum_>0 && coolTime_ == 0){
 			coolTime_ = kCoolTime_;
 			selectMove_->Start(0.1f, false);
@@ -121,7 +121,7 @@ void SelectScene::SelectMove(){
 		
 		}		
 	}
-	else if (input_->GetKey()->LongPush(DIK_D)) {
+	else if (input_->GetKey()->LongPush(DIK_D)|| input_->GetGamepad()->GetButton(Gamepad::Button::RIGHT)) {
 		if (selectNum_ < texies_.size() - 1 && coolTime_ == 0) {
 			coolTime_ = kCoolTime_;
 			selectMove_->Start(0.1f, false);
@@ -134,12 +134,12 @@ void SelectScene::SelectMove(){
 		}		
 	}
 
-	if (input_->GetKey()->Pushed(DIK_SPACE)){
+	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::A)){
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
 		gameDecision_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Game);
 	}
-	if (input_->GetKey()->Pushed(DIK_BACKSPACE)) {
+	if (input_->GetKey()->Pushed(DIK_BACKSPACE)|| input_->GetGamepad()->GetButton(Gamepad::Button::B)) {
 		cancel_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}

@@ -133,7 +133,7 @@ void TitleDirection::Finalize(){
 }
 
 void TitleDirection::Update(Input* input){
-	if (input->GetKey()->Pushed(DIK_SPACE)) {
+	if ((input->GetGamepad()->GetButton(Gamepad::Button::A) || input->GetKey()->Pushed(DIK_SPACE))) {
 		isDirectionSkep_ = true;
 		fade_->OutStart();
 	}

@@ -1,7 +1,29 @@
 {
     "UIs": {
         "Game": [
-           
+            {
+                "TextureFullPath": "Resources/UI/pot.png",
+                "TextureName": "pot",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    -396.0,
+                    300.0,
+                    0.0
+                ]
+            }
         ]
     }
 }
