@@ -304,7 +304,7 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	for (const auto &dwarf : darkDwarfList_) {
 		dwarf->Draw(camera);
 	}
-	for (auto& item : itemList_) {
+	for (auto &item : itemList_) {
 		item->Draw(camera.GetViewOthographics());
 	}
 	blockGauge_->Draw(camera);
@@ -325,6 +325,8 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 	SoLib::ImGuiWidget(vFallSpan_.c_str(), &*vFallSpan_);
 	SoLib::ImGuiText("アイテム数", std::to_string(itemCount_) + '/' + std::to_string(vClearItemCount_));
 	SoLib::ImGuiText("残り時間", std::to_string(gameTimer_->GetDeltaTimer().GetNowFlame()) + '/' + std::to_string(gameTimer_->GetDeltaTimer().GetGoalFlame()));
+
+	blockMap_->Debug("BlockMap");
 
 	ImGui::End();
 
