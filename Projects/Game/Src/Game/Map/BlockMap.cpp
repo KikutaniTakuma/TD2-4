@@ -85,20 +85,22 @@ bool BlockMap::Debug(const char *const str)
 
 	if (ImGui::TreeNode(str)) {
 
-		for (size_t y = 0; y < kMapY; y++) {
-			//
-			// if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
-			// for (size_t z = 0; z < kMapZ; z++) {
-			for (size_t x = 0; x < kMapX; x++) {
-				isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(y) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*blockMap_)[y][x]));
-				if (x != 9) {
-					ImGui::SameLine();
-				}
-			}
-			//}
-			// ImGui::TreePop();
-			//}
-		}
+		//for (size_t y = 0; y < kMapY; y++) {
+		//	//
+		//	// if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
+		//	// for (size_t z = 0; z < kMapZ; z++) {
+		//	for (size_t x = 0; x < kMapX; x++) {
+		//		isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(y) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*blockMap_)[y][x]));
+		//		if (x != 9) {
+		//			ImGui::SameLine();
+		//		}
+		//	}
+		//	//}
+		//	// ImGui::TreePop();
+		//	//}
+		//}
+
+		isChange |= SoLib::ImGuiWidget(&vCenterDiff_);
 
 		ImGui::TreePop();
 	}
@@ -128,7 +130,7 @@ void BlockMap::TransferBoxData()
 				}
 				// 描画先の座標
 				const Vector2 drawPos = GetGlobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) } /*+ (*blockStatesMap_)[yi][xi]->drawOffset_*/);
-				modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y }, Vector3::kZero, { drawPos, -1.f });
+				modelState->transMat = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { drawPos, -1.f });
 				// 色を指定する
 				modelState->color = box.GetColor();
 
