@@ -1055,7 +1055,7 @@ void Particle::Resize(uint32_t index) {
 }
 
 void Particle::SetParticleScale(float particleScale) {
-	particleScale_ = std::clamp(particleScale, -10.0f, 10.0f);
+	particleScale_ = particleScale;
 }
 
 void Particle::SetParticleAllColor(uint32_t color) {

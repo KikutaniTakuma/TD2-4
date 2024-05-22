@@ -7,6 +7,7 @@
 #include "GameObject/Component/IvyComponent.h"
 #include "Utils/Random/Random.h"
 #include "Utils/SafePtr/SafePtr.h"
+#include "Scenes/ResultScene/ResultScene.h"
 #include <Game/CollisionManager/Capsule/Capsule.h>
 #include <Game/CollisionManager/Collider/Collider.h>
 #include <GameObject/Component/DwarfAnimator.h>
@@ -930,12 +931,15 @@ void GameManager::MargeDwarf()
 void GameManager::ClearCheck()
 {
 	if (not player_) {
+		ResultScene::SetIsGameClear(false);
 		pGameScene_->ChangeToResult();
 	}
 	if (vClearItemCount_ < itemCount_) {
+		ResultScene::SetIsGameClear(true);
 		pGameScene_->ChangeToResult();
 	}
 	if (gameTimer_->IsFinish()) {
+		ResultScene::SetIsGameClear(false);
 		pGameScene_->ChangeToResult();
 	}
 
