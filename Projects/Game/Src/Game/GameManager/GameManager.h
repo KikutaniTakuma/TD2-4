@@ -120,7 +120,7 @@ public:
 
 	/// @brief 調整項目
 	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_ };
-	inline static constexpr SoLib::VItemList vBlockMapItems_{ &BlockMap::vCenterDiff_ };
+	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_ };
 
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }
 
