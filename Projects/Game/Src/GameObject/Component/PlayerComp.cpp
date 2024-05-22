@@ -30,8 +30,8 @@ void PlayerComp::Update()
 	// 横移動速度を無くす
 	if (GetInputVec().x == 0.f and pHitMapComp_->hitNormal_.y > 0.f) {
 		Vector2 velocity = pLocalRigidbody_->GetVelocity();
-		velocity.x = 0.f;
-		pLocalRigidbody_->SetVelocity(velocity);
+		velocity = { -velocity.x * vFriction_, 0 };
+		pLocalRigidbody_->ApplyContinuousForce(velocity);
 	}
 	preHealth_ = static_cast<int32_t>(pHealthComp_->GetNowHealth());
 
