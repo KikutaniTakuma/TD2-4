@@ -63,7 +63,7 @@ void GameManager::Init()
 	gameTimer_->Init();
 	gameTimer_->TimerStart(static_cast<float>(vMaxTime_));
 
-	for (int32_t yi = 0; yi < 3; yi++) {
+	for (int32_t yi = 0; yi < vStartBlockHeight_; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
 			const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
 

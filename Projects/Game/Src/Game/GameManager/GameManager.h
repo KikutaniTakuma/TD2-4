@@ -120,9 +120,10 @@ public:
 	SoLib::VItem<"最大時間", int32_t> vMaxTime_{ 90 };
 
 	SoLib::VItem<"ブロックの種類", int32_t> vBlockTypeCount_{ 4 };
+	SoLib::VItem<"生成するブロックの高さ", int32_t> vStartBlockHeight_{ 3 };
 
 	/// @brief 調整項目
-	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_ };
+	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_ };
 	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_ };
 
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }
