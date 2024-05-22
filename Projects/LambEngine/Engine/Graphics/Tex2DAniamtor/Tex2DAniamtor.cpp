@@ -3,7 +3,7 @@
 
 void Tex2DAniamtor::Update() {
 
-	if ((duration_ * static_cast<float>(currentAnimationNumber_) < animationTime_)) {
+	if ((duration_ * static_cast<float>(currentAnimationNumber_ + 1) < animationTime_)) {
 		currentAnimationNumber_++;
 		currentPos_.x += std::abs(scale_.x);
 	}

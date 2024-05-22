@@ -32,6 +32,10 @@ FlaskParticle::FlaskParticle():
 
 void FlaskParticle::Update() {
     if (isActive_) {
+        if (particles_.empty()) {
+            isActive_ = false;
+        }
+
         if (randomFreq_ < latesetFreq_ and curentParticleIndex_ < static_cast<uint32_t>(particles_.size())) {
             uint32_t appParticle = Lamb::Random(appParticleNumMin_, appParticleNumMax_);
 
