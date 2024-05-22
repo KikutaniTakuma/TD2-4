@@ -31,7 +31,8 @@ void TitleDirection::Initialize(){
 	n_Status_.easing = std::make_unique<Easeing>();
 
 	isMoveTex_e_ = true;
-	isFirstFade_ = true;
+	isFirstFade_ = true; 
+	isDirectionSkep_ = false;
 	e_Status_.easing->Restart();
 	ti_Status_.easing->Start(false, 0.3f, Easeing::InSine);
 	i_Status_.easing->Start(false, 0.35f, Easeing::InSine);
@@ -131,7 +132,17 @@ void TitleDirection::Finalize(){
 
 }
 
-void TitleDirection::Update(){
+void TitleDirection::Update(Input* input){
+	if ((input->GetGamepad()->GetButton(Gamepad::Button::A) || input->GetKey()->Pushed(DIK_SPACE))) {
+		isDirectionSkep_ = true;
+		fade_->OutStart();
+	}
+
+	if (isFirstFade_) {
+		fade_->Update();
+		FadeProcess();
+	}
+
 	catmullRom_->Update();
 	ControlPoints_ = catmullRom_->GetControlPoints();
 	moveSpeeds_ = catmullRom_->GetMoveSpeeds();
@@ -151,11 +162,12 @@ void TitleDirection::Update(){
 		isMoveTex_others_ = true;
 	}
 
-	if (n_Status_.easing->ActiveExit()) {
+	if (n_Status_.easing->ActiveExit() && not isDirectionSkep_) {
 		linePass_ = 0;
 		isMove_ = true;
 	}
 
+	
 
 	time_++;
 	if (time_ < 30) {
@@ -176,10 +188,6 @@ void TitleDirection::Update(){
 
 
 	titleTex_text_->transform.translate = titleTex_hut_->transform.translate;
-	if (isFirstFade_){
-		fade_->Update();
-		FadeProcess();
-	}
 	titleTex_ti_->transform.CalcMatrix();
 	titleTex_e_->transform.CalcMatrix();
 	titleTex_i_->transform.CalcMatrix();
@@ -288,6 +296,17 @@ void TitleDirection::MoveTextureHut(){
 
 void TitleDirection::FadeProcess(){
 	if (fade_->OutEnd()){
+		if (isDirectionSkep_){
+			titleTex_ti_->transform.translate.y = ti_Status_.easePos.y;
+			titleTex_e_->transform.translate.y = e_Status_.easePos.y;
+			titleTex_i_->transform.translate.y = i_Status_.easePos.y;
+			titleTex_n_->transform.translate.y = n_Status_.easePos.y;
+			titleTex_hut_->transform.translate = Vector2::CatmullRom(ControlPoints_[catmullRom_->GetLastLinePass() - 1], ControlPoints_[catmullRom_->GetLastLinePass()],
+				ControlPoints_[catmullRom_->GetLastLinePass() + 1], ControlPoints_[catmullRom_->GetLastLinePass() + 1], 1.0f);
+			linePass_ = catmullRom_->GetLastLinePass() + 1;
+			isMove_ = false;
+		}
+
 		titleTex_text_->color = 0xffffffff;
 		titleTex_start_->color = 0xffffffff;
 		titleTex_startText_->color = 0xffffffff;

@@ -21,20 +21,20 @@ void GameTimerRender::Init([[maybe_unused]] GameTimer *gameTimer){
 	timerState_ = std::make_unique<Tex2DState>();
 	timerState_->color = 0xffffffff;
 	timerState_->transform.scale = { 240.0f,272.0f };
-	timerState_->transform.translate = { 500.0f, 100.0f };
+	timerState_->transform.translate = { 450.0f, 100.0f };
 	timerState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timer.png");
 
 	clockHandsState_ = std::make_unique<Tex2DState>();
 	clockHandsState_->color = 0xffffffff;
 	clockHandsState_->transform.scale = { 240.0f,272.0f };
-	clockHandsState_->transform.translate = { 500.0f, 80.0f };
+	clockHandsState_->transform.translate = { 450.0f, 80.0f };
 	clockHandsState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timerNeedle.png");
 
 	moveClockHandsState_ = std::make_unique<Tex2DState>();
 	moveClockHandsState_->color = 0xffffffff;
 	moveClockHandsState_->transform.scale = { 240.0f,272.0f };
 	moveClockHandsState_->transform.rotate = Quaternion::kIdentity;
-	moveClockHandsState_->transform.translate = { 500.0f, 80.0f };
+	moveClockHandsState_->transform.translate = { 450.0f, 80.0f };
 	moveClockHandsState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timerNeedle.png");
 }
 

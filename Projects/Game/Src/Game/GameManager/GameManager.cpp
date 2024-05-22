@@ -25,10 +25,17 @@
 
 #include "Drawers/Particle/Particle.h"
 #include "Scenes/GameScene/GameScene.h"
+#include <Scenes/SelectToGame/SelectToGame.h>
 
 
 void GameManager::Init()
 {
+	GlobalVariables::GetInstance()->LoadFile();
+
+	const SelectToGame *select = SelectToGame::GetInstance();
+	LoadGlobalVariant(select->GetSelect());
+	SaveGlobalVariant(select->GetSelect());
+
 	Block::StaticLoad();
 
 	blockGauge_ = std::make_unique<BlockGauge>();
@@ -55,13 +62,13 @@ void GameManager::Init()
 
 	// 初期化する
 	gameTimer_->Init();
-	gameTimer_->TimerStart(vMaxTime_);
+	gameTimer_->TimerStart(static_cast<float>(vMaxTime_));
 
-	for (int32_t yi = 0; yi < 3; yi++) {
+	for (int32_t yi = 0; yi < vStartBlockHeight_; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
 			const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
 
-			Block::BlockType type = static_cast<Block::BlockType>(Lamb::Random(static_cast<uint32_t>(Block::BlockType::kNone) + 1, static_cast<uint32_t>(Block::BlockType::kMax) - 1));
+			Block::BlockType type = static_cast<Block::BlockType>(std::clamp(Lamb::Random(1, *vBlockTypeCount_), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1));
 
 			blockMap_->SetBlocks(pos, Vector2::kIdentity, type);
 
@@ -77,7 +84,14 @@ void GameManager::Init()
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
 {
+
+#ifdef _DEBUG
+
 	Debug("GameManager");
+	const SelectToGame *select = SelectToGame::GetInstance();
+	LoadGlobalVariant(select->GetSelect());
+
+#endif // _DEBUG
 
 	ClearCheck();
 
@@ -311,6 +325,71 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	blockGauge_->Draw(camera);
 
 	gameEffectManager_->Draw(camera);
+}
+
+void GameManager::LoadGlobalVariant([[maybe_unused]] const uint32_t stageIndex)
+{
+	const auto *const gVariable = GlobalVariables::GetInstance();
+	{
+		const auto *const group = gVariable->GetGroup("Stage" + std::to_string(stageIndex));
+		if (group) {
+			LoadValue(*group, *GetInstance(), vGameManagerItems_);
+		}
+	}
+	{
+		const auto *const group = gVariable->GetGroup("BlockMap");
+		if (group) {
+			LoadValue(*group, vBlockMapItems_);
+		}
+	}
+	{
+		const auto *const group = gVariable->GetGroup("PlayerComp");
+		if (group) {
+			LoadValue(*group, PlayerComp::vPlayerItems_);
+		}
+	}
+	{
+		const auto *const group = gVariable->GetGroup("DwarfComp");
+		if (group) {
+			LoadValue(*group, DwarfComp::vDwarfItems_);
+		}
+	}
+
+}
+
+void GameManager::SaveGlobalVariant([[maybe_unused]] const uint32_t stageIndex) const
+{
+
+#ifdef _DEBUG
+
+	auto *const gVariable = GlobalVariables::GetInstance();
+	{
+		auto *const group = gVariable->AddGroup("Stage" + std::to_string(stageIndex));
+		if (group) {
+			SaveValue(*group, *GetInstance(), vGameManagerItems_);
+		}
+	}
+	{
+		auto *const group = gVariable->AddGroup("BlockMap");
+		if (group) {
+			SaveValue(*group, vBlockMapItems_);
+
+		}
+	}
+	{
+		auto *const group = gVariable->AddGroup("PlayerComp");
+		if (group) {
+			SaveValue(*group, PlayerComp::vPlayerItems_);
+		}
+	}
+	{
+		auto *const group = gVariable->AddGroup("DwarfComp");
+		if (group) {
+			SaveValue(*group, DwarfComp::vDwarfItems_);
+		}
+	}
+#endif // _DEBUG
+
 }
 
 bool GameManager::Debug([[maybe_unused]] const char *const str)
@@ -659,7 +738,7 @@ std::list<GameManager::DwarfPick> GameManager::PickUpBlockSideObject(const POINT
 void GameManager::RandomDwarfSpawn()
 {
 	if (not dwarfSpawnTimer_.IsActive()) {
-		dwarfSpawnTimer_.Start(5.f);
+		dwarfSpawnTimer_.Start(vSpawnSpan_);
 		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
 		AddDwarf(Vector2{ static_cast<float>(spawnPos), 0 });
 	}
@@ -668,8 +747,8 @@ void GameManager::RandomFallBlockSpawn()
 {
 	if (not fallBlockSpawnTimer_.IsActive()) {
 		fallBlockSpawnTimer_.Start(vFallSpan_);
-		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
-		uint32_t blockType = Lamb::Random(static_cast<uint32_t>(Block::BlockType::kNone) + 1, static_cast<uint32_t>(Block::BlockType::kMax) - 1);
+		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX - 1);
+		uint32_t blockType = std::clamp(Lamb::Random(1, *vBlockTypeCount_), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1);
 
 
 		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -5, Vector2::kZero);
@@ -813,6 +892,12 @@ void GameManager::AddPoint()
 			// 破壊時の処理
 			itemCount_++;
 
+			// アイテムの属性で数値を増やす
+			uint32_t index = static_cast<uint32_t>((*item)->GetItemType());
+			index = std::clamp(index, 1u, static_cast<uint32_t>(Block::BlockType::kMax) - 1) - 1;
+			itemTypeCount_[index]++;
+
+
 			item = itemList_.erase(item); // オブジェクトを破棄してイテレータを変更
 			continue;
 		}
@@ -875,7 +960,7 @@ void GameManager::BlockMapDropDown()
 			}
 			// そこにブロックがあり、接地していない場合は虚空にして落下させる
 			else if (isFloatBlock[index]) {
-				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -10, Vector2::kZero);
+				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -5, Vector2::kZero);
 				block.SetBlockType(Block::BlockType::kNone);
 				blockMap_->GetBlockStatusMap()->at(static_cast<int32_t>(localPos.y)).at(static_cast<int32_t>(localPos.x)).reset();
 			}

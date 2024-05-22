@@ -26,7 +26,7 @@ public:
 
 	void Finalize() ;
 
-	void Update() ;
+	void Update(Input* input);
 
 	void Draw(const Mat4x4& cameraMat) ;
 
@@ -40,8 +40,12 @@ public:
 	//始点と終点の位置関係で第二、第三点目の座標を設定
 	void SetControlPoint();
 
-	bool GetIsActiveExit() {
+	const bool GetIsActiveExit() {
 		return n_Status_.easing->ActiveExit();
+	}
+
+	const bool GetIsFirstFade() {
+		return isFirstFade_;
 	}
 
 	void Debug();
@@ -113,5 +117,7 @@ private:
 	bool isMove_ = false;
 	//初回のフェードかどうか
 	bool isFirstFade_ = true;
+
+	bool isDirectionSkep_ = false;
 };
 

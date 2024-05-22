@@ -20,6 +20,12 @@ public:
 	inline static SoLib::VItem<"無敵時間", float> vMaxInvincibleTime_ = { 1.f };
 	inline static SoLib::VItem<"最大体力", float> vMaxHealth_ = { 10.f };
 
+	inline static SoLib::VItem<"移動加速度", float> vMoveSpeed_{ 10.f };
+	inline static SoLib::VItem<"弾の速度", float> vBulletSpeed_{ 5.f };
+	inline static SoLib::VItem<"停止時の地面との摩擦", float> vFriction_{ 8.f };
+
+	inline static constexpr SoLib::VItemList vPlayerItems_{ &PlayerComp::vMaxHealth_, &PlayerComp::vMaxInvincibleTime_, &PlayerComp::vMoveSpeed_, &PlayerComp::vBulletSpeed_, &PlayerComp::vFriction_ };
+
 	int32_t InflictDamage(int32_t damage, const Vector2 acceleration = {});
 
 	int32_t GetFacing() const {

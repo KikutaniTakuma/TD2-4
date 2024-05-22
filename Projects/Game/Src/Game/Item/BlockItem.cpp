@@ -1,7 +1,7 @@
 #include "BlockItem.h"
 #include <Drawers/DrawerManager.h>
 
-BlockItem::BlockItem(const Vector2& startPos, const Vector2& endPos, const Block::BlockType& type) {
+BlockItem::BlockItem(const Vector2 &startPos, const Vector2 &endPos, const Block::BlockType &type) {
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
 	texState_ = std::make_unique<Tex2DState>();
 	texState_->color = 0xffffffff;
@@ -12,7 +12,7 @@ BlockItem::BlockItem(const Vector2& startPos, const Vector2& endPos, const Block
 
 	SetControlPosition();
 
-	switch (type){
+	switch (type) {
 	case Block::BlockType::kRed:
 		texState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Item/lizardTail.png");
 		texState_->textureFullPath = "./Resources/Item/lizardTail.png";
@@ -25,7 +25,7 @@ BlockItem::BlockItem(const Vector2& startPos, const Vector2& endPos, const Block
 		texState_->textureName = "water";
 		break;
 
-	case Block::BlockType::kYellow :
+	case Block::BlockType::kYellow:
 		texState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Item/mineral.png");
 		texState_->textureFullPath = "./Resources/Item/mineral.png";
 		texState_->textureName = "mineral";
@@ -41,20 +41,22 @@ BlockItem::BlockItem(const Vector2& startPos, const Vector2& endPos, const Block
 		throw Lamb::Error::Code<BlockItem>(message, ErrorPlace);
 	}
 
+	itemType_ = type;
+
 	moveSpeeds_ = { 2.0f,2.0f,2.0f };
 
 	isMove_ = true;
-	
+
 }
 
-void BlockItem::Update(const float deltaTime){
+void BlockItem::Update(const float deltaTime) {
 
 	MoveTexture(deltaTime);
 
 	texState_->transform.CalcMatrix();
 }
 
-void BlockItem::Draw(const Mat4x4& cameraMat){
+void BlockItem::Draw(const Mat4x4 &cameraMat) {
 	tex2D_->Draw(texState_->transform.matWorld_, Mat4x4::kIdentity, cameraMat,
 		texState_->textureID, texState_->color, BlendType::kNormal);
 }
@@ -86,7 +88,7 @@ void BlockItem::MoveTexture(const float deltaTime) {
 	}
 }
 
-void BlockItem::SetControlPosition(){
+void BlockItem::SetControlPosition() {
 	//第一ポイントの位置によって+-を変更
 	//画面の左側なら
 	if (controlPoints_[0].x < controlPoints_[3].x) {

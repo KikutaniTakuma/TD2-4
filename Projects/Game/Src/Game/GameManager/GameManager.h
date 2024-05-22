@@ -51,6 +51,10 @@ public:
 
 	void SetUIManager(GameUIManager *uiManager) { pGameUIManager_ = uiManager; }
 
+	void LoadGlobalVariant(const uint32_t stageIndex = 0);
+
+	void SaveGlobalVariant(const uint32_t stageIndex = 0) const;
+
 public:
 	bool Debug(const char *const str);
 
@@ -110,9 +114,17 @@ public:
 	SoLib::VItem<"破壊時の停止時間", float> vBreakStopTime_{ 0.5f };
 
 	SoLib::VItem<"落下するまでの間隔(sec)", float> vFallSpan_{ 2.5f };
+	SoLib::VItem<"敵の沸く間隔(sec)", float> vSpawnSpan_{ 2.5f };
 
 	SoLib::VItem<"クリアに必要なアイテムの数", int32_t> vClearItemCount_{ 150 };
-	SoLib::VItem<"最大時間", float> vMaxTime_{ 90.f };
+	SoLib::VItem<"最大時間", int32_t> vMaxTime_{ 90 };
+
+	SoLib::VItem<"ブロックの種類", int32_t> vBlockTypeCount_{ 4 };
+	SoLib::VItem<"生成するブロックの高さ", int32_t> vStartBlockHeight_{ 3 };
+
+	/// @brief 調整項目
+	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_ };
+	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_ };
 
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }
 
@@ -133,6 +145,15 @@ public:
 
 	const int32_t GetItemCount()const { return itemCount_; }
 
+	/// @brief 各アイテムごとの個数
+	/// @param blockType アイテムのタイプ
+	/// @return アイテムの個数
+	const uint32_t GetItemTypeCount(const Block::BlockType blockType) const {
+		uint32_t index = static_cast<uint32_t>(blockType);
+		index = std::clamp(index, 1u, static_cast<uint32_t>(Block::BlockType::kMax) - 1) - 1;
+		return itemTypeCount_[index];
+	}
+
 private:
 	void BlockMapDropDown();
 
@@ -141,6 +162,8 @@ private:
 	void ClearCheck();
 
 private:
+
+	std::array<uint32_t, 4u> itemTypeCount_;
 
 	std::list<std::unique_ptr<BlockItem>> itemList_;
 

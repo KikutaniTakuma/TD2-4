@@ -1,7 +1,236 @@
 {
     "UIs": {
         "Game": [
-           
+            {
+                "TextureFullPath": "Resources/UI/pot.png",
+                "TextureName": "pot",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    -396.0,
+                    300.0,
+                    -69.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/attackButton.png",
+                "TextureName": "attackButton",
+                "UVScale": [
+                    0.5,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    192.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    385.0,
+                    -271.0,
+                    -69.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/attack.png",
+                "TextureName": "attack",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    128.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    544.0,
+                    -270.0,
+                    -69.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/carry.png",
+                "TextureName": "carry",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    128.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    544.0,
+                    -148.0,
+                    -69.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/carryButton.png",
+                "TextureName": "carryButton",
+                "UVScale": [
+                    0.5,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    385.0,
+                    -146.0,
+                    -69.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/moveButton.png",
+                "TextureName": "moveButton",
+                "UVScale": [
+                    0.5,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    351.0,
+                    -211.0,
+                    -69.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/moveButton.png",
+                "TextureName": "moveButton",
+                "UVScale": [
+                    -0.5,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.5,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    420.0,
+                    -211.0,
+                    -69.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/move.png",
+                "TextureName": "move",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    128.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    544.0,
+                    -208.0,
+                    -69.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/jumpButton.png",
+                "TextureName": "jumpButton",
+                "UVScale": [
+                    0.5,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    385.0,
+                    -83.0,
+                    -69.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/jump.png",
+                "TextureName": "jump",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    192.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    542.0,
+                    -83.0,
+                    0.0
+                ]
+            }
         ]
     }
 }

@@ -9,7 +9,7 @@
 
 class GlobalVariables : public SoLib::Singleton<GlobalVariables> {
 public:
-	using Item = std::variant<int32_t, float, Vector3, std::string>;
+	using Item = std::variant<int32_t, float, Vector2, Vector3, std::string>;
 	using Group = std::unordered_map<std::string, Item>;
 
 public:
@@ -27,6 +27,7 @@ public:
 
 	void SetValue(const std::string &groupName, const std::string &key, int32_t value);
 	void SetValue(const std::string &groupName, const std::string &key, float value);
+	void SetValue(const std::string &groupName, const std::string &key, const Vector2 &value);
 	void SetValue(const std::string &groupName, const std::string &key, const Vector3 &value);
 	void SetValue(const std::string &groupName, const std::string &key, const std::string &value);
 
@@ -38,6 +39,7 @@ public:
 
 	void AddItem(const std::string &groupName, const std::string &key, int32_t value);
 	void AddItem(const std::string &groupName, const std::string &key, float value);
+	void AddItem(const std::string &groupName, const std::string &key, const Vector2 &value);
 	void AddItem(const std::string &groupName, const std::string &key, const Vector3 &value);
 	void AddItem(const std::string &groupName, const std::string &key, const std::string &value);
 
@@ -79,7 +81,7 @@ template <typename ITEM, SoLib::Text::ConstExprString V = ITEM::str_, IsCanGetVa
 	requires(std::same_as<ITEM, SoLib::VItem<V, T>>)
 void operator>>(const GlobalVariables::Group &group, ITEM &item) {
 	// グループから名前を検索
-	GlobalVariables::Group::const_iterator itr = group.find(item.c_str());
+	GlobalVariables::Group::const_iterator itr = group.find(ITEM::c_str());
 
 	// データが存在しない場合は終了
 	if (itr == group.end()) { return; }
@@ -93,6 +95,62 @@ template <typename ITEM, SoLib::Text::ConstExprString V = ITEM::str_, IsCanGetVa
 void operator<<(GlobalVariables::Group &group, const ITEM &item) {
 
 	// データを保存する
-	group[item.c_str()] = *item;
+	group[ITEM::c_str()] = *item;
 
+}
+
+//template<typename T, typename... Ts>
+//void operator>>(const GlobalVariables::Group &group, std::pair<T *, SoLib::VItemList<Ts...>> vItem) {
+//	auto &&[item, list] = vItem;
+//	for (uint32_t i = 0; i < list.size(); i++) {
+//		std::visit([&group, item](const auto &arg) {
+//			group >> item->*arg;
+//			}, list[i]);
+//	}
+//}
+//
+//template<typename T, typename... Ts>
+//void operator>>(GlobalVariables::Group &group, std::pair<T *, SoLib::VItemList<Ts...>> vItem) {
+//	const auto &[item, list] = vItem;
+//	for (uint32_t i = 0; i < list.size(); i++) {
+//		std::visit([&group, item](const auto &arg) {
+//			group << item->*arg;
+//			}, list[i]);
+//	}
+//}
+
+template<typename T, typename... Ts>
+void LoadValue(const GlobalVariables::Group &group, T &item, const SoLib::VItemList<Ts...> &list) {
+	for (uint32_t i = 0; i < list.size(); i++) {
+		std::visit([&group, &item](const auto &arg) {
+			group >> item.*arg;
+			}, list[i]);
+	}
+}
+
+template<typename T, typename... Ts>
+void SaveValue(GlobalVariables::Group &group, const T &item, const SoLib::VItemList<Ts...> &list) {
+	for (uint32_t i = 0; i < list.size(); i++) {
+		std::visit([&group, &item](const auto &arg) {
+			group << item.*arg;
+			}, list[i]);
+	}
+}
+
+template<typename... Ts>
+void LoadValue(const GlobalVariables::Group &group, const SoLib::VItemList<Ts...> &list) {
+	for (uint32_t i = 0; i < list.size(); i++) {
+		std::visit([&group](const auto &arg) {
+			group >> (*arg);
+			}, list[i]);
+	}
+}
+
+template<typename... Ts>
+void SaveValue(GlobalVariables::Group &group, const SoLib::VItemList<Ts...> &list) {
+	for (uint32_t i = 0; i < list.size(); i++) {
+		std::visit([&group](const auto &arg) {
+			group << (*arg);
+			}, list[i]);
+	}
 }
