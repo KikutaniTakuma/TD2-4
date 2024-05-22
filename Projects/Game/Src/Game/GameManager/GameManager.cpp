@@ -350,6 +350,12 @@ void GameManager::LoadGlobalVariant([[maybe_unused]] const uint32_t stageIndex)
 			LoadValue(*group, PlayerComp::vPlayerItems_);
 		}
 	}
+	{
+		const auto *const group = gVariable->GetGroup("DwarfComp");
+		if (group) {
+			LoadValue(*group, DwarfComp::vDwarfItems_);
+		}
+	}
 
 #endif // _DEBUG
 
@@ -378,6 +384,12 @@ void GameManager::SaveGlobalVariant([[maybe_unused]] const uint32_t stageIndex) 
 		auto *const group = gVariable->AddGroup("PlayerComp");
 		if (group) {
 			SaveValue(*group, PlayerComp::vPlayerItems_);
+		}
+	}
+	{
+		auto *const group = gVariable->AddGroup("DwarfComp");
+		if (group) {
+			SaveValue(*group, DwarfComp::vDwarfItems_);
 		}
 	}
 #endif // _DEBUG
