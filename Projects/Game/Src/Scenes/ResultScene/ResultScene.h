@@ -10,6 +10,7 @@ class ResultScene : public BaseScene{
 private:
 	enum class EffectState{
 		kFirst,
+		kSecond,
 		kGameOver,
 		kGameClear	
 	};
@@ -116,6 +117,8 @@ private:
 	std::unique_ptr<Easeing> witchMoveY2_;
 	bool withcEaseingEnd_ = false;
 
+	bool isFirstEnd_ = false;
+
 
 	// ああゲームの音～
 	Audio* gameDecision_ = nullptr;
@@ -126,9 +129,11 @@ private:
 	Audio* witchCraftExplotion_ = nullptr;
 
 private:
-	// 最初の演出(大釜に素材が集まる)
 	void FirstEffect();
 	void FirstDraw();
+	// 最初の演出(大釜に素材が集まる)
+	void SecondEffect();
+	void SecondDraw();
 
 	void FlyAway();
 	void WitchDraw();

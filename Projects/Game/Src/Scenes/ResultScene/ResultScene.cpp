@@ -184,6 +184,9 @@ void ResultScene::Update(){
 	case ResultScene::EffectState::kFirst:
 		FirstEffect();
 		break;
+	case ResultScene::EffectState::kSecond:
+		SecondEffect();
+		break;
 	case ResultScene::EffectState::kGameOver:
 		GameOverEffect();
 		break;
@@ -195,7 +198,9 @@ void ResultScene::Update(){
 		break;
 	}
 
-
+	if (effectStatus_ == ResultScene::EffectState::kFirst and isFirstEnd_) {
+		effectStatus_ = ResultScene::EffectState::kSecond;
+	}
 	if (isFirstActive_.OnExit()) {
 		if (isGameClear_) {
 			effectStatus_ = EffectState::kGameClear;
@@ -242,6 +247,9 @@ void ResultScene::Draw(){
 	case ResultScene::EffectState::kFirst:
 		FirstDraw();
 		break;
+	case ResultScene::EffectState::kSecond:
+		SecondDraw();
+		break;
 	case ResultScene::EffectState::kGameOver:
 		GameOverDraw();
 		break;
@@ -262,6 +270,38 @@ void ResultScene::Debug(){
 }
 
 void ResultScene::FirstEffect() {
+	if (not witchMoveX_->GetIsActive()) {
+		witchMoveX_->Start(
+			false,
+			1.5f
+		);
+	}
+
+
+	witchMoveX_->Update();
+
+	if (witchMoveX_->ActiveExit()) {
+
+		isFirstEnd_ = true;
+	}
+	witch_->transform.translate = Vector3::Lerp(Vector3(0.0f, 360.0f, 0.001f), Vector3(0.0f, 200.0f, 0.001f), Easeing::InOutSine(witchMoveX_->GetT()));
+	cauldronTransform_->translate = Vector3::Lerp(Vector3::kYIdentity * -360.0f, cauldronBasisPos_, Easeing::InOutSine(witchMoveX_->GetT()));
+	cauldronTransform_->scale = cauldronScale_.first;
+	witch_->transform.CalcMatrix();
+}
+
+void ResultScene::FirstDraw() {
+	tex2D_->Draw(
+		witch_->transform.matWorld_,
+		Mat4x4::MakeScalar(Vector3(0.25f, 1.0f,1.0f)),
+		currentCamera_->GetViewOthographics(),
+		witchCraftTexID_,
+		std::numeric_limits<uint32_t>::max(),
+		BlendType::kNormal
+	);
+}
+
+void ResultScene::SecondEffect() {
 	curretnActiveFlaskParticleNum_ = 0.0f;
 	bool isActive = false;
 	for (auto& i : flaskParticles_) {
@@ -308,7 +348,7 @@ void ResultScene::FirstEffect() {
 		witchCraft_->Start(0.2f, true);
 	}
 }
-void ResultScene::FirstDraw() {
+void ResultScene::SecondDraw() {
 	for (auto& i : flaskParticles_) {
 		i->Draw(currentCamera_->GetViewOthographics());
 	}
