@@ -29,7 +29,7 @@ void ResultScene::Initialize(){
 	backGround_->translate.z = 50.0f;
 	backGround_->scale = Lamb::ClientSize();
 	backGroundTextureID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
-	zanennTexID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverEffect.png");
+	zanennTexID_ = drawerManager_->LoadTexture("./Resources/Result/gameOverEffect.png");
 	//clearTextureID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
 
 	cauldronParticle_ = std::make_unique<Particle>();
