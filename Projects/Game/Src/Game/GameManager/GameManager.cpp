@@ -344,6 +344,12 @@ void GameManager::LoadGlobalVariant([[maybe_unused]] const uint32_t stageIndex)
 			LoadValue(*group, vBlockMapItems_);
 		}
 	}
+	{
+		const auto *const group = gVariable->GetGroup("PlayerComp");
+		if (group) {
+			LoadValue(*group, PlayerComp::vPlayerItems_);
+		}
+	}
 
 #endif // _DEBUG
 
@@ -359,20 +365,21 @@ void GameManager::SaveGlobalVariant([[maybe_unused]] const uint32_t stageIndex) 
 		auto *const group = gVariable->AddGroup("Stage" + std::to_string(stageIndex));
 		if (group) {
 			SaveValue(*group, *GetInstance(), vGameManagerItems_);
-
-			//*group << std::make_pair<const GameManager *const, decltype((vGameManagerItems_))>(GetInstance(), vGameManagerItems_);
 		}
 	}
-
 	{
 		auto *const group = gVariable->AddGroup("BlockMap");
 		if (group) {
 			SaveValue(*group, vBlockMapItems_);
 
-			//*group << std::make_pair<BlockMap *const, decltype((vBlockMapItems_))>(blockMap_.get(), vBlockMapItems_);
 		}
 	}
-
+	{
+		auto *const group = gVariable->AddGroup("PlayerComp");
+		if (group) {
+			SaveValue(*group, PlayerComp::vPlayerItems_);
+		}
+	}
 #endif // _DEBUG
 
 }

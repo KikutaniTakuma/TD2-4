@@ -27,11 +27,12 @@ void PlayerComp::Init()
 
 void PlayerComp::Update()
 {
-	//// 横移動速度を無くす
-	//Vector2 velocity = pLocalRigidbody_->GetVelocity();
-	//velocity.x = 0.f;
-	//pLocalRigidbody_->SetVelocity(velocity);
-
+	// 横移動速度を無くす
+	if (GetInputVec().x == 0.f and pHitMapComp_->hitNormal_.y > 0.f) {
+		Vector2 velocity = pLocalRigidbody_->GetVelocity();
+		velocity.x = 0.f;
+		pLocalRigidbody_->SetVelocity(velocity);
+	}
 	preHealth_ = static_cast<int32_t>(pHealthComp_->GetNowHealth());
 
 
@@ -68,7 +69,7 @@ bool PlayerComp::GetIsDamage() const
 
 void PlayerComp::FireBullet()
 {
-	GameManager::GetInstance()->AddPlayerBullet(pLocalBodyComp_->localPos_, Vector2::kXIdentity * (facing_ * 5.f));
+	GameManager::GetInstance()->AddPlayerBullet(pLocalBodyComp_->localPos_, Vector2::kXIdentity * (facing_ * *vBulletSpeed_));
 }
 
 void PlayerComp::Input()
@@ -77,15 +78,13 @@ void PlayerComp::Input()
 
 	//Vector2 velocity = pLocalRigidbody_->GetVelocity();
 
-	constexpr float moveSpeed = 10.f;
-
 	inputVec_ = {};
 
 	if (key->GetKey(DIK_A)) {
-		inputVec_ = -Vector2::kXIdentity * moveSpeed;
+		inputVec_ = -Vector2::kXIdentity * vMoveSpeed_;
 	}
 	if (key->GetKey(DIK_D)) {
-		inputVec_ = +Vector2::kXIdentity * moveSpeed;
+		inputVec_ = +Vector2::kXIdentity * vMoveSpeed_;
 	}
 
 	if (inputVec_.x != 0) {
