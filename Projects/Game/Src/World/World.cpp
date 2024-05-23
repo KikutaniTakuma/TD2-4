@@ -50,6 +50,7 @@ void World::Finalize() {
 	sceneManager_.reset();
 
 	ParticleEditor::Finalize();
+	GameManager::Finalize();
 
 	Framework::Finalize();
 }
