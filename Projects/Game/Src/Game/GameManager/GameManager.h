@@ -122,9 +122,13 @@ public:
 	SoLib::VItem<"ブロックの種類", int32_t> vBlockTypeCount_{ 4 };
 	SoLib::VItem<"生成するブロックの高さ", int32_t> vStartBlockHeight_{ 3 };
 
+	static inline SoLib::VItem<"出てくるアイテムの間隔", float> vItemSpawnSpan_{ 0.25f };
+
 	/// @brief 調整項目
 	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_ };
 	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_ };
+
+	inline static constexpr SoLib::VItemList vItemStatus_ = { &vItemSpawnSpan_ };
 
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }
 

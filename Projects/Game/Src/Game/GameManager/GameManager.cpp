@@ -354,6 +354,12 @@ void GameManager::LoadGlobalVariant([[maybe_unused]] const uint32_t stageIndex)
 			LoadValue(*group, DwarfComp::vDwarfItems_);
 		}
 	}
+	{
+		const auto *const group = gVariable->GetGroup("ItemStatus");
+		if (group) {
+			LoadValue(*group, vItemStatus_);
+		}
+	}
 
 }
 
@@ -386,6 +392,12 @@ void GameManager::SaveGlobalVariant([[maybe_unused]] const uint32_t stageIndex) 
 		auto *const group = gVariable->AddGroup("DwarfComp");
 		if (group) {
 			SaveValue(*group, DwarfComp::vDwarfItems_);
+		}
+	}
+	{
+		auto *const group = gVariable->AddGroup("ItemStatus");
+		if (group) {
+			SaveValue(*group, vItemStatus_);
 		}
 	}
 #endif // _DEBUG
@@ -875,7 +887,7 @@ void GameManager::AddItem([[maybe_unused]] const Vector2 globalPos, const Block:
 	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
 	for (uint32_t i = 0; i < count; i++) {
 		const Vector2 endPos = { -7.0f,10.0f };
-		std::unique_ptr<BlockItem> item = std::make_unique<BlockItem>(globalPos, endPos, blockType, i * 0.5f);
+		std::unique_ptr<BlockItem> item = std::make_unique<BlockItem>(globalPos, endPos, blockType, i * vItemSpawnSpan_);
 		itemList_.emplace_back(std::move(item));
 	}
 	// ↑ アイテムのクラスができたら､この処理を置き換える
