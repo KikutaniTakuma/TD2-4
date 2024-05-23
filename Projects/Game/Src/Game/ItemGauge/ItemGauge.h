@@ -40,19 +40,22 @@ private:
 private:
 	Texture2D* tex2D_;
 	//始点終点
-	const Vector2 kGaugePosX_ = { 321.0f,-338.0f };
+	const Vector2 kGaugePosX_ = { 283.0f,-338.0f };
 	float gaugePosLength_ = 659.0f;
 
 	//始点終点
 	const Vector2 kGaugeCenterPosX_ = { 320.0f,-38.0f };
 	float gaugePosCenterLength_ = 358.0f;
-	const float kGaugeScale_ = 814.0f;
+	const float kGaugeScale_ = 620.0f;
 
 	float num_ = 0.0f;
 	//外側の縁
 	std::unique_ptr<Tex2DState> gaugeState_;
 	//内側の緑色のやつ
 	std::unique_ptr<Tex2DState> moveGaugeLeftState_;
+
+	//内側の緑色のやつ
+	std::unique_ptr<Tex2DState> moveGaugeRightState_;
 
 	std::unique_ptr<Tex2DState> moveGaugeCenterState_;
 

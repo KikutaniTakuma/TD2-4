@@ -9,6 +9,7 @@ void GameTimer::Init()
 
 void GameTimer::Update(const float deltaTime)
 {
+	deltaTime;
 	timer_.Update(deltaTime);
 }
 
