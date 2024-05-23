@@ -37,7 +37,7 @@ void DwarfAnimatorComp::Update()
 			spriteAnimator_->SetDuration(0.25f);
 			spriteAnimator_->Start();
 		}
-		else if(not spriteAnimator_->GetIsActive()){
+		else if (not spriteAnimator_->GetIsActive() or pSpriteComp_->textureID_ != textureID_[3]) {
 			pSpriteComp_->SetTexture(textureID_[3]);
 			spriteAnimator_->SetLoopAnimation(true);
 			spriteAnimator_->SetDuration(0.35f);
