@@ -509,7 +509,7 @@ void ResultScene::GameClearDraw() {
 		backGround_->transform.matWorld_,
 		backGround_->uvTransform.matWorld_ 
 		* Mat4x4::MakeTranslate(Vector2::kIdentity * -0.5f) 
-		* Mat4x4::MakeScalar(Vector3::kIdentity * 0.8f) * Mat4x4::MakeRotateZ(rotateClearBackFround_)
+		* Mat4x4::MakeScalar(Vector3::kIdentity * 0.7f) * Mat4x4::MakeRotateZ(rotateClearBackFround_)
 		* Mat4x4::MakeTranslate(Vector2::kIdentity * 0.5f),
 		currentCamera_->GetViewOthographics(),
 		backGround_->textureID,
