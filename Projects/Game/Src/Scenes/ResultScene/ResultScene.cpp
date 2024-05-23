@@ -72,7 +72,13 @@ void ResultScene::Initialize(){
 	//clearTextureID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
 
 	cauldronParticle_ = std::make_unique<Particle>();
-	cauldronParticle_->LoadSettingDirectory("Bomb");
+	if (isGameClear_) {
+		cauldronParticle_->LoadSettingDirectory("Smoke");
+		cauldronParticle_->SetParticleScale(1.0f / 0.0036f);
+	}
+	else {
+		cauldronParticle_->LoadSettingDirectory("Bomb");
+	}
 	cauldronTextureID_ = drawerManager_->LoadTexture("./Resources/UI/pot.png");
 	cauldronTransform_ = std::make_unique<Transform>();
 	cauldronBasisPos_ = Vector3::kYIdentity * -128.0f;
