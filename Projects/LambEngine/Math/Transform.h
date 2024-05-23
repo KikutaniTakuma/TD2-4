@@ -14,7 +14,7 @@ struct Transform {
 	Vector3 scale = { 1.f,1.f,1.f };
 	Vector3 translate{};
 	Quaternion rotate = Quaternion::kIdentity;
-	Mat4x4 matWorld_{};	// ローカル . ワールド変換
+	Mat4x4 matWorld_ = Mat4x4::Identity();	// ローカル . ワールド変換
 
 public:
 
