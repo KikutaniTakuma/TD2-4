@@ -7,7 +7,7 @@
 void PlayerComp::Init()
 {
 	pLocalBodyComp_ = object_.AddComponent<LocalBodyComp>();
-	pLocalBodyComp_->size_ = Vector2{ 0.8f,1.f };
+	pLocalBodyComp_->size_ = Vector2{ 0.6f,1.f };
 
 	pLocalRigidbody_ = object_.AddComponent<LocalRigidbody>();
 	pHitMapComp_ = object_.AddComponent<LocalMapHitComp>();
