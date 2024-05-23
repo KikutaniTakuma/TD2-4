@@ -45,6 +45,9 @@ public:
 	/// @param gameTimer ゲームタイマー
 	inline void SetTimer(GameTimer *gameTimer) { pGameTimer_ = gameTimer; }
 
+private:
+	//時計の数字の処理
+	void TimeNumberMove();
 
 private:
 
@@ -60,6 +63,16 @@ private:
 	std::unique_ptr<Tex2DState> clockHandsState_;
 	//時計の動く針
 	std::unique_ptr<Tex2DState> moveClockHandsState_;
+
+	//1の位
+	uint32_t timeNumberNum_;
+	//10の位
+	uint32_t timeNumberTenNum_;
+
+	//時計の針
+	std::unique_ptr<Tex2DState> timeNumberState_;
+	//時計の動く針
+	std::unique_ptr<Tex2DState> timeNumberTenState_;
 
 
 };
