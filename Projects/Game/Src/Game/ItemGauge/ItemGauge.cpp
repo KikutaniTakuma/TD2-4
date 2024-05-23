@@ -50,8 +50,6 @@ void ItemGauge::Draw(const Camera& camera) const{
 
 	tex2D_->Draw(gaugeState_->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
 		, gaugeState_->textureID, gaugeState_->color, BlendType::kNormal);
-
-	
 	
 
 	tex2D_->Draw(moveGaugeRightState_->transform.matWorld_,moveGaugeRightState_->uvTransform.matWorld_, camera.GetViewOthographics()
@@ -89,8 +87,9 @@ void ItemGauge::MoveGauge(){
 	float& leftPos = moveGaugeLeftState_->transform.translate.x;
 	float& rightPos = moveGaugeRightState_->transform.translate.x;
 
-	leftPos = kGaugePosX_.x - (gaugePosLength_ * (num_));
-	rightPos = 305.0f;
+	rightPos = kGaugePosX_.x - (gaugePosLength_ * (num_));
+	leftPos = -338.0f;
+	//rightPos = 305.0f;
 
 	moveGaugeCenterState_->transform.translate.x = (leftPos + rightPos) * 0.5f;
 	moveGaugeCenterState_->transform.scale.x = (kGaugeScale_ * (num_));
