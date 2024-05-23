@@ -3,10 +3,11 @@
 #include "Math/Mat4x4.h"
 #include "Drawers/Texture2D/Texture2D.h"
 #include "Drawers/PeraRender/PeraRender.h"
+#include <SoLib_Timer.h>
 
 class BlockItem {
 public:
-	BlockItem(const Vector2 &startPos, const Vector2 &endPos, const Block::BlockType &type);
+	BlockItem(const Vector2 &startPos, const Vector2 &endPos, const Block::BlockType &type, float startTime = 0);
 
 
 	/// <summary>
@@ -58,7 +59,10 @@ private:
 	//現在移動しているライン
 	uint32_t linePass_ = 0;
 
-	//アイテムが動くかどうか
+	// アイテムが動くまでの時間
+	SoLib::Time::DeltaTimer startTimer_;
+
+	// アイテムが動くかどうか
 	bool isMove_;
 	//移動が終点にまで達していたら
 	bool isEndMove_;

@@ -1,7 +1,7 @@
 #include "BlockItem.h"
 #include <Drawers/DrawerManager.h>
 
-BlockItem::BlockItem(const Vector2 &startPos, const Vector2 &endPos, const Block::BlockType &type) {
+BlockItem::BlockItem(const Vector2 &startPos, const Vector2 &endPos, const Block::BlockType &type, float startTime) {
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
 	texState_ = std::make_unique<Tex2DState>();
 	texState_->color = 0xffffffff;
@@ -45,11 +45,17 @@ BlockItem::BlockItem(const Vector2 &startPos, const Vector2 &endPos, const Block
 
 	moveSpeeds_ = { 2.0f,2.0f,2.0f };
 
-	isMove_ = true;
+	startTimer_.Start(startTime);
+
+	//isMove_ = true;
 
 }
 
 void BlockItem::Update(const float deltaTime) {
+	startTimer_.Update(deltaTime);
+	if (startTimer_.IsFinish()) {
+		isMove_ = true;
+	}
 
 	MoveTexture(deltaTime);
 

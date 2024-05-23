@@ -520,7 +520,7 @@ GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
 	// コンポーネントの追加
 	Lamb::SafePtr dwarfComp = dwarf->AddComponent<DwarfComp>();
 	Lamb::SafePtr localBody = dwarf->GetComponent<LocalBodyComp>();
-	localBody->localPos_ = centerPos; // 座標の指定
+	localBody->localPos_ = { std::round(centerPos.x), centerPos.y }; // 座標の指定
 	localBody->drawScale_ = 1.f;
 
 	dwarf->AddComponent<DwarfAnimatorComp>();
@@ -875,7 +875,7 @@ void GameManager::AddItem([[maybe_unused]] const Vector2 globalPos, const Block:
 	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
 	for (uint32_t i = 0; i < count; i++) {
 		const Vector2 endPos = { -7.0f,10.0f };
-		std::unique_ptr<BlockItem> item = std::make_unique<BlockItem>(globalPos, endPos, blockType);
+		std::unique_ptr<BlockItem> item = std::make_unique<BlockItem>(globalPos, endPos, blockType, i * 0.5f);
 		itemList_.emplace_back(std::move(item));
 	}
 	// ↑ アイテムのクラスができたら､この処理を置き換える

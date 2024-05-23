@@ -20,6 +20,7 @@ void GameUIManager::Init(GameManager *pGameManager)
 	dangerTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/danger.png");
 	// Scaleを設定
 	dangerTex_->transform.scale = Lamb::ClientSize();
+	dangerTex_->transform.translate.y = 10.0f;
 	dangerTex_->transform.translate.z = -69.0f;
 	dangerTex_->transform.CalcMatrix();
 	dangerTex_->uvTransform.CalcMatrix();
