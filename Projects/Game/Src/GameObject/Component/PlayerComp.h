@@ -23,8 +23,9 @@ public:
 	inline static SoLib::VItem<"移動加速度", float> vMoveSpeed_{ 10.f };
 	inline static SoLib::VItem<"弾の速度", float> vBulletSpeed_{ 5.f };
 	inline static SoLib::VItem<"停止時の地面との摩擦", float> vFriction_{ 8.f };
+	inline static SoLib::VItem<"弾のクールタイム", float> vFireCoolTime_{ 0.25f };
 
-	inline static constexpr SoLib::VItemList vPlayerItems_{ &PlayerComp::vMaxHealth_, &PlayerComp::vMaxInvincibleTime_, &PlayerComp::vMoveSpeed_, &PlayerComp::vBulletSpeed_, &PlayerComp::vFriction_ };
+	inline static constexpr SoLib::VItemList vPlayerItems_{ &PlayerComp::vMaxHealth_, &PlayerComp::vMaxInvincibleTime_, &PlayerComp::vMoveSpeed_, &PlayerComp::vBulletSpeed_, &PlayerComp::vFriction_, &vFireCoolTime_ };
 
 	int32_t InflictDamage(int32_t damage, const Vector2 acceleration = {});
 
@@ -45,6 +46,8 @@ public:
 private:
 
 	float invincibleTime_ = 0.f;
+
+	float fireCoolTime_ = 0;
 
 	void FireBullet();
 

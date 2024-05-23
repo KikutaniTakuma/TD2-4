@@ -58,7 +58,7 @@ void PlayerBulletComp::Update()
 
 	pLocalBodyComp_->TransfarData();
 
-	//pSpriteComp_->uvTransform_.rotate *= Quaternion::MakeRotateZAxis(GetDeltaTime() * 180_deg);
+	pSpriteComp_->offsetTransform_.rotate *= Quaternion::MakeRotateZAxis(GetDeltaTime() * 360_deg);
 	//pSpriteComp_->CalcTexUv();
 
 }

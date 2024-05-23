@@ -44,6 +44,9 @@ void PlayerComp::Update()
 	// 無敵時間の減少
 	invincibleTime_ -= GetDeltaTime();
 	invincibleTime_ = std::clamp(invincibleTime_, 0.f, *vMaxInvincibleTime_);
+
+	fireCoolTime_ -= GetDeltaTime();
+	fireCoolTime_ = std::clamp(fireCoolTime_, 0.f, *vFireCoolTime_);
 }
 
 void PlayerComp::OnCollision([[maybe_unused]] GameObject *const other)
@@ -70,6 +73,7 @@ bool PlayerComp::GetIsDamage() const
 void PlayerComp::FireBullet()
 {
 	GameManager::GetInstance()->AddPlayerBullet(pLocalBodyComp_->localPos_, Vector2::kXIdentity * (facing_ * *vBulletSpeed_));
+	fireCoolTime_ = vFireCoolTime_;
 }
 
 void PlayerComp::Input()
@@ -106,7 +110,7 @@ void PlayerComp::Input()
 		}
 	}
 
-	if (key->Pushed(DIK_SPACE) or pad->Pushed(Gamepad::Button::RIGHT_SHOULDER)) {
+	if (fireCoolTime_ <= 0.f and (key->Pushed(DIK_SPACE) or pad->Pushed(Gamepad::Button::RIGHT_SHOULDER))) {
 		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/shot.mp3");
 		audio->Start(0.2f, false);
 		isAttack_ = true;
