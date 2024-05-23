@@ -37,6 +37,20 @@ void GameTimerRender::Init([[maybe_unused]] GameTimer *gameTimer){
 	moveClockHandsState_->transform.rotate = Quaternion::kIdentity;
 	moveClockHandsState_->transform.translate = { 450.0f, 80.0f };
 	moveClockHandsState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timerNeedle.png");
+
+	timeNumberState_ = std::make_unique<Tex2DState>();
+	timeNumberState_->color = 0xffffffff;
+	timeNumberState_->transform.scale = { 64.0f,80.0f };
+	timeNumberState_->transform.translate = { 485.0f, 80.0f };
+	timeNumberState_->uvTransform.scale = { 0.1f,1.0f };
+	timeNumberState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timeLimitNumber.png");
+
+	timeNumberTenState_ = std::make_unique<Tex2DState>();
+	timeNumberTenState_->color = 0xffffffff;
+	timeNumberTenState_->transform.scale = { 64.0f,80.0f };
+	timeNumberTenState_->transform.translate = { 415.0f, 80.0f };
+	timeNumberTenState_->uvTransform.scale = { 0.1f,1.0f };
+	timeNumberTenState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timeLimitNumber.png");
 }
 
 void GameTimerRender::Update([[maybe_unused]] const float deltaTime){
@@ -46,9 +60,16 @@ void GameTimerRender::Update([[maybe_unused]] const float deltaTime){
 
 	moveClockHandsState_->transform.rotate = Quaternion::MakeRotateZAxis(angle);
 
+	TimeNumberMove();
+
 	timerState_->transform.CalcMatrix();
 	clockHandsState_->transform.CalcMatrix();
 	moveClockHandsState_->transform.CalcMatrix();
+
+	timeNumberState_->transform.CalcMatrix();
+	timeNumberState_->uvTransform.CalcMatrix();
+	timeNumberTenState_->transform.CalcMatrix();
+	timeNumberTenState_->uvTransform.CalcMatrix();
 }
 
 void GameTimerRender::Draw([[maybe_unused]] const Camera &camera) const{
@@ -62,5 +83,23 @@ void GameTimerRender::Draw([[maybe_unused]] const Camera &camera) const{
 	tex2D_->Draw(moveClockHandsState_->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
 			, moveClockHandsState_->textureID, moveClockHandsState_->color, BlendType::kNormal);
 
+	tex2D_->Draw(timeNumberState_->transform.matWorld_, timeNumberState_->uvTransform.matWorld_, camera.GetViewOthographics()
+		, timeNumberState_->textureID, timeNumberState_->color, BlendType::kNormal);
 
+	tex2D_->Draw(timeNumberTenState_->transform.matWorld_, timeNumberTenState_->uvTransform.matWorld_, camera.GetViewOthographics()
+		, timeNumberTenState_->textureID, timeNumberTenState_->color, BlendType::kNormal);
+
+
+}
+
+void GameTimerRender::TimeNumberMove(){
+	const auto& deltaTimer = pGameTimer_->GetDeltaTimer();
+	//現在の残り時間
+	float nowRemainingTime = deltaTimer.GetGoalFlame() - deltaTimer.GetNowFlame();
+
+	timeNumberNum_ = static_cast<int32_t>(nowRemainingTime) % 10;
+	timeNumberTenNum_ = static_cast<int32_t>(nowRemainingTime / 10.0f) % 10;
+
+	timeNumberState_->uvTransform.translate.x = timeNumberNum_ * 0.1f;
+	timeNumberTenState_->uvTransform.translate.x = timeNumberTenNum_ * 0.1f;
 }
