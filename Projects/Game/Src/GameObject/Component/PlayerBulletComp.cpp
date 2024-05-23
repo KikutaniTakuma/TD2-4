@@ -8,6 +8,8 @@ void PlayerBulletComp::Init()
 	pLocalRigidbody_ = object_.AddComponent<LocalRigidbody>();
 	pSpriteComp_ = object_.AddComponent<SpriteComp>();
 	pSpriteComp_->SetTexture(TextureManager::GetInstance()->GetWhiteTex());
+
+	// pSpriteComp_->SetTexture(TextureManager::GetInstance()->LoadTexture("./Resources/"));
 }
 
 void PlayerBulletComp::Update()

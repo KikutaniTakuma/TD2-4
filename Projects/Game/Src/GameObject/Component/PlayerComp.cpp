@@ -75,6 +75,7 @@ void PlayerComp::FireBullet()
 void PlayerComp::Input()
 {
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
+	Lamb::SafePtr pad = Input::GetInstance()->GetGamepad();
 
 	//Vector2 velocity = pLocalRigidbody_->GetVelocity();
 
@@ -86,6 +87,9 @@ void PlayerComp::Input()
 	if (key->GetKey(DIK_D) or key->GetKey(DIK_RIGHT)) {
 		inputVec_ = +Vector2::kXIdentity * vMoveSpeed_;
 	}
+	if (inputVec_.x == 0.f) {
+		inputVec_.x = pad->GetStick(Gamepad::Stick::LEFT_X) * vMoveSpeed_;
+	}
 
 	if (inputVec_.x != 0) {
 		pLocalRigidbody_->ApplyContinuousForce(inputVec_);
@@ -93,7 +97,7 @@ void PlayerComp::Input()
 		facing_ = static_cast<int32_t>(SoLib::Math::Sign(inputVec_.x));
 	}
 
-	if (key->Pushed(DIK_X)) {
+	if (key->Pushed(DIK_X) or pad->Pushed(Gamepad::Button::Y) or pad->Pushed(Gamepad::Button::X)) {
 		if (not pPicker_->IsPicking()) {
 			pPicker_->PickUp(facing_);
 		}
@@ -102,7 +106,7 @@ void PlayerComp::Input()
 		}
 	}
 
-	if (key->Pushed(DIK_SPACE)) {
+	if (key->Pushed(DIK_SPACE) or pad->Pushed(Gamepad::Button::RIGHT_SHOULDER)) {
 		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/shot.mp3");
 		audio->Start(0.2f, false);
 		isAttack_ = true;
@@ -115,7 +119,7 @@ void PlayerComp::Input()
 	// 着地している場合
 	if (pHitMapComp_->hitNormal_.y > 0)
 	{
-		if (key->Pushed(DIK_Z)) {
+		if (key->Pushed(DIK_Z) or pad->GetButton(Gamepad::Button::A) or pad->GetButton(Gamepad::Button::B)) {
 			pLocalRigidbody_->ApplyInstantForce(Vector2::kYIdentity * 13.f);
 		}
 	}
