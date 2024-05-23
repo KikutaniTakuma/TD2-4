@@ -21,7 +21,7 @@ void TitleScene::Initialize(){
 
 	titleBGM_ = audioManager_->Load("./Resources/Sounds/BGM/title.mp3");
 	beginGame_ = audioManager_->Load("./Resources/Sounds/SE/choice.mp3");
-	titleBGM_->Start(0.01f, true);
+	titleBGM_->Start(0.1f, true);
 
 	titleDirection_ = TitleDirection::GetInstance();
 

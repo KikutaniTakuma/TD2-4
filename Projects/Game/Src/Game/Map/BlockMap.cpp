@@ -38,7 +38,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 {
 	Lamb::SafePtr texManager = TextureManager::GetInstance();
 	const uint32_t whiteTex = texManager->GetWhiteTex();
-	uint32_t blockTex = 0;
+	//uint32_t blockTex = 0;
 
 	const auto &breakTimer = GameManager::GetInstance()->GetBreakTimer();
 	bool isDraw = std::fmodf(breakTimer.GetProgress(), 0.2f) > 0.1f;
@@ -48,7 +48,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 		int32_t xi = 0;
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
-				for (uint32_t typeIndex = 1; typeIndex < static_cast<uint32_t>(Block::BlockType::kMax); typeIndex++) {
+				/*for (uint32_t typeIndex = 1; typeIndex < static_cast<uint32_t>(Block::BlockType::kMax); typeIndex++) {
 					if (modelState->color == Block::kBlockColor_[typeIndex]) {
 						if (modelState->color == damageColor_ and hitMap_[yi][xi]) {
 
@@ -58,8 +58,10 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 							blockTex = Block::kTextures_[typeIndex - 1];
 						}
 					}
-				}
-				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), blockTex, 0xFFFFFFFF, BlendType::kNone);
+				}*/
+
+				const auto &block = (*blockMap_)[yi][xi];
+				pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), block.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 			}
 			// 破壊フラグが立っていたら
 			if (isDraw and breakBlockMap_[yi][xi]) {
