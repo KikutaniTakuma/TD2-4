@@ -14,6 +14,7 @@ void SpriteComp::Init()
 
 void SpriteComp::Update()
 {
+	transform_.CalcMatrix();
 	offsetTransform_.CalcMatrix();
 }
 

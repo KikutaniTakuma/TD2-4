@@ -7,9 +7,8 @@ void PlayerBulletComp::Init()
 	pLocalBodyComp_ = object_.AddComponent<LocalBodyComp>();
 	pLocalRigidbody_ = object_.AddComponent<LocalRigidbody>();
 	pSpriteComp_ = object_.AddComponent<SpriteComp>();
-	pSpriteComp_->SetTexture(TextureManager::GetInstance()->GetWhiteTex());
 
-	// pSpriteComp_->SetTexture(TextureManager::GetInstance()->LoadTexture("./Resources/"));
+	pSpriteComp_->SetTexture(TextureManager::GetInstance()->LoadTexture("./Resources/Player/star.png"));
 }
 
 void PlayerBulletComp::Update()
@@ -40,7 +39,7 @@ void PlayerBulletComp::Update()
 
 		// ステージ内なら
 		if (not BlockMap::IsOutSide(hitPos)) {
-			Audio* audio = nullptr;
+			Audio *audio = nullptr;
 			auto &block = map->GetBlockMap()->at(hitPos.y)[hitPos.x];
 			block.AddDamage(1);
 			if (block.GetDamage() >= 3) {
@@ -58,5 +57,8 @@ void PlayerBulletComp::Update()
 	}
 
 	pLocalBodyComp_->TransfarData();
+
+	//pSpriteComp_->uvTransform_.rotate *= Quaternion::MakeRotateZAxis(GetDeltaTime() * 180_deg);
+	//pSpriteComp_->CalcTexUv();
 
 }

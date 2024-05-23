@@ -32,7 +32,7 @@ public:
 	Transform offsetTransform_;
 
 	SimpleTransform uvTransform_;
-	Mat4x4 uvMatrix_;
+	Mat4x4 uvMatrix_ = Mat4x4::kIdentity;
 
 	// スプライト
 	inline static Lamb::SafePtr<Texture2D> pTexture_ = nullptr;
