@@ -17,7 +17,7 @@ public:
 
 	void Drop(int32_t facing);
 
-	bool IsPicking() const { return pickingBlock_; }
+	bool IsPicking() const { return pickingBlock_ or not dwarfList_.empty(); }
 
 	const Mat4x4 &GetBlockAffine() const { return affine_; }
 
