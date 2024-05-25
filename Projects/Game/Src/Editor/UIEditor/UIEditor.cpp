@@ -333,14 +333,14 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 
 void UIEditor::PotScaleMove(const size_t i, const size_t j){
 	auto& texScale = texies_[i][j]->transform.scale;
-
-	texScale = potBaseScale_;
+	auto& texName = texies_[i][j]->textureName;
+	if (texName == "pot"){
+		texScale = potBaseScale_;
+	}	
 
 	if (!isScaleMove_)
 	return;
-	
-	
-	auto& texName = texies_[i][j]->textureName;
+		
 	
 	if (texName == "pot") {	
 		if (!isScaleMoveReverse_){

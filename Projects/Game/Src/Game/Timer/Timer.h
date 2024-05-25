@@ -68,11 +68,15 @@ private:
 	uint32_t timeNumberNum_;
 	//10の位
 	uint32_t timeNumberTenNum_;
+	//100の位
+	uint32_t timeNumberHundredNum_;
 
-	//時計の針
+	//1の位のテクスチャ
 	std::unique_ptr<Tex2DState> timeNumberState_;
-	//時計の動く針
+	//10の位のテクスチャ
 	std::unique_ptr<Tex2DState> timeNumberTenState_;
+	//100の位のテクスチャ
+	std::unique_ptr<Tex2DState> timeNumberHundredState_;
 
 
 };
