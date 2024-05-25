@@ -209,6 +209,7 @@ void ResultScene::Update(){
 		break;
 	}
 
+
 	if (effectStatus_ == ResultScene::EffectState::kFirst and isFirstEnd_) {
 		effectStatus_ = ResultScene::EffectState::kSecond;
 		SecondEffect();
@@ -216,11 +217,13 @@ void ResultScene::Update(){
 	if (isFirstActive_.OnExit()) {
 		if (isGameClear_) {
 			effectStatus_ = EffectState::kGameClear;
+			isSkip_ = true;
 			GameClearEffect();
 		}
 		// もしゲームオーバーなら
 		else {
 			effectStatus_ = EffectState::kGameOver;
+			isSkip_ = true;
 			GameOverEffect();
 		}
 
@@ -242,6 +245,7 @@ void ResultScene::Update(){
 	}
 	
 	cauldronTransform_->CalcMatrix();
+	Skip();
 }
 
 void ResultScene::Draw(){
@@ -390,30 +394,34 @@ void ResultScene::FlyAway() {
 	witchMoveY_->Update();
 	witchMoveY2_->Update();
 
-	if(witchMoveX_->ActiveExit() and not withcEaseingEnd_){
+	if (witchMoveY2_->ActiveExit() and not withcEaseingEnd_) {
 		withcEaseingEnd_ = true;
 	}
-	if (witchMoveY_->ActiveExit() and not withcEaseingEnd_) {
+
+	if (witchMoveY_->ActiveExit() and not isStartWitchMoveY2_) {
 		witchMoveY2_->Start(
 			false,
 			0.8f,
 			Easeing::OutBounce
 		);
+		isStartWitchMoveY2_ = true;
 	}
-	if (not witchMoveY_->GetIsActive() and not witchMoveY2_->GetIsActive() and not withcEaseingEnd_) {
+	if (not witchMoveY_->GetIsActive() and not witchMoveY2_->GetIsActive() and not isStartWitchMoveY_) {
 		witchMoveY_->Start(
 			false,
 			0.25f,
 			Easeing::OutQuad
 		);
+		isStartWitchMoveY_ = true;
 	}
-	if (not witchMoveX_->GetIsActive() and not withcEaseingEnd_) {
+	if (not witchMoveX_->GetIsActive() and not isStartWitchMoveX_) {
 		witchMoveX_->Start(
 			false,
 			0.5f,
 			Easeing::OutQuad
 		);
 
+		isStartWitchMoveX_ = true;
 	}
 
 	witch_->transform.translate.x = witchMoveX_->Get(0.0f, -420.0f);
@@ -634,7 +642,7 @@ void ResultScene::UpdateUI() {
 	Lamb::SafePtr gamepad = input_->GetGamepad();
 	Lamb::SafePtr key = input_->GetKey();
 
-	if (gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE)) {
+	if (not isSkip_ and (gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE))) {
 		switch (currentUIPick_)
 		{
 		case ResultScene::CurrentUIPick::kToNext:
@@ -771,4 +779,31 @@ void ResultScene::DrawUI() {
 		toStageSelectUI_->color,
 		BlendType::kNormal
 	);
+}
+
+void ResultScene::Skip() {
+	Lamb::SafePtr gamepad = input_->GetGamepad();
+	Lamb::SafePtr key = input_->GetKey();
+
+	if (not isSkip_ and(gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE))) {
+		witchMoveX_->Stop();
+
+		if (isGameClear_) {
+			effectStatus_ = EffectState::kGameClear;
+			GameClearEffect();
+		}
+		// もしゲームオーバーなら
+		else {
+			effectStatus_ = EffectState::kGameOver;
+			GameOverEffect();
+		}
+
+		witchCraft_->Stop();
+
+		cauldronParticle_->ParticleStart();
+		witchCraftExplotion_->Start(0.2f, false);
+		cauldronParticle_->emitterPos.z = currentCamera_->pos.z + 1.0f;
+
+		isSkip_ = true;
+	}
 }

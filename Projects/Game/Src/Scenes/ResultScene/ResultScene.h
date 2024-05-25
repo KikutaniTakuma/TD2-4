@@ -46,6 +46,8 @@ public:
 	}
 
 private:
+	bool isSkip_ = false;
+
 	Lamb::SafePtr<Texture2D> tex2D_;
 	std::unique_ptr<Tex2DState> backGround_;
 	float rotateClearBackFround_;
@@ -116,8 +118,11 @@ private:
 	uint32_t witchFlyAwayTexID_ = 0;
 	uint32_t witchCraftTexID_ = 0;
 	std::unique_ptr<Easeing> witchMoveX_;
+	bool isStartWitchMoveX_ = false;
 	std::unique_ptr<Easeing> witchMoveY_;
+	bool isStartWitchMoveY_ = false;
 	std::unique_ptr<Easeing> witchMoveY2_;
+	bool isStartWitchMoveY2_ = false;
 	bool withcEaseingEnd_ = false;
 
 	bool isFirstEnd_ = false;
@@ -157,5 +162,7 @@ private:
 
 	// UIの描画
 	void DrawUI();
+
+	void Skip();
 };
 
