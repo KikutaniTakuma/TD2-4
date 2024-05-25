@@ -26,7 +26,7 @@ BaseScene{ BaseScene::ID::Result }
 
 void ResultScene::Initialize(){
 	// ゲームのクリア状況入力
-	isGameClear_ = true;
+	//isGameClear_ = true;
 	
 	// ステージ番号入力
 	preGameStageNumber_ = static_cast<uint32_t>(SelectToGame::GetInstance()->GetSelect());
@@ -104,7 +104,7 @@ void ResultScene::Initialize(){
 		i->SetParticleSize(Vector3::kIdentity * 50.0f, Vector3::kIdentity * 80.0f);
 
 		// ここでゲームプレイ中のデータを入れる予定
-		i->Resize(/*GameManager::GetInstance()->GetItemTypeCount(static_cast<Block::BlockType>(currentElementType))*/10);
+		i->Resize(GameManager::GetInstance()->GetItemTypeCount(static_cast<Block::BlockType>(currentElementType)));
 		currentElementType++;
 		allFlaskParticleNum_ += static_cast<float>(i->GetSize());
 
