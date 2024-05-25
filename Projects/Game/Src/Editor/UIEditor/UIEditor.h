@@ -45,6 +45,9 @@ public:
 	/// </summary>
 	void PutDraw(const Mat4x4& camera);
 
+	//ポットのscale変更処理
+	void BeginScaleMove(const float time);
+
 	/// <summary>
 	/// Imguiの情報
 	/// </summary>
@@ -87,10 +90,15 @@ public:
 		}
 		return texStateResult;
 	}
+public:
+	static const float scaleMoveSpeed;
 
 private:
 	void GameControlUIMove(const size_t i, const size_t j);
 
+	void PotScaleMove(const size_t i, const size_t j);
+
+	
 private:
 	Input* input_ = nullptr;
 
@@ -107,6 +115,21 @@ private:
 	std::array<std::vector<std::unique_ptr<Tex2DState>>, BaseScene::kMaxScene> texies_;
 
 	std::unique_ptr<Tex2DState> newTex_;
+
+	//スケールイージングするための
+	bool isScaleMove_ = false;
+
+	bool isScaleMoveReverse_ = false;
+
+	float time_ = 0;
+
+	std::unique_ptr<Easeing> easing_;
+
+	Vector2 potGoalScale_;
+
+	Vector2 potBaseScale_;
+
+	Mat4x4 camera_;
 
 	BaseScene::ID id_;
 

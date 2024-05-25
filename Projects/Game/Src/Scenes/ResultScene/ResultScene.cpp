@@ -73,8 +73,8 @@ void ResultScene::Initialize(){
 
 	cauldronParticle_ = std::make_unique<Particle>();
 	if (isGameClear_) {
-		cauldronParticle_->LoadSettingDirectory("Smoke");
-		cauldronParticle_->SetParticleScale(1.0f / 0.0036f);
+		cauldronParticle_->LoadSettingDirectory("ResultExplosion");
+		cauldronParticle_->SetParticleScale(1.0f / 0.0036f * 0.5f);
 	}
 	else {
 		cauldronParticle_->LoadSettingDirectory("Bomb");
@@ -94,6 +94,11 @@ void ResultScene::Initialize(){
 	flaskTextureID_[2] = drawerManager_->LoadTexture("./Resources/Item/herbs.png");
 	flaskTextureID_[3] = drawerManager_->LoadTexture("./Resources/Item/mineral.png");
 	uint32_t currentElementType = static_cast<uint32_t>(Block::BlockType::kRed);
+
+	flaskParticleAppDurationMin = { 0.3f, 0.4f };
+	flaskParticleAppDurationMax = { 0.05f, 0.1f };
+	flaskParticleAppDurationEase_ = std::make_unique<Easeing>();
+
 	for (auto texID = flaskTextureID_.begin(); auto & i : flaskParticles_) {
 		i = std::make_unique<FlaskParticle>();
 		i->SetParticleSize(Vector3::kIdentity * 50.0f, Vector3::kIdentity * 80.0f);
@@ -107,7 +112,7 @@ void ResultScene::Initialize(){
 		i->SetDeathTime({1.0f, 1.5f});
 		i->SetRotate(Vector2(15_deg, 165_deg));
 		i->SetRadius(Vector2(300.0f, 400.0f));
-		i->SetFreq(Vector2(0.3f, 0.8f));
+		i->SetFreq(Vector2(flaskParticleAppDurationMin.min, flaskParticleAppDurationMin.max));
 		i->SetEndTranslate(Vector3::kYIdentity * 60.0f);
 		i->SetTextureID(*texID);
 		i->Start();
@@ -204,16 +209,22 @@ void ResultScene::Update(){
 		break;
 	}
 
+
 	if (effectStatus_ == ResultScene::EffectState::kFirst and isFirstEnd_) {
 		effectStatus_ = ResultScene::EffectState::kSecond;
+		SecondEffect();
 	}
 	if (isFirstActive_.OnExit()) {
 		if (isGameClear_) {
 			effectStatus_ = EffectState::kGameClear;
+			isSkip_ = true;
+			GameClearEffect();
 		}
 		// もしゲームオーバーなら
 		else {
 			effectStatus_ = EffectState::kGameOver;
+			isSkip_ = true;
+			GameOverEffect();
 		}
 
 		witchCraft_->Stop();
@@ -234,6 +245,7 @@ void ResultScene::Update(){
 	}
 	
 	cauldronTransform_->CalcMatrix();
+	Skip();
 }
 
 void ResultScene::Draw(){
@@ -310,12 +322,20 @@ void ResultScene::FirstDraw() {
 void ResultScene::SecondEffect() {
 	curretnActiveFlaskParticleNum_ = 0.0f;
 	bool isActive = false;
+
+	if (not flaskParticleAppDurationEase_->GetIsActive()) {
+		flaskParticleAppDurationEase_->Start(false, 1.5f, Easeing::OutSine);
+	}
+
 	for (auto& i : flaskParticles_) {
+		Vector2 appDuration = flaskParticleAppDurationEase_->Get(flaskParticleAppDurationMin, flaskParticleAppDurationMax);
+		i->SetFreq(appDuration);
 		i->Update();
 		if (not isActive) {
 			isActive = !!i->GetIsActive();
 		}
 		curretnActiveFlaskParticleNum_ += static_cast<float>(i->GetCurrentActiveParticleNum());
+		flaskParticleAppDurationEase_->Update();
 	}
 	if (not isActive and not cauldronEase_->GetIsActive()) {
 		cauldronEase_->Start(
@@ -374,30 +394,34 @@ void ResultScene::FlyAway() {
 	witchMoveY_->Update();
 	witchMoveY2_->Update();
 
-	if(witchMoveX_->ActiveExit() and not withcEaseingEnd_){
+	if (witchMoveY2_->ActiveExit() and not withcEaseingEnd_) {
 		withcEaseingEnd_ = true;
 	}
-	if (witchMoveY_->ActiveExit() and not withcEaseingEnd_) {
+
+	if (witchMoveY_->ActiveExit() and not isStartWitchMoveY2_) {
 		witchMoveY2_->Start(
 			false,
 			0.8f,
 			Easeing::OutBounce
 		);
+		isStartWitchMoveY2_ = true;
 	}
-	if (not witchMoveY_->GetIsActive() and not witchMoveY2_->GetIsActive() and not withcEaseingEnd_) {
+	if (not witchMoveY_->GetIsActive() and not witchMoveY2_->GetIsActive() and not isStartWitchMoveY_) {
 		witchMoveY_->Start(
 			false,
 			0.25f,
 			Easeing::OutQuad
 		);
+		isStartWitchMoveY_ = true;
 	}
-	if (not witchMoveX_->GetIsActive() and not withcEaseingEnd_) {
+	if (not witchMoveX_->GetIsActive() and not isStartWitchMoveX_) {
 		witchMoveX_->Start(
 			false,
 			0.5f,
 			Easeing::OutQuad
 		);
 
+		isStartWitchMoveX_ = true;
 	}
 
 	witch_->transform.translate.x = witchMoveX_->Get(0.0f, -420.0f);
@@ -618,7 +642,7 @@ void ResultScene::UpdateUI() {
 	Lamb::SafePtr gamepad = input_->GetGamepad();
 	Lamb::SafePtr key = input_->GetKey();
 
-	if (gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE)) {
+	if (not isSkip_ and (gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE))) {
 		switch (currentUIPick_)
 		{
 		case ResultScene::CurrentUIPick::kToNext:
@@ -755,4 +779,31 @@ void ResultScene::DrawUI() {
 		toStageSelectUI_->color,
 		BlendType::kNormal
 	);
+}
+
+void ResultScene::Skip() {
+	Lamb::SafePtr gamepad = input_->GetGamepad();
+	Lamb::SafePtr key = input_->GetKey();
+
+	if (not isSkip_ and(gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE))) {
+		witchMoveX_->Stop();
+
+		if (isGameClear_) {
+			effectStatus_ = EffectState::kGameClear;
+			GameClearEffect();
+		}
+		// もしゲームオーバーなら
+		else {
+			effectStatus_ = EffectState::kGameOver;
+			GameOverEffect();
+		}
+
+		witchCraft_->Stop();
+
+		cauldronParticle_->ParticleStart();
+		witchCraftExplotion_->Start(0.2f, false);
+		cauldronParticle_->emitterPos.z = currentCamera_->pos.z + 1.0f;
+
+		isSkip_ = true;
+	}
 }

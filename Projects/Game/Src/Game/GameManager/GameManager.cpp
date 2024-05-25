@@ -909,6 +909,8 @@ void GameManager::AddPoint()
 			index = std::clamp(index, 1u, static_cast<uint32_t>(Block::BlockType::kMax) - 1) - 1;
 			itemTypeCount_[index]++;
 
+			UIEditor::GetInstance()->BeginScaleMove(UIEditor::scaleMoveSpeed);
+			
 
 			item = itemList_.erase(item); // オブジェクトを破棄してイテレータを変更
 			continue;
