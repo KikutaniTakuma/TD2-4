@@ -46,7 +46,7 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 	sceneNum_[BaseScene::ID::Result] = DIK_4;
 
 	uiEditor_ = UIEditor::GetInstance();
-	uiEditor_->Initialize();
+	uiEditor_->Initialize(this);
 	uiEditor_->LoadFileAll();
 
 	// テクスチャデータのアップロード

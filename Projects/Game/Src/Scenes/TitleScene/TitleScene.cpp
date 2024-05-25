@@ -25,7 +25,7 @@ void TitleScene::Initialize(){
 
 	titleDirection_ = TitleDirection::GetInstance();
 
-	titleDirection_->Initialize();
+	titleDirection_->Initialize(sceneManager_);
 
 }
 
