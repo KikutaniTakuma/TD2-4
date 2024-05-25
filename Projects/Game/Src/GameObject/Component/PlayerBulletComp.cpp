@@ -8,6 +8,12 @@ void PlayerBulletComp::Init()
 	pLocalRigidbody_ = object_.AddComponent<LocalRigidbody>();
 	pSpriteComp_ = object_.AddComponent<SpriteComp>();
 
+	shotParticle_ = std::make_unique<Particle>();
+	shotParticle_->LoadSettingDirectory("Magic");
+
+	shotParticle_->ParticleStart(transform_.translate);
+	shotParticle_->SetParticleScale(0.5f);
+
 	pSpriteComp_->SetTexture(TextureManager::GetInstance()->LoadTexture("./Resources/Player/star.png"));
 }
 
@@ -58,7 +64,18 @@ void PlayerBulletComp::Update()
 
 	pLocalBodyComp_->TransfarData();
 
+	shotParticle_->emitterPos = transform_.translate;
+
+	shotParticle_->Update();
+
 	pSpriteComp_->offsetTransform_.rotate *= Quaternion::MakeRotateZAxis(GetDeltaTime() * 360_deg);
 	//pSpriteComp_->CalcTexUv();
 
+}
+
+void PlayerBulletComp::Draw(const Camera& camera) const {
+	shotParticle_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics()
+	);
 }
