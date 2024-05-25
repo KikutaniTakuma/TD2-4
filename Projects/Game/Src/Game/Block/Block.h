@@ -47,10 +47,10 @@ public:
 
 	static void StaticLoad() {
 		kTextures_ = {
-			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/lizardTailBlock.png"),
-			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/waterBlock.png"),
-			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/herbBlock.png"),
-			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/mineralBlock.png"),
+			TextureManager::GetInstance()->LoadTexture("./Resources/BlockTex/lizardTailBlock.png"),
+			TextureManager::GetInstance()->LoadTexture("./Resources/BlockTex/waterBlock.png"),
+			TextureManager::GetInstance()->LoadTexture("./Resources/BlockTex/herbBlock.png"),
+			TextureManager::GetInstance()->LoadTexture("./Resources/BlockTex/mineralBlock.png"),
 		};
 	}
 

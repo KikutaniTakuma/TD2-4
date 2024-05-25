@@ -140,7 +140,7 @@ void UIEditor::Debug(const BaseScene::ID id){
 		if (ImGui::BeginMenu("UI生成")) {
 			ImGui::DragFloat2("生成するポジション", &newTex_->transform.translate.x, 1.0f);
 			if (ImGui::TreeNode("生成するUI画像")) {
-				auto file = Lamb::GetFilePathFormDir("Resources/UI/", ".png");
+				auto file = Lamb::GetFilePathFormDir("./Resources/UI/", ".png");
 				for (auto& i : file) {
 					if (ImGui::Button(i.string().c_str())) {						
 						if (OperationConfirmation()) {

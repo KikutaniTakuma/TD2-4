@@ -193,6 +193,9 @@
     <ClCompile Include="Engine\Graphics\Tex2DAniamtor\Tex2DAniamtor.cpp">
       <Filter>Engine\Graphics\Tex2DAniamtor</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\EngineUtils\ResourceLoadLog\ResourceLoadLog.cpp">
+      <Filter>Engine\EngineUtils\ResourceLoadLog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -398,6 +401,9 @@
     </Filter>
     <Filter Include="Engine\Graphics\Tex2DAniamtor">
       <UniqueIdentifier>{b474e4f0-c2cc-4279-80a0-0a89f653768f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\EngineUtils\ResourceLoadLog">
+      <UniqueIdentifier>{40459769-a601-461d-9451-b130a9107739}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -628,6 +634,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Graphics\Tex2DAniamtor\Tex2DAniamtor.h">
       <Filter>Engine\Graphics\Tex2DAniamtor</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EngineUtils\ResourceLoadLog\ResourceLoadLog.h">
+      <Filter>Engine\EngineUtils\ResourceLoadLog</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

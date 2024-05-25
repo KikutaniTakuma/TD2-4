@@ -47,7 +47,7 @@ void GameManager::Init()
 	blockMap_->Init();
 
 	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
-	drawerManager->LoadModel("Resources/Cube.obj");
+	drawerManager->LoadModel("./Resources/Cube.obj");
 
 	// 参照を渡す
 	LocalBodyComp::pGameManager_ = this;
