@@ -105,7 +105,7 @@ public:
 	//弾が当たったときに当たった個所からつながっているブロックを検索して色を変化させる
 	BlockMap::BlockBitMap &&HitChainBlocks(POINTS localPos);
 
-	std::list<DwarfPick> PickUpBlockSideObject(const POINTS localPos);
+	std::list<DwarfPick> PickUpObject(const POINTS localPos);
 
 	void RandomDwarfSpawn();
 

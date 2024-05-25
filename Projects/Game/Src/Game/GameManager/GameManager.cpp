@@ -698,7 +698,7 @@ BlockMap::BlockBitMap &&GameManager::HitChainBlocks(POINTS localPos) {
 
 	return std::move(chainBlockMap);
 }
-std::list<GameManager::DwarfPick> GameManager::PickUpBlockSideObject(const POINTS localPos)
+std::list<GameManager::DwarfPick> GameManager::PickUpObject(const POINTS localPos)
 {
 	std::list<DwarfPick> result;
 
@@ -712,7 +712,7 @@ std::list<GameManager::DwarfPick> GameManager::PickUpBlockSideObject(const POINT
 
 			// もし隣であったら取る
 	//		if (std::abs(bodyPos.x - localPos.x) + std::abs(bodyPos.y - localPos.y) <= 1) {
-			if (bodyPos.x == localPos.x and bodyPos.y - localPos.y == 1) {
+			if (bodyPos == localPos) {
 
 				result.push_back({ body->localPos_ - Vector2{static_cast<float>(localPos.x), static_cast<float>(localPos.y)}, std::move(*dwarfItr) });
 
@@ -730,7 +730,7 @@ std::list<GameManager::DwarfPick> GameManager::PickUpBlockSideObject(const POINT
 
 			// もし隣であったら取る
 	//		if (std::abs(bodyPos.x - localPos.x) + std::abs(bodyPos.y - localPos.y) <= 1) {
-			if (bodyPos.x == localPos.x and bodyPos.y - localPos.y == 1) {
+			if (bodyPos == localPos) {
 
 				result.push_back({ body->localPos_ - Vector2{static_cast<float>(localPos.x), static_cast<float>(localPos.y)}, std::move(*dwarfItr) });
 
