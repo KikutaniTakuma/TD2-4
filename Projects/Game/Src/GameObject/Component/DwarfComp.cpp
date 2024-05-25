@@ -3,6 +3,7 @@
 #include "SpriteAnimatorComp.h"
 #include "SpriteComp.h"
 #include <Drawers/DrawerManager.h>
+#include <Utils/Random/Random.h>
 
 void DwarfComp::Init()
 {
@@ -319,25 +320,29 @@ void DwarfComp::FreeTargetMove()
 	if (pPickUpComp_->GetBlockWeight() > 0) {
 		return;
 	}
-
-	// ローカルの座標
-	float localX = pLocalBodyComp_->localPos_.x;
-
-	if (targetPos_ == -Vector2::kIdentity) {
-		movementFacing_ = 1;
+	if (movementFacing_ == 0) {
+		movementFacing_ = Lamb::Random(0, 1) ? 1 : -1;
 	}
+	else {
 
-	// 右端にいる場合
-	if ((BlockMap::kMapX - 1.5f) <= localX) {
-		// 左端に行くように指定
-		movementFacing_ = -1;
-	}
-	// 左端にいる場合
-	else if (0.5f >= localX) {
-		// 右端に行くように指定
-		movementFacing_ = 1;
-	}
+		// ローカルの座標
+		float localX = pLocalBodyComp_->localPos_.x;
 
+		if (targetPos_ == -Vector2::kIdentity) {
+			movementFacing_ = 1;
+		}
+
+		// 右端にいる場合
+		if ((BlockMap::kMapX - 1.5f) <= localX) {
+			// 左端に行くように指定
+			movementFacing_ = -1;
+		}
+		// 左端にいる場合
+		else if (0.5f >= localX) {
+			// 右端に行くように指定
+			movementFacing_ = 1;
+		}
+	}
 	// 向いている方向の端に移動先を設定する
 	if (movementFacing_ == 1) {
 		// 右下に移動

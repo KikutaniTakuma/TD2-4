@@ -86,7 +86,6 @@ void PlayerBlockPickerComp::Drop(int32_t facing)
 		if (not pickingBlock_) {
 
 			POINTS pos = { .x = static_cast<int16_t>(targetPos.x), .y = static_cast<int16_t>(targetPos.y) };
-			(*pBlockMap_->GetBlockMap())[pos.y][pos.x] = pickingBlock_;
 
 			auto *gameManager = GameManager::GetInstance();
 
