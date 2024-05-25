@@ -40,17 +40,24 @@ void GameTimerRender::Init([[maybe_unused]] GameTimer *gameTimer){
 
 	timeNumberState_ = std::make_unique<Tex2DState>();
 	timeNumberState_->color = 0xffffffff;
-	timeNumberState_->transform.scale = { 64.0f,80.0f };
-	timeNumberState_->transform.translate = { 485.0f, 80.0f };
+	timeNumberState_->transform.scale = { 48.0f,60.0f };
+	timeNumberState_->transform.translate = { 500.0f, 80.0f };
 	timeNumberState_->uvTransform.scale = { 0.1f,1.0f };
 	timeNumberState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timeLimitNumber.png");
 
 	timeNumberTenState_ = std::make_unique<Tex2DState>();
 	timeNumberTenState_->color = 0xffffffff;
-	timeNumberTenState_->transform.scale = { 64.0f,80.0f };
-	timeNumberTenState_->transform.translate = { 415.0f, 80.0f };
+	timeNumberTenState_->transform.scale = { 48.0f,60.0f };
+	timeNumberTenState_->transform.translate = { 450.0f, 80.0f };
 	timeNumberTenState_->uvTransform.scale = { 0.1f,1.0f };
 	timeNumberTenState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timeLimitNumber.png");
+
+	timeNumberHundredState_ = std::make_unique<Tex2DState>();
+	timeNumberHundredState_->color = 0xffffffff;
+	timeNumberHundredState_->transform.scale = { 48.0f,60.0f };
+	timeNumberHundredState_->transform.translate = { 400.0f, 80.0f };
+	timeNumberHundredState_->uvTransform.scale = { 0.1f,1.0f };
+	timeNumberHundredState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timeLimitNumber.png");
 }
 
 void GameTimerRender::Update([[maybe_unused]] const float deltaTime){
@@ -70,6 +77,9 @@ void GameTimerRender::Update([[maybe_unused]] const float deltaTime){
 	timeNumberState_->uvTransform.CalcMatrix();
 	timeNumberTenState_->transform.CalcMatrix();
 	timeNumberTenState_->uvTransform.CalcMatrix();
+
+	timeNumberHundredState_->transform.CalcMatrix();
+	timeNumberHundredState_->uvTransform.CalcMatrix();
 }
 
 void GameTimerRender::Draw([[maybe_unused]] const Camera &camera) const{
@@ -89,17 +99,21 @@ void GameTimerRender::Draw([[maybe_unused]] const Camera &camera) const{
 	tex2D_->Draw(timeNumberTenState_->transform.matWorld_, timeNumberTenState_->uvTransform.matWorld_, camera.GetViewOthographics()
 		, timeNumberTenState_->textureID, timeNumberTenState_->color, BlendType::kNormal);
 
+	tex2D_->Draw(timeNumberHundredState_->transform.matWorld_, timeNumberHundredState_->uvTransform.matWorld_, camera.GetViewOthographics()
+		, timeNumberHundredState_->textureID, timeNumberHundredState_->color, BlendType::kNormal);
 
 }
 
-void GameTimerRender::TimeNumberMove(){
+void GameTimerRender::TimeNumberMove() {
 	const auto& deltaTimer = pGameTimer_->GetDeltaTimer();
 	//現在の残り時間
 	float nowRemainingTime = deltaTimer.GetGoalFlame() - deltaTimer.GetNowFlame();
 
 	timeNumberNum_ = static_cast<int32_t>(nowRemainingTime) % 10;
 	timeNumberTenNum_ = static_cast<int32_t>(nowRemainingTime / 10.0f) % 10;
+	timeNumberHundredNum_ = static_cast<int32_t>(nowRemainingTime / 100.0f) % 10;
 
 	timeNumberState_->uvTransform.translate.x = timeNumberNum_ * 0.1f;
 	timeNumberTenState_->uvTransform.translate.x = timeNumberTenNum_ * 0.1f;
+	timeNumberHundredState_->uvTransform.translate.x = timeNumberHundredNum_ * 0.1f;
 }
