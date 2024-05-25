@@ -76,15 +76,17 @@ void SceneManager::Update() {
 	else if (input_->GetMouse()->PushAnyKey() || input_->GetKey()->PushAnyKey()) {
 		isPad_ = false;
 	}
-
+	if (scene_){
+		uiEditor_->Update(scene_->GetID());
+	}
 
 	if (scene_ && !next_) {
 #ifdef _DEBUG
 		scene_->ChangeCamera();
 #endif // _DEBUG
 
+		
 		scene_->Update();
-		uiEditor_->Update(scene_->GetID());
 		Debug();
 	}
 
@@ -123,8 +125,8 @@ void SceneManager::Update() {
 		fade_->InStart();
 
 		// シーンの更新処理
-		scene_->Update();
 		uiEditor_->Update(scene_->GetID());
+		scene_->Update();
 #pragma endregion
 	}
 

@@ -13,6 +13,8 @@ UIEditor::~UIEditor(){
 
 }
 
+const float UIEditor::scaleMoveSpeed = 0.075f;
+
 void UIEditor::Initialize(){
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
 
@@ -30,6 +32,8 @@ void UIEditor::Initialize(){
 	newTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/white2x2.png");
 	
 	input_ = Input::GetInstance();
+
+	easing_ = std::make_unique<Easeing>();
 	//texAnim_ = std::make_unique<Tex2DAniamtor>();
 
 	//texAnim_->SetStartPos(Vector2::kZero);
@@ -39,6 +43,10 @@ void UIEditor::Initialize(){
 	//texAnim_->Start();
 	//animNum_ = DrawerManager::GetInstance()->LoadTexture("./Resources/Load.png");
 
+	potGoalScale_ = { 84.0f,44.0f };
+	potBaseScale_ = { 64.0f,64.0f };
+
+	camera_.Identity();
 }
 
 void UIEditor::Finalize(){
@@ -56,7 +64,16 @@ void UIEditor::Update(const BaseScene::ID id){
 
 	
 	newTex_->transform.CalcMatrix();
-	
+	easing_->Update();
+
+	if (!isScaleMoveReverse_ and easing_->ActiveExit()) {
+		isScaleMoveReverse_ = true;
+		easing_->Start(false, time_, Easeing::InSine);
+	}
+	else if (isScaleMoveReverse_ and easing_->ActiveExit()) {
+		isScaleMoveReverse_ = false;
+		isScaleMove_ = false;
+	}
 
 	for (size_t i = 0; i < BaseScene::kMaxScene; i++){
 		if (i != static_cast<size_t>(id))
@@ -77,6 +94,7 @@ void UIEditor::Update(const BaseScene::ID id){
 			}
 
 			GameControlUIMove(i, j);
+			PotScaleMove(i, j);
 
 			texies_[i][j]->transform.CalcMatrix();
 			texies_[i][j]->uvTransform.CalcMatrix();
@@ -87,7 +105,7 @@ void UIEditor::Update(const BaseScene::ID id){
 }
 
 void UIEditor::Draw(const Mat4x4& camera, const BaseScene::ID id){
-	
+	camera_ = camera;
 	//texAnim_->Update();
 	//tex2D_->Draw(
 	//	Mat4x4::MakeAffin(Vector3(Lamb::ClientSize(), 1.0f), Vector3::kZero, Vector3::kZero),
@@ -311,6 +329,42 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 		}
 	}
 
+}
+
+void UIEditor::PotScaleMove(const size_t i, const size_t j){
+	auto& texScale = texies_[i][j]->transform.scale;
+
+	texScale = potBaseScale_;
+
+	if (!isScaleMove_)
+	return;
+	
+	
+	auto& texName = texies_[i][j]->textureName;
+	
+	if (texName == "pot") {	
+		if (!isScaleMoveReverse_){
+			texScale = easing_->Get(potBaseScale_, potGoalScale_);
+		}
+		else {
+			texScale = easing_->Get(potGoalScale_, potBaseScale_);
+		}
+	}
+
+}
+
+void UIEditor::BeginScaleMove(const float time){
+	if (isScaleMove_){
+		easing_->Start(false, time, Easeing::InSine);
+		time_ = time;
+		isScaleMoveReverse_ = false;
+	}
+	else {
+		isScaleMove_ = true;
+		time_ = time;
+		easing_->Start(false, time, Easeing::InSine);
+		isScaleMoveReverse_ = false;
+	}
 }
 
 void UIEditor::SaveFile(const std::string& fileName){
