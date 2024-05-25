@@ -88,7 +88,7 @@ void ItemGauge::MoveGauge(){
 	float& rightPos = moveGaugeRightState_->transform.translate.x;
 
 	rightPos = kGaugePosX_.x - (gaugePosLength_ * (num_));
-	leftPos = -338.0f;
+	leftPos = -344.0f;
 	//rightPos = 305.0f;
 
 	moveGaugeCenterState_->transform.translate.x = (leftPos + rightPos) * 0.5f;

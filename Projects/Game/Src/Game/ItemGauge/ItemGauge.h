@@ -40,7 +40,7 @@ private:
 private:
 	Texture2D* tex2D_;
 	//始点終点
-	const Vector2 kGaugePosX_ = { -315.0f,305.0f };
+	const Vector2 kGaugePosX_ = { -308.0f,315.0f };
 	float gaugePosLength_ = 659.0f;
 
 	//右から左の設定
@@ -49,7 +49,7 @@ private:
 	//始点終点
 	const Vector2 kGaugeCenterPosX_ = { 320.0f,-38.0f };
 	float gaugePosCenterLength_ = 358.0f;
-	const float kGaugeScale_ = 620.0f;
+	const float kGaugeScale_ = 624.0f;
 
 	float num_ = 0.0f;
 	//外側の縁
