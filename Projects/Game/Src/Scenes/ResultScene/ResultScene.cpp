@@ -642,7 +642,7 @@ void ResultScene::UpdateUI() {
 	Lamb::SafePtr gamepad = input_->GetGamepad();
 	Lamb::SafePtr key = input_->GetKey();
 
-	if (not isSkip_ and (gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE))) {
+	if (isSkip_ and (gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE))) {
 		switch (currentUIPick_)
 		{
 		case ResultScene::CurrentUIPick::kToNext:
