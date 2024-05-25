@@ -26,7 +26,7 @@ BaseScene{ BaseScene::ID::Result }
 
 void ResultScene::Initialize(){
 	// ゲームのクリア状況入力
-	//isGameClear_ = true;
+	isGameClear_ = true;
 	
 	// ステージ番号入力
 	preGameStageNumber_ = static_cast<uint32_t>(SelectToGame::GetInstance()->GetSelect());
@@ -73,8 +73,8 @@ void ResultScene::Initialize(){
 
 	cauldronParticle_ = std::make_unique<Particle>();
 	if (isGameClear_) {
-		cauldronParticle_->LoadSettingDirectory("Smoke");
-		cauldronParticle_->SetParticleScale(1.0f / 0.0036f);
+		cauldronParticle_->LoadSettingDirectory("ResultExplosion");
+		cauldronParticle_->SetParticleScale(1.0f / 0.0036f * 0.5f);
 	}
 	else {
 		cauldronParticle_->LoadSettingDirectory("Bomb");
@@ -94,12 +94,17 @@ void ResultScene::Initialize(){
 	flaskTextureID_[2] = drawerManager_->LoadTexture("./Resources/Item/herbs.png");
 	flaskTextureID_[3] = drawerManager_->LoadTexture("./Resources/Item/mineral.png");
 	uint32_t currentElementType = static_cast<uint32_t>(Block::BlockType::kRed);
+
+	flaskParticleAppDurationMin = { 0.3f, 0.4f };
+	flaskParticleAppDurationMax = { 0.05f, 0.1f };
+	flaskParticleAppDurationEase_ = std::make_unique<Easeing>();
+
 	for (auto texID = flaskTextureID_.begin(); auto & i : flaskParticles_) {
 		i = std::make_unique<FlaskParticle>();
 		i->SetParticleSize(Vector3::kIdentity * 50.0f, Vector3::kIdentity * 80.0f);
 
 		// ここでゲームプレイ中のデータを入れる予定
-		i->Resize(GameManager::GetInstance()->GetItemTypeCount(static_cast<Block::BlockType>(currentElementType)));
+		i->Resize(/*GameManager::GetInstance()->GetItemTypeCount(static_cast<Block::BlockType>(currentElementType))*/10);
 		currentElementType++;
 		allFlaskParticleNum_ += static_cast<float>(i->GetSize());
 
@@ -107,7 +112,7 @@ void ResultScene::Initialize(){
 		i->SetDeathTime({1.0f, 1.5f});
 		i->SetRotate(Vector2(15_deg, 165_deg));
 		i->SetRadius(Vector2(300.0f, 400.0f));
-		i->SetFreq(Vector2(0.3f, 0.8f));
+		i->SetFreq(Vector2(flaskParticleAppDurationMin.min, flaskParticleAppDurationMin.max));
 		i->SetEndTranslate(Vector3::kYIdentity * 60.0f);
 		i->SetTextureID(*texID);
 		i->Start();
@@ -206,14 +211,17 @@ void ResultScene::Update(){
 
 	if (effectStatus_ == ResultScene::EffectState::kFirst and isFirstEnd_) {
 		effectStatus_ = ResultScene::EffectState::kSecond;
+		SecondEffect();
 	}
 	if (isFirstActive_.OnExit()) {
 		if (isGameClear_) {
 			effectStatus_ = EffectState::kGameClear;
+			GameClearEffect();
 		}
 		// もしゲームオーバーなら
 		else {
 			effectStatus_ = EffectState::kGameOver;
+			GameOverEffect();
 		}
 
 		witchCraft_->Stop();
@@ -310,12 +318,20 @@ void ResultScene::FirstDraw() {
 void ResultScene::SecondEffect() {
 	curretnActiveFlaskParticleNum_ = 0.0f;
 	bool isActive = false;
+
+	if (not flaskParticleAppDurationEase_->GetIsActive()) {
+		flaskParticleAppDurationEase_->Start(false, 1.5f, Easeing::OutSine);
+	}
+
 	for (auto& i : flaskParticles_) {
+		Vector2 appDuration = flaskParticleAppDurationEase_->Get(flaskParticleAppDurationMin, flaskParticleAppDurationMax);
+		i->SetFreq(appDuration);
 		i->Update();
 		if (not isActive) {
 			isActive = !!i->GetIsActive();
 		}
 		curretnActiveFlaskParticleNum_ += static_cast<float>(i->GetCurrentActiveParticleNum());
+		flaskParticleAppDurationEase_->Update();
 	}
 	if (not isActive and not cauldronEase_->GetIsActive()) {
 		cauldronEase_->Start(

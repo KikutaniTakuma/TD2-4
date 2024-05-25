@@ -60,6 +60,9 @@ private:
 	std::array<uint32_t, 4> flaskTextureID_;
 	float curretnActiveFlaskParticleNum_;
 	float allFlaskParticleNum_;
+	Vector2 flaskParticleAppDurationMin;
+	Vector2 flaskParticleAppDurationMax;
+	std::unique_ptr<Easeing> flaskParticleAppDurationEase_;
 
 	std::unique_ptr<Particle> cauldronParticle_;
 	std::unique_ptr<Transform> cauldronTransform_;
