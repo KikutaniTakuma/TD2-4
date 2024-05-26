@@ -52,13 +52,19 @@ private:
 
 	std::array <bool, kMaxStage_> isStageClear_;
 
-	const float stageInterbal = 700.0f;
+	const float stageInterbal = 800.0f;
 
 	Texture2D* tex2D_;
 	std::array<std::unique_ptr<Tex2DState>, kMaxStage_> texies_;
+	std::array<std::unique_ptr<Tex2DState>, kMaxStage_> itemTexies_;
 
 	std::array<float, kMaxStage_> startPos_;
 	std::array<float, kMaxStage_> endPos_;
+
+	std::array<float, kMaxStage_> startItemPos_;
+	std::array<float, kMaxStage_> endItemPos_;
+	Vector2 itemDistanceCenter_ = { 300.0f,-140.0f };
+
 	std::array<float, kMaxStage_> easeT_;
 	const float kAddEase_ = 0.2f;
 

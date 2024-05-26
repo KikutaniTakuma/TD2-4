@@ -16,13 +16,21 @@ void SelectScene::Initialize() {
 	currentCamera_->pos = { 0.0f, 0.0f , -1.0f };
 	shakePower_ = { 20.0f,20.0f };
 
-	for (size_t i = 0; i < texies_.size(); i++) {
+	for (uint32_t i = 0; i < texies_.size(); i++) {
 		texies_[i] = std::make_unique<Tex2DState>();
-		texies_[i]->transform.scale = { 624.0f,368.0f };
+		texies_[i]->transform.scale = { 936.0f,554.0f };
 		texies_[i]->transform.translate = { stageInterbal * i, 0.0f ,0 };
-		texies_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/stageSelectFrame.png");
+		texies_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/stageSelectFram2.png");
 		startPos_[i] = texies_[i]->transform.translate.x;
 		endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
+
+		itemTexies_[i] = std::make_unique<Tex2DState>();
+		itemTexies_[i]->transform.scale = { 80.0f,80.0f };
+		itemTexies_[i]->transform.translate = { itemDistanceCenter_.x + (stageInterbal * i), itemDistanceCenter_.y ,0 };
+		itemTexies_[i]->uvTransform.scale = { 0.5f,1.0f };
+		itemTexies_[i]->textureID = SelectToGame::GetInstance()->GetStageItemTextureID(i);
+		startItemPos_[i] = texies_[i]->transform.translate.x;
+		endItemPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
 	}
 	selectTex_ = std::make_unique<Tex2DState>();
 	selectTex_->transform.scale = { 452.0f,72.0f };
@@ -57,11 +65,6 @@ void SelectScene::Update(){
 
 	SelectMove();
 
-	for (size_t i = 0; i < texies_.size(); i++) {
-		texies_[i]->color = 0xffffff88;
-		texies_[selectNum_]->color = 0xff0000ff;
-		
-	}
 	if (coolTime_!=0){
 		coolTime_--;
 	}
@@ -70,9 +73,24 @@ void SelectScene::Update(){
 	ease_.Update();
 
 	for (size_t i = 0; i < texies_.size(); i++) {
+		texies_[i]->color = 0xffffff88;
+		texies_[selectNum_]->color = 0xffffffff;
+		itemTexies_[i]->color = 0xffffff88;
+		itemTexies_[selectNum_]->color = 0xffffffff;
+
+		const auto& clearFlug = SelectToGame::GetInstance()->GetClearFlug();
+
+		if (clearFlug[i]) {
+			itemTexies_[i]->uvTransform.translate.x = 0.5f;
+		}
+
 		texies_[i]->transform.translate.x = ease_.Get(startPos_[i], endPos_[i]);
+		itemTexies_[i]->transform.translate.x = ease_.Get(startItemPos_[i], endItemPos_[i]) + itemDistanceCenter_.x;
+		itemTexies_[i]->transform.translate.y = itemDistanceCenter_.y;
 
 		texies_[i]->transform.CalcMatrix();
+		itemTexies_[i]->transform.CalcMatrix();
+		itemTexies_[i]->uvTransform.CalcMatrix();
 	}
 
 	selectTex_->transform.CalcMatrix();
@@ -89,6 +107,9 @@ void SelectScene::Draw(){
 		
 		tex2D_->Draw(texies_[i]->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
 			, texies_[i]->textureID, texies_[i]->color, BlendType::kNormal);
+
+		tex2D_->Draw(itemTexies_[i]->transform.matWorld_, itemTexies_[i]->uvTransform.matWorld_, currentCamera_->GetViewOthographics()
+			, itemTexies_[i]->textureID, itemTexies_[i]->color, BlendType::kNormal);
 	}
 
 #ifdef _DEBUG
@@ -103,6 +124,7 @@ void SelectScene::Debug(){
 	if (ImGui::Button("シェイクテスト")){
 		currentCamera_->BeginShake(shakePower_);
 	}
+	ImGui::DragFloat2("アイテムの相対位置", itemDistanceCenter_.data(), 1.0f);
 	ImGui::End();
 #endif // _DEBUG
 }
@@ -117,6 +139,9 @@ void SelectScene::SelectMove(){
 			for (size_t i = 0; i < kMaxStage_; i++){
 				startPos_[i] = texies_[i]->transform.translate.x;
 				endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
+
+				startItemPos_[i] = texies_[i]->transform.translate.x;
+				endItemPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
 			}
 		
 		}		
@@ -130,16 +155,19 @@ void SelectScene::SelectMove(){
 			for (size_t i = 0; i < kMaxStage_; i++) {
 				startPos_[i] = texies_[i]->transform.translate.x;
 				endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
+
+				startItemPos_[i] = texies_[i]->transform.translate.x;
+				endItemPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
 			}
 		}		
 	}
 
-	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::A)){
+	if ((input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::A)) && !sceneManager_->GetFadeActive()) {
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
 		gameDecision_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Game);
 	}
-	if (input_->GetKey()->Pushed(DIK_BACKSPACE)|| input_->GetGamepad()->GetButton(Gamepad::Button::B)) {
+	if ((input_->GetKey()->Pushed(DIK_BACKSPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::B)) && !sceneManager_->GetFadeActive()) {
 		cancel_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}
