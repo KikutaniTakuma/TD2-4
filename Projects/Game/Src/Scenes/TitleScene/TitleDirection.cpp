@@ -114,8 +114,8 @@ void TitleDirection::TextureInitialize(){
 	titleTex_start_->transform.translate = { 0.0f, -125.0f };
 	titleTex_start_->uvTransform.scale = { 0.5f,1.0f };
 	titleTex_start_->uvTransform.translate = { 0.0f, 0.0f };
-	titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/attackButton.png");
-	titleTex_start_->textureFullPath = "./Resources/UI/attackButton.png";
+	titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/Control/attackButton.png");
+	titleTex_start_->textureFullPath = "./Resources/UI/GameMain/Control/attackButton.png";
 	titleTex_start_->textureName = "attackButton";
 
 	DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/Control/controllerJump.png");
@@ -178,8 +178,8 @@ void TitleDirection::Update(Input* input){
 	}
 	else{
 		titleTex_start_->transform.scale = { 320.0f,96.0f };
-		titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/attackButton.png");
-		titleTex_start_->textureFullPath = "./Resources/UI/attackButton.png";
+		titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/Control/attackButton.png");
+		titleTex_start_->textureFullPath = "./Resources/UI/GameMain/Control/attackButton.png";
 		titleTex_start_->textureName = "attackButton";
 	}
 
