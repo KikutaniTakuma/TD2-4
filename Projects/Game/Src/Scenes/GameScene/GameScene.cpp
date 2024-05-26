@@ -34,7 +34,7 @@ void GameScene::TextureInitialize() {
 		clouds_[i]->textureName = cloudType_[num];
 		cloudsSpeed_[i] = Lamb::Random(3.0f, 1.0f);
 
-		clouds_[i]->transform.translate = { Lamb::Random(300.0f,-1200.0f), Lamb::Random(-100.0f,300.0f) };
+		clouds_[i]->transform.translate = { Lamb::Random(300.0f,-1200.0f), Lamb::Random(-100.0f,300.0f) ,10.0f };
 		clouds_[i]->transform.scale = cloudScale_[clouds_[i]->textureName];
 		clouds_[i]->color = 0xffffffff;
 		clouds_[i]->textureID = DrawerManager::GetInstance()->LoadTexture(("./Resources/UI/GameMain/" + clouds_[i]->textureName).c_str());
@@ -43,10 +43,9 @@ void GameScene::TextureInitialize() {
 
 	backGround_ = std::make_unique<Tex2DState>();
 	backGround_->transform.scale = { 1280.0f,720.0f };
-	backGround_->transform.translate = { 0.0f, 10.0f ,0 };
+	backGround_->transform.translate = { 0.0f, 10.0f ,8.0f };
 	backGround_->color = 0xffffffff;
-	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/gameBackGround.png");
-
+	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/cutBackGround.png");
 
 }
 
@@ -55,7 +54,7 @@ void GameScene::Initialize() {
 	collisionManager_ = CollisionManager::GetInstance();
 
 	currentCamera_->farClip = 3000.0f;
-	currentCamera_->pos.y = 5.0f;
+	currentCamera_->pos.y = 6.0f;
 	currentCamera_->pos.z = -70.0f;
 	currentCamera_->offset.z = -60.0f;
 	currentCamera_->offset.y = 8.0f;
@@ -152,7 +151,19 @@ void GameScene::TextureUpdate() {
 	}
 
 
+	//Vector3& uvTranslate = backGround_->uvTransform.translate;
+
+	/*uvTranslate.x += 0.001f;
+	uvTranslate.y += 0.0005f;
+	if (1.0f <= uvTranslate.x) {
+		uvTranslate.x -= 1.0f;
+	}
+	if (1.0f <= uvTranslate.y) {
+		uvTranslate.y -= 1.0f;
+	}*/
+
 	backGround_->transform.CalcMatrix();
+	backGround_->uvTransform.CalcMatrix();
 
 }
 
@@ -168,7 +179,7 @@ void GameScene::CloudReset(const uint32_t cloudNumber) {
 
 void GameScene::Draw() {
 
-	tex2D_->Draw(backGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+	tex2D_->Draw(backGround_->transform.matWorld_, backGround_->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, backGround_->textureID, backGround_->color, BlendType::kNormal);
 
 	for (uint32_t i = 0; i < kCloudNum_; i++) {
