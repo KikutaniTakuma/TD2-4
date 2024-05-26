@@ -46,7 +46,7 @@ private:
 	std::list<Vector2> dwarfDeadPos_;
 
 	// 落下ブロックの予測
-	std::pair<int32_t, int32_t> fallingBlock_;	// -1なら無効
+	std::bitset<BlockMap::kMapX> fallingBlock_;	// -1なら無効
 
 	std::vector<std::unique_ptr<Particle>> particles_;
 };
