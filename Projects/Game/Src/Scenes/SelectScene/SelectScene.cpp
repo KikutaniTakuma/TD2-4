@@ -162,12 +162,12 @@ void SelectScene::SelectMove(){
 		}		
 	}
 
-	if (input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::A)){
+	if ((input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::A)) && !sceneManager_->GetFadeActive()) {
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
 		gameDecision_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Game);
 	}
-	if (input_->GetKey()->Pushed(DIK_BACKSPACE)|| input_->GetGamepad()->GetButton(Gamepad::Button::B)) {
+	if ((input_->GetKey()->Pushed(DIK_BACKSPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::B)) && !sceneManager_->GetFadeActive()) {
 		cancel_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}
