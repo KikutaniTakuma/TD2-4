@@ -130,7 +130,10 @@ void SelectScene::Debug(){
 }
 
 void SelectScene::SelectMove(){
-	if (input_->GetKey()->LongPush(DIK_A)|| input_->GetKey()->LongPush(DIK_LEFT)||input_->GetGamepad()->GetButton(Gamepad::Button::LEFT)) {
+	float stick = input_->GetGamepad()->GetStick(Gamepad::Stick::LEFT_X, 0.5f);
+
+	if (input_->GetKey()->LongPush(DIK_A) || input_->GetKey()->LongPush(DIK_LEFT)
+		|| input_->GetGamepad()->GetButton(Gamepad::Button::LEFT) || 0.0f > stick) {
 		if (selectNum_>0 && coolTime_ == 0){
 			coolTime_ = kCoolTime_;
 			selectMove_->Start(0.1f, false);
@@ -146,7 +149,9 @@ void SelectScene::SelectMove(){
 		
 		}		
 	}
-	else if (input_->GetKey()->LongPush(DIK_D) || input_->GetKey()->LongPush(DIK_RIGHT) || input_->GetGamepad()->GetButton(Gamepad::Button::RIGHT)) {
+	else if (input_->GetKey()->LongPush(DIK_D) || input_->GetKey()->LongPush(DIK_RIGHT)
+		|| input_->GetGamepad()->GetButton(Gamepad::Button::RIGHT) || 0.0f < stick) {
+
 		if (selectNum_ < texies_.size() - 1 && coolTime_ == 0) {
 			coolTime_ = kCoolTime_;
 			selectMove_->Start(0.1f, false);

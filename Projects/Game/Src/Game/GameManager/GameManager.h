@@ -159,6 +159,14 @@ public:
 		index = std::clamp(index, 1u, static_cast<uint32_t>(Block::BlockType::kMax) - 1) - 1;
 		return itemTypeCount_[index];
 	}
+	/// @brief 各アイテムが破棄された個数
+	/// @param blockType アイテムのタイプ
+	/// @return アイテムの個数
+	const int32_t GetRemoveTypeCount(const Block::BlockType blockType) const {
+		uint32_t index = static_cast<uint32_t>(blockType);
+		index = std::clamp(index, 1u, static_cast<uint32_t>(Block::BlockType::kMax) - 1) - 1;
+		return removeTypes_[index];
+	}
 
 private:
 	void BlockMapDropDown();
@@ -170,6 +178,7 @@ private:
 private:
 
 	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> itemTypeCount_;
+	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> removeTypes_;
 
 	std::list<std::unique_ptr<BlockItem>> itemList_;
 

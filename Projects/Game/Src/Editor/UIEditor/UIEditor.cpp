@@ -336,8 +336,8 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 	if (tex->textureName == "moveButton") {
 		if (tex->uvTransform.scale.x > 0) {
 			if (key->GetKey(DIK_A) or key->GetKey(DIK_LEFT) or
-				(pad->GetStick(Gamepad::Stick::LEFT_X) < 0.0f and i == static_cast<float>(sceneNum)) or
-				(pad->GetButton(Gamepad::Button::LEFT) and i != static_cast<float>(sceneNum))) {
+				(pad->GetStick(Gamepad::Stick::LEFT_X) < 0.0f) or
+				(pad->GetButton(Gamepad::Button::LEFT))) {
 				tex->uvTransform.translate.x = 0.5f;
 			}
 			else {
@@ -346,8 +346,8 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 		}
 		else {
 			if (key->GetKey(DIK_D) or key->GetKey(DIK_RIGHT) or
-				(pad->GetStick(Gamepad::Stick::LEFT_X) > 0.0f and i == static_cast<float>(sceneNum)) or
-				(pad->GetButton(Gamepad::Button::RIGHT) and i != static_cast<float>(sceneNum))) {
+				(pad->GetStick(Gamepad::Stick::LEFT_X) > 0.0f) or
+				(pad->GetButton(Gamepad::Button::RIGHT))) {
 				tex->uvTransform.translate.x = 0.0f;
 			}
 			else {
