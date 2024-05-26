@@ -113,7 +113,7 @@ void ResultScene::Initialize(){
 		i->SetParticleSize(Vector3::kIdentity * 50.0f, Vector3::kIdentity * 80.0f);
 
 		// ここでゲームプレイ中のデータを入れる予定
-		i->Resize(GameManager::GetInstance()->GetItemTypeCount(static_cast<Block::BlockType>(currentElementType)));
+		i->Resize(/*GameManager::GetInstance()->GetItemTypeCount(static_cast<Block::BlockType>(currentElementType))*/20);
 		allFlaskParticleNum_ += static_cast<float>(i->GetSize());
 
 
@@ -218,6 +218,7 @@ void ResultScene::Update(){
 		break;
 	}
 
+	Skip();
 
 	if (effectStatus_ == ResultScene::EffectState::kFirst and isFirstEnd_) {
 		effectStatus_ = ResultScene::EffectState::kSecond;
@@ -255,7 +256,6 @@ void ResultScene::Update(){
 	
 	cauldronTransform_->CalcMatrix();
 	cauldronAnimator_->Update();
-	Skip();
 }
 
 void ResultScene::Draw(){
@@ -811,7 +811,7 @@ void ResultScene::Skip() {
 	Lamb::SafePtr gamepad = input_->GetGamepad();
 	Lamb::SafePtr key = input_->GetKey();
 
-	if (not isSkip_ and(gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE))) {
+	if (isFirstEnd_ and not isSkip_ and(gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE))) {
 		witchMoveX_->Stop();
 
 		if (isGameClear_) {
