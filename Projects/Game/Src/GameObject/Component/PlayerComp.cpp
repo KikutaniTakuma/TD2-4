@@ -75,6 +75,7 @@ int32_t PlayerComp::InflictDamage(int32_t damage, const Vector2 acceleration)
 		pLocalRigidbody_->ApplyInstantForce(acceleration);
 		// 無敵時間を付与
 		invincibleTime_ = vMaxInvincibleTime_;
+		GameManager::GetInstance()->RemovePoint(vDamageDropCount_);
 	}
 	return static_cast<int32_t>(pHealthComp_->GetNowHealth());
 }

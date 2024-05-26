@@ -139,6 +139,8 @@ public:
 
 	void AddPoint();
 
+	void RemovePoint(const int32_t count);
+
 public:
 	/// @brief 入力動作
 	void InputAction();
@@ -152,7 +154,7 @@ public:
 	/// @brief 各アイテムごとの個数
 	/// @param blockType アイテムのタイプ
 	/// @return アイテムの個数
-	const uint32_t GetItemTypeCount(const Block::BlockType blockType) const {
+	const int32_t GetItemTypeCount(const Block::BlockType blockType) const {
 		uint32_t index = static_cast<uint32_t>(blockType);
 		index = std::clamp(index, 1u, static_cast<uint32_t>(Block::BlockType::kMax) - 1) - 1;
 		return itemTypeCount_[index];
@@ -167,7 +169,7 @@ private:
 
 private:
 
-	std::array<uint32_t, 4u> itemTypeCount_;
+	std::array<int32_t, 4u> itemTypeCount_;
 
 	std::list<std::unique_ptr<BlockItem>> itemList_;
 

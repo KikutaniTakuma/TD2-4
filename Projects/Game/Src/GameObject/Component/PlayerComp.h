@@ -25,8 +25,9 @@ public:
 	inline static SoLib::VItem<"弾の速度", float> vBulletSpeed_{ 5.f };
 	inline static SoLib::VItem<"停止時の地面との摩擦", float> vFriction_{ 8.f };
 	inline static SoLib::VItem<"弾のクールタイム", float> vFireCoolTime_{ 0.25f };
+	inline static SoLib::VItem<"被ダメージ時に落ちるアイテムの数", int32_t> vDamageDropCount_{ 10 };
 
-	inline static constexpr SoLib::VItemList vPlayerItems_{ &PlayerComp::vMaxHealth_, &PlayerComp::vMaxInvincibleTime_, &PlayerComp::vMoveSpeed_, &PlayerComp::vBulletSpeed_, &PlayerComp::vFriction_, &vFireCoolTime_ };
+	inline static constexpr SoLib::VItemList vPlayerItems_{ &PlayerComp::vMaxHealth_, &PlayerComp::vMaxInvincibleTime_, &PlayerComp::vMoveSpeed_, &PlayerComp::vBulletSpeed_, &PlayerComp::vFriction_, &vFireCoolTime_, &vDamageDropCount_ };
 
 	int32_t InflictDamage(int32_t damage, const Vector2 acceleration = {});
 

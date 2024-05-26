@@ -922,6 +922,47 @@ void GameManager::AddPoint()
 	}
 }
 
+struct CountIndex {
+	int32_t count_;
+	int32_t index_;
+};
+
+static bool comp(const CountIndex a, const CountIndex b) { return  a.count_ > b.count_; }
+
+
+void GameManager::RemovePoint(const int32_t count)
+{
+	int32_t total = std::min(count, itemCount_);
+	itemCount_ -= total;
+	//itemCount_ = std::clamp(itemCount_, 0, *vClearItemCount_);
+
+	std::array<CountIndex, 4u> indexedArr;
+	for (int32_t i = 0; i < 4; ++i) {
+		indexedArr[i] = { itemTypeCount_[i], i };
+	}
+
+	// ソート（値が大きい順に並べる）
+	std::sort(indexedArr.rbegin(), indexedArr.rend(), comp);
+
+
+	for (uint32_t i = 0; i < itemTypeCount_.size(); i++) {
+		auto &item = itemTypeCount_[indexedArr[i].index_];
+
+		const int32_t removeCount = total / static_cast<int32_t>(itemTypeCount_.size() - i);
+		const int32_t result = item - removeCount;
+
+		// もし減少のほうが多かったらちょっと色々する
+		if (result < 0) {
+			total -= item;
+			item = 0;
+		}
+		else {
+			total -= removeCount;
+			item -= removeCount;
+		}
+	}
+}
+
 void GameManager::InputAction()
 {
 	{

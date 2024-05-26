@@ -37,15 +37,9 @@ void PlayerBlockPickerComp::Draw([[maybe_unused]] const Camera &camera) const
 	if (pickingBlock_) {
 		pTexture_->Draw(affine_, Block::kUvMatrix_[0], camera.GetViewOthographics(), pickingBlock_.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 
-		for (const auto &dwarf : dwarfList_) {
-			dwarf.second->Draw(camera);
-		}
 	}
-	else {
-
-		for (const auto &dwarf : dwarfList_) {
-			dwarf.second->Draw(camera);
-		}
+	for (const auto &dwarf : dwarfList_) {
+		dwarf.second->Draw(camera);
 	}
 }
 
