@@ -4,8 +4,9 @@ TitleDirection::~TitleDirection()
 {
 }
 
-void TitleDirection::Initialize(){
+void TitleDirection::Initialize(SceneManager* sceneManager){
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
+	sceneManager_ = sceneManager;
 
 	catmullRom_ = std::make_unique<CatmullRomEditor>();
 	catmullRom_->Initialize();
@@ -113,14 +114,16 @@ void TitleDirection::TextureInitialize(){
 	titleTex_start_->transform.translate = { 0.0f, -125.0f };
 	titleTex_start_->uvTransform.scale = { 0.5f,1.0f };
 	titleTex_start_->uvTransform.translate = { 0.0f, 0.0f };
-	titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/attackButton.png");
-	titleTex_start_->textureFullPath = "./Resources/UI/attackButton.png";
+	titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/Control/attackButton.png");
+	titleTex_start_->textureFullPath = "./Resources/UI/GameMain/Control/attackButton.png";
 	titleTex_start_->textureName = "attackButton";
+
+	DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/Control/controllerJump.png");
 
 	titleTex_startText_ = std::make_unique<Tex2DState>();
 	titleTex_startText_->color = 0xffffff00;
-	titleTex_startText_->transform.scale = { 384.0f,64.0f };
-	titleTex_startText_->transform.translate = { 0.0f, -250.0f };
+	titleTex_startText_->transform.scale = { 360.0f,80.0f };
+	titleTex_startText_->transform.translate = { 0.0f, -230.0f };
 	titleTex_startText_->uvTransform.scale.kIdentity;
 	titleTex_startText_->uvTransform.translate = { 0.0f, 0.0f };
 	titleTex_startText_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/gameStart.png");
@@ -167,7 +170,18 @@ void TitleDirection::Update(Input* input){
 		isMove_ = true;
 	}
 
-	
+	if (sceneManager_->GetIsPad()){
+		titleTex_start_->transform.scale = { 96.0f,96.0f };
+		titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/Control/controllerJump.png");
+		titleTex_start_->textureFullPath = "./Resources/UI/GameMain/Control/controllerJump.png";
+		titleTex_start_->textureName = "controllerJump";
+	}
+	else{
+		titleTex_start_->transform.scale = { 320.0f,96.0f };
+		titleTex_start_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/Control/attackButton.png");
+		titleTex_start_->textureFullPath = "./Resources/UI/GameMain/Control/attackButton.png";
+		titleTex_start_->textureName = "attackButton";
+	}
 
 	time_++;
 	if (time_ < 30) {

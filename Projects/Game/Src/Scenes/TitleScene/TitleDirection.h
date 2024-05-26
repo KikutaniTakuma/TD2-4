@@ -2,6 +2,8 @@
 #include "Editor/CatmullRomEditor/CatmullRomEditor.h"
 #include "Drawers/Texture2D/Texture2D.h"
 #include "Drawers/PeraRender/PeraRender.h"
+#include"Scenes/Manager/SceneManager.h"
+
 #include"Scenes/Manager/Fade/SimpleFade.h"
 
 class TitleDirection{
@@ -20,7 +22,7 @@ public:
 		return &instance;
 	}
 
-	void Initialize() ;
+	void Initialize(SceneManager* sceneManager) ;
 
 	void TextureInitialize();
 
@@ -57,6 +59,8 @@ private:
 		//始点x、終点y
 		Vector2 easePos;
 	};
+
+	SceneManager* sceneManager_ = nullptr;
 
 	Texture2D* tex2D_;
 

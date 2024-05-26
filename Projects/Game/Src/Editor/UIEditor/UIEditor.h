@@ -3,6 +3,7 @@
 #include"Game/GameManager/GameManager.h"
 #include"Scenes/Manager/BaseScene/BaseScene.h"
 #include"Engine/Graphics/Tex2DAniamtor/Tex2DAniamtor.h"
+#include"Scenes/Manager/SceneManager.h"
 
 class UIEditor{
 private:
@@ -23,7 +24,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	void Initialize(SceneManager* sceneManager);
 
 	/// <summary>
 	/// 終了処理
@@ -103,6 +104,10 @@ private:
 	Input* input_ = nullptr;
 
 	Texture2D* tex2D_ = nullptr;
+
+	SceneManager* sceneManager_ = nullptr;
+
+	DrawerManager* drawerManager_ = nullptr;
 
 	//std::unique_ptr<Tex2DAniamtor> texAnim_;
 	//uint32_t animNum_;
