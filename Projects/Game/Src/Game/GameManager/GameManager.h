@@ -109,7 +109,7 @@ public:
 
 	void RandomDwarfSpawn();
 
-	void RandomFallBlockSpawn();
+	void RandomFallBlockSpawn(const float deltaTime);
 
 	SoLib::VItem<"破壊時の停止時間", float> vBreakStopTime_{ 0.5f };
 
@@ -123,12 +123,14 @@ public:
 	SoLib::VItem<"生成するブロックの高さ", int32_t> vStartBlockHeight_{ 3 };
 
 	static inline SoLib::VItem<"出てくるアイテムの間隔", float> vItemSpawnSpan_{ 0.25f };
+	static inline SoLib::VItem<"落下ブロックの待機する時間", float> vFallBlockStop_{ 0.5f };
 
 	/// @brief 調整項目
 	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_ };
 	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_ };
 
 	inline static constexpr SoLib::VItemList vItemStatus_ = { &vItemSpawnSpan_ };
+	inline static constexpr SoLib::VItemList vFallBlockStatus_ = { &vFallBlockStop_ };
 
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }
 
@@ -168,6 +170,8 @@ private:
 	void ClearCheck();
 
 private:
+
+	std::array<std::pair<float,Block::BlockType>, static_cast<uint32_t>(BlockMap::kMapX)> spawnLeftTime_;
 
 	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> itemTypeCount_;
 
