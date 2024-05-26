@@ -82,8 +82,13 @@ void ResultScene::Initialize(){
 	else {
 		cauldronParticle_->LoadSettingDirectory("Bomb");
 	}
-	cauldronTextureID_ = drawerManager_->LoadTexture("./Resources/UI/pot.png");
+	cauldronTextureID_ = drawerManager_->LoadTexture("./Resources/Result/pot.png");
 	cauldronTransform_ = std::make_unique<Transform>();
+	cauldronAnimator_ = std::make_unique<Tex2DAniamtor>();
+	cauldronAnimator_->SetLoopAnimation(true);
+	cauldronAnimator_->SetAnimationNumber(3);
+	cauldronAnimator_->SetDuration(0.25f);
+	cauldronAnimator_->Start();
 	cauldronBasisPos_ = Vector3::kYIdentity * -128.0f;
 	cauldronShake_.first = (Vector3::kXIdentity + Vector3::kYIdentity) * -20.0f;
 	cauldronShake_.second = (Vector3::kXIdentity + Vector3::kYIdentity) * 20.0f;
@@ -104,7 +109,6 @@ void ResultScene::Initialize(){
 
 		// ここでゲームプレイ中のデータを入れる予定
 		i->Resize(GameManager::GetInstance()->GetItemTypeCount(static_cast<Block::BlockType>(currentElementType)));
-		currentElementType++;
 		allFlaskParticleNum_ += static_cast<float>(i->GetSize());
 
 
@@ -115,6 +119,11 @@ void ResultScene::Initialize(){
 		i->SetEndTranslate(Vector3::kYIdentity * 60.0f);
 		i->SetTextureID(Block::GetItemTexture(static_cast<Block::BlockType>(currentElementType)));
 		i->Start();
+		currentElementType++;
+
+		if (currentElementType == static_cast<uint32_t>(Block::BlockType::kMax)) {
+			break;
+		}
 	}
 	backGroundStartPos_ = backGround_->transform.translate;
 	backGroundStartPos_.y = Lamb::ClientSize().y;
@@ -240,6 +249,7 @@ void ResultScene::Update(){
 	}
 	
 	cauldronTransform_->CalcMatrix();
+	cauldronAnimator_->Update();
 	Skip();
 }
 
@@ -248,7 +258,7 @@ void ResultScene::Draw(){
 
 	tex2D_->Draw(
 		cauldronTransform_->matWorld_,
-		Mat4x4::kIdentity,
+		cauldronAnimator_->GetUvMat4x4(),
 		currentCamera_->GetViewOthographics(),
 		cauldronTextureID_,
 		std::numeric_limits<uint32_t>::max(),

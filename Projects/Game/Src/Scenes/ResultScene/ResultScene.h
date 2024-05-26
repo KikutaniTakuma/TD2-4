@@ -67,6 +67,7 @@ private:
 
 	std::unique_ptr<Particle> cauldronParticle_;
 	std::unique_ptr<Transform> cauldronTransform_;
+	std::unique_ptr<Tex2DAniamtor> cauldronAnimator_;
 	uint32_t cauldronTextureID_;
 	Vector3 cauldronBasisPos_;
 	std::pair<Vector3, Vector3> cauldronShake_;
