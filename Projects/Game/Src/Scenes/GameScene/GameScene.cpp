@@ -94,9 +94,14 @@ void GameScene::Initialize() {
 
 	gameUIManager_ = std::make_unique<GameUIManager>();
 	gameUIManager_->Init(gameManager_);
+
+	pause_ = std::make_unique<PauseMenu>();
+	pause_->Initialize();
+	pause_->SetSceneManger(sceneManager_);
 }
 
 void GameScene::Finalize() {
+	pause_->Finalize();
 	gameBGM_->Stop();
 
 	//enemyManager_->Finalize();
@@ -105,6 +110,19 @@ void GameScene::Finalize() {
 void GameScene::Update() {
 	// デルタタイム
 	const float deltaTime = Lamb::DeltaTime();
+
+	Lamb::SafePtr gamepad = Input::GetInstance()->GetGamepad();
+	Lamb::SafePtr key = Input::GetInstance()->GetKey();
+	if (gamepad->Pushed(Gamepad::Button::START) or key->Pushed(DIK_ESCAPE)) {
+		pause_->isActive_ = not pause_->isActive_;
+		if (pause_->isActive_) {
+			gameBGM_->Pause();
+		}
+		else {
+			gameBGM_->ReStart();
+		}
+	}
+
 
 	currentCamera_->Debug("カメラ");
 	currentCamera_->Shake(1.0f);
@@ -116,28 +134,33 @@ void GameScene::Update() {
 
 	Debug();
 
-	//enemyManager_->Update();
-	//enemyManager_->Debug();
+	if (not pause_->isActive_) {
+		//enemyManager_->Update();
+		//enemyManager_->Debug();
 
-	gameManager_->InputAction();
-	gameManager_->Update(deltaTime);
+		gameManager_->InputAction();
+		gameManager_->Update(deltaTime);
 
-	/*gameManager_->Debug("GameManager");*/
+		/*gameManager_->Debug("GameManager");*/
 
-	collisionManager_->Update();
-	collisionManager_->Debug();
+		collisionManager_->Update();
+		collisionManager_->Debug();
 
-	TextureUpdate();
+		TextureUpdate();
 
-	gameUIManager_->Update(deltaTime);
+		gameUIManager_->Update(deltaTime);
 
-	if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
-		Audio *cancel = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
+		if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
+			Audio* cancel = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
 
-		gameBGM_->Stop();
-		cancel->Start(0.1f, false);
+			gameBGM_->Stop();
+			cancel->Start(0.1f, false);
 
-		sceneManager_->SceneChange(BaseScene::ID::StageSelect);
+			sceneManager_->SceneChange(BaseScene::ID::StageSelect);
+		}
+	}
+	else {
+		pause_->ActiveUpdate();
 	}
 }
 
@@ -196,6 +219,8 @@ void GameScene::Draw() {
 
 	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
 #endif // _DEBUG
+
+	pause_->ActiveDraw();
 }
 
 void GameScene::TextureDraw() {

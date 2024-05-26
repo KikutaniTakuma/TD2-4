@@ -25,6 +25,8 @@
 #include "Editor/EnemyEditor/EnemyEditor.h"
 #include <Game/GameUIManager/GameUIManager.h>
 
+#include "../SubMenu/PauseMenu/PauseMenu.h"
+
 class GameScene : public BaseScene {
 public:
 	GameScene();
@@ -113,5 +115,5 @@ private:
 	std::unique_ptr<Tex2DState> backGround_;
 
 
-
+	std::unique_ptr<SubMenu> pause_;
 };
