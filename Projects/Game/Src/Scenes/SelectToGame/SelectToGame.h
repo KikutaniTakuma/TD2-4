@@ -12,7 +12,7 @@ private:
 	SelectToGame& operator=(SelectToGame&&) = default;
 
 public:
-	static constexpr int32_t maxStage_ = 10;
+	static constexpr int32_t kMaxStage = 8;
 
 	static SelectToGame* const GetInstance() {
 		static SelectToGame instance;
@@ -30,7 +30,7 @@ public:
 	/// 現在のクリア状況を獲得する
 	/// </summary>
 	/// <returns></returns>
-	std::array<bool, maxStage_>& GetClearFlug() { return isStageClear_; }
+	std::array<bool, kMaxStage>& GetClearFlug() { return isStageClear_; }
 
 	/// <summary>
 	/// 選択したステージ
@@ -44,6 +44,8 @@ public:
 	/// <param name="number">クリアしたステージ</param>
 	void SetClearFlug(const int32_t number) { isStageClear_[number] = true; }
 
+	uint32_t GetStageItemTextureID(int32_t stageNumber) const;
+
 public:
 	/// <summary>
 	/// imguiの表示
@@ -53,7 +55,8 @@ public:
 public:
 	int32_t selectNum_;	
 
-	std::array <bool, maxStage_> isStageClear_;
+	std::array <bool, kMaxStage> isStageClear_;
 
+	std::array <uint32_t, kMaxStage> stageItemTextureIDs;
 };
 

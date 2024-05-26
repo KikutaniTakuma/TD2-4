@@ -102,8 +102,10 @@ private:
 	// クリア時のアイテム
 	std::unique_ptr<Tex2DState> clearItem_;
 	std::unique_ptr<Easeing> clearItemEase_;
+	std::unique_ptr<Easeing> clearItemScaleEase_;
 	Vector2 clearItemYPos_;
 	std::pair<Vector3, Vector3> clearItemScaleDuration_;
+	std::pair<Vector3, Vector3> clearItemScaleDurationLoop_;
 	std::unique_ptr<Particle> clearItemParticle_;
 
 	bool isStickInput_ = false;

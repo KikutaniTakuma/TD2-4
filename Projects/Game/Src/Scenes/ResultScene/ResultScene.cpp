@@ -56,10 +56,13 @@ void ResultScene::Initialize(){
 
 		clearItem_ = std::make_unique<Tex2DState>();
 		clearItem_->transform.translate.z = -5.0f;
-		clearItem_->textureID = drawerManager_->LoadTexture("./Resources/Result/product.png");
+		clearItem_->uvTransform.scale.x = 0.5f;
+		clearItem_->textureID = SelectToGame::GetInstance()->GetStageItemTextureID(preGameStageNumber_);
 		clearItemEase_ = std::make_unique<Easeing>();
+		clearItemScaleEase_ = std::make_unique<Easeing>();
 		clearItemYPos_ = { 60.0f, 130.f };
-		clearItemScaleDuration_ = { Vector3::kIdentity * 30.0f, Vector3::kIdentity * 120.0f };
+		clearItemScaleDuration_ = { Vector3::kIdentity * 30.0f * 2.0f, Vector3::kIdentity * 120.0f * 2.0f };
+		clearItemScaleDurationLoop_ = { clearItemScaleDuration_.second, clearItemScaleDuration_.second * 1.1f };
 		clearItemParticle_ = std::make_unique<Particle>();
 		clearItemParticle_->LoadSettingDirectory("MagicHand");
 	}
@@ -484,7 +487,7 @@ void ResultScene::GameClearEffect() {
 	if (backGroundEase_->ActiveExit()) {
 		resultMessageEase_->Start(
 			true,
-			0.5f,
+			1.0f,
 			Easeing::InOutSine
 		);
 
@@ -500,10 +503,26 @@ void ResultScene::GameClearEffect() {
 	}
 
 	clearItemEase_->Update();
+	clearItemScaleEase_->Update();
+	if (clearItemEase_->ActiveExit()) {
+		clearItem_->uvTransform.translate.x = 0.5f;
+		clearItemScaleEase_->Start(
+			true, 1.0f,
+			Easeing::InOutSine
+		);
+	}
 	clearItem_->transform.translate.y = clearItemEase_->Get(clearItemYPos_.min, clearItemYPos_.max);
-	clearItem_->transform.scale = clearItemEase_->Get(clearItemScaleDuration_.first, clearItemScaleDuration_.second);
+	if (clearItemEase_->GetIsActive()) {
+		clearItem_->transform.scale = clearItemEase_->Get(clearItemScaleDuration_.first, clearItemScaleDuration_.second);
+	}
+	else if (clearItemScaleEase_->GetIsActive()) {
+		clearItem_->transform.scale = clearItemScaleEase_->Get(clearItemScaleDurationLoop_.first, clearItemScaleDurationLoop_.second);
+	}
+	else {
+		clearItem_->transform.scale = clearItemScaleDuration_.first;
+	}
+	clearItem_->uvTransform.CalcMatrix();
 	clearItem_->transform.CalcMatrix();
-
 
 
 	if (not clearItemParticle_->GetIsParticleStart() and clearItemEase_->ActiveExit()) {
@@ -550,7 +569,7 @@ void ResultScene::GameClearDraw() {
 	);
 	tex2D_->Draw(
 		clearItem_->transform.matWorld_,
-		Mat4x4::kIdentity,
+		clearItem_->uvTransform.matWorld_,
 		currentCamera_->GetViewOthographics(),
 		clearItem_->textureID,
 		std::numeric_limits<uint32_t>::max(),
