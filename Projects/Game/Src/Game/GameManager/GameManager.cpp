@@ -924,7 +924,8 @@ void GameManager::AddItem([[maybe_unused]] const Vector2 globalPos, const Block:
 
 	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
 	for (uint32_t i = 0; i < count; i++) {
-		const Vector2 endPos = { -7.0f,10.0f };
+		Vector2 endPos = { -8.8f,11.5f };
+
 		std::unique_ptr<BlockItem> item = std::make_unique<BlockItem>(globalPos, endPos, blockType, i * vItemSpawnSpan_);
 		itemList_.emplace_back(std::move(item));
 	}
