@@ -984,6 +984,7 @@ void GameManager::RemovePoint(const int32_t count)
 
 	for (uint32_t i = 0; i < itemTypeCount_.size(); i++) {
 		auto &item = itemTypeCount_[indexedArr[i].index_];
+		auto &removeTypes = gameEffectManager_->removeTypes_[indexedArr[i].index_];
 
 		const int32_t removeCount = total / static_cast<int32_t>(itemTypeCount_.size() - i);
 		const int32_t result = item - removeCount;
@@ -991,11 +992,13 @@ void GameManager::RemovePoint(const int32_t count)
 		// もし減少のほうが多かったらちょっと色々する
 		if (result < 0) {
 			total -= item;
+			removeTypes = item;
 			item = 0;
 		}
 		else {
 			total -= removeCount;
 			item -= removeCount;
+			removeTypes = removeCount;
 		}
 	}
 }
