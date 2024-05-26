@@ -127,7 +127,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	dwarfSpawnTimer_.Update(localDeltaTime);
 	RandomDwarfSpawn();
 	fallBlockSpawnTimer_.Update(localDeltaTime);
-	RandomFallBlockSpawn(localDeltaTime);
+	RandomFallBlockSpawn();
 
 	// 浮いているブロックを落とす
 	BlockMapDropDown();
@@ -366,7 +366,7 @@ void GameManager::LoadGlobalVariant([[maybe_unused]] const uint32_t stageIndex)
 	{
 		const auto *const group = gVariable->GetGroup("FallBlockStatus");
 		if (group) {
-			LoadValue(*group, vFallBlockStatus_);
+			LoadValue(*group, FallingBlockComp::vFallBlockStatus_);
 		}
 	}
 
@@ -412,7 +412,7 @@ void GameManager::SaveGlobalVariant([[maybe_unused]] const uint32_t stageIndex) 
 	{
 		auto *const group = gVariable->AddGroup("FallBlockStatus");
 		if (group) {
-			SaveValue(*group, vFallBlockStatus_);
+			SaveValue(*group, FallingBlockComp::vFallBlockStatus_);
 		}
 	}
 #endif // _DEBUG
@@ -484,9 +484,11 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 	localBodyComp->size_ = size;
 
 	fallingComp->blockType_ = blockType;
+	fallingComp->velocity_ = velocity;
 	fallingComp->gravity_ = gravity;
 	fallingComp->hasDamage_ = damage;
-	addBlock->GetComponent<LocalRigidbody>()->SetVelocity(velocity);
+
+	addBlock->GetComponent<LocalRigidbody>();
 
 	// 末尾に追加
 	fallingBlocks_.push_back(std::move(addBlock));
@@ -771,14 +773,14 @@ void GameManager::RandomDwarfSpawn()
 		AddDwarf(Vector2{ static_cast<float>(spawnPos), 0 });
 	}
 }
-void GameManager::RandomFallBlockSpawn(const float deltaTime)
+void GameManager::RandomFallBlockSpawn()
 {
 	if (not fallBlockSpawnTimer_.IsActive()) {
 		fallBlockSpawnTimer_.Start(vFallSpan_);
 		std::vector<uint8_t> vec;
-		//vec.reserve(BlockMap::kMapX - gameEffectManager_->fallingBlock_.count());
+		vec.reserve(BlockMap::kMapX - gameEffectManager_->fallingBlock_.count());
 		for (uint8_t i = 0; i < BlockMap::kMapX; i++) {
-			if (spawnLeftTime_.at(i).first <= 0) {
+			if (not gameEffectManager_->fallingBlock_.test(i)) {
 				vec.push_back(i);
 			}
 		}
@@ -786,22 +788,20 @@ void GameManager::RandomFallBlockSpawn(const float deltaTime)
 		const int32_t spawnPos = vec[Lamb::Random(0, static_cast<int32_t>(vec.size() - 1))];
 		const uint32_t blockType = std::clamp(Lamb::Random(1, *vBlockTypeCount_), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1);
 
-		spawnLeftTime_.at(spawnPos) = { vBreakStopTime_ ,static_cast<Block::BlockType>(blockType) };
-
 		gameEffectManager_->fallingBlock_.set(spawnPos);
 
-		// AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -5, Vector2::kZero);
+		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -5, Vector2::kZero);
 	}
 
-	for (uint32_t i = 0; i < spawnLeftTime_.size(); i++) {
-		auto &&[spawnTime, type] = spawnLeftTime_[i];
-		if (spawnTime > 0) {
-			spawnTime = std::clamp(spawnTime - deltaTime, 0.f, *vBreakStopTime_);
-			if (spawnTime <= 0) {
-				AddFallingBlock(Vector2{ static_cast<float>(i), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, type, Vector2::kYIdentity * -5, Vector2::kZero);
-			}
-		}
-	}
+	//for (uint32_t i = 0; i < spawnLeftTime_.size(); i++) {
+	//	auto &&[spawnTime, type] = spawnLeftTime_[i];
+	//	if (spawnTime > 0) {
+	//		spawnTime = std::clamp(spawnTime - deltaTime, 0.f, *vBreakStopTime_);
+	//		if (spawnTime <= 0) {
+	//			AddFallingBlock(Vector2{ static_cast<float>(i), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, type, Vector2::kYIdentity * -5, Vector2::kZero);
+	//		}
+	//	}
+	//}
 
 }
 //
