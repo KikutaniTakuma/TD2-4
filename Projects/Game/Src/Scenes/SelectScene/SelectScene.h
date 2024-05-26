@@ -48,7 +48,7 @@ private:
 	//ステージセレクト用の変数
 	int32_t selectNum_;
 	int32_t oldSelectNum_ = 0;
-	static constexpr int32_t kMaxStage_ = 10;
+	static constexpr int32_t kMaxStage_ = 8;
 
 	std::array <bool, kMaxStage_> isStageClear_;
 

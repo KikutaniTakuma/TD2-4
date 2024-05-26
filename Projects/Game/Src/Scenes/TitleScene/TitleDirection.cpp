@@ -122,8 +122,8 @@ void TitleDirection::TextureInitialize(){
 
 	titleTex_startText_ = std::make_unique<Tex2DState>();
 	titleTex_startText_->color = 0xffffff00;
-	titleTex_startText_->transform.scale = { 384.0f,64.0f };
-	titleTex_startText_->transform.translate = { 0.0f, -250.0f };
+	titleTex_startText_->transform.scale = { 360.0f,80.0f };
+	titleTex_startText_->transform.translate = { 0.0f, -230.0f };
 	titleTex_startText_->uvTransform.scale.kIdentity;
 	titleTex_startText_->uvTransform.translate = { 0.0f, 0.0f };
 	titleTex_startText_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/gameStart.png");
