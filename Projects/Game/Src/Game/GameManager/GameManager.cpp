@@ -186,6 +186,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			audio->Start(0.2f, false);
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType());
 			fallingBlock->SetActive(false);
+			if (fallComp->hasDamage_) {
+				gameEffectManager_->fallingBlock_.set(static_cast<uint32_t>(blockBody->localPos_.x), false);
+			}
 		}
 	}
 
@@ -760,9 +763,17 @@ void GameManager::RandomFallBlockSpawn()
 {
 	if (not fallBlockSpawnTimer_.IsActive()) {
 		fallBlockSpawnTimer_.Start(vFallSpan_);
-		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX - 1);
-		uint32_t blockType = std::clamp(Lamb::Random(1, *vBlockTypeCount_), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1);
+		std::vector<uint8_t> vec; vec.reserve(BlockMap::kMapX - gameEffectManager_->fallingBlock_.count());
+		for (uint8_t i = 0; i < BlockMap::kMapX; i++) {
+			if (not gameEffectManager_->fallingBlock_.test(i)) {
+				vec.push_back(i);
+			}
+		}
 
+		const int32_t spawnPos = vec[Lamb::Random(0, static_cast<int32_t>(vec.size() - 1))];
+		const uint32_t blockType = std::clamp(Lamb::Random(1, *vBlockTypeCount_), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1);
+
+		gameEffectManager_->fallingBlock_.set(spawnPos);
 
 		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -5, Vector2::kZero);
 	}
