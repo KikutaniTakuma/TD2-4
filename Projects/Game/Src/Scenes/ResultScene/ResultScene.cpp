@@ -47,6 +47,11 @@ void ResultScene::Initialize(){
 	resultMessageEase_ = std::make_unique<Easeing>();
 	resultMessageYPos_ = { resultMessage_->transform.translate.y,resultMessage_->transform.translate.y + 60.0f };
 
+	drawerManager_->LoadTexture("./Resources/BackGround/clearBackGround.png");
+	drawerManager_->LoadTexture("./Resources/Result/clearUi.png");
+	drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
+	drawerManager_->LoadTexture("./Resources/Result/gameOverUi.png");
+
 	if (isGameClear_) {
 		backGround_->textureID = drawerManager_->LoadTexture("./Resources/BackGround/clearBackGround.png");
 		resultMessage_->textureID = drawerManager_->LoadTexture("./Resources/Result/clearUi.png");
@@ -72,8 +77,7 @@ void ResultScene::Initialize(){
 		resultMessage_->textureID = drawerManager_->LoadTexture("./Resources/Result/gameOverUi.png");
 		currentUIPick_ = CurrentUIPick::kRetry;
 	}
-		zanennTexID_ = drawerManager_->LoadTexture("./Resources/Result/gameOverEffect.png");
-	//clearTextureID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
+	zanennTexID_ = drawerManager_->LoadTexture("./Resources/Result/gameOverEffect.png");
 
 	cauldronParticle_ = std::make_unique<Particle>();
 	if (isGameClear_) {
