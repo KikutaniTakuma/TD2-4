@@ -82,8 +82,13 @@ void ResultScene::Initialize(){
 	else {
 		cauldronParticle_->LoadSettingDirectory("Bomb");
 	}
-	cauldronTextureID_ = drawerManager_->LoadTexture("./Resources/UI/pot.png");
+	cauldronTextureID_ = drawerManager_->LoadTexture("./Resources/Result/pot.png");
 	cauldronTransform_ = std::make_unique<Transform>();
+	cauldronAnimator_ = std::make_unique<Tex2DAniamtor>();
+	cauldronAnimator_->SetLoopAnimation(true);
+	cauldronAnimator_->SetAnimationNumber(3);
+	cauldronAnimator_->SetDuration(0.25f);
+	cauldronAnimator_->Start();
 	cauldronBasisPos_ = Vector3::kYIdentity * -128.0f;
 	cauldronShake_.first = (Vector3::kXIdentity + Vector3::kYIdentity) * -20.0f;
 	cauldronShake_.second = (Vector3::kXIdentity + Vector3::kYIdentity) * 20.0f;
@@ -92,23 +97,18 @@ void ResultScene::Initialize(){
 	cauldronEase_ = std::make_unique<Easeing>();
 
 
-	flaskTextureID_[0] = drawerManager_->LoadTexture("./Resources/Item/lizardTail.png");
-	flaskTextureID_[1] = drawerManager_->LoadTexture("./Resources/Item/water.png");
-	flaskTextureID_[2] = drawerManager_->LoadTexture("./Resources/Item/herbs.png");
-	flaskTextureID_[3] = drawerManager_->LoadTexture("./Resources/Item/mineral.png");
 	uint32_t currentElementType = static_cast<uint32_t>(Block::BlockType::kRed);
 
 	flaskParticleAppDurationMin = { 0.3f, 0.4f };
 	flaskParticleAppDurationMax = { 0.05f, 0.1f };
 	flaskParticleAppDurationEase_ = std::make_unique<Easeing>();
 
-	for (auto texID = flaskTextureID_.begin(); auto & i : flaskParticles_) {
+	for (auto & i : flaskParticles_) {
 		i = std::make_unique<FlaskParticle>();
 		i->SetParticleSize(Vector3::kIdentity * 50.0f, Vector3::kIdentity * 80.0f);
 
 		// ここでゲームプレイ中のデータを入れる予定
 		i->Resize(GameManager::GetInstance()->GetItemTypeCount(static_cast<Block::BlockType>(currentElementType)));
-		currentElementType++;
 		allFlaskParticleNum_ += static_cast<float>(i->GetSize());
 
 
@@ -117,10 +117,11 @@ void ResultScene::Initialize(){
 		i->SetRadius(Vector2(300.0f, 400.0f));
 		i->SetFreq(Vector2(flaskParticleAppDurationMin.min, flaskParticleAppDurationMin.max));
 		i->SetEndTranslate(Vector3::kYIdentity * 60.0f);
-		i->SetTextureID(*texID);
+		i->SetTextureID(Block::GetItemTexture(static_cast<Block::BlockType>(currentElementType)));
 		i->Start();
-		texID++;
-		if (texID == flaskTextureID_.end()) {
+		currentElementType++;
+
+		if (currentElementType == static_cast<uint32_t>(Block::BlockType::kMax)) {
 			break;
 		}
 	}
@@ -248,6 +249,7 @@ void ResultScene::Update(){
 	}
 	
 	cauldronTransform_->CalcMatrix();
+	cauldronAnimator_->Update();
 	Skip();
 }
 
@@ -256,7 +258,7 @@ void ResultScene::Draw(){
 
 	tex2D_->Draw(
 		cauldronTransform_->matWorld_,
-		Mat4x4::kIdentity,
+		cauldronAnimator_->GetUvMat4x4(),
 		currentCamera_->GetViewOthographics(),
 		cauldronTextureID_,
 		std::numeric_limits<uint32_t>::max(),
