@@ -43,6 +43,10 @@ public:
 	BaseScene::ID GetCurrentSceneID() const;
 	BaseScene::ID GetPreSceneID() const;
 
+	const bool GetFadeActive()const {
+		return fade_->IsActive();
+	}
+
 
 private:
 	void Debug();

@@ -191,6 +191,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Scenes\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Src\Scenes\SelectScene\SelectScene.cpp" />
     <ClCompile Include="Src\Scenes\SelectToGame\SelectToGame.cpp" />
+    <ClCompile Include="Src\Scenes\SubMenu\PauseMenu\PauseMenu.cpp" />
     <ClCompile Include="Src\Scenes\SubMenu\SubMenu.cpp" />
     <ClCompile Include="Src\Scenes\TitleScene\TitleDirection.cpp" />
     <ClCompile Include="Src\Scenes\TitleScene\TitleScene.cpp" />
@@ -266,6 +267,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Scenes\ResultScene\ResultScene.h" />
     <ClInclude Include="Src\Scenes\SelectScene\SelectScene.h" />
     <ClInclude Include="Src\Scenes\SelectToGame\SelectToGame.h" />
+    <ClInclude Include="Src\Scenes\SubMenu\PauseMenu\PauseMenu.h" />
     <ClInclude Include="Src\Scenes\SubMenu\SubMenu.h" />
     <ClInclude Include="Src\Scenes\TitleScene\TitleDirection.h" />
     <ClInclude Include="Src\Scenes\TitleScene\TitleScene.h" />
