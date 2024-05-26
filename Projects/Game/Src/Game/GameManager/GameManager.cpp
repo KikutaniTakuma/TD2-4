@@ -936,8 +936,8 @@ void GameManager::RemovePoint(const int32_t count)
 	itemCount_ -= total;
 	//itemCount_ = std::clamp(itemCount_, 0, *vClearItemCount_);
 
-	std::array<CountIndex, 4u> indexedArr;
-	for (int32_t i = 0; i < 4; ++i) {
+	std::array<CountIndex, 5u> indexedArr{};
+	for (int32_t i = 0; i < 5u; ++i) {
 		indexedArr[i] = { itemTypeCount_[i], i };
 	}
 

@@ -169,7 +169,7 @@ private:
 
 private:
 
-	std::array<int32_t, 4u> itemTypeCount_;
+	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> itemTypeCount_;
 
 	std::list<std::unique_ptr<BlockItem>> itemList_;
 
