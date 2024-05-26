@@ -58,8 +58,7 @@ private:
 	Lamb::Flg isFirstActive_;
 
 
-	std::array<std::unique_ptr<FlaskParticle>, 4> flaskParticles_;
-	std::array<uint32_t, 4> flaskTextureID_;
+	std::array<std::unique_ptr<FlaskParticle>, 5> flaskParticles_;
 	float curretnActiveFlaskParticleNum_;
 	float allFlaskParticleNum_;
 	Vector2 flaskParticleAppDurationMin;

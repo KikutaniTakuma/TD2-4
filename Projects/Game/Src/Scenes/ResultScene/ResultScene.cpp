@@ -92,17 +92,13 @@ void ResultScene::Initialize(){
 	cauldronEase_ = std::make_unique<Easeing>();
 
 
-	flaskTextureID_[0] = drawerManager_->LoadTexture("./Resources/Item/lizardTail.png");
-	flaskTextureID_[1] = drawerManager_->LoadTexture("./Resources/Item/water.png");
-	flaskTextureID_[2] = drawerManager_->LoadTexture("./Resources/Item/herbs.png");
-	flaskTextureID_[3] = drawerManager_->LoadTexture("./Resources/Item/mineral.png");
 	uint32_t currentElementType = static_cast<uint32_t>(Block::BlockType::kRed);
 
 	flaskParticleAppDurationMin = { 0.3f, 0.4f };
 	flaskParticleAppDurationMax = { 0.05f, 0.1f };
 	flaskParticleAppDurationEase_ = std::make_unique<Easeing>();
 
-	for (auto texID = flaskTextureID_.begin(); auto & i : flaskParticles_) {
+	for (auto & i : flaskParticles_) {
 		i = std::make_unique<FlaskParticle>();
 		i->SetParticleSize(Vector3::kIdentity * 50.0f, Vector3::kIdentity * 80.0f);
 
@@ -117,12 +113,8 @@ void ResultScene::Initialize(){
 		i->SetRadius(Vector2(300.0f, 400.0f));
 		i->SetFreq(Vector2(flaskParticleAppDurationMin.min, flaskParticleAppDurationMin.max));
 		i->SetEndTranslate(Vector3::kYIdentity * 60.0f);
-		i->SetTextureID(*texID);
+		i->SetTextureID(Block::GetItemTexture(static_cast<Block::BlockType>(currentElementType)));
 		i->Start();
-		texID++;
-		if (texID == flaskTextureID_.end()) {
-			break;
-		}
 	}
 	backGroundStartPos_ = backGround_->transform.translate;
 	backGroundStartPos_.y = Lamb::ClientSize().y;
