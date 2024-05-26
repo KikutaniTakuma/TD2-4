@@ -1,4 +1,0 @@
-0
-./Resources\star.png
-1
-0

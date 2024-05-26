@@ -31,8 +31,16 @@ void PlayerAnimatorComp::Init()
 	smokeParticle_ = std::make_unique<Particle>();
 	smokeParticle_->LoadSettingDirectory("Smoke");
 
-	damageParticle_ = std::make_unique<Particle>();
-	damageParticle_->LoadSettingDirectory("Player-Damaged");
+	damageParticleRed_ = std::make_unique<Particle>();
+	damageParticleRed_->LoadSettingDirectory("Player-Damaged-Red");
+	damageParticlePurple_ = std::make_unique<Particle>();
+	damageParticlePurple_->LoadSettingDirectory("Player-Damaged-Purple");
+	damageParticleYellow_ = std::make_unique<Particle>();
+	damageParticleYellow_->LoadSettingDirectory("Player-Damaged-Yellow");
+	damageParticleBlue_ = std::make_unique<Particle>();
+	damageParticleBlue_->LoadSettingDirectory("Player-Damaged-Blue");
+	damageParticleGreen_ = std::make_unique<Particle>();
+	damageParticleGreen_->LoadSettingDirectory("Player-Damaged-Green");
 }
 
 void PlayerAnimatorComp::Update()
@@ -103,14 +111,32 @@ void PlayerAnimatorComp::Update()
 
 	isDamage_ = pPlayerComp_->GetIsDamage();
 	if (isDamage_.OnEnter()) {
-		damageParticle_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
-		damageParticle_->SetParticleScale(0.5f);
+		damageParticleRed_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
+		damageParticleRed_->SetParticleScale(0.5f);
+		damageParticlePurple_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
+		damageParticlePurple_->SetParticleScale(0.5f);
+		damageParticleYellow_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
+		damageParticleYellow_->SetParticleScale(0.5f);
+		damageParticleBlue_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
+		damageParticleBlue_->SetParticleScale(0.5f);
+		damageParticleGreen_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
+		damageParticleGreen_->SetParticleScale(0.5f);
 	}
 	if (isDamage_) {
-		damageParticle_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
+		damageParticleRed_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
+		damageParticlePurple_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
+		damageParticleYellow_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
+		damageParticleBlue_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
+		damageParticleGreen_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
+
 	}
 
-	damageParticle_->Update();
+	damageParticleRed_->Update();
+	damageParticlePurple_->Update();
+	damageParticleYellow_->Update();
+	damageParticleBlue_->Update();
+	damageParticleGreen_->Update();
+
 
 	smokeParticle_->Update();
 
@@ -129,10 +155,29 @@ void PlayerAnimatorComp::Update()
 void PlayerAnimatorComp::Draw(const Camera &camera) const {
 	// 描画順を変えるコスト考えて無理矢理変えた
 	pSpriteComp_->Draw(camera);
-	damageParticle_->Draw(
+	damageParticleRed_->Draw(
 		camera.rotate,
 		camera.GetViewOthographics()
 	);
+	damageParticlePurple_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics()
+	);
+	damageParticleYellow_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics()
+	);
+	damageParticleBlue_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics()
+	);
+	damageParticleGreen_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics()
+	);
+
+
+
 	smokeParticle_->Draw(
 		camera.rotate,
 		camera.GetViewOthographics()
