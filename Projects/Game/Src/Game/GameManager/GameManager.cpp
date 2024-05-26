@@ -752,7 +752,7 @@ void GameManager::RandomDwarfSpawn()
 {
 	if (not dwarfSpawnTimer_.IsActive()) {
 		dwarfSpawnTimer_.Start(vSpawnSpan_);
-		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
+		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX - 1);
 		AddDwarf(Vector2{ static_cast<float>(spawnPos), 0 });
 	}
 }
