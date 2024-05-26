@@ -31,8 +31,6 @@ void ResultScene::Initialize(){
 	// ステージ番号入力
 	preGameStageNumber_ = static_cast<uint32_t>(SelectToGame::GetInstance()->GetSelect());
 
-
-
 	effectStatus_ = EffectState::kFirst;
 
 	currentCamera_->pos = { 0.f, 0.f ,-10.0f };
@@ -65,6 +63,9 @@ void ResultScene::Initialize(){
 		clearItemScaleDurationLoop_ = { clearItemScaleDuration_.second, clearItemScaleDuration_.second * 1.1f };
 		clearItemParticle_ = std::make_unique<Particle>();
 		clearItemParticle_->LoadSettingDirectory("MagicHand");
+
+		// クリアしてたらクリアフラグをtrueにセット
+		SelectToGame::GetInstance()->SetClearFlug(preGameStageNumber_);
 	}
 	else {
 		backGround_->textureID = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
