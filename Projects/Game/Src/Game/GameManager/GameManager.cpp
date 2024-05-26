@@ -94,6 +94,9 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 #endif // _DEBUG
 
 	ClearCheck();
+	for (auto &item : removeTypes_) {
+		item = 0;
+	}
 
 	// 演出用のデータの破棄
 	gameEffectManager_->Clear();
@@ -984,7 +987,7 @@ void GameManager::RemovePoint(const int32_t count)
 
 	for (uint32_t i = 0; i < itemTypeCount_.size(); i++) {
 		auto &item = itemTypeCount_[indexedArr[i].index_];
-		auto &removeTypes = gameEffectManager_->removeTypes_[indexedArr[i].index_];
+		auto &removeTypes = removeTypes_[indexedArr[i].index_];
 
 		const int32_t removeCount = total / static_cast<int32_t>(itemTypeCount_.size() - i);
 		const int32_t result = item - removeCount;

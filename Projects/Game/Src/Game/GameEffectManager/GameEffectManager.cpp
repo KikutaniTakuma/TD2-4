@@ -89,7 +89,5 @@ void GameEffectManager::Clear()
 {
 	blockBreakPos_ = {};
 	dwarfDeadPos_.clear();
-	for (auto &item : removeTypes_) {
-		item = 0;
-	}
+	
 }

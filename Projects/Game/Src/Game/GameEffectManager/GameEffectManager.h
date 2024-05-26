@@ -48,7 +48,5 @@ private:
 	// 落下ブロックの予測
 	std::bitset<BlockMap::kMapX> fallingBlock_;	// -1なら無効
 
-	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> removeTypes_;
-
 	std::vector<std::unique_ptr<Particle>> particles_;
 };
