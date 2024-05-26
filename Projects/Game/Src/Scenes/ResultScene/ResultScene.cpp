@@ -39,7 +39,7 @@ void ResultScene::Initialize(){
 	backGround_ = std::make_unique<Tex2DState>();
 	backGround_->transform.translate.z = 50.0f;
 	backGround_->transform.scale = Lamb::ClientSize();
-	rotateClearBackFround_ = 0.0f;
+	backUV_ = 0.0f;
 
 	resultMessage_ = std::make_unique<Tex2DState>();
 	resultMessage_->transform.scale = { 600.0f, 150.0f, 0.0f };
@@ -489,7 +489,7 @@ void ResultScene::GameClearEffect() {
 	backGround_->transform.CalcMatrix();
 	backGround_->uvTransform.scale.y = 0.5f;
 	backGround_->uvTransform.CalcMatrix();
-	rotateClearBackFround_ += std::numbers::pi_v<float> * 0.1f* Lamb::DeltaTime();
+	backUV_ += std::numbers::pi_v<float> * 0.1f* Lamb::DeltaTime();
 
 	if (backGroundEase_->ActiveExit()) {
 		resultMessageEase_->Start(
@@ -559,7 +559,7 @@ void ResultScene::GameClearDraw() {
 		backGround_->transform.matWorld_,
 		backGround_->uvTransform.matWorld_ 
 		* Mat4x4::MakeTranslate(Vector2::kIdentity * -0.5f) 
-		* Mat4x4::MakeScalar(Vector3::kIdentity * 0.7f) * Mat4x4::MakeRotateZ(rotateClearBackFround_)
+		* Mat4x4::MakeScalar(Vector3::kIdentity * 0.7f) * Mat4x4::MakeRotateZ(backUV_)
 		* Mat4x4::MakeTranslate(Vector2::kIdentity * 0.5f),
 		currentCamera_->GetViewOthographics(),
 		backGround_->textureID,
@@ -597,6 +597,7 @@ void ResultScene::GameOverEffect() {
 	backGround_->transform.translate = backGroundEase_->Get(backGroundStartPos_, backGroundEndPos_);
 	backGround_->transform.CalcMatrix();
 	backGround_->uvTransform.CalcMatrix();
+	backUV_ -= std::numbers::pi_v<float> * 0.1f * Lamb::DeltaTime();
 
 	if (backGroundEase_->ActiveExit()) {
 		resultMessageEase_->Start(
@@ -628,7 +629,7 @@ void ResultScene::GameOverEffect() {
 void ResultScene::GameOverDraw() {
 	tex2D_->Draw(
 		backGround_->transform.matWorld_,
-		backGround_->uvTransform.matWorld_,
+		backGround_->uvTransform.matWorld_ * Mat4x4::MakeTranslate({ backUV_, 0.0f, 0.0f }),
 		currentCamera_->GetViewOthographics(),
 		backGround_->textureID,
 		std::numeric_limits<uint32_t>::max(),

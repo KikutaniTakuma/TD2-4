@@ -50,7 +50,7 @@ private:
 
 	Lamb::SafePtr<Texture2D> tex2D_;
 	std::unique_ptr<Tex2DState> backGround_;
-	float rotateClearBackFround_;
+	float backUV_;
 	//std::unique_ptr<Particle> backGroundParticle_;
 	std::unique_ptr<Easeing> backGroundEase_;
 	Vector3 backGroundStartPos_;
