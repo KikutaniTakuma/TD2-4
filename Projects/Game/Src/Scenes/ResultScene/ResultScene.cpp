@@ -113,7 +113,7 @@ void ResultScene::Initialize(){
 		i->SetParticleSize(Vector3::kIdentity * 50.0f, Vector3::kIdentity * 80.0f);
 
 		// ここでゲームプレイ中のデータを入れる予定
-		i->Resize(/*GameManager::GetInstance()->GetItemTypeCount(static_cast<Block::BlockType>(currentElementType))*/20);
+		i->Resize(GameManager::GetInstance()->GetItemTypeCount(static_cast<Block::BlockType>(currentElementType)));
 		allFlaskParticleNum_ += static_cast<float>(i->GetSize());
 
 
