@@ -168,7 +168,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		// 落下しているブロックの座標
 		Lamb::SafePtr blockBody = fallComp->pLocalPos_;
 
-		if (fallingBlock->GetActive()) {
+		if (fallingBlock->GetActive() and fallComp->hasDamage_) {
 			if (player_) {
 				Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
 				const Vector2 centorDiff = blockBody->localPos_ - playerBody->localPos_;
@@ -457,7 +457,7 @@ GameObject *GameManager::AddEnemyBullet(Vector2 centerPos, Vector2 velocity)
 	return enemyBulletList_.back().get();
 }
 
-GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity)
+GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity, bool damage)
 {
 	std::unique_ptr<GameObject> addBlock = std::make_unique<GameObject>();
 
@@ -470,6 +470,7 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 
 	fallingComp->blockType_ = blockType;
 	fallingComp->gravity_ = gravity;
+	fallingComp->hasDamage_ = damage;
 	addBlock->GetComponent<LocalRigidbody>()->SetVelocity(velocity);
 
 	// 末尾に追加
@@ -910,7 +911,7 @@ void GameManager::AddPoint()
 			itemTypeCount_[index]++;
 
 			UIEditor::GetInstance()->BeginScaleMove(UIEditor::scaleMoveSpeed);
-			
+
 
 			item = itemList_.erase(item); // オブジェクトを破棄してイテレータを変更
 			continue;
@@ -974,7 +975,7 @@ void GameManager::BlockMapDropDown()
 			}
 			// そこにブロックがあり、接地していない場合は虚空にして落下させる
 			else if (isFloatBlock[index]) {
-				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -5, Vector2::kZero);
+				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -5, Vector2::kZero, false);
 				block.SetBlockType(Block::BlockType::kNone);
 				blockMap_->GetBlockStatusMap()->at(static_cast<int32_t>(localPos.y)).at(static_cast<int32_t>(localPos.x)).reset();
 			}

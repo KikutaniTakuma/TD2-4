@@ -80,6 +80,8 @@ void PlayerBlockPickerComp::Drop(int32_t facing)
 	if (pickingBlock_ or not dwarfList_.empty()) {
 		Vector2 targetPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * static_cast<float>(facing) + Vector2::kIdentity * 0.5f;
 
+		auto *gameManager = GameManager::GetInstance();
+
 		if (BlockMap::IsOutSide(targetPos)) { return; }
 
 		// ブロックを持っていなかったら
@@ -87,7 +89,6 @@ void PlayerBlockPickerComp::Drop(int32_t facing)
 
 			POINTS pos = { .x = static_cast<int16_t>(targetPos.x), .y = static_cast<int16_t>(targetPos.y) };
 
-			auto *gameManager = GameManager::GetInstance();
 
 			for (auto &dwarf : dwarfList_) {
 				dwarf.second->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(pos.x),static_cast<float>(pos.y) };
@@ -97,14 +98,18 @@ void PlayerBlockPickerComp::Drop(int32_t facing)
 			return;
 		}
 
-		auto block = pBlockMap_->GetBlockType(targetPos);
+		auto targetBlock = pBlockMap_->GetBlockType(targetPos);
 
-		if (block == Block::BlockType::kNone) {
+		if (targetBlock == Block::BlockType::kNone) {
 
 			POINTS pos = { .x = static_cast<int16_t>(targetPos.x), .y = static_cast<int16_t>(targetPos.y) };
+			//// 下側が空なら落下ブロックを設置する
+			//if (pBlockMap_->GetBlockType(targetPos - Vector2::kYIdentity) == Block::BlockType::kNone) {
+			//	gameManager->AddFallingBlock(Vector2{ static_cast<float>(pos.x), static_cast<float>(pos.y) }, Vector2::kIdentity, pickingBlock_.GetBlockType(), Vector2::kYIdentity * -5, Vector2::kZero, false);
+			//}
+			//else {
 			(*pBlockMap_->GetBlockMap())[pos.y][pos.x] = pickingBlock_;
-
-			auto *gameManager = GameManager::GetInstance();
+			//}
 
 			for (auto &dwarf : dwarfList_) {
 				dwarf.second->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(pos.x),static_cast<float>(pos.y) + 1 };
