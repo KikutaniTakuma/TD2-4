@@ -58,8 +58,7 @@ private:
 	Lamb::Flg isFirstActive_;
 
 
-	std::array<std::unique_ptr<FlaskParticle>, 4> flaskParticles_;
-	std::array<uint32_t, 4> flaskTextureID_;
+	std::array<std::unique_ptr<FlaskParticle>, 5> flaskParticles_;
 	float curretnActiveFlaskParticleNum_;
 	float allFlaskParticleNum_;
 	Vector2 flaskParticleAppDurationMin;
@@ -68,6 +67,7 @@ private:
 
 	std::unique_ptr<Particle> cauldronParticle_;
 	std::unique_ptr<Transform> cauldronTransform_;
+	std::unique_ptr<Tex2DAniamtor> cauldronAnimator_;
 	uint32_t cauldronTextureID_;
 	Vector3 cauldronBasisPos_;
 	std::pair<Vector3, Vector3> cauldronShake_;
@@ -102,8 +102,10 @@ private:
 	// クリア時のアイテム
 	std::unique_ptr<Tex2DState> clearItem_;
 	std::unique_ptr<Easeing> clearItemEase_;
+	std::unique_ptr<Easeing> clearItemScaleEase_;
 	Vector2 clearItemYPos_;
 	std::pair<Vector3, Vector3> clearItemScaleDuration_;
+	std::pair<Vector3, Vector3> clearItemScaleDurationLoop_;
 	std::unique_ptr<Particle> clearItemParticle_;
 
 	bool isStickInput_ = false;
