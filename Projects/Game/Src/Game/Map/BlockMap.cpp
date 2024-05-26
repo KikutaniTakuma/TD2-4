@@ -48,18 +48,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 		int32_t xi = 0;
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
-				/*for (uint32_t typeIndex = 1; typeIndex < static_cast<uint32_t>(Block::BlockType::kMax); typeIndex++) {
-					if (modelState->color == Block::kBlockColor_[typeIndex]) {
-						if (modelState->color == damageColor_ and hitMap_[yi][xi]) {
-
-							blockTex = whiteTex;
-						}
-						else {
-							blockTex = Block::kTextures_[typeIndex - 1];
-						}
-					}
-				}*/
-
+				
 				const auto &block = (*blockMap_)[yi][xi];
 				pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), block.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 			}

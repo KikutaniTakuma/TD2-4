@@ -12,34 +12,7 @@ BlockItem::BlockItem(const Vector2 &startPos, const Vector2 &endPos, const Block
 
 	SetControlPosition();
 
-	switch (type) {
-	case Block::BlockType::kRed:
-		texState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Item/lizardTail.png");
-		texState_->textureFullPath = "./Resources/Item/lizardTail.png";
-		texState_->textureName = "lizardTail";
-		break;
-
-	case Block::BlockType::kBlue:
-		texState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Item/water.png");
-		texState_->textureFullPath = "./Resources/Item/water.png";
-		texState_->textureName = "water";
-		break;
-
-	case Block::BlockType::kYellow:
-		texState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Item/mineral.png");
-		texState_->textureFullPath = "./Resources/Item/mineral.png";
-		texState_->textureName = "mineral";
-		break;
-
-	case Block::BlockType::kGreen:
-		texState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Item/herbs.png");
-		texState_->textureFullPath = "./Resources/Item/herbs.png";
-		texState_->textureName = "herbs";
-		break;
-	default:
-		std::string message = "Item could not be generated successfully.";
-		throw Lamb::Error::Code<BlockItem>(message, ErrorPlace);
-	}
+	texState_->textureID = Block::GetItemTexture(type);
 
 	itemType_ = type;
 
