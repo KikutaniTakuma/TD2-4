@@ -42,6 +42,7 @@ void GameManager::Init()
 	PlayerAnimatorComp::StaticLoad();
 	PlayerBulletComp::StaticLoad();
 	PlayerComp::StaticLoad();
+	AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
 
 	blockGauge_ = std::make_unique<BlockGauge>();
 	blockGauge_->Init();
