@@ -127,7 +127,8 @@ void PlayerComp::Input()
 
 	if (key->Pushed(DIK_X) or pad->Pushed(Gamepad::Button::Y) or pad->Pushed(Gamepad::Button::X)) {
 		if (not pPicker_->IsPicking()) {
-			pPicker_->PickUp(facing_);
+			bool isDown = key->GetKey(DIK_S) or key->GetKey(DIK_DOWN) or pad->GetStick(Gamepad::Stick::LEFT_Y) < 0;
+			pPicker_->PickUp(isDown ? 0 : facing_);
 		}
 		else {
 			pPicker_->Drop(facing_);

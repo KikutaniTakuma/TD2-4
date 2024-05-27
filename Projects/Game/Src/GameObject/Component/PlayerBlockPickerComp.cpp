@@ -48,6 +48,9 @@ void PlayerBlockPickerComp::PickUp(int32_t facing)
 	// ブロックを持っていない場合
 	if (not pickingBlock_ and dwarfList_.empty()) {
 		Vector2 targetPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * static_cast<float>(facing) + Vector2::kIdentity * 0.5f;
+		if (facing == 0) {
+			targetPos = pLocalBodyComp_->localPos_ + Vector2::kIdentity * 0.5f - Vector2::kYIdentity;
+		}
 
 		auto block = pBlockMap_->GetBlockType(targetPos);
 		POINTS pos = { .x = static_cast<int16_t>(targetPos.x), .y = static_cast<int16_t>(targetPos.y) };
