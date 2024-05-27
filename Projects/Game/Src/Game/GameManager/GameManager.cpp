@@ -37,6 +37,11 @@ void GameManager::Init()
 	SaveGlobalVariant(select->GetSelect());
 
 	Block::StaticLoad();
+	DwarfAnimatorComp::StaticLoad();
+	EnemyBulletComp::StaticLoad();
+	PlayerAnimatorComp::StaticLoad();
+	PlayerBulletComp::StaticLoad();
+	PlayerComp::StaticLoad();
 
 	blockGauge_ = std::make_unique<BlockGauge>();
 	blockGauge_->Init();

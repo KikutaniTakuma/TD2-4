@@ -1,6 +1,16 @@
 #include "PlayerBulletComp.h"
 #include <Engine/Graphics/TextureManager/TextureManager.h>
 
+void PlayerBulletComp::StaticLoad()
+{
+	AudioManager *const audioManager = AudioManager::GetInstance();
+	TextureManager *const textureManager = TextureManager::GetInstance();
+
+	audioManager->Load("./Resources/Sounds/SE/blockHit.mp3");
+
+	textureManager->LoadTexture("./Resources/Player/star.png");
+}
+
 void PlayerBulletComp::Init()
 {
 	pHitMapComp_ = object_.AddComponent<LocalMapHitComp>();
@@ -19,6 +29,7 @@ void PlayerBulletComp::Init()
 
 void PlayerBulletComp::Update()
 {
+	AudioManager *const audioManager = AudioManager::GetInstance();
 	// ぶつかっていたら返す
 	if (pHitMapComp_->hitNormal_ != Vector2::kZero) {
 
@@ -49,12 +60,12 @@ void PlayerBulletComp::Update()
 			auto &block = map->GetBlockMap()->at(hitPos.y)[hitPos.x];
 			block.AddDamage(1);
 			if (block.GetDamage() >= 3) {
-				audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockHit.mp3");
+				audio = audioManager->Load("./Resources/Sounds/SE/blockHit.mp3");
 				audio->Start(0.2f, false);
 				gManager->BreakChainBlocks(hitPos);
 			}
 			else {
-				audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockHit.mp3");
+				audio = audioManager->Load("./Resources/Sounds/SE/blockHit.mp3");
 				audio->Start(0.2f, false);
 				gManager->HitChainBlocks(hitPos);
 			}
@@ -73,7 +84,7 @@ void PlayerBulletComp::Update()
 
 }
 
-void PlayerBulletComp::Draw(const Camera& camera) const {
+void PlayerBulletComp::Draw(const Camera &camera) const {
 	shotParticle_->Draw(
 		camera.rotate,
 		camera.GetViewOthographics()

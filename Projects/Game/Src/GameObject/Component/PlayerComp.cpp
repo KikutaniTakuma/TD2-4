@@ -4,6 +4,14 @@
 #include "SpriteComp.h"
 #include "SoLib/Math/Math.hpp"
 
+void PlayerComp::StaticLoad()
+{
+	[[maybe_unused]] AudioManager *const audioManager = AudioManager::GetInstance();
+	[[maybe_unused]] TextureManager *const textureManager = TextureManager::GetInstance();
+
+	audioManager->Load("./Resources/Sounds/SE/shot.mp3");
+}
+
 void PlayerComp::Init()
 {
 	pLocalBodyComp_ = object_.AddComponent<LocalBodyComp>();
@@ -19,7 +27,7 @@ void PlayerComp::Init()
 	pHealthComp_->Reset();
 
 	Lamb::SafePtr spriteComp = object_.AddComponent<SpriteComp>();
-	spriteComp->SetTexture("./Resources/uvChecker.png");
+	//spriteComp->SetTexture("./Resources/uvChecker.png");
 	spriteComp->CalcTexUv();
 
 	isAttack_ = false;

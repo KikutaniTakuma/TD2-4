@@ -14,6 +14,8 @@ public:
 	using IComponent::IComponent;
 	~DwarfAnimatorComp() = default;
 
+	static void StaticLoad();
+
 	void Init() override;
 
 	void Update() override;
@@ -26,5 +28,5 @@ private:
 
 	Lamb::SafePtr<Tex2DAniamtor> spriteAnimator_ = nullptr;
 
-	std::array<uint32_t, 4> textureID_;
+	inline static std::array<uint32_t, 4> textureID_;
 };

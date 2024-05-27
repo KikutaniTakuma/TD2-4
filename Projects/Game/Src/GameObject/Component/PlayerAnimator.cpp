@@ -1,6 +1,14 @@
 #include "PlayerAnimator.h"
 #include "Engine/Graphics/TextureManager/TextureManager.h"
 
+void PlayerAnimatorComp::StaticLoad()
+{
+	Lamb::SafePtr textureManager = TextureManager::GetInstance();
+	textureManager->LoadTexture("./Resources/Player/witchShot.png");
+	textureManager->LoadTexture("./Resources/Player/witchWait.png");
+	textureManager->LoadTexture("./Resources/Player/witchWalk.png");
+}
+
 void PlayerAnimatorComp::Init()
 {
 	pPlayerComp_ = object_.AddComponent<PlayerComp>();
@@ -18,10 +26,6 @@ void PlayerAnimatorComp::Init()
 	spriteAnimator_->SetAnimationNumber(4u);
 	spriteAnimator_->Start();
 
-	Lamb::SafePtr textureManager = TextureManager::GetInstance();
-	textureManager->LoadTexture("./Resources/Player/witchShot.png");
-	textureManager->LoadTexture("./Resources/Player/witchWait.png");
-	textureManager->LoadTexture("./Resources/Player/witchWalk.png");
 	pSpriteComp_->SetTexture("./Resources/Player/witchWalk.png");
 
 	haveParticle_ = std::make_unique<Particle>();

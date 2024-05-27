@@ -1,6 +1,16 @@
 #include "DwarfAnimator.h"
 #include "Engine/Graphics/TextureManager/TextureManager.h"
 
+void DwarfAnimatorComp::StaticLoad()
+{
+	Lamb::SafePtr textureManager = TextureManager::GetInstance();
+	textureID_[0] = textureManager->LoadTexture("./Resources/Enemy/slimeWallWalk.png");
+	textureID_[1] = textureManager->LoadTexture("./Resources/Enemy/slimeWalk.png");
+	textureID_[2] = textureManager->LoadTexture("./Resources/Enemy/badSlimAttack.png");
+	textureID_[3] = textureManager->LoadTexture("./Resources/Enemy/badSlimeWait.png");
+
+}
+
 void DwarfAnimatorComp::Init()
 {
 	pDwarfComp_ = object_.AddComponent<DwarfComp>();
@@ -15,13 +25,7 @@ void DwarfAnimatorComp::Init()
 	spriteAnimator_->SetAnimationNumber(3u);
 	spriteAnimator_->Start();
 
-	Lamb::SafePtr textureManager = TextureManager::GetInstance();
-	textureID_[0] = textureManager->LoadTexture("./Resources/Enemy/slimeWallWalk.png");
-	textureID_[1] = textureManager->LoadTexture("./Resources/Enemy/slimeWalk.png");
-	textureID_[2] = textureManager->LoadTexture("./Resources/Enemy/badSlimAttack.png");
-	textureID_[3] = textureManager->LoadTexture("./Resources/Enemy/badSlimeWait.png");
-
-	pSpriteComp_->SetTexture("./Resources/Enemy/slimeWalk.png");
+	pSpriteComp_->SetTexture(textureID_[1]);
 }
 
 void DwarfAnimatorComp::Update()
