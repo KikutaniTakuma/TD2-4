@@ -8,6 +8,8 @@
 #include "imgui.h"
 
 #include "Engine/Graphics/TextureManager/TextureManager.h"
+#include "Engine/Engine.h"
+#include "Utils/EngineInfo/EngineInfo.h"
 
 void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::optional<BaseScene::ID> finishID) {
 	finishID_ = finishID;
@@ -21,15 +23,69 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 	frameInfo_ = FrameInfo::GetInstance();
 	input_ = Input::GetInstance();
 
-	SceneFactory* const sceneFactory = SceneFactory::GetInstance();
-
-	scene_.reset(sceneFactory->CreateBaseScene(firstScene));
-	scene_->SceneInitialize(this);
-	scene_->Initialize();
-
 	StringOutPutManager::GetInstance()->LoadFont("./Resources/Font/default.spritefont");
 	load_ = std::make_unique<SceneLoad>();
+	// テクスチャデータのアップロード
+	UploadTextureData();
 
+	SceneFactory* const sceneFactory = SceneFactory::GetInstance();
+
+	// ロード中の描画を開始
+	Engine::FrameStart();
+	Vector2 clienetSize = Lamb::ClientSize();
+	load_->Start();
+#pragma region シーン切り替え
+	scene_.reset(sceneFactory->CreateBaseScene(firstScene));
+#pragma endregion
+
+#pragma region ロード中
+	scene_->SceneInitialize(this);
+	// シーンの初期化
+	scene_->Initialize();
+
+	auto particle = std::make_unique<Particle>();
+	particle->LoadSettingDirectory("Enemy-Magic");
+	particle->LoadSettingDirectory("Block-Break");
+	particle->LoadSettingDirectory("MagicHand");
+	particle->LoadSettingDirectory("Magic");
+	particle->LoadSettingDirectory("Smoke");
+	particle->LoadSettingDirectory("Player-Damaged-Red");
+	particle->LoadSettingDirectory("Player-Damaged-Purple");
+	particle->LoadSettingDirectory("Player-Damaged-Yellow");
+	particle->LoadSettingDirectory("Player-Damaged-Blue");
+	particle->LoadSettingDirectory("Player-Damaged-Green");
+	particle->LoadSettingDirectory("ResultExplosion");
+	particle->LoadSettingDirectory("Bomb");
+	particle.reset();
+
+	uiEditor_ = UIEditor::GetInstance();
+	uiEditor_->Initialize(this);
+	uiEditor_->LoadFileAll();
+
+	// ロード中の描画を終了
+	load_->Stop();
+#pragma endregion
+
+#pragma region その後の処理
+	// フェードスタート
+	fade_->InStart();
+
+	// シーンの更新処理
+	uiEditor_->Update(scene_->GetID());
+	scene_->Update();
+#pragma endregion
+	DrawerManager::GetInstance()->GetTexture2D()->Draw(
+		Mat4x4::MakeScalar(clienetSize),
+		Mat4x4::kIdentity,
+		Mat4x4::MakeTranslate(Vector3::kZIdentity * -10.0f).Inverse() * Mat4x4::MakeOrthographic(clienetSize.x, clienetSize.y, 0.1f, 100.0f),
+		TextureManager::GetInstance()->GetWhiteTex(),
+		0xff,
+		BlendType::kUnenableDepthNone
+	);
+	Engine::FrameEnd();
+
+	// テクスチャデータのアップロード
+	UploadTextureData();
 
 
 
@@ -45,12 +101,8 @@ void SceneManager::Initialize(std::optional<BaseScene::ID> firstScene, std::opti
 	sceneNum_[BaseScene::ID::StageSelect] = DIK_3;
 	sceneNum_[BaseScene::ID::Result] = DIK_4;
 
-	uiEditor_ = UIEditor::GetInstance();
-	uiEditor_->Initialize(this);
-	uiEditor_->LoadFileAll();
 
-	// テクスチャデータのアップロード
-	UploadTextureData();
+
 }
 
 void SceneManager::SceneChange(std::optional<BaseScene::ID> next) {
