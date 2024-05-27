@@ -51,7 +51,7 @@ void PlayerComp::Update()
 
 void PlayerComp::Draw(const Camera &camera) const
 {
-	uint32_t whightTex = TextureManager::GetInstance()->GetWhiteTex();
+	/*uint32_t whightTex = TextureManager::GetInstance()->GetWhiteTex();
 	SimpleTransform transform;
 
 	transform.scale.y = 0.25f;
@@ -59,8 +59,9 @@ void PlayerComp::Draw(const Camera &camera) const
 
 	transform.translate += transform_.translate + Vector2::kXIdentity * (transform.scale.x * 0.5f - 0.5f) + Vector2::kYIdentity;
 
-	Mat4x4 affine = transform.MakeAffine();
-	DrawerManager::GetInstance()->GetTexture2D()->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whightTex, 0x22FF22FF, BlendType::kNormal);
+	Mat4x4 affine = transform.MakeAffine();*/
+	camera;
+	//DrawerManager::GetInstance()->GetTexture2D()->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whightTex, 0x22FF22FF, BlendType::kNormal);
 }
 
 void PlayerComp::OnCollision([[maybe_unused]] GameObject *const other)

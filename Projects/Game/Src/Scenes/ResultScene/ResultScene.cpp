@@ -39,13 +39,18 @@ void ResultScene::Initialize(){
 	backGround_ = std::make_unique<Tex2DState>();
 	backGround_->transform.translate.z = 50.0f;
 	backGround_->transform.scale = Lamb::ClientSize();
-	rotateClearBackFround_ = 0.0f;
+	backUV_ = 0.0f;
 
 	resultMessage_ = std::make_unique<Tex2DState>();
 	resultMessage_->transform.scale = { 600.0f, 150.0f, 0.0f };
 	resultMessage_->transform.translate = { 25.0f, -180.0f, 0.0f };
 	resultMessageEase_ = std::make_unique<Easeing>();
 	resultMessageYPos_ = { resultMessage_->transform.translate.y,resultMessage_->transform.translate.y + 60.0f };
+
+	drawerManager_->LoadTexture("./Resources/BackGround/clearBackGround.png");
+	drawerManager_->LoadTexture("./Resources/Result/clearUi.png");
+	drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
+	drawerManager_->LoadTexture("./Resources/Result/gameOverUi.png");
 
 	if (isGameClear_) {
 		backGround_->textureID = drawerManager_->LoadTexture("./Resources/BackGround/clearBackGround.png");
@@ -72,8 +77,7 @@ void ResultScene::Initialize(){
 		resultMessage_->textureID = drawerManager_->LoadTexture("./Resources/Result/gameOverUi.png");
 		currentUIPick_ = CurrentUIPick::kRetry;
 	}
-		zanennTexID_ = drawerManager_->LoadTexture("./Resources/Result/gameOverEffect.png");
-	//clearTextureID_ = drawerManager_->LoadTexture("./Resources/BackGround/gameOverBackGround.png");
+	zanennTexID_ = drawerManager_->LoadTexture("./Resources/Result/gameOverEffect.png");
 
 	cauldronParticle_ = std::make_unique<Particle>();
 	if (isGameClear_) {
@@ -214,6 +218,7 @@ void ResultScene::Update(){
 		break;
 	}
 
+	Skip();
 
 	if (effectStatus_ == ResultScene::EffectState::kFirst and isFirstEnd_) {
 		effectStatus_ = ResultScene::EffectState::kSecond;
@@ -251,7 +256,6 @@ void ResultScene::Update(){
 	
 	cauldronTransform_->CalcMatrix();
 	cauldronAnimator_->Update();
-	Skip();
 }
 
 void ResultScene::Draw(){
@@ -485,7 +489,7 @@ void ResultScene::GameClearEffect() {
 	backGround_->transform.CalcMatrix();
 	backGround_->uvTransform.scale.y = 0.5f;
 	backGround_->uvTransform.CalcMatrix();
-	rotateClearBackFround_ += std::numbers::pi_v<float> * 0.1f* Lamb::DeltaTime();
+	backUV_ += std::numbers::pi_v<float> * 0.1f* Lamb::DeltaTime();
 
 	if (backGroundEase_->ActiveExit()) {
 		resultMessageEase_->Start(
@@ -555,7 +559,7 @@ void ResultScene::GameClearDraw() {
 		backGround_->transform.matWorld_,
 		backGround_->uvTransform.matWorld_ 
 		* Mat4x4::MakeTranslate(Vector2::kIdentity * -0.5f) 
-		* Mat4x4::MakeScalar(Vector3::kIdentity * 0.7f) * Mat4x4::MakeRotateZ(rotateClearBackFround_)
+		* Mat4x4::MakeScalar(Vector3::kIdentity * 0.7f) * Mat4x4::MakeRotateZ(backUV_)
 		* Mat4x4::MakeTranslate(Vector2::kIdentity * 0.5f),
 		currentCamera_->GetViewOthographics(),
 		backGround_->textureID,
@@ -593,6 +597,7 @@ void ResultScene::GameOverEffect() {
 	backGround_->transform.translate = backGroundEase_->Get(backGroundStartPos_, backGroundEndPos_);
 	backGround_->transform.CalcMatrix();
 	backGround_->uvTransform.CalcMatrix();
+	backUV_ -= std::numbers::pi_v<float> * 0.1f * Lamb::DeltaTime();
 
 	if (backGroundEase_->ActiveExit()) {
 		resultMessageEase_->Start(
@@ -624,7 +629,7 @@ void ResultScene::GameOverEffect() {
 void ResultScene::GameOverDraw() {
 	tex2D_->Draw(
 		backGround_->transform.matWorld_,
-		backGround_->uvTransform.matWorld_,
+		backGround_->uvTransform.matWorld_ * Mat4x4::MakeTranslate({ backUV_, 0.0f, 0.0f }),
 		currentCamera_->GetViewOthographics(),
 		backGround_->textureID,
 		std::numeric_limits<uint32_t>::max(),
@@ -807,7 +812,7 @@ void ResultScene::Skip() {
 	Lamb::SafePtr gamepad = input_->GetGamepad();
 	Lamb::SafePtr key = input_->GetKey();
 
-	if (not isSkip_ and(gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE))) {
+	if (isFirstEnd_ and not isSkip_ and(gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE))) {
 		witchMoveX_->Stop();
 
 		if (isGameClear_) {

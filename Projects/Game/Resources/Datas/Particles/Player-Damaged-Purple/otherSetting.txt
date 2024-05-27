@@ -1,0 +1,4 @@
+0
+./Resources/Item/lizardTail.png
+1
+0

@@ -42,7 +42,12 @@ private:
 	std::unique_ptr<Particle> haveParticle_;
 	std::unique_ptr<Particle> shotParticle_;
 	std::unique_ptr<Particle> smokeParticle_;
-	std::unique_ptr<Particle> damageParticle_;
+
+	std::unique_ptr<Particle> damageParticleRed_;
+	std::unique_ptr<Particle> damageParticlePurple_;
+	std::unique_ptr<Particle> damageParticleYellow_;
+	std::unique_ptr<Particle> damageParticleBlue_;
+	std::unique_ptr<Particle> damageParticleGreen_;
 
 	Lamb::Flg isPicking_;
 

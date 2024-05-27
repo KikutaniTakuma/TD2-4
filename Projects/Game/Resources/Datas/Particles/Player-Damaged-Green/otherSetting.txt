@@ -1,0 +1,4 @@
+0
+./Resources/Item/herbs.png
+1
+0
