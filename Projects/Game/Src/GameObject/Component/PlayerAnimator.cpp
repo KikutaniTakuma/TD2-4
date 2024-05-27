@@ -157,37 +157,45 @@ void PlayerAnimatorComp::Draw(const Camera &camera) const {
 	pSpriteComp_->Draw(camera);
 	damageParticleRed_->Draw(
 		camera.rotate,
-		camera.GetViewOthographics()
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
 	);
 	damageParticlePurple_->Draw(
 		camera.rotate,
-		camera.GetViewOthographics()
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
 	);
 	damageParticleYellow_->Draw(
 		camera.rotate,
-		camera.GetViewOthographics()
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
 	);
 	damageParticleBlue_->Draw(
 		camera.rotate,
-		camera.GetViewOthographics()
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
 	);
 	damageParticleGreen_->Draw(
 		camera.rotate,
-		camera.GetViewOthographics()
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
 	);
 
 
 
 	smokeParticle_->Draw(
 		camera.rotate,
-		camera.GetViewOthographics()
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
 	);
 	shotParticle_->Draw(
 		camera.rotate,
-		camera.GetViewOthographics()
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
 	);
 	haveParticle_->Draw(
 		camera.rotate,
-		camera.GetViewOthographics()
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
 	);
 }

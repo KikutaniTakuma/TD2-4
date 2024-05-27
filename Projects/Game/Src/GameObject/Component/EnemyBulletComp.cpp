@@ -48,6 +48,7 @@ void EnemyBulletComp::Draw(const Camera& camera) const
 {
 	shotParticle_->Draw(
 		camera.rotate,
-		camera.GetViewOthographics()
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
 	);
 }
