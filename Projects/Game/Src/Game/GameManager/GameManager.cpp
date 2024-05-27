@@ -28,6 +28,15 @@
 #include <Scenes/SelectToGame/SelectToGame.h>
 
 
+static POINTS operator+(const POINTS l, const POINTS r) {
+	return POINTS{ static_cast<int16_t>(l.x + r.x), static_cast<int16_t>(l.y + r.y) };
+}
+
+static POINTS operator-(const POINTS l, const POINTS r) {
+	return POINTS{ static_cast<int16_t>(l.x - r.x), static_cast<int16_t>(l.y - r.y) };
+}
+
+
 void GameManager::Init()
 {
 	GlobalVariables::GetInstance()->LoadFile();
@@ -172,6 +181,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	AddPoint();
 
 	fallingBlocksPos_.clear();
+	bool isLanding = false;
+
 	for (auto &fallingBlock : fallingBlocks_) {
 		// 落下しているブロックのコンポーネント
 		Lamb::SafePtr fallComp = fallingBlock->GetComponent<FallingBlockComp>();
@@ -199,6 +210,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			if (fallComp->hasDamage_) {
 				gameEffectManager_->fallingBlock_.set(static_cast<uint32_t>(blockBody->localPos_.x), false);
 			}
+			isLanding |= true;
 		}
 
 		if (fallingBlock->GetActive()) {
@@ -286,6 +298,12 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 				break;
 			}
 		}
+	}
+
+	// 設置されたら
+	if (isLanding) {
+		// プレイヤを埋まらない位置に移動する
+		PlayerMoveSafeArea();
 	}
 
 	damageAreaList_.clear();
@@ -1142,6 +1160,58 @@ void GameManager::ClearCheck()
 	if (gameTimer_->IsFinish()) {
 		ResultScene::SetIsGameClear(false);
 		pGameScene_->ChangeToResult();
+	}
+
+}
+
+void GameManager::PlayerMoveSafeArea()
+{
+	const Vector2 playerPos = player_->GetComponent<LocalBodyComp>()->localPos_;
+	const POINTS intPos = { static_cast<int16_t>(playerPos.x + 0.5f), static_cast<int16_t>(playerPos.y + 0.5f) };
+
+
+	if (not BlockMap::IsOutSide(intPos)) {
+		// もし､空なら終わり
+		if (blockMap_->GetBlockType(intPos) == Block::BlockType::kNone) {
+			return;
+		}
+		int16_t begin = 1;
+		// 左右が埋まっていたならそこに置く
+		if (blockMap_->GetBlockType(intPos + POINTS{ 1, 0 }) != Block::BlockType::kNone and blockMap_->GetBlockType(intPos - POINTS{ 1, 0 }) != Block::BlockType::kNone) {
+			begin = 0;
+		}
+
+		bool left = true, right = true;
+		for (int16_t xi = begin; xi < BlockMap::kMapX and (left or right); xi++) {
+			if (left) {
+				if (BlockMap::IsOutSide(intPos + POINTS{ static_cast<int16_t>(-xi), 0 })) {
+					left = false;
+				}
+				else {
+					for (int16_t yi = 0; yi < BlockMap::kMapY - intPos.y; yi++) {
+						const POINTS targetPos = intPos + POINTS{ static_cast<int16_t>(-xi), yi };
+						if (blockMap_->GetBlockType(targetPos) == Block::BlockType::kNone) {
+							player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x),static_cast<float>(targetPos.y) };
+							return;
+						}
+					}
+				}
+			}
+			if (right) {
+				if (BlockMap::IsOutSide(intPos + POINTS{ xi, 0 })) {
+					right = false;
+				}
+				else {
+					for (int16_t yi = 0; yi < BlockMap::kMapY - intPos.y; yi++) {
+						const POINTS targetPos = intPos + POINTS{ xi, yi };
+						if (blockMap_->GetBlockType(targetPos) == Block::BlockType::kNone) {
+							player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x),static_cast<float>(targetPos.y) };
+							return;
+						}
+					}
+				}
+			}
+		}
 	}
 
 }

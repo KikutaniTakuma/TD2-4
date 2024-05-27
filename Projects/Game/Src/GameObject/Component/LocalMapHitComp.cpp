@@ -82,9 +82,12 @@ void LocalMapHitComp::Update()
 				velocity.y = 0;
 				hitNormal.y = 1.f;
 			}
-			else if(isHitFallBlock_) {
+			else if (isHitFallBlock_) {
 				for (const Vector2 pos : fallingBlocks) {
-					
+					if (pos.y > yPos[kDown]) {
+						continue;
+					}
+
 					//Vector2 targetPos;
 					if (targetPos = { xPos[kLeft], yPos[kDown] }; std::abs(targetPos.x - pos.x) <= 1 and std::abs(targetPos.y - pos.y) <= 1) {
 						pLocalBodyComp_->localPos_.y = pLocalBodyComp_->size_.y * 0.5f + pos.y + 0.5f;

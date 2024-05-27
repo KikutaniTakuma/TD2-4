@@ -179,6 +179,8 @@ private:
 
 	void ClearCheck();
 
+	void PlayerMoveSafeArea();
+
 private:
 
 	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> itemTypeCount_;
