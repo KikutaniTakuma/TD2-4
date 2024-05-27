@@ -81,7 +81,7 @@ void GameScene::Initialize() {
 	//aabb_ = AABB::Create({ 0.0f,-0.5f,0.0f }, { 20.0f,1.0f,20.0f });
 
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
-	
+
 
 	TextureInitialize();
 
@@ -101,7 +101,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Finalize() {
-	pause_->Finalize();
+	if (pause_) { pause_->Finalize(); }
 	gameBGM_->Stop();
 
 	//enemyManager_->Finalize();
@@ -151,7 +151,7 @@ void GameScene::Update() {
 		gameUIManager_->Update(deltaTime);
 
 		if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
-			Audio* cancel = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
+			Audio *cancel = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
 
 			gameBGM_->Stop();
 			cancel->Start(0.1f, false);

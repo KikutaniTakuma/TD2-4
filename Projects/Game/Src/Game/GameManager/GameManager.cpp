@@ -658,15 +658,17 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 	}
 
 	uint32_t itemSpawnCount = 0;
-	if (breakCount <= 4) {
+	if (breakCount <= 3) {
 		itemSpawnCount = 1;
 	}
-	else if (breakCount <= 9) {
+	else if (breakCount <= 6) {
 		itemSpawnCount = 2;
 	}
-	else
-	{
+	else if (breakCount <= 9) {
 		itemSpawnCount = 3;
+	}
+	else {
+		itemSpawnCount = 4;
 	}
 
 
