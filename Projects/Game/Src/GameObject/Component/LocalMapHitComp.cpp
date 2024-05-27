@@ -62,6 +62,8 @@ void LocalMapHitComp::Update()
 		hitNormal.y = 1.f;
 	}
 
+	GameManager *const gameManager = GameManager::GetInstance();
+	const auto &fallingBlocks = gameManager->GetFallingBlocksPos();
 
 	{	// 縦方向
 		if (velocity.y < 0) {	// 下方向
@@ -79,6 +81,24 @@ void LocalMapHitComp::Update()
 				pLocalBodyComp_->localPos_.y = std::ceil(centorDown.y) - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
 				velocity.y = 0;
 				hitNormal.y = 1.f;
+			}
+			else if(isHitFallBlock_) {
+				for (const Vector2 pos : fallingBlocks) {
+					
+					//Vector2 targetPos;
+					if (targetPos = { xPos[kLeft], yPos[kDown] }; std::abs(targetPos.x - pos.x) <= 1 and std::abs(targetPos.y - pos.y) <= 1) {
+						pLocalBodyComp_->localPos_.y = pLocalBodyComp_->size_.y * 0.5f + pos.y + 0.5f;
+						velocity.y = 0;
+						hitNormal.y = 1.f;
+						break;
+					}
+					else if (targetPos = { xPos[kRight], yPos[kDown] }; std::abs(targetPos.x - pos.x) <= 1 and std::abs(targetPos.y - pos.y) <= 1) {
+						pLocalBodyComp_->localPos_.y = pLocalBodyComp_->size_.y * 0.5f + pos.y + 0.5f;
+						velocity.y = 0;
+						hitNormal.y = 1.f;
+						break;
+					}
+				}
 			}
 
 		}

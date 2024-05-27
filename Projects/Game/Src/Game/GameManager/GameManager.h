@@ -168,6 +168,10 @@ public:
 		return removeTypes_[index];
 	}
 
+	const auto &GetFallingBlocksPos() const {
+		return fallingBlocksPos_;
+	}
+
 private:
 	void BlockMapDropDown();
 
@@ -179,6 +183,8 @@ private:
 
 	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> itemTypeCount_;
 	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> removeTypes_;
+
+	std::list<Vector2> fallingBlocksPos_;
 
 	std::list<std::unique_ptr<BlockItem>> itemList_;
 

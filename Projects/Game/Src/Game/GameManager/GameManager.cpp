@@ -171,6 +171,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	}
 	AddPoint();
 
+	fallingBlocksPos_.clear();
 	for (auto &fallingBlock : fallingBlocks_) {
 		// 落下しているブロックのコンポーネント
 		Lamb::SafePtr fallComp = fallingBlock->GetComponent<FallingBlockComp>();
@@ -198,6 +199,10 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			if (fallComp->hasDamage_) {
 				gameEffectManager_->fallingBlock_.set(static_cast<uint32_t>(blockBody->localPos_.x), false);
 			}
+		}
+
+		if (fallingBlock->GetActive()) {
+			fallingBlocksPos_.push_back(blockBody->localPos_);
 		}
 	}
 
@@ -488,6 +493,9 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 	// 落下するブロックのコンポーネント
 	Lamb::SafePtr fallingComp = addBlock->AddComponent<FallingBlockComp>();
 	Lamb::SafePtr localBodyComp = addBlock->AddComponent<LocalBodyComp>();
+	Lamb::SafePtr localHitMap = addBlock->AddComponent<LocalMapHitComp>();
+
+	localHitMap->isHitFallBlock_ = false;
 
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = size;

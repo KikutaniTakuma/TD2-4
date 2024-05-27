@@ -98,6 +98,8 @@ void DwarfComp::ClimbUp()
 
 bool DwarfComp::FallDown()
 {
+
+	const auto &blocks = GameManager::GetInstance()->GetFallingBlocksPos();
 	const float downPower = 2.f * GetDeltaTime();
 	float afterPosY = pLocalBodyComp_->localPos_.y - downPower;
 	// 落下先の座標
@@ -105,6 +107,15 @@ bool DwarfComp::FallDown()
 	if (afterPosY > 0) {
 		// 落下先がブロックでない場合 なおかつ前がブロックでない場合
 		if (LocalBodyComp::pMap_->GetBlockType(downSide) == Block::BlockType::kNone and LocalBodyComp::pMap_->GetBlockType(downSide + Vector2::kXIdentity * (0.25f * facing_)) == Block::BlockType::kNone) {
+
+			for (const Vector2 pos : blocks) {
+				//Vector2 targetPos;
+				if (std::abs(downSide.x - pos.x) <= 1 and std::abs(downSide.y - pos.y) <= 1) {
+					pLocalBodyComp_->localPos_.y = pos.y + 1;
+					return false;
+				}
+			}
+
 			// 下げる
 			pLocalBodyComp_->localPos_.y -= downPower;
 			return true;
