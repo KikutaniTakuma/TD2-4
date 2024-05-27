@@ -20,6 +20,8 @@ public:
 	using IComponent::IComponent;
 	~PlayerAnimatorComp() = default;
 
+	static void StaticLoad();
+
 	void Init() override;
 
 	void Update() override;

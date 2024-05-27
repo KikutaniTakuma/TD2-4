@@ -11,6 +11,8 @@ public:
 	using IComponent::IComponent;
 	~PlayerComp() = default;
 
+	static void StaticLoad();
+
 	void Init() override;
 
 	void Update() override;

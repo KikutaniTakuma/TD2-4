@@ -37,6 +37,12 @@ void GameManager::Init()
 	SaveGlobalVariant(select->GetSelect());
 
 	Block::StaticLoad();
+	DwarfAnimatorComp::StaticLoad();
+	EnemyBulletComp::StaticLoad();
+	PlayerAnimatorComp::StaticLoad();
+	PlayerBulletComp::StaticLoad();
+	PlayerComp::StaticLoad();
+	AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
 
 	blockGauge_ = std::make_unique<BlockGauge>();
 	blockGauge_->Init();
@@ -652,15 +658,17 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 	}
 
 	uint32_t itemSpawnCount = 0;
-	if (breakCount <= 4) {
+	if (breakCount <= 3) {
 		itemSpawnCount = 1;
 	}
-	else if (breakCount <= 9) {
+	else if (breakCount <= 6) {
 		itemSpawnCount = 2;
 	}
-	else
-	{
+	else if (breakCount <= 9) {
 		itemSpawnCount = 3;
+	}
+	else {
+		itemSpawnCount = 4;
 	}
 
 

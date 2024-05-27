@@ -12,13 +12,15 @@ class EnemyBulletComp : public IComponent {
 public:
 	using IComponent::IComponent;
 
+	static void StaticLoad();
+
 	void Init() override;
 
 	void Update() override;
 
 	void OnCollision(GameObject *const other) override;
 
-	void Draw(const Camera& camera) const override;
+	void Draw(const Camera &camera) const override;
 private:
 
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;

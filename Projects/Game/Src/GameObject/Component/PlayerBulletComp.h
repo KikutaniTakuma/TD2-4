@@ -11,6 +11,8 @@ class PlayerBulletComp : public IComponent {
 public:
 	using IComponent::IComponent;
 
+	static void StaticLoad();
+
 	void Init() override;
 
 	void Update() override;

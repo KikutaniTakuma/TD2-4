@@ -3,6 +3,15 @@
 #include "PlayerComp.h"
 #include "SoLib/Math/Math.hpp"
 
+void EnemyBulletComp::StaticLoad()
+{
+	[[maybe_unused]] AudioManager *const audioManager = AudioManager::GetInstance();
+	[[maybe_unused]] TextureManager *const textureManager = TextureManager::GetInstance();
+
+	textureManager->LoadTexture("./Resources/Enemy/slimBullet.png");
+
+}
+
 void EnemyBulletComp::Init()
 {
 	pLocalBodyComp_ = object_.AddComponent<LocalBodyComp>();
