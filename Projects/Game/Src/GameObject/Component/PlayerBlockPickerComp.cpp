@@ -3,11 +3,15 @@
 #include <SoLib/Math/Math.hpp>
 #include "DwarfComp.h"
 #include "DwarfAnimator.h"
+#include "PlayerComp.h"
 
 void PlayerBlockPickerComp::Init()
 {
 	pLocalBodyComp_ = object_.GetComponent<LocalBodyComp>();
 	pBlockMap_ = GameManager::GetInstance()->GetMap();
+
+	targetFlameTex_ = TextureManager::GetInstance()->LoadTexture("./Resources/Player/pressPositionFram.png");
+
 	if (not pTexture_) [[unlikely]]
 		{
 			pTexture_ = DrawerManager::GetInstance()->GetTexture2D();
@@ -18,6 +22,19 @@ void PlayerBlockPickerComp::Init()
 void PlayerBlockPickerComp::Update()
 {
 	affine_ = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { pLocalBodyComp_->GetGlobalPos() + Vector2::kYIdentity, -5.f });
+
+	Lamb::SafePtr playerComp = object_.GetComponent<PlayerComp>();
+	Vector2 targetPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * static_cast<float>(playerComp->GetFacing()) + Vector2::kIdentity * 0.5f;
+	if (playerComp->InputDown()) {
+		targetPos = pLocalBodyComp_->localPos_ + Vector2::kIdentity * 0.5f - Vector2::kYIdentity;
+	}
+
+	const POINTS pos = { .x = static_cast<int16_t>(targetPos.x), .y = static_cast<int16_t>(targetPos.y) };
+	
+	const auto &block = pBlockMap_->GetBlockType(pos);
+	targetIsBlock_ = block != Block::BlockType::kNone;
+
+	targetAffine_ = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { BlockMap::GetGlobalPos(pos) , -5.f });
 
 	for (auto &dwarf : dwarfList_) {
 		//dwarf.second->transform_.
@@ -33,6 +50,8 @@ void PlayerBlockPickerComp::Update()
 
 void PlayerBlockPickerComp::Draw([[maybe_unused]] const Camera &camera) const
 {
+	pTexture_->Draw(targetAffine_, Mat4x4::MakeScalar({ 0.5f,1.f,1.f }), camera.GetViewOthographics(), targetFlameTex_, targetIsBlock_ ? 0xFF0000FF : 0xFFFFFFFF, BlendType::kNormal);
+
 	// もしブロックを持っていたら
 	if (pickingBlock_) {
 		pTexture_->Draw(affine_, pickingBlock_.GetDamageUv(), camera.GetViewOthographics(), pickingBlock_.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
@@ -78,6 +97,9 @@ void PlayerBlockPickerComp::Drop(int32_t facing)
 	// ブロックを持っている場合
 	if (pickingBlock_ or not dwarfList_.empty()) {
 		Vector2 targetPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * static_cast<float>(facing) + Vector2::kIdentity * 0.5f;
+		if (facing == 0) {
+			targetPos = pLocalBodyComp_->localPos_ + Vector2::kIdentity * 0.5f - Vector2::kYIdentity;
+		}
 
 		auto *gameManager = GameManager::GetInstance();
 
