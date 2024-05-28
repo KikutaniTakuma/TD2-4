@@ -58,7 +58,10 @@ private:
 
 	Lamb::Flg isShoting_;
 
+	Lamb::Flg isHaveBlock_;
 
 	Lamb::Flg isUnderAnimation_;
 	Lamb::Flg isUnderAnimationEnd_;
+
+	Lamb::Flg isNormalPickAnimation_;
 };
