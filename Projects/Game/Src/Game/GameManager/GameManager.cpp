@@ -1224,28 +1224,28 @@ void GameManager::PlayerMoveSafeArea()
 				if (BlockMap::IsOutSide(intPos + POINTS{ static_cast<int16_t>(-xi), 0 })) {
 					left = false;
 				}
-				else {
-					for (int16_t yi = 0; yi < BlockMap::kMapY - intPos.y; yi++) {
-						const POINTS targetPos = intPos + POINTS{ static_cast<int16_t>(-xi), yi };
-						if (blockMap_->GetBlockType(targetPos) == Block::BlockType::kNone) {
-							player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x),static_cast<float>(targetPos.y) };
-							return;
-						}
-					}
-				}
+
 			}
 			if (right) {
 				if (BlockMap::IsOutSide(intPos + POINTS{ xi, 0 })) {
 					right = false;
 				}
-				else {
-					for (int16_t yi = 0; yi < BlockMap::kMapY - intPos.y; yi++) {
-						const POINTS targetPos = intPos + POINTS{ xi, yi };
-						if (blockMap_->GetBlockType(targetPos) == Block::BlockType::kNone) {
-							player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x),static_cast<float>(targetPos.y) };
-							return;
-						}
-					}
+
+			}
+			for (int16_t yi = 0; yi < BlockMap::kMapY - intPos.y; yi++) {
+				const POINTS offsetX = { xi, 0 };
+				const POINTS targetPos = intPos + POINTS{ 0, yi };
+
+				const bool leftVoid = left && blockMap_->GetBlockType(targetPos - offsetX) == Block::BlockType::kNone;
+				const bool rightVoid = right && blockMap_->GetBlockType(targetPos + offsetX) == Block::BlockType::kNone;
+
+				if (leftVoid) {
+					player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x - xi),static_cast<float>(targetPos.y) };
+					return;
+				}
+				if (rightVoid) {
+					player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x + xi),static_cast<float>(targetPos.y) };
+					return;
 				}
 			}
 		}
