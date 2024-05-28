@@ -45,7 +45,7 @@ public:
 
 	Block blockType_ = Block::BlockType::kRed;
 
-	uint32_t damage_ = 0;
+	uint32_t blockDamage_ = 0;
 
 public:
 

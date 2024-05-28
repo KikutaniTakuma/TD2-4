@@ -207,7 +207,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		if (fallComp->IsLanding()) {
 			Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
 			audio->Start(0.2f, false);
-			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType());
+			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType(), fallComp->blockDamage_);
 			fallingBlock->SetActive(false);
 			if (fallComp->hasDamage_) {
 				gameEffectManager_->fallingBlock_.set(static_cast<uint32_t>(blockBody->localPos_.x), false);
@@ -506,7 +506,7 @@ GameObject *GameManager::AddEnemyBullet(Vector2 centerPos, Vector2 velocity)
 	return enemyBulletList_.back().get();
 }
 
-GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity, bool damage)
+GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity, bool hasDamage, uint32_t blockDamage)
 {
 	std::unique_ptr<GameObject> addBlock = std::make_unique<GameObject>();
 
@@ -523,7 +523,9 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 	fallingComp->blockType_ = blockType;
 	fallingComp->velocity_ = velocity;
 	fallingComp->gravity_ = gravity;
-	fallingComp->hasDamage_ = damage;
+	fallingComp->hasDamage_ = hasDamage;
+
+	fallingComp->blockDamage_ = blockDamage;
 
 	addBlock->GetComponent<LocalRigidbody>();
 
@@ -1129,7 +1131,7 @@ void GameManager::BlockMapDropDown()
 			}
 			// そこにブロックがあり、接地していない場合は虚空にして落下させる
 			else if (isFloatBlock[index]) {
-				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -5, Vector2::kZero, false);
+				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -5, Vector2::kZero, false, block.GetDamage());
 				block.SetBlockType(Block::BlockType::kNone);
 				blockMap_->GetBlockStatusMap()->at(static_cast<int32_t>(localPos.y)).at(static_cast<int32_t>(localPos.x)).reset();
 			}
