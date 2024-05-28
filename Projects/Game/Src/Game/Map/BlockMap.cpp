@@ -50,7 +50,14 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 			if (modelState) {
 				
 				const auto &block = (*blockMap_)[yi][xi];
-				pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), block.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
+				if (hitMap_[yi][xi]){
+					pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), whiteTex, 0xFFFFFFFF, BlendType::kNone);
+
+				}
+				else {
+					pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), block.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
+
+				}
 			}
 			// 破壊フラグが立っていたら
 			if (isDraw and breakBlockMap_[yi][xi]) {

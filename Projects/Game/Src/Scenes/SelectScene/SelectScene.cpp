@@ -16,6 +16,8 @@ void SelectScene::Initialize() {
 	currentCamera_->pos = { 0.0f, 0.0f , -1.0f };
 	shakePower_ = { 20.0f,20.0f };
 
+	selectNum_ = SelectToGame::GetInstance()->GetSelect();
+
 	for (uint32_t i = 0; i < texies_.size(); i++) {
 		texies_[i] = std::make_unique<Tex2DState>();
 		texies_[i]->transform.scale = { 936.0f,554.0f };
@@ -47,6 +49,8 @@ void SelectScene::Initialize() {
 	cancel_ = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
 
 	selectBGM_->Start(0.1f, true);
+
+	ease_.Start(false, kAddEase_, Easeing::InSine);
 }
 
 void SelectScene::Finalize(){
