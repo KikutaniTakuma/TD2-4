@@ -48,9 +48,9 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 		int32_t xi = 0;
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
-				
+
 				const auto &block = (*blockMap_)[yi][xi];
-				if (hitMap_[yi][xi]){
+				if (hitMap_[yi][xi]) {
 					pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), whiteTex, 0xFFFFFFFF, BlendType::kNone);
 
 				}
@@ -157,7 +157,7 @@ void BlockMap::SetDamageColor(uint32_t color)
 	damageColor_ = color;
 }
 
-void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType)
+void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType, uint32_t damage)
 {
 	// 半径
 	Vector2 halfSize = Vector2{ std::floor(size.x * 0.5f), std::floor(size.y * 0.5f) };
@@ -184,6 +184,7 @@ void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxTy
 			auto &box = (*blockMap_)[yPos][xPos];
 			// データを代入する
 			box.SetBlockType(boxType);
+			box.SetDamage(damage);
 
 			// ブロックのステータスの参照
 			auto &blockState = (*blockStatesMap_)[yPos][xPos];
@@ -244,7 +245,6 @@ void BlockMap::BreakBlock(POINTS localPos)
 	auto &targetBlock = blockMap_->at(localPos.y).at(localPos.x);
 	// ブロックがあるなら破壊
 	if (targetBlock) {
-		targetBlock.SetIsDestroy(false);
 		targetBlock.SetDamage(0);
 		targetBlock.SetBlockType(Block::BlockType::kNone);
 		damageColor_ = 0;

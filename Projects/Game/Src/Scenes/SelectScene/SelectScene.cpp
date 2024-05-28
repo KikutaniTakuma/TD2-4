@@ -2,6 +2,14 @@
 #include"Drawers/DrawerManager.h"
 #include"Scenes/SelectToGame/SelectToGame.h"
 #include"Utils/Easeing/Easeing.h"
+#include"Engine/Core/WindowFactory/WindowFactory.h"
+#include"../SoLib/SoLib/SoLib_Json.h"
+#include"Input/Mouse/Mouse.h"
+#include "Utils/UtilsLib/UtilsLib.h"
+#include <fstream>
+#include <Utils/EngineInfo/EngineInfo.h>
+#include"Error/Error.h"
+
 
 SelectScene::SelectScene():
 	BaseScene{ BaseScene::ID::StageSelect }{
@@ -34,6 +42,24 @@ void SelectScene::Initialize() {
 		startItemPos_[i] = texies_[i]->transform.translate.x;
 		endItemPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
 	}
+
+	for (uint32_t i = 0; i < 3; i++){
+		potNumberTexture_[i] = std::make_unique<Tex2DState>();
+		potNumberTexture_[i]->transform.scale = { 60.0f,60.0f };
+		potNumberTexture_[i]->transform.translate = { 70.0f * i,-300.0f };
+		potNumberTexture_[i]->uvTransform.scale = { 0.1f,1.0f };
+		potNumberTexture_[i]->color = 0xffffffff;
+		potNumberTexture_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/Timer/timeLimitNumber.png");
+
+		timerNumberTexture_[i] = std::make_unique<Tex2DState>();
+		timerNumberTexture_[i]->transform.scale = { 60.0f,60.0f };
+		timerNumberTexture_[i]->transform.translate = { 70.0f * i,-227.0f };
+		timerNumberTexture_[i]->uvTransform.scale = { 0.1f,1.0f };
+		timerNumberTexture_[i]->color = 0xffffffff;
+		timerNumberTexture_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/Timer/timeLimitNumber.png");
+
+	}
+
 	selectTex_ = std::make_unique<Tex2DState>();
 	selectTex_->transform.scale = { 452.0f,72.0f };
 	selectTex_->transform.translate = { 0.0f, 282.0f ,0 };
@@ -51,6 +77,12 @@ void SelectScene::Initialize() {
 	selectBGM_->Start(0.1f, true);
 
 	ease_.Start(false, kAddEase_, Easeing::InSine);
+
+	for (uint32_t i = 0; i < kMaxStage_; i++){
+		LoadGameData(i);
+	}
+	
+
 }
 
 void SelectScene::Finalize(){
@@ -72,6 +104,16 @@ void SelectScene::Update(){
 	if (coolTime_!=0){
 		coolTime_--;
 	}
+
+	CalcUVPos(inGameDatas_[selectNum_].timeLimit, timerNumberTexture_);
+	CalcUVPos(inGameDatas_[selectNum_].clearItemNum, potNumberTexture_);
+
+	for (uint32_t i = 0; i < 3; i++){
+		timerNumberTexture_[i]->transform.CalcMatrix();
+		timerNumberTexture_[i]->uvTransform.CalcMatrix();
+		potNumberTexture_[i]->transform.CalcMatrix();
+		potNumberTexture_[i]->uvTransform.CalcMatrix();
+	}
 	
 
 	ease_.Update();
@@ -87,6 +129,8 @@ void SelectScene::Update(){
 		if (clearFlug[i]) {
 			itemTexies_[i]->uvTransform.translate.x = 0.5f;
 		}
+
+		
 
 		texies_[i]->transform.translate.x = ease_.Get(startPos_[i], endPos_[i]);
 		itemTexies_[i]->transform.translate.x = ease_.Get(startItemPos_[i], endItemPos_[i]) + itemDistanceCenter_.x;
@@ -116,9 +160,24 @@ void SelectScene::Draw(){
 			, itemTexies_[i]->textureID, itemTexies_[i]->color, BlendType::kNormal);
 	}
 
+	for (size_t i = 0; i < 3; i++) {
+		if (ease_.GetIsActive()){
+			UIEditor::GetInstance()->SetSelectDraw(true);
+			return;
+		}
+		else {
+			UIEditor::GetInstance()->SetSelectDraw(false);
+		}
+		tex2D_->Draw(potNumberTexture_[i]->transform.matWorld_, potNumberTexture_[i]->uvTransform.matWorld_, currentCamera_->GetViewOthographics()
+			, potNumberTexture_[i]->textureID, potNumberTexture_[i]->color, BlendType::kNormal);
+
+		tex2D_->Draw(timerNumberTexture_[i]->transform.matWorld_, timerNumberTexture_[i]->uvTransform.matWorld_, currentCamera_->GetViewOthographics()
+			, timerNumberTexture_[i]->textureID, timerNumberTexture_[i]->color, BlendType::kNormal);
+	}
+
 #ifdef _DEBUG
 
-	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
+	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
 #endif // _DEBUG
 }
 
@@ -128,6 +187,13 @@ void SelectScene::Debug(){
 	if (ImGui::Button("シェイクテスト")){
 		currentCamera_->BeginShake(shakePower_);
 	}
+	ImGui::DragFloat3("ポットの百の位", potNumberTexture_[0]->transform.translate.data(), 0.1f);
+	ImGui::DragFloat3("ポットの十の位", potNumberTexture_[1]->transform.translate.data(), 0.1f);
+	ImGui::DragFloat3("ポットの一の位", potNumberTexture_[2]->transform.translate.data(), 0.1f);
+	ImGui::DragFloat3("タイマーの百の位", timerNumberTexture_[0]->transform.translate.data(), 0.1f);
+	ImGui::DragFloat3("タイマーの十の位", timerNumberTexture_[1]->transform.translate.data(), 0.1f);
+	ImGui::DragFloat3("タイマーの一の位", timerNumberTexture_[2]->transform.translate.data(), 0.1f);
+
 	ImGui::DragFloat2("アイテムの相対位置", itemDistanceCenter_.data(), 1.0f);
 	ImGui::End();
 #endif // _DEBUG
@@ -182,4 +248,55 @@ void SelectScene::SelectMove(){
 	}
 
 }
+
+void SelectScene::LoadGameData(const uint32_t stageNumber){
+	std::string stageName = (kItemName_ + std::to_string(stageNumber)).c_str();
+	//読み込むjsonファイルのフルパスを合成する
+	std::string filePath = kDirectoryPath_ + stageName + ".json";
+	//読み込み用のファイルストリーム
+	std::ifstream ifs;
+	//ファイルを読み込み用に開く
+	ifs.open(filePath);
+	// ファイルオープン失敗
+	if (ifs.fail()) {
+		std::string message = "Failed open data file for write.";
+		throw Lamb::Error::Code<SelectScene>(message, ErrorPlace);
+	}
+
+	nlohmann::json root;
+
+	//json文字列からjsonのデータ構造に展開
+	ifs >> root;
+	//ファイルを閉じる
+	ifs.close();
+
+	//グループを検索
+	nlohmann::json::iterator itGroup = root.find(stageName);
+	//未登録チェック
+	assert(itGroup != root.end());
+
+	inGameDatas_[stageNumber].timeLimit = root[stageName]["最大時間"];
+	inGameDatas_[stageNumber].clearItemNum = root[stageName]["クリアに必要なアイテムの数"];
+
+
+//#ifdef _DEBUG
+//	std::string message = "File loading completed";
+//	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
+//
+//#endif // _DEBUG
+
+}
+
+void SelectScene::CalcUVPos(float InGameData, std::array<std::unique_ptr<Tex2DState>, 3>& uvPos)
+{
+	texUVPos_[0] = static_cast<int32_t>(InGameData) % 10;
+	texUVPos_[1] = static_cast<int32_t>(InGameData / 10.0f) % 10;
+	texUVPos_[2] = static_cast<int32_t>(InGameData / 100.0f) % 10;
+
+	uvPos[0]->uvTransform.translate.x = texUVPos_[2] * 0.1f;
+	uvPos[1]->uvTransform.translate.x = texUVPos_[1] * 0.1f;
+	uvPos[2]->uvTransform.translate.x = texUVPos_[0] * 0.1f;
+}
+
+
 

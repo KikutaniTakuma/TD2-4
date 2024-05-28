@@ -74,7 +74,7 @@ public:
 	/// <param name="size">直径</param>
 	/// <param name="velocity">瞬間加速</param>
 	/// <param name="gravity">定期加速</param>
-	GameObject *AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity, bool damage = true);
+	GameObject *AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity, bool hasDamage = true, uint32_t blockDamage = 0);
 
 	/// @brief ブロックが接地した時の処理
 	/// @param centerPos 中心座標

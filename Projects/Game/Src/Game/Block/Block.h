@@ -112,12 +112,8 @@ public:
 		}
 	}
 
-	void SetIsDestroy(bool val) { isDestroy_ = val; }
-	bool GetIsDestroy() const { return isDestroy_; }
-
 private:	// 物理的にゲーム内に影響をもたらすデータ。
 	// ブロックの状態
 	BlockType blockType_ = BlockType::kNone;
 	int32_t damage_ = 0;
-	bool isDestroy_ = false;
 };

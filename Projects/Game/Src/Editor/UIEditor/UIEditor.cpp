@@ -28,7 +28,7 @@ void UIEditor::Initialize(SceneManager* sceneManager){
 	sceneName_[BaseScene::ID::Result] = "Result";
 
 	newTex_ = std::make_unique<Tex2DState>();
-	newTex_->transform.translate = Vector2(0, 0);
+	newTex_->transform.translate = Vector3(0, 0, -0.8f);
 	newTex_->transform.translate.y *= -1;
 	newTex_->transform.translate += Vector2(-640, 360);
 	newTex_->transform.scale = { 64,64 };
@@ -83,6 +83,7 @@ void UIEditor::Update(const BaseScene::ID id){
 			continue;
 
 		for (size_t j = 0; j < texies_[i].size(); j++){
+			auto& tex = texies_[i][j];
 			if (texies_[i][j]->textureName == "backGround") {
 				Vector3& uvTranslate = texies_[i][j]->uvTransform.translate;
 
@@ -93,6 +94,33 @@ void UIEditor::Update(const BaseScene::ID id){
 				}
 				if (1.0f <= uvTranslate.y) {
 					uvTranslate.y -= 1.0f;
+				}
+			}
+
+			if (texies_[i][j]->textureName == "pot") {
+				if (isSelectFlug_){
+					tex->color = 0xffffff00;
+				}
+				else {
+					tex->color = 0xffffffff;
+				}
+			}
+
+			if (texies_[i][j]->textureName == "Timer\\timer") {
+				if (isSelectFlug_) {
+					tex->color = 0xffffff00;
+				}
+				else {
+					tex->color = 0xffffffff;
+				}
+			}
+
+			if (texies_[i][j]->textureName == "Timer\\timerNeedle") {
+				if (isSelectFlug_) {
+					tex->color = 0xffffff00;
+				}
+				else {
+					tex->color = 0xffffffff;
 				}
 			}
 
@@ -158,7 +186,7 @@ void UIEditor::Debug(const BaseScene::ID id){
 							size_t slashPos_ = i.string().find_last_of('/');
 							size_t lSlashPos_ = i.string().find_last_of('\\');
 							size_t dotPos_ = i.string().find_last_of('.');
-							if (lSlashPos_ > slashPos_) {
+							if (lSlashPos_ < slashPos_) {
 								if (lSlashPos_ != std::string::npos && dotPos_ != std::string::npos && dotPos_ > lSlashPos_) {
 									result = i.string().substr(lSlashPos_ + 1, dotPos_ - lSlashPos_ - 1);
 								}
@@ -301,8 +329,13 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 			}			
 		}
 		else {
-			tex->transform.scale = { 192.0f,64.0f };
-			tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
+			if (i == static_cast<size_t>(sceneNum)) {
+				tex->transform.scale = { 192.0f,64.0f };
+				tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
+			}
+			else {
+				tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
+			}
 		}
 
 		if (key->LongPush(DIK_SPACE) or 
@@ -321,7 +354,6 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 			tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerCarry.png");
 		}
 		else {
-			tex->transform.scale = { 64.0f,64.0f };
 			tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
 		}
 
@@ -362,7 +394,6 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 			tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerJump.png");
 		}
 		else {
-			tex->transform.scale = { 64.0f,64.0f };
 			tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
 		}
 
@@ -410,6 +441,10 @@ void UIEditor::BeginScaleMove(const float time){
 		easing_->Start(false, time, Easeing::InSine);
 		isScaleMoveReverse_ = false;
 	}
+}
+
+void UIEditor::SetSelectDraw(const bool flug){
+	isSelectFlug_ = flug;	
 }
 
 void UIEditor::SaveFile(const std::string& fileName){

@@ -85,6 +85,9 @@ int32_t PlayerComp::InflictDamage(int32_t damage, const Vector2 acceleration)
 		// 無敵時間を付与
 		invincibleTime_ = vMaxInvincibleTime_;
 		GameManager::GetInstance()->RemovePoint(vDamageDropCount_);
+
+		Audio* audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/damege.mp3");;
+		audio->Start(0.2f, false);
 	}
 	return static_cast<int32_t>(pHealthComp_->GetNowHealth());
 }
@@ -126,12 +129,12 @@ void PlayerComp::Input()
 	}
 
 	if (key->Pushed(DIK_X) or pad->Pushed(Gamepad::Button::Y) or pad->Pushed(Gamepad::Button::X)) {
+		const bool isDown = InputDown();
 		if (not pPicker_->IsPicking()) {
-			bool isDown = key->GetKey(DIK_S) or key->GetKey(DIK_DOWN) or pad->GetStick(Gamepad::Stick::LEFT_Y) < 0;
 			pPicker_->PickUp(isDown ? 0 : facing_);
 		}
 		else {
-			pPicker_->Drop(facing_);
+			pPicker_->Drop(isDown ? 0 : facing_);
 		}
 	}
 
@@ -158,4 +161,11 @@ void PlayerComp::Input()
 	pLocalRigidbody_->ApplyContinuousForce(velocity * -0.05f * kGrovity_.Length());
 
 
+}
+
+bool PlayerComp::InputDown() const
+{
+	Lamb::SafePtr key = Input::GetInstance()->GetKey();
+	Lamb::SafePtr pad = Input::GetInstance()->GetGamepad();
+	return  key->GetKey(DIK_S) or key->GetKey(DIK_DOWN) or pad->GetStick(Gamepad::Stick::LEFT_Y) < 0;
 }

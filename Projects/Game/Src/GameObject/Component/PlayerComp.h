@@ -47,6 +47,8 @@ public:
 
 	const float GetInvincibleTime() const { return invincibleTime_; }
 
+	bool InputDown() const;
+
 private:
 
 	float invincibleTime_ = 0.f;

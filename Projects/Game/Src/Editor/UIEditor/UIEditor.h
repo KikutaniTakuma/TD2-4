@@ -49,6 +49,8 @@ public:
 	//ポットのscale変更処理
 	void BeginScaleMove(const float time);
 
+	void SetSelectDraw(const bool flug);
+
 	/// <summary>
 	/// Imguiの情報
 	/// </summary>
@@ -127,6 +129,8 @@ private:
 	bool isScaleMoveReverse_ = false;
 
 	float time_ = 0;
+
+	bool isSelectFlug_ = false;
 
 	std::unique_ptr<Easeing> easing_;
 

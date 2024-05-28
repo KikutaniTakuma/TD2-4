@@ -65,7 +65,7 @@ void TitleScene::Draw(){
 
 #ifdef _DEBUG
 
-	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
+	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
 #endif // _DEBUG
 }
 
