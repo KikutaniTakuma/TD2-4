@@ -76,7 +76,7 @@ void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
 			// グローバル座標に変換
 			centerPos = ToGrobal(centerPos);
 
-			Mat4x4 affineMat = Mat4x4::MakeScalar(Vector3{ 1.f,32.f,1.f });
+			Mat4x4 affineMat = Mat4x4::MakeScalar(Vector3{ 1.f,static_cast<float>(BlockMap::kMapY + 1),1.f });
 			reinterpret_cast<Vector2 &>(affineMat.at(3)) = centerPos;	// x,y座標
 			affineMat.at(3).at(2) = -1.f;						// z座標
 
@@ -90,5 +90,5 @@ void GameEffectManager::Clear()
 {
 	blockBreakPos_ = {};
 	dwarfDeadPos_.clear();
-	
+
 }
