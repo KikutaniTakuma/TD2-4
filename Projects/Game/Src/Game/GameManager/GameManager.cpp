@@ -95,6 +95,8 @@ void GameManager::Init()
 
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
 	gameEffectManager_->Init();
+
+	fallBlockSpawnTimer_.Start(static_cast<float>(vFallBegin_));
 }
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
@@ -814,15 +816,48 @@ void GameManager::RandomFallBlockSpawn()
 {
 	if (not fallBlockSpawnTimer_.IsActive()) {
 		fallBlockSpawnTimer_.Start(vFallSpan_);
-		std::vector<uint8_t> vec;
-		vec.reserve(BlockMap::kMapX - gameEffectManager_->fallingBlock_.count());
-		for (uint8_t i = 0; i < BlockMap::kMapX; i++) {
-			if (not gameEffectManager_->fallingBlock_.test(i)) {
-				vec.push_back(i);
+		/*	std::vector<uint8_t> vec;
+			vec.reserve(BlockMap::kMapX - gameEffectManager_->fallingBlock_.count());
+			for (uint8_t i = 0; i < BlockMap::kMapX; i++) {
+				if (not gameEffectManager_->fallingBlock_.test(i)) {
+					vec.push_back(i);
+				}
+			}*/
+			// 高い場所をもとに割合を出す
+		std::vector<uint8_t> randVec;
+
+		std::array<int16_t, BlockMap::kMapX> mapHeight{};
+		int16_t heighest = -1;
+
+		for (int16_t yi = 0u; yi < BlockMap::kMapY; yi++) {
+			for (int16_t xi = 0u; xi < BlockMap::kMapX; xi++) {
+				Block::BlockType block = blockMap_->GetBlockType(POINTS{ xi,yi });
+				// ブロックが存在する場合
+				if (block != Block::BlockType::kNone) {
+					mapHeight[xi] = yi;
+					heighest = yi;
+				}
+
+			}
+			if (heighest != yi) {
+				break;
 			}
 		}
 
-		const int32_t spawnPos = vec[Lamb::Random(0, static_cast<int32_t>(vec.size() - 1))];
+		std::vector<uint8_t> targets{};
+		for (int32_t i = 0; i < mapHeight.size(); i++) {
+			// もし生成してるなら飛ばす
+			if (gameEffectManager_->fallingBlock_.test(i)) {
+				continue;
+			}
+			for (int32_t c = 0; c < (heighest - mapHeight[i]) * vFallPosCalc_ + 1; c++) {
+				targets.push_back(static_cast<uint8_t>(i));
+			}
+		}
+
+
+
+		const int32_t spawnPos = targets[Lamb::Random(0, static_cast<int32_t>(targets.size() - 1))];
 		const uint32_t blockType = std::clamp(Lamb::Random(1, *vBlockTypeCount_), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1);
 
 		gameEffectManager_->fallingBlock_.set(spawnPos);
