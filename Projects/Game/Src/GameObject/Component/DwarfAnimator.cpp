@@ -30,20 +30,22 @@ void DwarfAnimatorComp::Init()
 
 void DwarfAnimatorComp::Update()
 {
-	bool isDrakDwarf = pDwarfComp_->GetIsDarkDwarf();
-	pDwarfComp_->AttackTimer().IsFinish();
+	isDrakDwarf_ = pDwarfComp_->GetIsDarkDwarf();
 
-	if (isDrakDwarf) {
-		bool isAttack = pDwarfComp_->AttackTimer().IsFinish();
-		if (isAttack) {
+	if (isDrakDwarf_) {
+		if (isDrakDwarf_.OnEnter()) {
+			spriteAnimator_->Stop();
+		}
+		bool isAttack = 0.9f < pDwarfComp_->AttackTimer().GetProgress() and pDwarfComp_->AttackTimer().GetProgress() <= 1.0f;
+		if ((not spriteAnimator_->GetIsActive() and isAttack)/* or isDrakDwarf_.OnEnter()*/) {
 			pSpriteComp_->SetTexture(textureID_[2]);
 			spriteAnimator_->SetLoopAnimation(false);
 			spriteAnimator_->SetDuration(0.25f);
 			spriteAnimator_->Start();
 		}
-		else if (not spriteAnimator_->GetIsActive() or pSpriteComp_->textureID_ != textureID_[3]) {
+		else if (not spriteAnimator_->GetIsActive()) {
 			pSpriteComp_->SetTexture(textureID_[3]);
-			spriteAnimator_->SetLoopAnimation(true);
+			spriteAnimator_->SetLoopAnimation(false);
 			spriteAnimator_->SetDuration(0.35f);
 			spriteAnimator_->Start();
 		}

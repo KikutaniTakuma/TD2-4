@@ -29,4 +29,6 @@ private:
 	Lamb::SafePtr<Tex2DAniamtor> spriteAnimator_ = nullptr;
 
 	inline static std::array<uint32_t, 4> textureID_;
+
+	Lamb::Flg isDrakDwarf_;
 };
