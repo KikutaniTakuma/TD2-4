@@ -95,6 +95,8 @@ void GameManager::Init()
 
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
 	gameEffectManager_->Init();
+
+	fallBlockSpawnTimer_.Start(static_cast<float>(vFallBegin_));
 }
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
