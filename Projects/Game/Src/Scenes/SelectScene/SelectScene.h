@@ -60,6 +60,7 @@ private:
 
 	std::array<std::unique_ptr<Tex2DState>, 3> timerNumberTexture_;
 
+	
 private:
 	//ステージセレクト用の変数
 	int32_t selectNum_;

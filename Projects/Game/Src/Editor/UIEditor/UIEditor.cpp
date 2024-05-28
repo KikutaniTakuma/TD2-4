@@ -83,6 +83,7 @@ void UIEditor::Update(const BaseScene::ID id){
 			continue;
 
 		for (size_t j = 0; j < texies_[i].size(); j++){
+			auto& tex = texies_[i][j];
 			if (texies_[i][j]->textureName == "backGround") {
 				Vector3& uvTranslate = texies_[i][j]->uvTransform.translate;
 
@@ -93,6 +94,33 @@ void UIEditor::Update(const BaseScene::ID id){
 				}
 				if (1.0f <= uvTranslate.y) {
 					uvTranslate.y -= 1.0f;
+				}
+			}
+
+			if (texies_[i][j]->textureName == "pot") {
+				if (isSelectFlug_){
+					tex->color = 0xffffff00;
+				}
+				else {
+					tex->color = 0xffffffff;
+				}
+			}
+
+			if (texies_[i][j]->textureName == "Timer\\timer") {
+				if (isSelectFlug_) {
+					tex->color = 0xffffff00;
+				}
+				else {
+					tex->color = 0xffffffff;
+				}
+			}
+
+			if (texies_[i][j]->textureName == "Timer\\timerNeedle") {
+				if (isSelectFlug_) {
+					tex->color = 0xffffff00;
+				}
+				else {
+					tex->color = 0xffffffff;
 				}
 			}
 
@@ -413,6 +441,10 @@ void UIEditor::BeginScaleMove(const float time){
 		easing_->Start(false, time, Easeing::InSine);
 		isScaleMoveReverse_ = false;
 	}
+}
+
+void UIEditor::SetSelectDraw(const bool flug){
+	isSelectFlug_ = flug;	
 }
 
 void UIEditor::SaveFile(const std::string& fileName){

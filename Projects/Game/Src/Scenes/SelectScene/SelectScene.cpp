@@ -161,7 +161,13 @@ void SelectScene::Draw(){
 	}
 
 	for (size_t i = 0; i < 3; i++) {
-
+		if (ease_.GetIsActive()){
+			UIEditor::GetInstance()->SetSelectDraw(true);
+			return;
+		}
+		else {
+			UIEditor::GetInstance()->SetSelectDraw(false);
+		}
 		tex2D_->Draw(potNumberTexture_[i]->transform.matWorld_, potNumberTexture_[i]->uvTransform.matWorld_, currentCamera_->GetViewOthographics()
 			, potNumberTexture_[i]->textureID, potNumberTexture_[i]->color, BlendType::kNormal);
 
