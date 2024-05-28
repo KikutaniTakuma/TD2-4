@@ -5,7 +5,7 @@
 #include "Utils/Easeing/Easeing.h"
 #include <numbers>
 
-FlaskParticle::FlaskParticle():
+FlaskParticle::FlaskParticle() :
     emitter_(),
     freq_(0.1f, 0.2f),
     latesetFreq_(0.0f),
@@ -15,7 +15,9 @@ FlaskParticle::FlaskParticle():
     particles_(100),
     curentParticleIndex_(0u),
     isActive_(),
-    currentActiveParticleCount_(0u)
+    currentActiveParticleCount_(0u),
+    isLoop_(false),
+    color_(0xffffffff)
 {
     texture2D_ = DrawerManager::GetInstance()->GetTexture2D();
     textureID_ = DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png");
@@ -64,8 +66,12 @@ void FlaskParticle::Update() {
                 if (1.0f <= t) {
                     i->isActive = false;
                     currentActiveParticleCount_--;
-                    if (currentActiveParticleCount_ == 0.0f) {
+                    if (currentActiveParticleCount_ == 0) {
                         isActive_ = false;
+                        if (isLoop_) {
+                            isActive_ = true;
+                            Start();
+                        }
                     }
                 }
                 i->activeTime += deltatime;
@@ -85,8 +91,8 @@ void FlaskParticle::Draw(const Mat4x4& camera) {
                 Mat4x4::kIdentity,
                 camera,
                 textureID_,
-                0xffffffff,
-                BlendType::kNormal
+                color_,
+                BlendType::kUnenableDepthNormal
             );
         }
     }

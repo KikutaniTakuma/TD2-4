@@ -109,6 +109,14 @@ public:
 		return currentActiveParticleCount_;
 	}
 
+	void SetIsLoop(bool isLoop) {
+		isLoop_ = isLoop;
+	}
+
+	void SetColor(uint32_t color) {
+		color_ = color;
+	}
+
 private:
 	Vector3 GetRandomVector();
 
@@ -139,4 +147,8 @@ private:
 	uint32_t textureID_;
 
 	size_t currentActiveParticleCount_;
+
+	bool isLoop_;
+
+	uint32_t color_;
 };

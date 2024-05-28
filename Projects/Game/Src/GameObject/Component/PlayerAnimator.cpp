@@ -7,6 +7,7 @@ void PlayerAnimatorComp::StaticLoad()
 	textureManager->LoadTexture("./Resources/Player/witchShot.png");
 	textureManager->LoadTexture("./Resources/Player/witchWait.png");
 	textureManager->LoadTexture("./Resources/Player/witchWalk.png");
+	textureManager->LoadTexture("./Resources/Player/witchPickUp.png");
 }
 
 void PlayerAnimatorComp::Init()
@@ -49,35 +50,51 @@ void PlayerAnimatorComp::Init()
 
 void PlayerAnimatorComp::Update()
 {
-	if (not spriteAnimator_->GetIsActive()) {
+	/*if (not spriteAnimator_->GetIsActive()) {
 		spriteAnimator_->SetDuration(0.25f);
 		spriteAnimator_->SetLoopAnimation(true);
 		spriteAnimator_->SetAnimationNumber(4u);
 		spriteAnimator_->Start();
 		isAttackAnimation_ = false;
-	}
-
+	}*/
+	Lamb::SafePtr key = Input::GetInstance()->GetKey();
+	Lamb::SafePtr pad = Input::GetInstance()->GetGamepad();
 	bool isAttack = pPlayerComp_->GetIsAttack();
 	bool isHaveBlock = pPlayerPickerComp_->IsPicking();
+	bool isUnderHave = pPlayerPickerComp_->GetFacing() == 0 and isHaveBlock;
+	if (not isUnderHave and isUnderAnimation_) {
+		isUnderAnimation_ = false;
+	}
 
 	if (isAttack) {
 		spriteAnimator_->SetDuration(0.1f);
 		spriteAnimator_->SetLoopAnimation(false);
+		spriteAnimator_->SetAnimationNumber(3u);
 		spriteAnimator_->Start();
 		pSpriteComp_->SetTexture("./Resources/Player/witchShot.png");
 		isAttackAnimation_ = true;
 	}
-	else if(isHaveBlock) {
-		spriteAnimator_->SetDuration(0.2f);
-		spriteAnimator_->SetLoopAnimation(false);
-		if(3 < spriteAnimator_->GetCurrentAnimationNumber()){
-			spriteAnimator_->Stop();
-		}
-		if (not spriteAnimator_->GetIsActive()) {
+	else if (isHaveBlock and not spriteAnimator_->GetIsActive()) {
+		if(isUnderHave and not isUnderAnimation_){
+			isUnderAnimation_ = true;
+			spriteAnimator_->SetDuration(0.3f);
+			spriteAnimator_->SetLoopAnimation(false);
+			pSpriteComp_->SetTexture("./Resources/Player/witchPickUp.png");
+			spriteAnimator_->SetAnimationNumber(3u);
 			spriteAnimator_->Start();
 		}
-		pSpriteComp_->SetTexture("./Resources/Player/witchShot.png");
-		isAttackAnimation_ = true;
+		else {
+			spriteAnimator_->SetDuration(0.2f);
+			spriteAnimator_->SetLoopAnimation(false);
+			if (3 < spriteAnimator_->GetCurrentAnimationNumber()) {
+				spriteAnimator_->Stop();
+			}
+			if (not spriteAnimator_->GetIsActive()) {
+				spriteAnimator_->Start();
+			}
+			pSpriteComp_->SetTexture("./Resources/Player/witchShot.png");
+			isAttackAnimation_ = true;
+		}
 	}
 	else if (not isAttack and not isAttackAnimation_) {
 		if (pPlayerComp_->GetInputVec().x == 0.0f) {

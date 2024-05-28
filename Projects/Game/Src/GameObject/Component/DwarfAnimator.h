@@ -8,6 +8,8 @@
 #include "SpriteComp.h"			// 小人自体のスプライトのコンポーネント
 #include "SpriteAnimatorComp.h"	// スプライトに紐づいたアニメーションのコンポーネント
 
+#include "Game/FlaskParticle/FlaskParticle.h"
+
 class DwarfAnimatorComp : public IComponent
 {
 public:
@@ -19,6 +21,7 @@ public:
 	void Init() override;
 
 	void Update() override;
+	void Draw(const Camera& camera) const override;
 
 private:
 
@@ -31,4 +34,6 @@ private:
 	inline static std::array<uint32_t, 4> textureID_;
 
 	Lamb::Flg isDrakDwarf_;
+
+	std::unique_ptr<FlaskParticle> absorptionParticle_;
 };

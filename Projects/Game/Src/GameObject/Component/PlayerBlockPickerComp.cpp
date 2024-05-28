@@ -68,6 +68,8 @@ void PlayerBlockPickerComp::PickUp(int32_t facing)
 			dwarfList_ = GameManager::GetInstance()->PickUpObject(POINTS{ pos.x, static_cast<int16_t>(pos.y) });
 
 		}
+
+		facing_ = facing;
 	}
 }
 

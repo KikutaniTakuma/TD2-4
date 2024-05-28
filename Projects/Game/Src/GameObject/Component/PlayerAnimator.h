@@ -57,4 +57,8 @@ private:
 	Lamb::Flg isDamage_;
 
 	Lamb::Flg isShoting_;
+
+
+	Lamb::Flg isUnderAnimation_;
+	Lamb::Flg isUnderAnimationEnd_;
 };

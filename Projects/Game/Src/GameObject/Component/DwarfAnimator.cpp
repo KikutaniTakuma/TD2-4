@@ -8,7 +8,7 @@ void DwarfAnimatorComp::StaticLoad()
 	textureID_[1] = textureManager->LoadTexture("./Resources/Enemy/slimeWalk.png");
 	textureID_[2] = textureManager->LoadTexture("./Resources/Enemy/badSlimAttack.png");
 	textureID_[3] = textureManager->LoadTexture("./Resources/Enemy/badSlimeWait.png");
-
+	textureManager->LoadTexture("./Resources/Ball.png");
 }
 
 void DwarfAnimatorComp::Init()
@@ -26,6 +26,19 @@ void DwarfAnimatorComp::Init()
 	spriteAnimator_->Start();
 
 	pSpriteComp_->SetTexture(textureID_[1]);
+
+	absorptionParticle_ = std::make_unique<FlaskParticle>();
+	absorptionParticle_->Resize(100);
+	absorptionParticle_->SetDeathTime({0.5f, 1.0f});
+	absorptionParticle_->SetFreq({ 0.01f, 0.05f });
+	absorptionParticle_->SetEmitterPos(pDwarfComp_->transform_.translate);
+	absorptionParticle_->SetRadius({0.5f, 1.0f});
+	absorptionParticle_->SetRotate({ 0.0f, 6.28f });
+	absorptionParticle_->SetColor(0xef00005f);
+	absorptionParticle_->SetTextureID(DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png"));
+	absorptionParticle_->SetParticleSize(Vector3::kIdentity * 0.2f, Vector3::kIdentity * 0.2f);
+	absorptionParticle_->SetEndTranslate(pDwarfComp_->transform_.translate);
+	absorptionParticle_->SetIsLoop(true);
 }
 
 void DwarfAnimatorComp::Update()
@@ -42,6 +55,7 @@ void DwarfAnimatorComp::Update()
 			spriteAnimator_->SetLoopAnimation(false);
 			spriteAnimator_->SetDuration(0.25f);
 			spriteAnimator_->Start();
+			absorptionParticle_->Start();
 		}
 		else if (not spriteAnimator_->GetIsActive()) {
 			pSpriteComp_->SetTexture(textureID_[3]);
@@ -49,6 +63,13 @@ void DwarfAnimatorComp::Update()
 			spriteAnimator_->SetDuration(0.35f);
 			spriteAnimator_->Start();
 		}
+		if (0.99f < pDwarfComp_->AttackTimer().GetProgress()) {
+			absorptionParticle_->Stop();
+		}
+
+		absorptionParticle_->SetEmitterPos(pDwarfComp_->transform_.translate);
+		absorptionParticle_->SetEndTranslate(pDwarfComp_->transform_.translate);
+		absorptionParticle_->Update();
 	}
 	else {
 		bool isClimbing = pDwarfComp_->IsClimbing();
@@ -60,4 +81,10 @@ void DwarfAnimatorComp::Update()
 		pSpriteComp_->SetTexture(textureID_[textureIndex]);
 	}
 	spriteAnimator_->FlipHorizontal(pDwarfComp_->GetFacing() < 0);
+}
+
+void DwarfAnimatorComp::Draw(const Camera& camera) const {
+	if (isDrakDwarf_) {
+		absorptionParticle_->Draw(camera.GetViewOthographics());
+	}
 }

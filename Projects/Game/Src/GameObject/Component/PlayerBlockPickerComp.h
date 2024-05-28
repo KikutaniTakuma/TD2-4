@@ -21,6 +21,10 @@ public:
 
 	const Mat4x4 &GetBlockAffine() const { return affine_; }
 
+	int32_t GetFacing() const {
+		return facing_;
+	}
+
 private:
 
 	inline static Lamb::SafePtr<Texture2D> pTexture_ = nullptr;
@@ -33,5 +37,7 @@ private:
 	Lamb::SafePtr<BlockMap> pBlockMap_ = nullptr;
 
 	std::list<GameManager::DwarfPick> dwarfList_;
+
+	int32_t facing_;
 
 };
