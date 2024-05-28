@@ -69,7 +69,7 @@ void GameUIManager::Draw([[maybe_unused]] const Camera &camera) const
 			camera.GetViewOthographics(),
 			dangerTex_->textureID,
 			dangerTex_->color,
-			BlendType::kNormal
+			BlendType::kUnenableDepthNormal
 		);
 	}
 }

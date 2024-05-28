@@ -99,6 +99,10 @@ public:
 
 	void SetVerticalSize(float ySize);
 
+	uint32_t GetCurrentAnimationNumber() const {
+		return currentAnimationNumber_;
+	}
+
 private:
 	Vector3 startPos_;
 	Vector3 currentPos_;
