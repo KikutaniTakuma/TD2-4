@@ -95,6 +95,8 @@ void GameManager::Init()
 
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
 	gameEffectManager_->Init();
+
+	fallBlockSpawnTimer_.Start(static_cast<float>(vFallBegin_));
 }
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
@@ -205,7 +207,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		if (fallComp->IsLanding()) {
 			Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
 			audio->Start(0.2f, false);
-			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType());
+			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType(), fallComp->blockDamage_);
 			fallingBlock->SetActive(false);
 			if (fallComp->hasDamage_) {
 				gameEffectManager_->fallingBlock_.set(static_cast<uint32_t>(blockBody->localPos_.x), false);
@@ -504,7 +506,7 @@ GameObject *GameManager::AddEnemyBullet(Vector2 centerPos, Vector2 velocity)
 	return enemyBulletList_.back().get();
 }
 
-GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity, bool damage)
+GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity, bool hasDamage, uint32_t blockDamage)
 {
 	std::unique_ptr<GameObject> addBlock = std::make_unique<GameObject>();
 
@@ -521,7 +523,9 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 	fallingComp->blockType_ = blockType;
 	fallingComp->velocity_ = velocity;
 	fallingComp->gravity_ = gravity;
-	fallingComp->hasDamage_ = damage;
+	fallingComp->hasDamage_ = hasDamage;
+
+	fallingComp->blockDamage_ = blockDamage;
 
 	addBlock->GetComponent<LocalRigidbody>();
 
@@ -814,15 +818,48 @@ void GameManager::RandomFallBlockSpawn()
 {
 	if (not fallBlockSpawnTimer_.IsActive()) {
 		fallBlockSpawnTimer_.Start(vFallSpan_);
-		std::vector<uint8_t> vec;
-		vec.reserve(BlockMap::kMapX - gameEffectManager_->fallingBlock_.count());
-		for (uint8_t i = 0; i < BlockMap::kMapX; i++) {
-			if (not gameEffectManager_->fallingBlock_.test(i)) {
-				vec.push_back(i);
+		/*	std::vector<uint8_t> vec;
+			vec.reserve(BlockMap::kMapX - gameEffectManager_->fallingBlock_.count());
+			for (uint8_t i = 0; i < BlockMap::kMapX; i++) {
+				if (not gameEffectManager_->fallingBlock_.test(i)) {
+					vec.push_back(i);
+				}
+			}*/
+			// 高い場所をもとに割合を出す
+		std::vector<uint8_t> randVec;
+
+		std::array<int16_t, BlockMap::kMapX> mapHeight{};
+		int16_t heighest = -1;
+
+		for (int16_t yi = 0u; yi < BlockMap::kMapY; yi++) {
+			for (int16_t xi = 0u; xi < BlockMap::kMapX; xi++) {
+				Block::BlockType block = blockMap_->GetBlockType(POINTS{ xi,yi });
+				// ブロックが存在する場合
+				if (block != Block::BlockType::kNone) {
+					mapHeight[xi] = yi;
+					heighest = yi;
+				}
+
+			}
+			if (heighest != yi) {
+				break;
 			}
 		}
 
-		const int32_t spawnPos = vec[Lamb::Random(0, static_cast<int32_t>(vec.size() - 1))];
+		std::vector<uint8_t> targets{};
+		for (int32_t i = 0; i < mapHeight.size(); i++) {
+			// もし生成してるなら飛ばす
+			if (gameEffectManager_->fallingBlock_.test(i)) {
+				continue;
+			}
+			for (int32_t c = 0; c < (heighest - mapHeight[i]) * vFallPosCalc_ + 1; c++) {
+				targets.push_back(static_cast<uint8_t>(i));
+			}
+		}
+
+
+
+		const int32_t spawnPos = targets[Lamb::Random(0, static_cast<int32_t>(targets.size() - 1))];
 		const uint32_t blockType = std::clamp(Lamb::Random(1, *vBlockTypeCount_), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1);
 
 		gameEffectManager_->fallingBlock_.set(spawnPos);
@@ -1094,7 +1131,7 @@ void GameManager::BlockMapDropDown()
 			}
 			// そこにブロックがあり、接地していない場合は虚空にして落下させる
 			else if (isFloatBlock[index]) {
-				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -5, Vector2::kZero, false);
+				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -5, Vector2::kZero, false, block.GetDamage());
 				block.SetBlockType(Block::BlockType::kNone);
 				blockMap_->GetBlockStatusMap()->at(static_cast<int32_t>(localPos.y)).at(static_cast<int32_t>(localPos.x)).reset();
 			}
@@ -1187,28 +1224,28 @@ void GameManager::PlayerMoveSafeArea()
 				if (BlockMap::IsOutSide(intPos + POINTS{ static_cast<int16_t>(-xi), 0 })) {
 					left = false;
 				}
-				else {
-					for (int16_t yi = 0; yi < BlockMap::kMapY - intPos.y; yi++) {
-						const POINTS targetPos = intPos + POINTS{ static_cast<int16_t>(-xi), yi };
-						if (blockMap_->GetBlockType(targetPos) == Block::BlockType::kNone) {
-							player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x),static_cast<float>(targetPos.y) };
-							return;
-						}
-					}
-				}
+
 			}
 			if (right) {
 				if (BlockMap::IsOutSide(intPos + POINTS{ xi, 0 })) {
 					right = false;
 				}
-				else {
-					for (int16_t yi = 0; yi < BlockMap::kMapY - intPos.y; yi++) {
-						const POINTS targetPos = intPos + POINTS{ xi, yi };
-						if (blockMap_->GetBlockType(targetPos) == Block::BlockType::kNone) {
-							player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x),static_cast<float>(targetPos.y) };
-							return;
-						}
-					}
+
+			}
+			for (int16_t yi = 0; yi < BlockMap::kMapY - intPos.y; yi++) {
+				const POINTS offsetX = { xi, 0 };
+				const POINTS targetPos = intPos + POINTS{ 0, yi };
+
+				const bool leftVoid = left && blockMap_->GetBlockType(targetPos - offsetX) == Block::BlockType::kNone;
+				const bool rightVoid = right && blockMap_->GetBlockType(targetPos + offsetX) == Block::BlockType::kNone;
+
+				if (leftVoid) {
+					player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x - xi),static_cast<float>(targetPos.y) };
+					return;
+				}
+				if (rightVoid) {
+					player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x + xi),static_cast<float>(targetPos.y) };
+					return;
 				}
 			}
 		}

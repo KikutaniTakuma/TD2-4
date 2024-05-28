@@ -45,6 +45,8 @@ public:
 
 	Block blockType_ = Block::BlockType::kRed;
 
+	uint32_t blockDamage_ = 0;
+
 public:
 
 	float stopTimer_ = vFallBlockStop_;

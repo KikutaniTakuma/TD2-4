@@ -35,7 +35,7 @@ void PlayerAnimatorComp::Init()
 	smokeParticle_ = std::make_unique<Particle>();
 	smokeParticle_->LoadSettingDirectory("Smoke");
 
-	damageParticleRed_ = std::make_unique<Particle>();
+	/*damageParticleRed_ = std::make_unique<Particle>();
 	damageParticleRed_->LoadSettingDirectory("Player-Damaged-Red");
 	damageParticlePurple_ = std::make_unique<Particle>();
 	damageParticlePurple_->LoadSettingDirectory("Player-Damaged-Purple");
@@ -44,7 +44,7 @@ void PlayerAnimatorComp::Init()
 	damageParticleBlue_ = std::make_unique<Particle>();
 	damageParticleBlue_->LoadSettingDirectory("Player-Damaged-Blue");
 	damageParticleGreen_ = std::make_unique<Particle>();
-	damageParticleGreen_->LoadSettingDirectory("Player-Damaged-Green");
+	damageParticleGreen_->LoadSettingDirectory("Player-Damaged-Green");*/
 }
 
 void PlayerAnimatorComp::Update()
@@ -58,11 +58,24 @@ void PlayerAnimatorComp::Update()
 	}
 
 	bool isAttack = pPlayerComp_->GetIsAttack();
+	bool isHaveBlock = pPlayerPickerComp_->IsPicking();
 
 	if (isAttack) {
 		spriteAnimator_->SetDuration(0.1f);
 		spriteAnimator_->SetLoopAnimation(false);
 		spriteAnimator_->Start();
+		pSpriteComp_->SetTexture("./Resources/Player/witchShot.png");
+		isAttackAnimation_ = true;
+	}
+	else if(isHaveBlock) {
+		spriteAnimator_->SetDuration(0.2f);
+		spriteAnimator_->SetLoopAnimation(false);
+		if(3 < spriteAnimator_->GetCurrentAnimationNumber()){
+			spriteAnimator_->Stop();
+		}
+		if (not spriteAnimator_->GetIsActive()) {
+			spriteAnimator_->Start();
+		}
 		pSpriteComp_->SetTexture("./Resources/Player/witchShot.png");
 		isAttackAnimation_ = true;
 	}
@@ -114,7 +127,7 @@ void PlayerAnimatorComp::Update()
 	}
 
 	isDamage_ = pPlayerComp_->GetIsDamage();
-	if (isDamage_.OnEnter()) {
+	/*if (isDamage_.OnEnter()) {
 		damageParticleRed_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
 		damageParticleRed_->SetParticleScale(0.5f);
 		damageParticlePurple_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
@@ -139,7 +152,7 @@ void PlayerAnimatorComp::Update()
 	damageParticlePurple_->Update();
 	damageParticleYellow_->Update();
 	damageParticleBlue_->Update();
-	damageParticleGreen_->Update();
+	damageParticleGreen_->Update();*/
 
 
 	smokeParticle_->Update();
@@ -159,7 +172,7 @@ void PlayerAnimatorComp::Update()
 void PlayerAnimatorComp::Draw(const Camera &camera) const {
 	// 描画順を変えるコスト考えて無理矢理変えた
 	pSpriteComp_->Draw(camera);
-	damageParticleRed_->Draw(
+	/*damageParticleRed_->Draw(
 		camera.rotate,
 		camera.GetViewOthographics(),
 		BlendType::kUnenableDepthNormal
@@ -183,7 +196,7 @@ void PlayerAnimatorComp::Draw(const Camera &camera) const {
 		camera.rotate,
 		camera.GetViewOthographics(),
 		BlendType::kUnenableDepthNormal
-	);
+	);*/
 
 
 

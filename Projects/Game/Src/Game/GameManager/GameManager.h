@@ -74,7 +74,7 @@ public:
 	/// <param name="size">直径</param>
 	/// <param name="velocity">瞬間加速</param>
 	/// <param name="gravity">定期加速</param>
-	GameObject *AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity, bool damage = true);
+	GameObject *AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity, bool hasDamage = true, uint32_t blockDamage = 0);
 
 	/// @brief ブロックが接地した時の処理
 	/// @param centerPos 中心座標
@@ -113,6 +113,7 @@ public:
 
 	SoLib::VItem<"破壊時の停止時間", float> vBreakStopTime_{ 0.5f };
 
+	SoLib::VItem<"開始してからブロックが沸くまでの時間", float> vFallBegin_{ 2.5f };
 	SoLib::VItem<"落下するまでの間隔(sec)", float> vFallSpan_{ 2.5f };
 	SoLib::VItem<"敵の沸く間隔(sec)", float> vSpawnSpan_{ 2.5f };
 
@@ -121,12 +122,13 @@ public:
 
 	SoLib::VItem<"ブロックの種類", int32_t> vBlockTypeCount_{ 4 };
 	SoLib::VItem<"生成するブロックの高さ", int32_t> vStartBlockHeight_{ 3 };
+	static inline SoLib::VItem<"落下するブロックの発生係数", int32_t> vFallPosCalc_{ 2 };
 
 	static inline SoLib::VItem<"出てくるアイテムの間隔", float> vItemSpawnSpan_{ 0.25f };
 
 	/// @brief 調整項目
-	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_ };
-	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_ };
+	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallBegin_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_ };
+	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_, &GameManager::vFallPosCalc_ };
 
 	inline static constexpr SoLib::VItemList vItemStatus_ = { &vItemSpawnSpan_ };
 

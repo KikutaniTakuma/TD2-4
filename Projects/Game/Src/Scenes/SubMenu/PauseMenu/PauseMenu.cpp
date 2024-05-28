@@ -127,7 +127,7 @@ void PauseMenu::Update() {
 	Lamb::SafePtr gamepad = Input::GetInstance()->GetGamepad();
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 	float stick = gamepad->GetStick(Gamepad::Stick::LEFT_X);
-	if (isStick_ and stick != 0.0f) {
+	if (stick == 0.0f) {
 		isStick_ = false;
 	}
 
@@ -135,10 +135,11 @@ void PauseMenu::Update() {
 		isActive_ = false;
 		modoruSE_->Start(0.2f, false);
 	}
-	if ((stick != 0.0f and not isStick_) or gamepad->GetButton(Gamepad::Button::RIGHT) or key->Pushed(DIK_RIGHT) or key->Pushed(DIK_D)
-		or gamepad->GetButton(Gamepad::Button::LEFT) or key->Pushed(DIK_LEFT) or key->Pushed(DIK_A)) {
+	if ((stick != 0.0f and not isStick_) or gamepad->Pushed(Gamepad::Button::RIGHT) or key->Pushed(DIK_RIGHT) or key->Pushed(DIK_D)
+		or gamepad->Pushed(Gamepad::Button::LEFT) or key->Pushed(DIK_LEFT) or key->Pushed(DIK_A)) {
 		isRetryChoice_ = !isRetryChoice_;
 		selectSE_->Start(0.1f, false);
+		isStick_ = true;
 	}
 	if (gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE)) {
 		choiceSE_->Start(0.2f, false);

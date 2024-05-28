@@ -81,7 +81,7 @@ public:
 		}
 	};
 
-	inline static constexpr int32_t kMapX = 15u, kMapY = 10u;
+	inline static constexpr int32_t kMapX = 15u, kMapY = 9u;
 
 	// マップの配列 [y][x]
 	template <SoLib::IsRealType T>
@@ -119,7 +119,7 @@ public:
 	/// @param centerPos 中心座標
 	/// @param size 直径
 	/// @param boxType ブロックのタイプ
-	void SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType);
+	void SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType, uint32_t damage = 0);
 
 	const Block::BlockType GetBlockType(const Vector2 localPos) const;
 	const Block::BlockType GetBlockType(const POINTS localPos) const;
