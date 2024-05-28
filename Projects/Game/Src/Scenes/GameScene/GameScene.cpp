@@ -86,7 +86,8 @@ void GameScene::Initialize() {
 	TextureInitialize();
 
 	gameBGM_ = audioManager_->Load("./Resources/Sounds/BGM/game.mp3");
-
+	audioManager_->Load("./Resources/Sounds/SE/damege.mp3");
+	audioManager_->Load("./Resources/Sounds/SE/noSpace.mp3");
 
 	gameBGM_->Start(0.1f, true);
 
