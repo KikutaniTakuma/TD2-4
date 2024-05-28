@@ -13,6 +13,7 @@ void GameEffectManager::Init()
 
 		i->LoadSettingDirectory("Block-Break");
 	}
+	AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockBreak.mp3");
 
 	pSpriteDrawer = DrawerManager::GetInstance()->GetTexture2D();
 
