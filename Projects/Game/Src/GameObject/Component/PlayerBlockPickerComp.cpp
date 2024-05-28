@@ -35,7 +35,7 @@ void PlayerBlockPickerComp::Draw([[maybe_unused]] const Camera &camera) const
 {
 	// もしブロックを持っていたら
 	if (pickingBlock_) {
-		pTexture_->Draw(affine_, Block::kUvMatrix_[0], camera.GetViewOthographics(), pickingBlock_.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
+		pTexture_->Draw(affine_, pickingBlock_.GetDamageUv(), camera.GetViewOthographics(), pickingBlock_.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 
 	}
 	for (const auto &dwarf : dwarfList_) {
@@ -52,16 +52,18 @@ void PlayerBlockPickerComp::PickUp(int32_t facing)
 			targetPos = pLocalBodyComp_->localPos_ + Vector2::kIdentity * 0.5f - Vector2::kYIdentity;
 		}
 
-		auto block = pBlockMap_->GetBlockType(targetPos);
-		POINTS pos = { .x = static_cast<int16_t>(targetPos.x), .y = static_cast<int16_t>(targetPos.y) };
+		const POINTS pos = { .x = static_cast<int16_t>(targetPos.x), .y = static_cast<int16_t>(targetPos.y) };
+		auto &block = pBlockMap_->GetBlockMap()->at(pos.y).at(pos.x);
 
-		if (block != Block::BlockType::kNone) {
+		if (block) {
+
+
+			pickingBlock_ = block;
 
 			pBlockMap_->BreakBlock(pos);
 
 			dwarfList_ = GameManager::GetInstance()->PickUpObject(POINTS{ pos.x, static_cast<int16_t>(pos.y + 1) });
 
-			pickingBlock_ = block;
 
 		}
 		else {
