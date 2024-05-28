@@ -86,7 +86,7 @@ private:
 
 private:
 
-	SoLib::Time::DeltaTimer timer_;
+	SoLib::Time::DeltaTimer timer_ = { *vBulletFireSpan_ , true };
 
 	int32_t facing_ = 1;
 
