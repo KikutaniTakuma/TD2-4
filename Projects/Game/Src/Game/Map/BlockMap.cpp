@@ -51,7 +51,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 
 				const auto &block = (*blockMap_)[yi][xi];
 				if (hitMap_[yi][xi]) {
-					pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), whiteTex, 0xFFFFFFFF, BlendType::kNone);
+					pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, 0xFFFFFFFF, BlendType::kNone);
 
 				}
 				else {
