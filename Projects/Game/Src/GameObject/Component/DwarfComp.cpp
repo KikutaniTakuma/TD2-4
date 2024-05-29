@@ -151,24 +151,24 @@ void DwarfComp::ChangeMovementTarget()
 
 void DwarfComp::FireBullet()
 {
-
 	timer_.Update(GetDeltaTime());
+	Lamb::SafePtr player = GameManager::GetInstance()->GetPlayer();
+	if (player) {
+
+		Lamb::SafePtr plBody = player->GetComponent<LocalBodyComp>();
+		facing_ = static_cast<int32_t>(SoLib::Math::Sign(plBody->localPos_.x - pLocalBodyComp_->localPos_.x));
+	}
 	if (not timer_.IsActive()) {
-		Lamb::SafePtr player = GameManager::GetInstance()->GetPlayer();
-		if (player) {
-			Lamb::SafePtr plBody = player->GetComponent<LocalBodyComp>();
 
-			facing_ = static_cast<int32_t>(SoLib::Math::Sign(plBody->localPos_.x - pLocalBodyComp_->localPos_.x));
 
-			timer_.Start(vBulletFireSpan_);
+		timer_.Start(vBulletFireSpan_);
 
-			Lamb::SafePtr pGManager = GameManager::GetInstance();
+		Lamb::SafePtr pGManager = GameManager::GetInstance();
 
-			if (facing_) {
-				const Vector2 facingVec = Vector2::kXIdentity * static_cast<float>(facing_);
+		if (facing_) {
+			const Vector2 facingVec = Vector2::kXIdentity * static_cast<float>(facing_);
 
-				pGManager->AddEnemyBullet(pLocalBodyComp_->localPos_ + facingVec, Vector2::kXIdentity * (facing_ * vBulletSpeed_));
-			}
+			pGManager->AddEnemyBullet(pLocalBodyComp_->localPos_ + facingVec, Vector2::kXIdentity * (facing_ * vBulletSpeed_));
 		}
 	}
 }
