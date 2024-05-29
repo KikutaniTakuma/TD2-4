@@ -37,8 +37,8 @@ public:
 		return isItemReduction_;
 	}
 
-	const float GetReductionGaugePos()const {
-		return reductionGaugePos_;
+	Vector3 GetReductionGaugePos()const {
+		return moveGaugeRightState_->transform.translate;
 	}
 
 private:
@@ -72,6 +72,8 @@ private:
 	const Vector2 kGaugeCenterPosX_ = { 320.0f,-38.0f };
 	float gaugePosCenterLength_ = 358.0f;
 	const float kGaugeScale_ = 624.0f;
+
+	const float kGaugeYPos = 315.0f;
 
 
 
