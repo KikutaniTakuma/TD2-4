@@ -831,7 +831,7 @@ void GameManager::RandomFallBlockSpawn()
 		std::vector<uint8_t> randVec;
 
 		std::array<int16_t, BlockMap::kMapX> mapHeight{};
-		int16_t heighest = 0;
+		int16_t heighest = -1;
 
 		for (int16_t yi = 0u; yi < BlockMap::kMapY; yi++) {
 			for (int16_t xi = 0u; xi < BlockMap::kMapX; xi++) {
@@ -854,7 +854,7 @@ void GameManager::RandomFallBlockSpawn()
 			if (gameEffectManager_->fallingBlock_.test(i)) {
 				continue;
 			}
-			for (int32_t c = 0; c < (heighest - mapHeight[i]) * vFallPosCalc_ + 1; c++) {
+			for (int32_t c = 0; c < (heighest == -1 ? 1 : (heighest - mapHeight[i]) * vFallPosCalc_ + 1); c++) {
 				targets.push_back(static_cast<uint8_t>(i));
 			}
 		}
