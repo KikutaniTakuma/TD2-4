@@ -187,6 +187,11 @@ private:
 
 private:
 
+	uint32_t pointTex_;
+	SoLib::Time::DeltaTimer bonusPointDrawTimer_;
+
+	Transform bonusTexTransform_;
+
 	uint32_t itemSpawnCount_;
 
 	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> itemTypeCount_;
