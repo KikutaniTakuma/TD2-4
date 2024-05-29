@@ -110,7 +110,7 @@ bool DwarfComp::FallDown()
 
 			for (const Vector2 pos : blocks) {
 				//Vector2 targetPos;
-				if (std::abs(downSide.x - pos.x) <= 1 and std::abs(downSide.y - pos.y) <= 1) {
+				if (std::abs(downSide.x - pos.x) <= 0.5f and std::abs(downSide.y - pos.y) <= 1) {
 					pLocalBodyComp_->localPos_.y = pos.y + 1;
 					return false;
 				}

@@ -37,6 +37,10 @@ public:
 		return isItemReduction_;
 	}
 
+	const float GetReductionGaugePos()const {
+		return reductionGaugePos_;
+	}
+
 private:
 	/// <summary>
 	/// 入手したアイテムに応じてテクスチャをいじる
@@ -50,8 +54,14 @@ private:
 	float gaugePosLength_ = 659.0f;
 
 	//現在のアイテムの個数
-	int32_t beforeItemNum;
-	int32_t afterItemNum;
+	int32_t beforeItemNum_;
+	int32_t afterItemNum_;
+
+	float beforeGaugeCenterRight_;
+	float afterGaugeCenterRight_;
+
+	float reductionGaugePos_;
+
 	//アイテムが減少したときtrue
 	Lamb::Flg isItemReduction_ = false;
 
@@ -63,6 +73,8 @@ private:
 	float gaugePosCenterLength_ = 358.0f;
 	const float kGaugeScale_ = 624.0f;
 
+
+
 	float num_ = 0.0f;
 	//外側の縁
 	std::unique_ptr<Tex2DState> gaugeState_;
@@ -71,8 +83,10 @@ private:
 
 	//内側の緑色のやつ
 	std::unique_ptr<Tex2DState> moveGaugeRightState_;
-
+	//真ん中のやつ
 	std::unique_ptr<Tex2DState> moveGaugeCenterState_;
+	
+	std::unique_ptr<Texture2D> moveGaugeReduction_;
 
 };
 
