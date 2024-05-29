@@ -3,6 +3,8 @@
 #include <Game/Timer/Timer.h>
 #include"Game/ItemGauge/ItemGauge.h"
 #include "Utils/Easeing/Easeing.h"
+#include <memory>
+#include "Drawers/Particle/Particle.h"
 
 class GameManager;
 
@@ -27,6 +29,7 @@ private:
 
 	GameManager *pGameManager_;
 
+
 	// 今は30秒
 	float dangerTime_;
 	
@@ -37,4 +40,10 @@ private:
 
 	Texture2D* tex2D_;
 	std::unique_ptr<Tex2DState> dangerTex_;
+
+	std::unique_ptr<Particle> damageParticleRed_;
+	std::unique_ptr<Particle> damageParticlePurple_;
+	std::unique_ptr<Particle> damageParticleYellow_;
+	std::unique_ptr<Particle> damageParticleBlue_;
+	std::unique_ptr<Particle> damageParticleGreen_;
 };

@@ -8,26 +8,26 @@ void ItemGauge::Initialize(){
 	gaugeState_ = std::make_unique<Tex2DState>();
 	gaugeState_->color = 0xffffffff;
 	gaugeState_->transform.scale = { 780.0f,72.0f };
-	gaugeState_->transform.translate = { -135.0f, 315.0f };
+	gaugeState_->transform.translate = { -135.0f, kGaugeYPos };
 	gaugeState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeFrame.png");
 
 	moveGaugeLeftState_ = std::make_unique<Tex2DState>();
 	moveGaugeLeftState_->color = 0x5ea632ff;
 	moveGaugeLeftState_->transform.scale = { 36.0f,48.0f };
-	moveGaugeLeftState_->transform.translate = { -430.0f, 315.0f };
+	moveGaugeLeftState_->transform.translate = { -430.0f, kGaugeYPos };
 	moveGaugeLeftState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeSideWhite.png");
 
 	moveGaugeRightState_ = std::make_unique<Tex2DState>();
 	moveGaugeRightState_->color = 0x5ea632ff;
 	moveGaugeRightState_->transform.scale = { 36.0f,48.0f };
-	moveGaugeRightState_->transform.translate = { 200.0f, 315.0f };
+	moveGaugeRightState_->transform.translate = { 200.0f, kGaugeYPos };
 	moveGaugeRightState_->uvTransform.scale = { -1.0f,1.0f };
 	moveGaugeRightState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeSideWhite.png");
 
 	moveGaugeCenterState_ = std::make_unique<Tex2DState>();
 	moveGaugeCenterState_->color = 0x5ea632ff;
 	moveGaugeCenterState_->transform.scale = { 0.0f,72.0f };
-	moveGaugeCenterState_->transform.translate = { 0.0f, 315.0f };
+	moveGaugeCenterState_->transform.translate = { 0.0f, kGaugeYPos };
 	moveGaugeCenterState_->textureID = TextureManager::GetInstance()->GetWhiteTex();
 
 	moveGaugeReduction_ = std::make_unique<Tex2DState>();

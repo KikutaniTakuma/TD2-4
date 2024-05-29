@@ -28,6 +28,17 @@ void GameUIManager::Init(GameManager *pGameManager)
 	dangerTime_ = 30.0f;
 
 	dangerColorEase_ = std::make_unique<Easeing>();
+
+	damageParticleRed_ = std::make_unique<Particle>();
+	damageParticleRed_->LoadSettingDirectory("Player-Damaged-Red");
+	damageParticlePurple_ = std::make_unique<Particle>();
+	damageParticlePurple_->LoadSettingDirectory("Player-Damaged-Purple");
+	damageParticleYellow_ = std::make_unique<Particle>();
+	damageParticleYellow_->LoadSettingDirectory("Player-Damaged-Yellow");
+	damageParticleBlue_ = std::make_unique<Particle>();
+	damageParticleBlue_->LoadSettingDirectory("Player-Damaged-Blue");
+	damageParticleGreen_ = std::make_unique<Particle>();
+	damageParticleGreen_->LoadSettingDirectory("Player-Damaged-Green");
 }
 
 void GameUIManager::Update([[maybe_unused]] const float deltaTime)
@@ -35,6 +46,27 @@ void GameUIManager::Update([[maybe_unused]] const float deltaTime)
 	gameTimerRender_->Update(deltaTime);
 	itemGauge_->Update(pGameManager_->GetItemCount(), pGameManager_->GetClearItemCount());
 	itemGauge_->Debug();
+
+#ifdef _DEBUG
+		ImGui::Begin("gaugePosX");
+		ImGui::Text("%f", itemGauge_->GetReductionGaugePos().x);
+		ImGui::End();
+#endif // _DEBUG
+	if (itemGauge_->GetItemReduction().OnEnter()) {
+		Vector3 pos = itemGauge_->GetReductionGaugePos();
+		pos += Vector3::kZIdentity * -50.0f;
+		damageParticleRed_->ParticleStart(pos, Vector2::kIdentity);
+		damageParticlePurple_->ParticleStart(pos, Vector2::kIdentity);
+		damageParticleYellow_->ParticleStart(pos, Vector2::kIdentity);
+		damageParticleBlue_->ParticleStart(pos, Vector2::kIdentity);
+		damageParticleGreen_->ParticleStart(pos, Vector2::kIdentity);
+	}
+
+	damageParticleRed_->Update();
+	damageParticlePurple_->Update();
+	damageParticleYellow_->Update();
+	damageParticleBlue_->Update();
+	damageParticleGreen_->Update();
 
 	float currentTime = pGameManager_->GetGameTimer()->GetDeltaTimer().GetNowFlame();
 	float goalTime = pGameManager_->GetGameTimer()->GetDeltaTimer().GetGoalFlame();
@@ -72,4 +104,30 @@ void GameUIManager::Draw([[maybe_unused]] const Camera &camera) const
 			BlendType::kUnenableDepthNormal
 		);
 	}
+
+	damageParticleRed_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
+	);
+	damageParticlePurple_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
+	);
+	damageParticleYellow_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
+	);
+	damageParticleBlue_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
+	);
+	damageParticleGreen_->Draw(
+		camera.rotate,
+		camera.GetViewOthographics(),
+		BlendType::kUnenableDepthNormal
+	);
 }

@@ -94,6 +94,13 @@ public:
 
 	using BlockBitMap = std::array<std::bitset<kMapX>, kMapY>;
 
+	static inline std::array<uint32_t, 4u> kBreakColor_{
+		0x5555FFFF,
+		0x33FF33FF,
+		0xAAAA33FF,
+		0xFF3333FF,
+	};
+
 public:
 	BlockMap() = default;
 	~BlockMap() = default;
