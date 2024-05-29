@@ -61,6 +61,11 @@ private:
 
 
 private:
+
+	void CalcUVPos(const float InGameData, std::array<std::unique_ptr<Tex2DState>, 3>& uvPos);
+
+private:
+
 	//class Water *water_ = nullptr;
 
 	
@@ -94,11 +99,6 @@ private:
 
 	Audio* gameBGM_ = nullptr;
 
-	//一の位
-	std::unique_ptr<Tex2DState> dwarfNumTex_;
-	//十の位
-	std::unique_ptr<Tex2DState> dwarfTenNumTex_;
-
 	static const uint32_t kCloudNum_ = 8;
 
 	//雲
@@ -114,6 +114,36 @@ private:
 
 	std::unique_ptr<Tex2DState> backGround_;
 
+	//目的表示のフレーム
+	std::unique_ptr<Tex2DState> objectiveFrame_;
+	//目的表示の背景の暗いやつ
+	std::unique_ptr<Tex2DState> objectiveBackGround_;
+
+	//演出が終わったかどうか
+	Lamb::Flg isEndObjective_ = false;
+
+	bool isFirstLoadFlag_ = true;
+
+	/*時計とかのための*/
+	//必要な情報を描画するためのテクスチャ
+	std::array<std::unique_ptr<Tex2DState>, 3> potNumberTexture_;
+	//0から1の位、10の位、100の位
+	std::array<int32_t, 3> texUVPos_;
+
+	std::array<std::unique_ptr<Tex2DState>, 3> timerNumberTexture_;
+
+	//時計本体
+	std::unique_ptr<Tex2DState> timerState_;
+	//時計の針
+	std::unique_ptr<Tex2DState> clockHandsState_;
+	//釜
+	std::unique_ptr<Tex2DState> potState_;
+	//クリア必要個数
+	Vector3 potNumberPos_;
+	//制限時間
+	Vector3 clockNumberPos_;
+
+	float numberDistance_;
 
 	std::unique_ptr<SubMenu> pause_;
 };

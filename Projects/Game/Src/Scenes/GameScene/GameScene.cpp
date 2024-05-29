@@ -47,6 +47,57 @@ void GameScene::TextureInitialize() {
 	backGround_->color = 0xffffffff;
 	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/cutBackGround.png");
 
+	objectiveBackGround_ = std::make_unique<Tex2DState>();
+	objectiveBackGround_->transform.scale = { 1280.0f,720.0f };
+	objectiveBackGround_->transform.translate = { 0.0f, 10.0f ,-40.0f };
+	objectiveBackGround_->color = 0x000000aa;/*C:\Users\aoaomidori\Desktop\TD2-4\Solustion\Projects\Game\Resources\GameObjective*/
+	objectiveBackGround_->textureID = TextureManager::GetInstance()->GetWhiteTex();
+
+	objectiveFrame_ = std::make_unique<Tex2DState>();
+	objectiveFrame_->transform.scale = { 768.0f,512.0f };
+	objectiveFrame_->transform.translate = { 0.0f, 10.0f ,-41.0f };
+	objectiveFrame_->color = 0xffffffff;/*C:\Users\aoaomidori\Desktop\TD2-4\Solustion\Projects\Game\Resources\GameObjective*/
+	objectiveFrame_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/GameObjective/goalFramSet.png");
+
+	for (uint32_t i = 0; i < 3; i++) {
+		potNumberTexture_[i] = std::make_unique<Tex2DState>();
+		potNumberTexture_[i]->transform.scale = { 80.0f,80.0f };
+		potNumberTexture_[i]->transform.translate = { 70.0f * i,-300.0f ,-41.0f};
+		potNumberTexture_[i]->uvTransform.scale = { 0.1f,1.0f };
+		potNumberTexture_[i]->color = 0xffffffff;
+		potNumberTexture_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/Timer/timeLimitNumber.png");
+
+		timerNumberTexture_[i] = std::make_unique<Tex2DState>();
+		timerNumberTexture_[i]->transform.scale = { 80.0f,80.0f };
+		timerNumberTexture_[i]->transform.translate = { 70.0f * i,-227.0f ,-41.0f };
+		timerNumberTexture_[i]->uvTransform.scale = { 0.1f,1.0f };
+		timerNumberTexture_[i]->color = 0xffffffff;
+		timerNumberTexture_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/Timer/timeLimitNumber.png");
+
+	}
+
+	timerState_ = std::make_unique<Tex2DState>();
+	timerState_->color = 0xffffffff;
+	timerState_->transform.scale = { 90.0f,102.0f };//136
+	timerState_->transform.translate = { -170.0f, -43.0f ,-41.0f };
+	timerState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timer.png");
+
+	clockHandsState_ = std::make_unique<Tex2DState>();
+	clockHandsState_->color = 0xffffffff;
+	clockHandsState_->transform.scale = { 90.0f,102.0f };
+	clockHandsState_->transform.translate = { -170.0f, -46.0f ,-41.0f };
+	clockHandsState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timerNeedle.png");
+
+	potState_ = std::make_unique<Tex2DState>();
+	potState_->color = 0xffffffff;
+	potState_->transform.scale = { 90.0f,102.0f };
+	potState_->transform.translate = { -170.0f, -170.0f ,-41.0f };
+	potState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/pot.png");
+
+	clockNumberPos_ = { -55.0f,-43.0f };
+	potNumberPos_ = { -55.0f,-166.0f };
+
+	numberDistance_ = 105.0f;
 }
 
 
@@ -89,7 +140,7 @@ void GameScene::Initialize() {
 	audioManager_->Load("./Resources/Sounds/SE/damege.mp3");
 	audioManager_->Load("./Resources/Sounds/SE/noSpace.mp3");
 
-	gameBGM_->Start(0.1f, true);
+	
 
 	shakePower_ = { 3.0f,3.0f };
 
@@ -99,6 +150,9 @@ void GameScene::Initialize() {
 	pause_ = std::make_unique<PauseMenu>();
 	pause_->Initialize();
 	pause_->SetSceneManger(sceneManager_);
+
+	isFirstLoadFlag_ = true;
+	isEndObjective_ = false;
 }
 
 void GameScene::Finalize() {
@@ -114,54 +168,87 @@ void GameScene::Update() {
 
 	Lamb::SafePtr gamepad = Input::GetInstance()->GetGamepad();
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
-	if (gamepad->Pushed(Gamepad::Button::START) or key->Pushed(DIK_ESCAPE)) {
-		pause_->isActive_ = not pause_->isActive_;
-		if (pause_->isActive_) {
-			gameBGM_->SetAudio(0.01f);
-		}
-		else {
-			gameBGM_->SetAudio(0.1f);
-		}
-	}
-
-
-	currentCamera_->Debug("カメラ");
-	currentCamera_->Shake(1.0f);
-	currentCamera_->Update();
-
-	currentTexCamera_->Debug("UIカメラ");
-
-	currentTexCamera_->Update();
 
 	Debug();
 
-	if (not pause_->isActive_) {
-		//enemyManager_->Update();
-		//enemyManager_->Debug();
+	if (not isEndObjective_ and  not isFirstLoadFlag_) {
+		auto itemMax = gameManager_->GetClearItemCount();
 
-		gameManager_->InputAction();
-		gameManager_->Update(deltaTime);
+		CalcUVPos(gameManager_->GetGameTimer()->GetDeltaTimer().GetGoalFlame(), timerNumberTexture_);
+		CalcUVPos(static_cast<float>(itemMax), potNumberTexture_);
 
-		/*gameManager_->Debug("GameManager");*/
+		for (uint32_t i = 0; i < 3; i++) {
+			potNumberTexture_[i]->transform.translate = { potNumberPos_.x + numberDistance_ * i,potNumberPos_.y ,-41.0f };
+			timerNumberTexture_[i]->transform.translate = { clockNumberPos_.x + numberDistance_ * i,clockNumberPos_.y ,-41.0f };
 
-		collisionManager_->Update();
-		collisionManager_->Debug();
+			timerNumberTexture_[i]->transform.CalcMatrix();
+			timerNumberTexture_[i]->uvTransform.CalcMatrix();
+			potNumberTexture_[i]->transform.CalcMatrix();
+			potNumberTexture_[i]->uvTransform.CalcMatrix();
+		}
 
-		TextureUpdate();
+		timerState_->transform.CalcMatrix();
+		clockHandsState_->transform.CalcMatrix();
+		potState_->transform.CalcMatrix();
 
-		gameUIManager_->Update(deltaTime);
-
-		if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
-			Audio *cancel = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
-
-			gameBGM_->Stop();
-			cancel->Start(0.1f, false);
-
-			sceneManager_->SceneChange(BaseScene::ID::StageSelect);
+		objectiveBackGround_->transform.CalcMatrix();
+		objectiveFrame_->transform.CalcMatrix();
+		if (gamepad->GetButton(Gamepad::Button::A)){
+			isEndObjective_ = true;
+			gameBGM_->Start(0.1f, true);
 		}
 	}
 	else {
-		pause_->ActiveUpdate();
+		if (gamepad->Pushed(Gamepad::Button::START) or key->Pushed(DIK_ESCAPE)) {
+			pause_->isActive_ = not pause_->isActive_;
+			if (pause_->isActive_) {
+				gameBGM_->SetAudio(0.01f);
+			}
+			else {
+				gameBGM_->SetAudio(0.1f);
+			}
+		}
+
+
+		currentCamera_->Debug("カメラ");
+		currentCamera_->Shake(1.0f);
+		currentCamera_->Update();
+
+		currentTexCamera_->Debug("UIカメラ");
+
+		currentTexCamera_->Update();
+
+		
+
+		if (not pause_->isActive_) {
+			//enemyManager_->Update();
+			//enemyManager_->Debug();
+
+			gameManager_->InputAction();
+			gameManager_->Update(deltaTime);
+
+			/*gameManager_->Debug("GameManager");*/
+
+			collisionManager_->Update();
+			collisionManager_->Debug();
+
+			TextureUpdate();
+
+			gameUIManager_->Update(deltaTime);
+
+			if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
+				Audio* cancel = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
+
+				gameBGM_->Stop();
+				cancel->Start(0.1f, false);
+
+				sceneManager_->SceneChange(BaseScene::ID::StageSelect);
+			}
+		}
+		else {
+			pause_->ActiveUpdate();
+		}
+		isFirstLoadFlag_ = false;
 	}
 }
 
@@ -175,19 +262,10 @@ void GameScene::TextureUpdate() {
 	}
 
 
-	//Vector3& uvTranslate = backGround_->uvTransform.translate;
-
-	/*uvTranslate.x += 0.001f;
-	uvTranslate.y += 0.0005f;
-	if (1.0f <= uvTranslate.x) {
-		uvTranslate.x -= 1.0f;
-	}
-	if (1.0f <= uvTranslate.y) {
-		uvTranslate.y -= 1.0f;
-	}*/
-
 	backGround_->transform.CalcMatrix();
 	backGround_->uvTransform.CalcMatrix();
+
+	
 
 }
 
@@ -210,6 +288,34 @@ void GameScene::Draw() {
 		tex2D_->Draw(clouds_[i]->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, clouds_[i]->textureID, clouds_[i]->color, BlendType::kNormal);
 	}
+	if (not isEndObjective_) {
+		tex2D_->Draw(objectiveBackGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kNormal);
+
+		tex2D_->Draw(objectiveFrame_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, objectiveFrame_->textureID, objectiveFrame_->color, BlendType::kNormal);
+
+		for (size_t i = 0; i < 3; i++) {
+			
+			tex2D_->Draw(potNumberTexture_[i]->transform.matWorld_, potNumberTexture_[i]->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
+				, potNumberTexture_[i]->textureID, potNumberTexture_[i]->color, BlendType::kNormal);
+
+			tex2D_->Draw(timerNumberTexture_[i]->transform.matWorld_, timerNumberTexture_[i]->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
+				, timerNumberTexture_[i]->textureID, timerNumberTexture_[i]->color, BlendType::kNormal);
+		}
+
+		tex2D_->Draw(timerState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, timerState_->textureID, timerState_->color, BlendType::kNormal);
+
+
+		tex2D_->Draw(clockHandsState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, clockHandsState_->textureID, clockHandsState_->color, BlendType::kNormal);
+
+		tex2D_->Draw(potState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, potState_->textureID, potState_->color, BlendType::kNormal);
+	}
+
+	
 
 	gameManager_->Draw(*currentCamera_);
 	gameUIManager_->Draw(*currentTexCamera_);
@@ -230,6 +336,25 @@ void GameScene::TextureDraw() {
 
 void GameScene::Debug() {
 #ifdef _DEBUG
+	ImGui::Begin("目的表示関連");
+	ImGui::DragFloat3("時計本体の位置", timerState_->transform.translate.data(), 1.0f);
+	ImGui::DragFloat3("時計の針の位置", clockHandsState_->transform.translate.data(), 1.0f);
+	ImGui::DragFloat3("釜の位置", potState_->transform.translate.data(), 1.0f);
+	ImGui::DragFloat3("時計の数字の位置", clockNumberPos_.data(), 1.0f);
+	ImGui::DragFloat3("釜の数字の位置", potNumberPos_.data(), 1.0f);
+	ImGui::DragFloat("数字の間隔", &numberDistance_, 1.0f);
 
+	ImGui::End();
 #endif // _DEBUG
+}
+
+void GameScene::CalcUVPos(const float InGameData, std::array<std::unique_ptr<Tex2DState>, 3>& uvPos){
+
+	texUVPos_[0] = static_cast<int32_t>(InGameData) % 10;
+	texUVPos_[1] = static_cast<int32_t>(InGameData / 10.0f) % 10;
+	texUVPos_[2] = static_cast<int32_t>(InGameData / 100.0f) % 10;
+
+	uvPos[0]->uvTransform.translate.x = texUVPos_[2] * 0.1f;
+	uvPos[1]->uvTransform.translate.x = texUVPos_[1] * 0.1f;
+	uvPos[2]->uvTransform.translate.x = texUVPos_[0] * 0.1f;
 }
