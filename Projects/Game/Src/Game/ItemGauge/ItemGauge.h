@@ -60,7 +60,11 @@ private:
 	float beforeGaugeCenterRight_;
 	float afterGaugeCenterRight_;
 
+	float beforeReductionRightPos_;
+
 	float reductionGaugePos_;
+
+	float reductionGaugeScale_;
 
 	//アイテムが減少したときtrue
 	Lamb::Flg isItemReduction_ = false;
@@ -86,7 +90,9 @@ private:
 	//真ん中のやつ
 	std::unique_ptr<Tex2DState> moveGaugeCenterState_;
 	
-	std::unique_ptr<Texture2D> moveGaugeReduction_;
+	std::unique_ptr<Tex2DState> moveGaugeReduction_;
+
+	std::unique_ptr<Tex2DState> moveGaugeReductionRight_;
 
 };
 
