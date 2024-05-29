@@ -824,12 +824,14 @@ void GameManager::RandomFallBlockSpawn()
 				if (not gameEffectManager_->fallingBlock_.test(i)) {
 					vec.push_back(i);
 				}
-			}*/
-			// 高い場所をもとに割合を出す
+			}
+		*/
+
+		// 高い場所をもとに割合を出す
 		std::vector<uint8_t> randVec;
 
 		std::array<int16_t, BlockMap::kMapX> mapHeight{};
-		int16_t heighest = -1;
+		int16_t heighest = 0;
 
 		for (int16_t yi = 0u; yi < BlockMap::kMapY; yi++) {
 			for (int16_t xi = 0u; xi < BlockMap::kMapX; xi++) {
