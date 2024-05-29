@@ -193,7 +193,7 @@ void GameScene::Update() {
 
 		objectiveBackGround_->transform.CalcMatrix();
 		objectiveFrame_->transform.CalcMatrix();
-		if (gamepad->GetButton(Gamepad::Button::A)){
+		if (gamepad->GetButton(Gamepad::Button::A) || key->Pushed(DIK_SPACE)) {
 			isEndObjective_ = true;
 			gameBGM_->Start(0.1f, true);
 		}
