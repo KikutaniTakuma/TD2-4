@@ -36,6 +36,10 @@ static POINTS operator-(const POINTS l, const POINTS r) {
 	return POINTS{ static_cast<int16_t>(l.x - r.x), static_cast<int16_t>(l.y - r.y) };
 }
 
+static POINTS operator*(const POINTS l, const float r) {
+	return POINTS{ static_cast<int16_t>(l.x * r), static_cast<int16_t>(l.y * r) };
+}
+
 
 void GameManager::Init()
 {
@@ -97,6 +101,9 @@ void GameManager::Init()
 	gameEffectManager_->Init();
 
 	fallBlockSpawnTimer_.Start(static_cast<float>(vFallBegin_));
+
+
+	pointTex_ = TextureManager::GetInstance()->LoadTexture("Resources/UI/bonusNumber.png");
 }
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
@@ -315,12 +322,12 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		blockGauge_->EnergyRecovery(localDeltaTime);
 	}
 
-	if (player_) {
-		// プレイヤの体力が0になっていたら終わる
-		if (player_->GetComponent<HealthComp>()->GetNowHealth() <= 0.f) {
-			player_.reset();
-		}
-	}
+	//if (player_) {
+	//	// プレイヤの体力が0になっていたら終わる
+	//	if (player_->GetComponent<HealthComp>()->GetNowHealth() <= 0.f) {
+	//		player_.reset();
+	//	}
+	//}
 
 	gameTimer_->Update(localDeltaTime);
 
@@ -329,6 +336,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	//gameEffectManager_->fallingBlock_ = spawner_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
 
 	gameEffectManager_->Update(fixDeltaTime);
+
+	bonusTexTransform_.CalcMatrix();
 
 	// AABBのデータを転送
 	blockMap_->TransferBoxData();
@@ -362,6 +371,8 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	blockGauge_->Draw(camera);
 
 	gameEffectManager_->Draw(camera);
+	DrawerManager::GetInstance()->GetTexture2D()->Draw(bonusTexTransform_.matWorld_, Mat4x4::MakeAffin({ 0.25f,1.f,1.f }, Vector3{}, { 0.25f * (itemSpawnCount_ - 1),0,0 }), camera.GetViewOthographics(), pointTex_, 0xFFFFFFFF, BlendType::kNormal);
+
 }
 
 void GameManager::LoadGlobalVariant([[maybe_unused]] const uint32_t stageIndex)
@@ -624,14 +635,27 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), dwarfPosSet);
 
-	for (const auto &line : chainBlockMap) {
-		// どこか1つでも壊れてたらタイマー開始
-		if (line.any()) {
+	std::pair<POINTS, POINTS> minMax{ {-1,-1}, {-1,-1} };
 
-			blockBreakTimer_.Start(vBreakStopTime_);
-			break;
+	for (int16_t yi = 0; yi < chainBlockMap.size(); yi++) {
+
+		for (int16_t xi = 0; xi < chainBlockMap[yi].size(); xi++) {
+			if (chainBlockMap[yi][xi]) {
+				blockBreakTimer_.Start(vBreakStopTime_);
+				if (minMax.first.x == -1) {
+					minMax.first.x = xi;
+				}
+				if (minMax.first.y == -1) {
+					minMax.first.y = yi;
+				}
+
+				minMax.second.x = xi;
+				minMax.second.y = yi;
+			}
 		}
 	}
+
+	POINTS center = SoLib::Lerp(minMax.first, minMax.second, 0.5f);
 
 	POINTS targetPos{};
 
@@ -687,18 +711,17 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 		}
 	}
 
-	uint32_t itemSpawnCount = 0;
 	if (breakCount <= 3) {
-		itemSpawnCount = 1;
+		itemSpawnCount_ = 1;
 	}
 	else if (breakCount <= 6) {
-		itemSpawnCount = 2;
+		itemSpawnCount_ = 2;
 	}
 	else if (breakCount <= 9) {
-		itemSpawnCount = 3;
+		itemSpawnCount_ = 3;
 	}
 	else {
-		itemSpawnCount = 4;
+		itemSpawnCount_ = 4;
 	}
 
 
@@ -711,7 +734,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 				const auto blockType = blockMap_->GetBlockType(targetPos);
 				blockMap_->BreakBlock(targetPos);
 
-				AddItem(BlockMap::GetGlobalPos(targetPos), blockType, itemSpawnCount);
+				AddItem(BlockMap::GetGlobalPos(targetPos), blockType, itemSpawnCount_);
 				//breakBlockType = blockType;
 
 			}
@@ -720,13 +743,13 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 
 	for (auto *const dwarf : deadDwarfList) {
 
-		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kBlue, itemSpawnCount);
+		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kBlue, itemSpawnCount_);
 		dwarf->SetActive(false);
 
 	}
 
 	for (auto *const dwarf : deadDarkDwarfList) {
-		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kRed, itemSpawnCount);
+		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kRed, itemSpawnCount_);
 		dwarf->SetActive(false);
 	}
 
@@ -742,6 +765,8 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 	blockMap_->SetBreakBlockMap(breakBlock);
 
 	blockMap_->SetBreakMap(chainBlockMap);
+
+	bonusTexTransform_.translate = Vector3{ BlockMap::GetGlobalPos(center), -15.f };
 
 	return std::move(chainBlockMap);
 }
@@ -824,8 +849,10 @@ void GameManager::RandomFallBlockSpawn()
 				if (not gameEffectManager_->fallingBlock_.test(i)) {
 					vec.push_back(i);
 				}
-			}*/
-			// 高い場所をもとに割合を出す
+			}
+		*/
+
+		// 高い場所をもとに割合を出す
 		std::vector<uint8_t> randVec;
 
 		std::array<int16_t, BlockMap::kMapX> mapHeight{};
@@ -852,7 +879,7 @@ void GameManager::RandomFallBlockSpawn()
 			if (gameEffectManager_->fallingBlock_.test(i)) {
 				continue;
 			}
-			for (int32_t c = 0; c < (heighest - mapHeight[i]) * vFallPosCalc_ + 1; c++) {
+			for (int32_t c = 0; c < (heighest == -1 ? 1 : (heighest - mapHeight[i]) * vFallPosCalc_ + 1); c++) {
 				targets.push_back(static_cast<uint8_t>(i));
 			}
 		}

@@ -4,10 +4,15 @@
 void DwarfAnimatorComp::StaticLoad()
 {
 	Lamb::SafePtr textureManager = TextureManager::GetInstance();
-	textureID_[0] = textureManager->LoadTexture("./Resources/Enemy/slimeWallWalk.png");
-	textureID_[1] = textureManager->LoadTexture("./Resources/Enemy/slimeWalk.png");
-	textureID_[2] = textureManager->LoadTexture("./Resources/Enemy/badSlimAttack.png");
-	textureID_[3] = textureManager->LoadTexture("./Resources/Enemy/badSlimeWait.png");
+	textureID_[kNormal][0] = textureManager->LoadTexture("./Resources/Enemy/slimeWallWalk.png");
+	textureID_[kNormal][1] = textureManager->LoadTexture("./Resources/Enemy/slimeWalk.png");
+	textureID_[kNormal][2] = textureManager->LoadTexture("./Resources/Enemy/badSlimAttack.png");
+	textureID_[kNormal][3] = textureManager->LoadTexture("./Resources/Enemy/badSlimeWait.png");
+
+	textureID_[kDamage][0] = textureManager->LoadTexture("./Resources/Enemy/slimeWallWalkDamage.png");
+	textureID_[kDamage][1] = textureManager->LoadTexture("./Resources/Enemy/slimeWalkDamage.png");
+	textureID_[kDamage][2] = textureManager->LoadTexture("./Resources/Enemy/badSlimAttackDamage.png");
+	textureID_[kDamage][3] = textureManager->LoadTexture("./Resources/Enemy/badSlimeWaitDamage.png");
 	textureManager->LoadTexture("./Resources/Ball.png");
 }
 
@@ -25,14 +30,14 @@ void DwarfAnimatorComp::Init()
 	spriteAnimator_->SetAnimationNumber(3u);
 	spriteAnimator_->Start();
 
-	pSpriteComp_->SetTexture(textureID_[1]);
+	pSpriteComp_->SetTexture(textureID_[kNormal][1]);
 
 	absorptionParticle_ = std::make_unique<FlaskParticle>();
 	absorptionParticle_->Resize(100);
-	absorptionParticle_->SetDeathTime({0.5f, 1.0f});
+	absorptionParticle_->SetDeathTime({ 0.5f, 1.0f });
 	absorptionParticle_->SetFreq({ 0.01f, 0.05f });
 	absorptionParticle_->SetEmitterPos(pDwarfComp_->transform_.translate);
-	absorptionParticle_->SetRadius({0.5f, 1.0f});
+	absorptionParticle_->SetRadius({ 0.5f, 1.0f });
 	absorptionParticle_->SetRotate({ 0.0f, 6.28f });
 	absorptionParticle_->SetColor(0xef00005f);
 	absorptionParticle_->SetTextureID(DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png"));
@@ -44,6 +49,13 @@ void DwarfAnimatorComp::Init()
 void DwarfAnimatorComp::Update()
 {
 	isDrakDwarf_ = pDwarfComp_->GetIsDarkDwarf();
+	Lamb::SafePtr map = GameManager::GetInstance()->GetMap();
+
+	const auto& hitMap = map->GetHitMap();
+	Lamb::SafePtr body = object_.GetComponent<LocalBodyComp>();
+	Vector2 targetPos = body->localPos_ + Vector2::kIdentity * 0.5f;
+
+	bool isHit = BlockMap::IsOutSide(targetPos) ? false : hitMap[static_cast<int32_t>(body->localPos_.y + 0.5f)][static_cast<int32_t>(body->localPos_.x + 0.5f)];
 
 	if (isDrakDwarf_) {
 		if (isDrakDwarf_.OnEnter()) {
@@ -51,14 +63,14 @@ void DwarfAnimatorComp::Update()
 		}
 		bool isAttack = 0.9f < pDwarfComp_->AttackTimer().GetProgress() and pDwarfComp_->AttackTimer().GetProgress() <= 1.0f;
 		if ((not spriteAnimator_->GetIsActive() and isAttack)/* or isDrakDwarf_.OnEnter()*/) {
-			pSpriteComp_->SetTexture(textureID_[2]);
+			pSpriteComp_->SetTexture(textureID_[isHit][2]);
 			spriteAnimator_->SetLoopAnimation(false);
 			spriteAnimator_->SetDuration(0.25f);
 			spriteAnimator_->Start();
 			absorptionParticle_->Start();
 		}
 		else if (not spriteAnimator_->GetIsActive()) {
-			pSpriteComp_->SetTexture(textureID_[3]);
+			pSpriteComp_->SetTexture(textureID_[isHit][3]);
 			spriteAnimator_->SetLoopAnimation(false);
 			spriteAnimator_->SetDuration(0.35f);
 			spriteAnimator_->Start();
@@ -78,7 +90,7 @@ void DwarfAnimatorComp::Update()
 		spriteAnimator_->SetDuration(0.25f);
 
 		// 0.0 ~ 1.0 の間で、1.0はギリ死なない
-		pSpriteComp_->SetTexture(textureID_[textureIndex]);
+		pSpriteComp_->SetTexture(textureID_[isHit][textureIndex]);
 	}
 	spriteAnimator_->FlipHorizontal(pDwarfComp_->GetFacing() < 0);
 }

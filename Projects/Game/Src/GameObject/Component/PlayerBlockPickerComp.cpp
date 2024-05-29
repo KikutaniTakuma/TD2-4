@@ -30,7 +30,7 @@ void PlayerBlockPickerComp::Update()
 	}
 
 	const POINTS pos = { .x = static_cast<int16_t>(targetPos.x), .y = static_cast<int16_t>(targetPos.y) };
-	
+
 	const auto &block = pBlockMap_->GetBlockType(pos);
 	targetIsBlock_ = block != Block::BlockType::kNone;
 
@@ -50,7 +50,15 @@ void PlayerBlockPickerComp::Update()
 
 void PlayerBlockPickerComp::Draw([[maybe_unused]] const Camera &camera) const
 {
-	pTexture_->Draw(targetAffine_, Mat4x4::MakeScalar({ 0.5f,1.f,1.f }), camera.GetViewOthographics(), targetFlameTex_, targetIsBlock_ ? 0xFF0000FF : 0xFFFFFFFF, BlendType::kNormal);
+	uint32_t color;
+	if (IsPicking()) {
+		color = targetIsBlock_ ? 0xFF0000FF : 0xFFFFFFFF;
+	}
+	else {
+		color = targetIsBlock_ ? 0xFFFFFFFF : 0xFF0000FF;
+	}
+
+	pTexture_->Draw(targetAffine_, Mat4x4::MakeScalar({ 0.5f,1.f,1.f }), camera.GetViewOthographics(), targetFlameTex_, color, BlendType::kNormal);
 
 	// もしブロックを持っていたら
 	if (pickingBlock_) {

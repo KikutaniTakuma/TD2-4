@@ -44,7 +44,7 @@ void FallingBlockComp::OnCollision(GameObject *other)
 	Lamb::SafePtr playerComp = other->GetComponent<PlayerComp>();
 
 	if (playerComp) {
-		playerComp->InflictDamage(1, { SoLib::Math::Sign(other->GetComponent<LocalBodyComp>()->localPos_.x - pLocalPos_->localPos_.x) * -2.f, 2.f });
+		playerComp->InflictDamage({ SoLib::Math::Sign(other->GetComponent<LocalBodyComp>()->localPos_.x - pLocalPos_->localPos_.x) * -2.f, 2.f });
 	}
 
 }

@@ -153,6 +153,8 @@ public:
 
 	const int32_t GetItemCount()const { return itemCount_; }
 
+	const uint32_t GetItemSpawnCount() const { return itemSpawnCount_; }
+
 	/// @brief 各アイテムごとの個数
 	/// @param blockType アイテムのタイプ
 	/// @return アイテムの個数
@@ -184,6 +186,13 @@ private:
 	void PlayerMoveSafeArea();
 
 private:
+
+	uint32_t pointTex_;
+	SoLib::Time::DeltaTimer bonusPointDrawTimer_;
+
+	Transform bonusTexTransform_;
+
+	uint32_t itemSpawnCount_;
 
 	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> itemTypeCount_;
 	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> removeTypes_;
