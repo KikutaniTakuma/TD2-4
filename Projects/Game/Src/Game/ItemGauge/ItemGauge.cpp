@@ -1,4 +1,5 @@
 #include "ItemGauge.h"
+#include "Utils/EngineInfo/EngineInfo.h"
 #include <Drawers/DrawerManager.h>
 #include<imgui.h>
 
@@ -167,8 +168,8 @@ void ItemGauge::MoveGauge(){
 			isItemReductionNow_ = false;
 		}
 		else {
-			tex.scale.x -= reductionGaugeScale_ * (1.0f / 60.0f);
-			tex.translate.x -= (reductionGaugePos_ - afterGaugeCenterRight_) * (1.0f / 60.0f);
+			tex.scale.x -= reductionGaugeScale_ * Lamb::DeltaTime();
+			tex.translate.x -= (reductionGaugePos_ - afterGaugeCenterRight_) * Lamb::DeltaTime();
 			if (reductionColor_ == RedWhite_){
 				reductionColor_ = Red_;
 			}
