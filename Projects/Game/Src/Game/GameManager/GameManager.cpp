@@ -641,6 +641,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 
 		for (int16_t xi = 0; xi < chainBlockMap[yi].size(); xi++) {
 			if (chainBlockMap[yi][xi]) {
+				blockBreakTimer_.Start(vBreakStopTime_);
 				if (minMax.first.x == -1) {
 					minMax.first.x = xi;
 				}
