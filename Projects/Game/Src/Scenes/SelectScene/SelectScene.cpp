@@ -26,12 +26,12 @@ void SelectScene::Initialize() {
 
 	selectNum_ = SelectToGame::GetInstance()->GetSelect();
 
-	for (uint32_t i = 0; i < texies_.size(); i++) {
-		texies_[i] = std::make_unique<Tex2DState>();
-		texies_[i]->transform.scale = { 936.0f,554.0f };
-		texies_[i]->transform.translate = { stageInterbal * i, 0.0f ,0 };
-		texies_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/stageSelectFram2.png");
-		startPos_[i] = texies_[i]->transform.translate.x;
+	for (uint32_t i = 0; i < frameTexies_.size(); i++) {
+		frameTexies_[i] = std::make_unique<Tex2DState>();
+		frameTexies_[i]->transform.scale = { 936.0f,554.0f };
+		frameTexies_[i]->transform.translate = { stageInterbal * i, 0.0f ,0 };
+		frameTexies_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/stageSelectFram2.png");
+		startPos_[i] = frameTexies_[i]->transform.translate.x;
 		endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
 
 		itemTexies_[i] = std::make_unique<Tex2DState>();
@@ -39,8 +39,14 @@ void SelectScene::Initialize() {
 		itemTexies_[i]->transform.translate = { itemDistanceCenter_.x + (stageInterbal * i), itemDistanceCenter_.y ,0 };
 		itemTexies_[i]->uvTransform.scale = { 0.5f,1.0f };
 		itemTexies_[i]->textureID = SelectToGame::GetInstance()->GetStageItemTextureID(i);
-		startItemPos_[i] = texies_[i]->transform.translate.x;
+		startItemPos_[i] = frameTexies_[i]->transform.translate.x;
 		endItemPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
+
+		stageBackGroundTexies_[i] = std::make_unique<Tex2DState>();
+		stageBackGroundTexies_[i]->transform.scale = { 936.0f,554.0f };
+		stageBackGroundTexies_[i]->transform.translate = { itemDistanceCenter_.x + (stageInterbal * i), itemDistanceCenter_.y ,0 };
+		stageBackGroundTexies_[i]->uvTransform.scale = { 0.5f,1.0f };
+		stageBackGroundTexies_[i]->textureID = SelectToGame::GetInstance()->GetStageItemTextureID(i);
 	}
 
 	for (uint32_t i = 0; i < 3; i++){
@@ -118,9 +124,9 @@ void SelectScene::Update(){
 
 	ease_.Update();
 
-	for (size_t i = 0; i < texies_.size(); i++) {
-		texies_[i]->color = 0xffffff88;
-		texies_[selectNum_]->color = 0xffffffff;
+	for (size_t i = 0; i < kMaxStage_; i++) {
+		frameTexies_[i]->color = 0xffffff88;
+		frameTexies_[selectNum_]->color = 0xffffffff;
 		itemTexies_[i]->color = 0xffffff88;
 		itemTexies_[selectNum_]->color = 0xffffffff;
 
@@ -132,11 +138,11 @@ void SelectScene::Update(){
 
 		
 
-		texies_[i]->transform.translate.x = ease_.Get(startPos_[i], endPos_[i]);
+		frameTexies_[i]->transform.translate.x = ease_.Get(startPos_[i], endPos_[i]);
 		itemTexies_[i]->transform.translate.x = ease_.Get(startItemPos_[i], endItemPos_[i]) + itemDistanceCenter_.x;
 		itemTexies_[i]->transform.translate.y = itemDistanceCenter_.y;
 
-		texies_[i]->transform.CalcMatrix();
+		frameTexies_[i]->transform.CalcMatrix();
 		itemTexies_[i]->transform.CalcMatrix();
 		itemTexies_[i]->uvTransform.CalcMatrix();
 	}
@@ -151,10 +157,10 @@ void SelectScene::Draw(){
 	tex2D_->Draw(selectTex_->transform.matWorld_, selectTex_->uvTransform.matWorld_ , currentCamera_->GetViewOthographics()
 		, selectTex_->textureID, selectTex_->color, BlendType::kNormal);
 
-	for (size_t i = 0; i < texies_.size(); i++) {
+	for (size_t i = 0; i < frameTexies_.size(); i++) {
 		
-		tex2D_->Draw(texies_[i]->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
-			, texies_[i]->textureID, texies_[i]->color, BlendType::kNormal);
+		tex2D_->Draw(frameTexies_[i]->transform.matWorld_, Mat4x4::kIdentity, currentCamera_->GetViewOthographics()
+			, frameTexies_[i]->textureID, frameTexies_[i]->color, BlendType::kNormal);
 
 		tex2D_->Draw(itemTexies_[i]->transform.matWorld_, itemTexies_[i]->uvTransform.matWorld_, currentCamera_->GetViewOthographics()
 			, itemTexies_[i]->textureID, itemTexies_[i]->color, BlendType::kNormal);
@@ -210,10 +216,10 @@ void SelectScene::SelectMove(){
 			selectNum_--;
 			ease_.Start(false, kAddEase_, Easeing::InSine);
 			for (size_t i = 0; i < kMaxStage_; i++){
-				startPos_[i] = texies_[i]->transform.translate.x;
+				startPos_[i] = frameTexies_[i]->transform.translate.x;
 				endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
 
-				startItemPos_[i] = texies_[i]->transform.translate.x;
+				startItemPos_[i] = frameTexies_[i]->transform.translate.x;
 				endItemPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
 			}
 		
@@ -222,16 +228,16 @@ void SelectScene::SelectMove(){
 	else if (input_->GetKey()->LongPush(DIK_D) || input_->GetKey()->LongPush(DIK_RIGHT)
 		|| input_->GetGamepad()->GetButton(Gamepad::Button::RIGHT) || 0.0f < stick) {
 
-		if (selectNum_ < texies_.size() - 1 && coolTime_ == 0) {
+		if (selectNum_ < frameTexies_.size() - 1 && coolTime_ == 0) {
 			coolTime_ = kCoolTime_;
 			selectMove_->Start(0.1f, false);
 			selectNum_++;
 			ease_.Start(false, kAddEase_, Easeing::InSine);
 			for (size_t i = 0; i < kMaxStage_; i++) {
-				startPos_[i] = texies_[i]->transform.translate.x;
+				startPos_[i] = frameTexies_[i]->transform.translate.x;
 				endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
 
-				startItemPos_[i] = texies_[i]->transform.translate.x;
+				startItemPos_[i] = frameTexies_[i]->transform.translate.x;
 				endItemPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
 			}
 		}		
