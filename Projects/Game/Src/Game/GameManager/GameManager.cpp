@@ -687,18 +687,18 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 		}
 	}
 
-	uint32_t itemSpawnCount = 0;
+	itemSpawnCount_ = 0;
 	if (breakCount <= 3) {
-		itemSpawnCount = 1;
+		itemSpawnCount_ = 1;
 	}
 	else if (breakCount <= 6) {
-		itemSpawnCount = 2;
+		itemSpawnCount_ = 2;
 	}
 	else if (breakCount <= 9) {
-		itemSpawnCount = 3;
+		itemSpawnCount_ = 3;
 	}
 	else {
-		itemSpawnCount = 4;
+		itemSpawnCount_ = 4;
 	}
 
 
@@ -711,7 +711,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 				const auto blockType = blockMap_->GetBlockType(targetPos);
 				blockMap_->BreakBlock(targetPos);
 
-				AddItem(BlockMap::GetGlobalPos(targetPos), blockType, itemSpawnCount);
+				AddItem(BlockMap::GetGlobalPos(targetPos), blockType, itemSpawnCount_);
 				//breakBlockType = blockType;
 
 			}
@@ -720,13 +720,13 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 
 	for (auto *const dwarf : deadDwarfList) {
 
-		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kBlue, itemSpawnCount);
+		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kBlue, itemSpawnCount_);
 		dwarf->SetActive(false);
 
 	}
 
 	for (auto *const dwarf : deadDarkDwarfList) {
-		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kRed, itemSpawnCount);
+		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kRed, itemSpawnCount_);
 		dwarf->SetActive(false);
 	}
 
