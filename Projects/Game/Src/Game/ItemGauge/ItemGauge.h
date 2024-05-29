@@ -8,6 +8,8 @@
 #include "SoLib/Containers/VItem.h"
 #include "Drawers/Texture2D/Texture2D.h"
 
+#include "Utils/Flg/Flg.h"
+
 
 class ItemGauge{
 public:
@@ -31,7 +33,7 @@ public:
 	/// </summary>
 	void Debug();
 
-	const bool GetItemReduction()const {
+	const Lamb::Flg& GetItemReduction()const {
 		return isItemReduction_;
 	}
 
@@ -61,7 +63,7 @@ private:
 	float reductionGaugePos_;
 
 	//アイテムが減少したときtrue
-	bool isItemReduction_ = false;
+	Lamb::Flg isItemReduction_ = false;
 
 	//右から左の設定
 	//const Vector2 kGaugePosX_ = { 283.0f,-338.0f };
