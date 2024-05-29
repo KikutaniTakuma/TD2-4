@@ -43,6 +43,8 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 	const auto &breakTimer = GameManager::GetInstance()->GetBreakTimer();
 	bool isDraw = std::fmodf(breakTimer.GetProgress(), 0.2f) > 0.1f;
 
+	const uint32_t breakIndex = GameManager::GetInstance()->GetItemSpawnCount() - 1;
+
 	int32_t yi = 0;
 	for (const auto &modelStateArr : modelStateMap_) {
 		int32_t xi = 0;
@@ -63,7 +65,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 			if (isDraw and breakBlockMap_[yi][xi]) {
 				Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
 
-				pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, 0xFFFFFFFF, BlendType::kNone);
+				pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, kBreakColor_[breakIndex], BlendType::kNone);
 
 			}
 
