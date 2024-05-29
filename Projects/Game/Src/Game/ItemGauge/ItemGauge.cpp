@@ -8,27 +8,40 @@ void ItemGauge::Initialize(){
 	gaugeState_ = std::make_unique<Tex2DState>();
 	gaugeState_->color = 0xffffffff;
 	gaugeState_->transform.scale = { 780.0f,72.0f };
-	gaugeState_->transform.translate = { -135.0f, 315.0f };
+	gaugeState_->transform.translate = { -135.0f, kGaugeYPos };
 	gaugeState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeFrame.png");
 
 	moveGaugeLeftState_ = std::make_unique<Tex2DState>();
 	moveGaugeLeftState_->color = 0x5ea632ff;
 	moveGaugeLeftState_->transform.scale = { 36.0f,48.0f };
-	moveGaugeLeftState_->transform.translate = { -430.0f, 315.0f };
+	moveGaugeLeftState_->transform.translate = { -430.0f, kGaugeYPos };
 	moveGaugeLeftState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeSideWhite.png");
 
 	moveGaugeRightState_ = std::make_unique<Tex2DState>();
 	moveGaugeRightState_->color = 0x5ea632ff;
 	moveGaugeRightState_->transform.scale = { 36.0f,48.0f };
-	moveGaugeRightState_->transform.translate = { 200.0f, 315.0f };
+	moveGaugeRightState_->transform.translate = { 200.0f, kGaugeYPos };
 	moveGaugeRightState_->uvTransform.scale = { -1.0f,1.0f };
 	moveGaugeRightState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeSideWhite.png");
 
 	moveGaugeCenterState_ = std::make_unique<Tex2DState>();
 	moveGaugeCenterState_->color = 0x5ea632ff;
 	moveGaugeCenterState_->transform.scale = { 0.0f,72.0f };
-	moveGaugeCenterState_->transform.translate = { 0.0f, 315.0f };
+	moveGaugeCenterState_->transform.translate = { 0.0f, kGaugeYPos };
 	moveGaugeCenterState_->textureID = TextureManager::GetInstance()->GetWhiteTex();
+
+	moveGaugeReduction_ = std::make_unique<Tex2DState>();
+	moveGaugeReduction_->color = 0xff0000ff;
+	moveGaugeReduction_->transform.scale = { 0.0f,48.0f };
+	moveGaugeReduction_->transform.translate = { 0.0f, 315.0f ,-5.0f};
+	moveGaugeReduction_->textureID = TextureManager::GetInstance()->GetWhiteTex();
+
+	moveGaugeReductionRight_ = std::make_unique<Tex2DState>();
+	moveGaugeReductionRight_->color = 0xff0000ff;
+	moveGaugeReductionRight_->transform.scale = { 36.0f,48.0f };
+	moveGaugeReductionRight_->transform.translate = { 200.0f, 315.0f };
+	moveGaugeReductionRight_->uvTransform.scale = { -1.0f,1.0f };
+	moveGaugeReductionRight_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeSideWhite.png");
 
 	gaugePosLength_ = kGaugePosX_.x - kGaugePosX_.y;
 	gaugePosCenterLength_ = kGaugeCenterPosX_.x - kGaugeCenterPosX_.y;
@@ -40,7 +53,7 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 		if (afterItemNum_ > nowCount) {
 			isItemReduction_ = true;
 		}
-
+		moveGaugeReductionRight_->transform.translate.x = moveGaugeRightState_->transform.translate.x;;
 		beforeItemNum_ = afterItemNum_;
 		afterItemNum_ = nowCount;
 	}
@@ -59,7 +72,9 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 	moveGaugeRightState_->transform.CalcMatrix();
 	moveGaugeRightState_->uvTransform.CalcMatrix();
 	moveGaugeCenterState_->transform.CalcMatrix();
-
+	moveGaugeReduction_->transform.CalcMatrix();
+	moveGaugeReductionRight_->transform.CalcMatrix();
+	moveGaugeReductionRight_->uvTransform.CalcMatrix();
 
 }
 
@@ -77,6 +92,12 @@ void ItemGauge::Draw(const Camera& camera) const{
 
 	tex2D_->Draw(moveGaugeCenterState_->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
 		, moveGaugeCenterState_->textureID, moveGaugeCenterState_->color, BlendType::kNormal);
+
+	tex2D_->Draw(moveGaugeReduction_->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
+		, moveGaugeReduction_->textureID, moveGaugeReduction_->color, BlendType::kNormal);
+
+	tex2D_->Draw(moveGaugeReductionRight_->transform.matWorld_, moveGaugeReductionRight_->uvTransform.matWorld_, camera.GetViewOthographics()
+		, moveGaugeReductionRight_->textureID, moveGaugeReductionRight_->color, BlendType::kNormal);
 	
 }
 
@@ -96,7 +117,7 @@ void ItemGauge::Debug(){
 	ImGui::DragFloat3("ゲージ本体中央の座標", moveGaugeCenterState_->transform.translate.data(), 0.1f);
 	ImGui::DragFloat2("ゲージ本体中央の大きさ", moveGaugeCenterState_->transform.scale.data(), 0.1f);
 	ImGui::DragFloat2("現在の個数と前の個数", Vector2(static_cast<float>(beforeGaugeCenterRight_), static_cast<float>(afterGaugeCenterRight_)).data(), 1.0f);
-	ImGui::DragFloat("真ん中の座標ｘ", &reductionGaugePos_, 1.0f);
+	ImGui::DragFloat2("真ん中の座標ｘと大きさ", Vector2(reductionGaugePos_,reductionGaugeScale_).data(), 1.0f);
 	ImGui::End();
 	moveGaugeCenterState_->color = color.GetColorRGBA();
 #endif // _DEBUG
@@ -105,21 +126,27 @@ void ItemGauge::Debug(){
 void ItemGauge::MoveGauge(){
 	float& leftPos = moveGaugeLeftState_->transform.translate.x;
 	float& rightPos = moveGaugeRightState_->transform.translate.x;
-
 	rightPos = kGaugePosX_.x - (gaugePosLength_ * (num_));
 	//rightPos = 305.0f;
 
 	moveGaugeCenterState_->transform.translate.x = (leftPos + rightPos) * 0.5f;
 	moveGaugeCenterState_->transform.scale.x = (kGaugeScale_ * (num_));
 
-	const auto& gaugeRightPos_ = moveGaugeCenterState_->transform.translate.x + moveGaugeCenterState_->transform.scale.x;
+	const auto& gaugeRightPos_ = moveGaugeCenterState_->transform.translate.x + (moveGaugeCenterState_->transform.scale.x * 0.5f);
 
 	if (afterGaugeCenterRight_ != gaugeRightPos_) {
 		beforeGaugeCenterRight_ = afterGaugeCenterRight_;
 		afterGaugeCenterRight_ = gaugeRightPos_;
-	}
+		reductionGaugePos_ = (beforeGaugeCenterRight_ + afterGaugeCenterRight_) * 0.5f;
 
-	reductionGaugePos_ = (beforeGaugeCenterRight_ + afterGaugeCenterRight_) * 0.5f;
+		reductionGaugeScale_ = (beforeGaugeCenterRight_ - afterGaugeCenterRight_);
+
+		
+	} 
+	moveGaugeReduction_->transform.translate.x = reductionGaugePos_;
+
+	moveGaugeReduction_->transform.scale.x = reductionGaugeScale_;
+	
 	
 	moveGaugeCenterState_->transform.scale.y = 48.0f;
 	

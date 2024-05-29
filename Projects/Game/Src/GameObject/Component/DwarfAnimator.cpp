@@ -49,10 +49,13 @@ void DwarfAnimatorComp::Init()
 void DwarfAnimatorComp::Update()
 {
 	isDrakDwarf_ = pDwarfComp_->GetIsDarkDwarf();
+	Lamb::SafePtr map = GameManager::GetInstance()->GetMap();
 
-	const auto &hitMap = GameManager::GetInstance()->GetMap()->GetHitMap();
+	const auto& hitMap = map->GetHitMap();
 	Lamb::SafePtr body = object_.GetComponent<LocalBodyComp>();
-	bool isHit = hitMap[static_cast<int32_t>(body->localPos_.y + 0.5f)][static_cast<int32_t>(body->localPos_.x + 0.5f)];
+	Vector2 targetPos = body->localPos_ + Vector2::kIdentity * 0.5f;
+
+	bool isHit = BlockMap::IsOutSide(targetPos) ? false : hitMap[static_cast<int32_t>(body->localPos_.y + 0.5f)][static_cast<int32_t>(body->localPos_.x + 0.5f)];
 
 	if (isDrakDwarf_) {
 		if (isDrakDwarf_.OnEnter()) {
@@ -92,7 +95,7 @@ void DwarfAnimatorComp::Update()
 	spriteAnimator_->FlipHorizontal(pDwarfComp_->GetFacing() < 0);
 }
 
-void DwarfAnimatorComp::Draw(const Camera &camera) const {
+void DwarfAnimatorComp::Draw(const Camera& camera) const {
 	if (isDrakDwarf_) {
 		absorptionParticle_->Draw(camera.GetViewOthographics());
 	}

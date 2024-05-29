@@ -37,8 +37,8 @@ public:
 		return isItemReduction_;
 	}
 
-	const float GetReductionGaugePos()const {
-		return reductionGaugePos_;
+	Vector3 GetReductionGaugePos()const {
+		return moveGaugeRightState_->transform.translate;
 	}
 
 private:
@@ -60,7 +60,11 @@ private:
 	float beforeGaugeCenterRight_;
 	float afterGaugeCenterRight_;
 
+	float beforeReductionRightPos_;
+
 	float reductionGaugePos_;
+
+	float reductionGaugeScale_;
 
 	//アイテムが減少したときtrue
 	Lamb::Flg isItemReduction_ = false;
@@ -72,6 +76,8 @@ private:
 	const Vector2 kGaugeCenterPosX_ = { 320.0f,-38.0f };
 	float gaugePosCenterLength_ = 358.0f;
 	const float kGaugeScale_ = 624.0f;
+
+	const float kGaugeYPos = 315.0f;
 
 
 
@@ -86,7 +92,9 @@ private:
 	//真ん中のやつ
 	std::unique_ptr<Tex2DState> moveGaugeCenterState_;
 	
-	std::unique_ptr<Texture2D> moveGaugeReduction_;
+	std::unique_ptr<Tex2DState> moveGaugeReduction_;
+
+	std::unique_ptr<Tex2DState> moveGaugeReductionRight_;
 
 };
 
