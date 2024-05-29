@@ -69,6 +69,8 @@ private:
 	//アイテムが減少したときtrue
 	Lamb::Flg isItemReduction_ = false;
 
+	Lamb::Flg isItemReductionNow_ = false;
+
 	//右から左の設定
 	//const Vector2 kGaugePosX_ = { 283.0f,-338.0f };
 

@@ -52,6 +52,7 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 	if (afterItemNum_ != nowCount) {
 		if (afterItemNum_ > nowCount) {
 			isItemReduction_ = true;
+			isItemReductionNow_ = true;
 		}
 		moveGaugeReductionRight_->transform.translate.x = moveGaugeRightState_->transform.translate.x;;
 		beforeItemNum_ = afterItemNum_;
@@ -92,13 +93,14 @@ void ItemGauge::Draw(const Camera& camera) const{
 
 	tex2D_->Draw(moveGaugeCenterState_->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
 		, moveGaugeCenterState_->textureID, moveGaugeCenterState_->color, BlendType::kNormal);
+	if (isItemReductionNow_) {
 
-	tex2D_->Draw(moveGaugeReduction_->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
-		, moveGaugeReduction_->textureID, moveGaugeReduction_->color, BlendType::kNormal);
+		tex2D_->Draw(moveGaugeReduction_->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
+			, moveGaugeReduction_->textureID, moveGaugeReduction_->color, BlendType::kNormal);
 
-	tex2D_->Draw(moveGaugeReductionRight_->transform.matWorld_, moveGaugeReductionRight_->uvTransform.matWorld_, camera.GetViewOthographics()
-		, moveGaugeReductionRight_->textureID, moveGaugeReductionRight_->color, BlendType::kNormal);
-	
+		tex2D_->Draw(moveGaugeReductionRight_->transform.matWorld_, moveGaugeReductionRight_->uvTransform.matWorld_, camera.GetViewOthographics()
+			, moveGaugeReductionRight_->textureID, moveGaugeReductionRight_->color, BlendType::kNormal);
+	}
 }
 
 void ItemGauge::Debug(){

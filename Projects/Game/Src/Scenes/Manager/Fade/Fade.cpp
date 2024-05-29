@@ -146,7 +146,7 @@ void Fade::Draw([[maybe_unused]]const Mat4x4& viewProjection) {
 					Vector3(Lamb::ClientSize().x * -0.5f, i->translate.y, i->translate.z)
 				),
 				Mat4x4::kIdentity,
-				viewProjection, 0, 0xff, BlendType::kUnenableDepthNone
+				viewProjection, 0, 0xff, BlendType::kUnenableDepthNormal
 			);
 			index++;
 		}
