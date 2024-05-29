@@ -31,6 +31,10 @@ public:
 	/// </summary>
 	void Debug();
 
+	const bool GetItemReduction()const {
+		return isItemReduction_;
+	}
+
 private:
 	/// <summary>
 	/// 入手したアイテムに応じてテクスチャをいじる
@@ -42,6 +46,12 @@ private:
 	//始点終点
 	const Vector2 kGaugePosX_ = { -394.0f,229.0f };
 	float gaugePosLength_ = 659.0f;
+
+	//現在のアイテムの個数
+	int32_t beforeItemNum;
+	int32_t afterItemNum;
+	//アイテムが減少したときtrue
+	bool isItemReduction_ = false;
 
 	//右から左の設定
 	//const Vector2 kGaugePosX_ = { 283.0f,-338.0f };
