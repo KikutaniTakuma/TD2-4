@@ -54,7 +54,11 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 			isItemReduction_ = true;
 			isItemReductionNow_ = true;
 		}
-		moveGaugeReductionRight_->transform.translate.x = moveGaugeRightState_->transform.translate.x;;
+		else {
+			isItemReductionNow_ = false;
+		}
+
+		
 		beforeItemNum_ = afterItemNum_;
 		afterItemNum_ = nowCount;
 	}
@@ -96,10 +100,10 @@ void ItemGauge::Draw(const Camera& camera) const{
 	if (isItemReductionNow_) {
 
 		tex2D_->Draw(moveGaugeReduction_->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
-			, moveGaugeReduction_->textureID, moveGaugeReduction_->color, BlendType::kNormal);
+			, moveGaugeReduction_->textureID, reductionColor_, BlendType::kNormal);
 
 		tex2D_->Draw(moveGaugeReductionRight_->transform.matWorld_, moveGaugeReductionRight_->uvTransform.matWorld_, camera.GetViewOthographics()
-			, moveGaugeReductionRight_->textureID, moveGaugeReductionRight_->color, BlendType::kNormal);
+			, moveGaugeReductionRight_->textureID, reductionColor_, BlendType::kNormal);
 	}
 }
 
@@ -136,6 +140,8 @@ void ItemGauge::MoveGauge(){
 
 	const auto& gaugeRightPos_ = moveGaugeCenterState_->transform.translate.x + (moveGaugeCenterState_->transform.scale.x * 0.5f);
 
+	auto& tex = moveGaugeReduction_->transform;
+
 	if (afterGaugeCenterRight_ != gaugeRightPos_) {
 		beforeGaugeCenterRight_ = afterGaugeCenterRight_;
 		afterGaugeCenterRight_ = gaugeRightPos_;
@@ -143,12 +149,39 @@ void ItemGauge::MoveGauge(){
 
 		reductionGaugeScale_ = (beforeGaugeCenterRight_ - afterGaugeCenterRight_);
 
-		
-	} 
-	moveGaugeReduction_->transform.translate.x = reductionGaugePos_;
+		tex.translate.x = reductionGaugePos_;
 
-	moveGaugeReduction_->transform.scale.x = reductionGaugeScale_;
-	
+		tex.scale.x = reductionGaugeScale_;
+
+		
+		moveGaugeReductionRight_->transform.translate.x = tex.translate.x + (tex.scale.x * 0.5f) + (moveGaugeReductionRight_->transform.scale.x * 0.49f);
+
+	}
+
+
+
+	if (isItemReductionNow_) {
+		
+		if (tex.scale.x <= 0.5f) {
+			tex.scale.x = 0;
+			isItemReductionNow_ = false;
+		}
+		else {
+			tex.scale.x -= reductionGaugeScale_ * (1.0f / 60.0f);
+			tex.translate.x -= (reductionGaugePos_ - afterGaugeCenterRight_) * (1.0f / 60.0f);
+			if (reductionColor_ == RedWhite_){
+				reductionColor_ = Red_;
+			}
+			else {
+				reductionColor_ = RedWhite_;
+			}
+
+		}
+
+		moveGaugeReductionRight_->transform.translate.x = tex.translate.x + (tex.scale.x * 0.5f) + (moveGaugeReductionRight_->transform.scale.x * 0.49f);
+
+	}
+
 	
 	moveGaugeCenterState_->transform.scale.y = 48.0f;
 	

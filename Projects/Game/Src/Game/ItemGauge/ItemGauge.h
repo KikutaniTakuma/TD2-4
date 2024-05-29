@@ -66,6 +66,12 @@ private:
 
 	float reductionGaugeScale_;
 
+	uint32_t reductionColor_ = 0xff0000ff;
+
+	const uint32_t RedWhite_ = 0xff9999ff;
+
+	const uint32_t Red_ = 0xff0000ff;
+
 	//アイテムが減少したときtrue
 	Lamb::Flg isItemReduction_ = false;
 
