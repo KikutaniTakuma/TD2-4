@@ -635,7 +635,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), dwarfPosSet);
 
-	std::pair<POINTS, POINTS> minMax{ {-1,-1}, {-1,-1} };
+	std::pair<Vector2, Vector2> minMax{ {-1,-1}, {-1,-1} };
 
 	for (int16_t yi = 0; yi < chainBlockMap.size(); yi++) {
 
@@ -643,19 +643,19 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 			if (chainBlockMap[yi][xi]) {
 				blockBreakTimer_.Start(vBreakStopTime_);
 				if (minMax.first.x == -1) {
-					minMax.first.x = xi;
+					minMax.first.x = static_cast<float>(xi);
 				}
 				if (minMax.first.y == -1) {
-					minMax.first.y = yi;
+					minMax.first.y = static_cast<float>(yi);
 				}
 
-				minMax.second.x = xi;
-				minMax.second.y = yi;
+				minMax.second.x = static_cast<float>(xi);
+				minMax.second.y = static_cast<float>(yi);
 			}
 		}
 	}
 
-	POINTS center = SoLib::Lerp(minMax.first, minMax.second, 0.5f);
+	Vector2 center = SoLib::Lerp(minMax.first, minMax.second, 0.5f);
 
 	POINTS targetPos{};
 
