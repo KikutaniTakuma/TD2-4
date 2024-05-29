@@ -47,13 +47,13 @@ void EnemyBulletComp::OnCollision(GameObject *const other)
 {
 	Lamb::SafePtr playerComp = other->GetComponent<PlayerComp>();
 	if (playerComp) {
-		
-		playerComp->InflictDamage(1, Vector2{ 2.5f * SoLib::Math::Sign(pLocalRigidbody_->GetVelocity().x), 5.f });
+
+		playerComp->InflictDamage(Vector2{ 2.5f * SoLib::Math::Sign(pLocalRigidbody_->GetVelocity().x), 5.f });
 	}
 
 }
 
-void EnemyBulletComp::Draw(const Camera& camera) const
+void EnemyBulletComp::Draw(const Camera &camera) const
 {
 	shotParticle_->Draw(
 		camera.rotate,

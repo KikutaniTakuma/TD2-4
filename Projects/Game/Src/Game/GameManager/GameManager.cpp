@@ -315,12 +315,12 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		blockGauge_->EnergyRecovery(localDeltaTime);
 	}
 
-	if (player_) {
-		// プレイヤの体力が0になっていたら終わる
-		if (player_->GetComponent<HealthComp>()->GetNowHealth() <= 0.f) {
-			player_.reset();
-		}
-	}
+	//if (player_) {
+	//	// プレイヤの体力が0になっていたら終わる
+	//	if (player_->GetComponent<HealthComp>()->GetNowHealth() <= 0.f) {
+	//		player_.reset();
+	//	}
+	//}
 
 	gameTimer_->Update(localDeltaTime);
 

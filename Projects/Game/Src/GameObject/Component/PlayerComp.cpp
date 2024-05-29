@@ -22,10 +22,6 @@ void PlayerComp::Init()
 
 	pPicker_ = object_.AddComponent<PlayerBlockPickerComp>();
 
-	pHealthComp_ = object_.AddComponent<HealthComp>();
-	pHealthComp_->SetMaxHealth(vMaxHealth_);
-	pHealthComp_->Reset();
-
 	Lamb::SafePtr spriteComp = object_.AddComponent<SpriteComp>();
 	//spriteComp->SetTexture("./Resources/uvChecker.png");
 	spriteComp->CalcTexUv();
@@ -41,8 +37,6 @@ void PlayerComp::Update()
 		velocity = { -velocity.x * vFriction_, 0 };
 		pLocalRigidbody_->ApplyContinuousForce(velocity);
 	}
-	preHealth_ = static_cast<int32_t>(pHealthComp_->GetNowHealth());
-
 
 	pLocalRigidbody_->ApplyContinuousForce(kGrovity_);
 
@@ -77,24 +71,24 @@ void PlayerComp::OnCollision([[maybe_unused]] GameObject *const other)
 
 }
 
-int32_t PlayerComp::InflictDamage(int32_t damage, const Vector2 acceleration)
+bool PlayerComp::InflictDamage(const Vector2 acceleration)
 {
 	if (invincibleTime_ <= 0) {
-		pHealthComp_->AddHealth(static_cast<float>(-damage));
+		damageFlag_ = true;
 		pLocalRigidbody_->ApplyInstantForce(acceleration);
 		// 無敵時間を付与
 		invincibleTime_ = vMaxInvincibleTime_;
 		GameManager::GetInstance()->RemovePoint(vDamageDropCount_);
 
-		Audio* audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/damege.mp3");;
+		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/damege.mp3");;
 		audio->Start(0.2f, false);
 	}
-	return static_cast<int32_t>(pHealthComp_->GetNowHealth());
+	return damageFlag_.OnEnter();
 }
 
 bool PlayerComp::GetIsDamage() const
 {
-	return static_cast<int32_t>(pHealthComp_->GetNowHealth()) != preHealth_;
+	return damageFlag_.OnEnter();
 }
 
 void PlayerComp::FireBullet()
@@ -149,8 +143,7 @@ void PlayerComp::Input()
 	}
 
 	// 着地している場合
-	if (pHitMapComp_->hitNormal_.y > 0)
-	{
+	if (pHitMapComp_->hitNormal_.y > 0) {
 		if (key->Pushed(DIK_Z) or pad->GetButton(Gamepad::Button::A) or pad->GetButton(Gamepad::Button::B)) {
 			pLocalRigidbody_->ApplyInstantForce(Vector2::kYIdentity * 13.f);
 		}
