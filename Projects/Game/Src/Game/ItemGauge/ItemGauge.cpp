@@ -35,6 +35,17 @@ void ItemGauge::Initialize(){
 }
 
 void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
+	isItemReduction_ = false;
+	if (afterItemNum_ != nowCount) {
+		if (afterItemNum_ > nowCount) {
+			isItemReduction_ = true;
+		}
+
+		beforeItemNum_ = afterItemNum_;
+		afterItemNum_ = nowCount;
+	}
+	
+
 	num_ = static_cast<float>(nowCount) / static_cast<float>(maxCount);
 
 	if (num_ > 1.0f) {
@@ -48,6 +59,8 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 	moveGaugeRightState_->transform.CalcMatrix();
 	moveGaugeRightState_->uvTransform.CalcMatrix();
 	moveGaugeCenterState_->transform.CalcMatrix();
+
+
 }
 
 void ItemGauge::Draw(const Camera& camera) const{
@@ -82,6 +95,8 @@ void ItemGauge::Debug(){
 	ImGui::DragFloat3("ゲージ本体右の座標", moveGaugeRightState_->transform.translate.data(), 0.1f);
 	ImGui::DragFloat3("ゲージ本体中央の座標", moveGaugeCenterState_->transform.translate.data(), 0.1f);
 	ImGui::DragFloat2("ゲージ本体中央の大きさ", moveGaugeCenterState_->transform.scale.data(), 0.1f);
+	ImGui::DragFloat2("現在の個数と前の個数", Vector2(static_cast<float>(beforeGaugeCenterRight_), static_cast<float>(afterGaugeCenterRight_)).data(), 1.0f);
+	ImGui::DragFloat("真ん中の座標ｘ", &reductionGaugePos_, 1.0f);
 	ImGui::End();
 	moveGaugeCenterState_->color = color.GetColorRGBA();
 #endif // _DEBUG
@@ -96,6 +111,15 @@ void ItemGauge::MoveGauge(){
 
 	moveGaugeCenterState_->transform.translate.x = (leftPos + rightPos) * 0.5f;
 	moveGaugeCenterState_->transform.scale.x = (kGaugeScale_ * (num_));
+
+	const auto& gaugeRightPos_ = moveGaugeCenterState_->transform.translate.x + moveGaugeCenterState_->transform.scale.x;
+
+	if (afterGaugeCenterRight_ != gaugeRightPos_) {
+		beforeGaugeCenterRight_ = afterGaugeCenterRight_;
+		afterGaugeCenterRight_ = gaugeRightPos_;
+	}
+
+	reductionGaugePos_ = (beforeGaugeCenterRight_ + afterGaugeCenterRight_) * 0.5f;
 	
 	moveGaugeCenterState_->transform.scale.y = 48.0f;
 	
