@@ -33,6 +33,7 @@ namespace SoLib {
 
 	float easeOutBounce(float x);
 
+	float easeInElastic(float x);
 	float easeOutElastic(float x);
 
 	struct EaseFunc {

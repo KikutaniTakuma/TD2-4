@@ -337,6 +337,11 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	gameEffectManager_->Update(fixDeltaTime);
 
+	if (bonusPointDrawTimer_.IsActive()) {
+		bonusPointDrawTimer_.Update(fixDeltaTime);
+		bonusTexTransform_.scale = Vector3::kIdentity * SoLib::Lerp(2.5f, 0.5f, SoLib::easeInOutBack(bonusPointDrawTimer_.GetProgress()));
+	}
+
 	bonusTexTransform_.CalcMatrix();
 
 	// AABBのデータを転送
@@ -371,8 +376,10 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	blockGauge_->Draw(camera);
 
 	gameEffectManager_->Draw(camera);
-	DrawerManager::GetInstance()->GetTexture2D()->Draw(bonusTexTransform_.matWorld_, Mat4x4::MakeAffin({ 0.25f,1.f,1.f }, Vector3{}, { 0.25f * (itemSpawnCount_ - 1),0,0 }), camera.GetViewOthographics(), pointTex_, 0xFFFFFFFF, BlendType::kNormal);
 
+	if (bonusPointDrawTimer_.IsActive()) {
+		DrawerManager::GetInstance()->GetTexture2D()->Draw(bonusTexTransform_.matWorld_, Mat4x4::MakeAffin({ 0.25f,1.f,1.f }, Vector3{}, { 0.25f * (itemSpawnCount_ - 1),0,0 }), camera.GetViewOthographics(), pointTex_, 0xFFFFFFFF, BlendType::kNormal);
+	}
 }
 
 void GameManager::LoadGlobalVariant([[maybe_unused]] const uint32_t stageIndex)
@@ -642,6 +649,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 		for (int16_t xi = 0; xi < chainBlockMap[yi].size(); xi++) {
 			if (chainBlockMap[yi][xi]) {
 				blockBreakTimer_.Start(vBreakStopTime_);
+				bonusPointDrawTimer_.Start(1.f);
 				if (minMax.first.x == -1) {
 					minMax.first.x = static_cast<float>(xi);
 				}
