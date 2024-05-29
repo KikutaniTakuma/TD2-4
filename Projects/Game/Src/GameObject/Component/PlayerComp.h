@@ -31,7 +31,7 @@ public:
 
 	inline static constexpr SoLib::VItemList vPlayerItems_{ &PlayerComp::vMaxHealth_, &PlayerComp::vMaxInvincibleTime_, &PlayerComp::vMoveSpeed_, &PlayerComp::vBulletSpeed_, &PlayerComp::vFriction_, &vFireCoolTime_, &vDamageDropCount_ };
 
-	int32_t InflictDamage(int32_t damage, const Vector2 acceleration = {});
+	bool InflictDamage(const Vector2 acceleration = {});
 
 	int32_t GetFacing() const {
 		return facing_;
@@ -66,13 +66,15 @@ private:
 
 	bool isAttack_;
 
-	int32_t preHealth_;
+	//int32_t preHealth_;
+
+	Lamb::Flg damageFlag_;
 
 	Lamb::SafePtr<LocalMapHitComp> pHitMapComp_ = nullptr;
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;
 	Lamb::SafePtr<LocalRigidbody> pLocalRigidbody_ = nullptr;
 	Lamb::SafePtr<PlayerBlockPickerComp> pPicker_ = nullptr;
 
-	Lamb::SafePtr<HealthComp> pHealthComp_ = nullptr;
+	//Lamb::SafePtr<HealthComp> pHealthComp_ = nullptr;
 
 };
