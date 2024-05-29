@@ -12,6 +12,11 @@
 
 class DwarfAnimatorComp : public IComponent
 {
+	enum DamageTex {
+		kNormal,
+		kDamage,
+	};
+
 public:
 	using IComponent::IComponent;
 	~DwarfAnimatorComp() = default;
@@ -21,7 +26,7 @@ public:
 	void Init() override;
 
 	void Update() override;
-	void Draw(const Camera& camera) const override;
+	void Draw(const Camera &camera) const override;
 
 private:
 
@@ -31,7 +36,7 @@ private:
 
 	Lamb::SafePtr<Tex2DAniamtor> spriteAnimator_ = nullptr;
 
-	inline static std::array<uint32_t, 4> textureID_;
+	inline static std::array<std::array<uint32_t, 4u>, 2u> textureID_;
 
 	Lamb::Flg isDrakDwarf_;
 
