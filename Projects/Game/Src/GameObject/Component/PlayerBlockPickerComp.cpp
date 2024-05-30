@@ -152,5 +152,13 @@ void PlayerBlockPickerComp::Drop(int32_t facing)
 			pickingBlock_ = Block::BlockType::kNone;
 
 		}
+		else {
+			Audio* noSpace = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/noSpace.mp3");
+			noSpace->Start(0.2f, false);
+		}
+	}
+	else {
+		Audio* noSpace = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/noSpace.mp3");
+		noSpace->Start(0.2f, false);
 	}
 }
