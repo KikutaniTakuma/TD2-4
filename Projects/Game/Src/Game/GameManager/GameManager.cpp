@@ -56,6 +56,7 @@ void GameManager::Init()
 	PlayerBulletComp::StaticLoad();
 	PlayerComp::StaticLoad();
 	AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
+	AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
 
 	blockGauge_ = std::make_unique<BlockGauge>();
 	blockGauge_->Init();
@@ -505,7 +506,7 @@ GameObject *GameManager::AddPlayerBullet(Vector2 centerPos, Vector2 velocity)
 	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
 	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
 
-	auto*const mapHit =bullet->AddComponent<LocalMapHitComp>();
+	auto *const mapHit = bullet->AddComponent<LocalMapHitComp>();
 	mapHit->isHitFallBlock_ = false;
 	mapHit->isPermeable_ = true;
 	plBulletList_.push_back(std::move(bullet));
