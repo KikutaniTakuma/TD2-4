@@ -37,7 +37,15 @@ void PlayerBulletComp::Update()
 		auto *map = gManager->GetMap();
 		POINTS hitPos;
 
-		const Vector2 centor = pLocalBodyComp_->localPos_ + Vector2::kIdentity * 0.5f;
+		const Vector2 centor = pLocalBodyComp_->localPos_ + Vector2::kIdentity * 0.5f /*+ Vector2::kYIdentity * 0.25f*/;
+		if (std::fmodf(centor.y, 1.f) != 0.5f) {
+			hitPos = {
+				.x = static_cast<int16_t>(centor.x),
+				.y = static_cast<int16_t>(centor.y)
+			};
+
+		}
+
 		// 右側に移動していた場合
 		if (pHitMapComp_->hitNormal_.x < 0) {
 

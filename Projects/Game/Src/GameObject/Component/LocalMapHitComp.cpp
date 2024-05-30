@@ -45,20 +45,26 @@ void LocalMapHitComp::Update()
 
 	// 左が画面外だったら
 	if (centorLeft.x < 0) {
-		pLocalBodyComp_->localPos_.x = 0 - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
+		if (not isPermeable_) {
+			pLocalBodyComp_->localPos_.x = 0 - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
 		velocity.x = 0;
+		}
 		hitNormal.x = 1.f;
 	}
 	// 右が画面外だったら
 	else if (centorRight.x >= static_cast<float>(BlockMap::kMapX)) {
-		pLocalBodyComp_->localPos_.x = BlockMap::kMapX - 0.5f - pLocalBodyComp_->size_.x * 0.5f;
-		velocity.x = 0;
+		if (not isPermeable_) {
+			pLocalBodyComp_->localPos_.x = BlockMap::kMapX - 0.5f - pLocalBodyComp_->size_.x * 0.5f;
+			velocity.x = 0;
+		}
 		hitNormal.x = -1.f;
 	}
 	// 下が画面外だったら
 	if (centorDown.y < 0) {
-		pLocalBodyComp_->localPos_.y = 0 - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
-		velocity.y = 0;
+		if (not isPermeable_) {
+			pLocalBodyComp_->localPos_.y = 0 - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
+			velocity.y = 0;
+		}
 		hitNormal.y = 1.f;
 	}
 
@@ -68,18 +74,24 @@ void LocalMapHitComp::Update()
 	{	// 縦方向
 		if (velocity.y < 0) {	// 下方向
 			if (pBlockMap_->GetBlockType(centorDown) != Block::BlockType::kNone) {
-				pLocalBodyComp_->localPos_.y = std::ceil(centorDown.y) - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
-				velocity.y = 0;
+				if (not isPermeable_) {
+					pLocalBodyComp_->localPos_.y = std::ceil(centorDown.y) - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
+					velocity.y = 0;
+				}
 				hitNormal.y = 1.f;
 			}
 			else if (Vector2 targetPos = { xPos[kLeft], yPos[kDown] }; pBlockMap_->GetBlockType(targetPos) != Block::BlockType::kNone && pBlockMap_->GetBlockType(targetPos + Vector2::kYIdentity) == Block::BlockType::kNone) {
-				pLocalBodyComp_->localPos_.y = std::ceil(centorDown.y) - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
-				velocity.y = 0;
+				if (not isPermeable_) {
+					pLocalBodyComp_->localPos_.y = std::ceil(centorDown.y) - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
+					velocity.y = 0;
+				}
 				hitNormal.y = 1.f;
 			}
 			else if (targetPos = { xPos[kRight], yPos[kDown] }; pBlockMap_->GetBlockType(targetPos) != Block::BlockType::kNone && pBlockMap_->GetBlockType(targetPos + Vector2::kYIdentity) == Block::BlockType::kNone) {
-				pLocalBodyComp_->localPos_.y = std::ceil(centorDown.y) - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
-				velocity.y = 0;
+				if (not isPermeable_) {
+					pLocalBodyComp_->localPos_.y = std::ceil(centorDown.y) - 0.5f + pLocalBodyComp_->size_.y * 0.5f;
+					velocity.y = 0;
+				}
 				hitNormal.y = 1.f;
 			}
 			else if (isHitFallBlock_) {
@@ -90,14 +102,18 @@ void LocalMapHitComp::Update()
 
 					//Vector2 targetPos;
 					if (targetPos = { xPos[kLeft], yPos[kDown] }; std::abs(targetPos.x - pos.x) <= 1 and std::abs(targetPos.y - pos.y) <= 1) {
-						pLocalBodyComp_->localPos_.y = pLocalBodyComp_->size_.y * 0.5f + pos.y + 0.5f;
-						velocity.y = 0;
+						if (not isPermeable_) {
+							pLocalBodyComp_->localPos_.y = pLocalBodyComp_->size_.y * 0.5f + pos.y + 0.5f;
+							velocity.y = 0;
+						}
 						hitNormal.y = 1.f;
 						break;
 					}
 					else if (targetPos = { xPos[kRight], yPos[kDown] }; std::abs(targetPos.x - pos.x) <= 1 and std::abs(targetPos.y - pos.y) <= 1) {
-						pLocalBodyComp_->localPos_.y = pLocalBodyComp_->size_.y * 0.5f + pos.y + 0.5f;
-						velocity.y = 0;
+						if (not isPermeable_) {
+							pLocalBodyComp_->localPos_.y = pLocalBodyComp_->size_.y * 0.5f + pos.y + 0.5f;
+							velocity.y = 0;
+						}
 						hitNormal.y = 1.f;
 						break;
 					}
@@ -107,18 +123,24 @@ void LocalMapHitComp::Update()
 		}
 		else {	// 上方向
 			if (pBlockMap_->GetBlockType(centorTop) != Block::BlockType::kNone) {
-				pLocalBodyComp_->localPos_.y = std::floor(centorTop.y) - 0.5f - pLocalBodyComp_->size_.y * 0.5f;
-				velocity.y = 0;
+				if (not isPermeable_) {
+					pLocalBodyComp_->localPos_.y = std::floor(centorTop.y) - 0.5f - pLocalBodyComp_->size_.y * 0.5f;
+					velocity.y = 0;
+				}
 				hitNormal.y = -1.f;
 			}
 			else if (Vector2 targetPos = { xPos[kLeft], yPos[kUp] }; pBlockMap_->GetBlockType(targetPos) != Block::BlockType::kNone && pBlockMap_->GetBlockType(targetPos - Vector2::kYIdentity) == Block::BlockType::kNone && centorDown.y > 0) {
-				pLocalBodyComp_->localPos_.y = std::floor(centorTop.y) - 0.5f - pLocalBodyComp_->size_.y * 0.5f;
-				velocity.y = 0;
+				if (not isPermeable_) {
+					pLocalBodyComp_->localPos_.y = std::floor(centorTop.y) - 0.5f - pLocalBodyComp_->size_.y * 0.5f;
+					velocity.y = 0;
+				}
 				hitNormal.y = -1.f;
 			}
 			else if (targetPos = { xPos[kRight], yPos[kUp] }; pBlockMap_->GetBlockType(targetPos) != Block::BlockType::kNone && pBlockMap_->GetBlockType(targetPos - Vector2::kYIdentity) == Block::BlockType::kNone && centorDown.y > 0) {
-				pLocalBodyComp_->localPos_.y = std::floor(centorTop.y) - 0.5f - pLocalBodyComp_->size_.y * 0.5f;
-				velocity.y = 0;
+				if (not isPermeable_) {
+					pLocalBodyComp_->localPos_.y = std::floor(centorTop.y) - 0.5f - pLocalBodyComp_->size_.y * 0.5f;
+					velocity.y = 0;
+				}
 				hitNormal.y = -1.f;
 			}
 		}
@@ -126,15 +148,19 @@ void LocalMapHitComp::Update()
 	{ // 横方向
 		if (velocity.x < 0) {	// 左方向
 			if (pBlockMap_->GetBlockType(centorLeft) != Block::BlockType::kNone) {
-				pLocalBodyComp_->localPos_.x = std::ceil(centorLeft.x) - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
-				velocity.x = 0;
+				if (not isPermeable_) {
+					pLocalBodyComp_->localPos_.x = std::ceil(centorLeft.x) - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
+					velocity.x = 0;
+				}
 				hitNormal.x = 1.f;
 			}
 		}
 		else {	// 右方向
 			if (pBlockMap_->GetBlockType(centorRight) != Block::BlockType::kNone) {
-				pLocalBodyComp_->localPos_.x = std::floor(centorRight.x) - 0.5f - pLocalBodyComp_->size_.x * 0.5f;
-				velocity.x = 0;
+				if (not isPermeable_) {
+					pLocalBodyComp_->localPos_.x = std::floor(centorRight.x) - 0.5f - pLocalBodyComp_->size_.x * 0.5f;
+					velocity.x = 0;
+				}
 				hitNormal.x = -1.f;
 			}
 		}

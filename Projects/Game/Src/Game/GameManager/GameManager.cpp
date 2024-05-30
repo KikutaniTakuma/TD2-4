@@ -504,6 +504,10 @@ GameObject *GameManager::AddPlayerBullet(Vector2 centerPos, Vector2 velocity)
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
 	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+
+	auto*const mapHit =bullet->AddComponent<LocalMapHitComp>();
+	mapHit->isHitFallBlock_ = false;
+	mapHit->isPermeable_ = true;
 	plBulletList_.push_back(std::move(bullet));
 
 	return plBulletList_.back().get();
@@ -519,6 +523,10 @@ GameObject *GameManager::AddEnemyBullet(Vector2 centerPos, Vector2 velocity)
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
 	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+
+	auto *const mapHit = bullet->AddComponent<LocalMapHitComp>();
+	mapHit->isHitFallBlock_ = false;
+	mapHit->isPermeable_ = true;
 	enemyBulletList_.push_back(std::move(bullet));
 
 	return enemyBulletList_.back().get();
