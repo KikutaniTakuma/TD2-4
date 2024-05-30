@@ -127,7 +127,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	GlobalVariables::GetInstance()->Update();
 
-	GetMap()->SetHitMap({});
+	//GetMap()->SetHitMap({});
 
 	const float fixDeltaTime = std::clamp(deltaTime, 0.f, 0.1f);
 
@@ -787,6 +787,7 @@ BlockMap::BlockBitMap &&GameManager::HitChainBlocks(POINTS localPos) {
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
 
 	blockMap_->SetHitMap(chainBlockMap);
+	blockMap_->StartTimer();
 
 	return std::move(chainBlockMap);
 }

@@ -24,7 +24,7 @@ void BlockMap::Init()
 
 void BlockMap::Update([[maybe_unused]] const float deltaTime)
 {
-
+	hitTimer_.Update(deltaTime);
 	for (auto &blockStatusLine : *blockStatesMap_) {
 		for (auto &blockStatus : blockStatusLine) {
 			if (blockStatus) {
@@ -41,7 +41,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 	//uint32_t blockTex = 0;
 
 	const auto &breakTimer = GameManager::GetInstance()->GetBreakTimer();
-	bool isDraw = std::fmodf(breakTimer.GetProgress(), 0.2f) > 0.1f;
+	bool isBreakDraw = std::fmodf(breakTimer.GetProgress(), 0.2f) > 0.1f;
 
 	const uint32_t breakIndex = GameManager::GetInstance()->GetItemSpawnCount() - 1;
 
@@ -52,17 +52,26 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 			if (modelState) {
 
 				const auto &block = (*blockMap_)[yi][xi];
-				if (hitMap_[yi][xi]) {
-					pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, 0xFFFFFFFF, BlendType::kNone);
+				//if (hitMap_[yi][xi]) {
+				//pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, 0xFFFFFFFF, BlendType::kNone);
 
-				}
-				else {
-					pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), block.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
+				//}
+				//else {
+				pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), block.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 
-				}
+				//}
+			}
+
+
+			// 破壊フラグが立っていたら
+			if (hitTimer_.IsActive() and hitMap_[yi][xi]) {
+				Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
+
+				pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, SoLib::ColorLerp(0xFFFFFFFF, 0xFFFFFF55, hitTimer_.GetProgress()), BlendType::kNormal);
+
 			}
 			// 破壊フラグが立っていたら
-			if (isDraw and breakBlockMap_[yi][xi]) {
+			if (isBreakDraw and breakBlockMap_[yi][xi]) {
 				Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
 
 				pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, kBreakColor_[breakIndex], BlendType::kNone);
