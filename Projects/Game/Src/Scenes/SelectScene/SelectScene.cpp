@@ -31,7 +31,7 @@ void SelectScene::Initialize() {
 
 	for (uint32_t i = 0; i < frameTexies_.size(); i++) {
 		frameTexies_[i] = std::make_unique<Tex2DState>();
-		frameTexies_[i]->transform.scale = Vector2{ 936.0f,554.0f } * 0.8f;
+		frameTexies_[i]->transform.scale = Vector2{ 936.0f,554.0f } * 0.7f;
 		frameTexies_[i]->transform.translate = { stageInterbal * i, 0.0f ,0 };
 		frameTexies_[i]->uvTransform.scale.x = 0.5f;
 		frameTexies_[i]->textureID = drawerManager_->LoadTexture("./Resources/UI/stageSelectFrame.png");
