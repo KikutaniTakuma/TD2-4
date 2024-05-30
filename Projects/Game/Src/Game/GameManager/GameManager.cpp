@@ -218,7 +218,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType(), fallComp->blockDamage_);
 			fallingBlock->SetActive(false);
 			if (fallComp->hasDamage_) {
-				gameEffectManager_->fallingBlock_.set(static_cast<uint32_t>(blockBody->localPos_.x), false);
+				gameEffectManager_->fallingBlock_.reset();
 			}
 			isLanding |= true;
 		}
