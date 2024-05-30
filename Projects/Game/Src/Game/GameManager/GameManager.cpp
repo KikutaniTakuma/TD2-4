@@ -484,12 +484,55 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 
 	ImGui::Begin(str);
 
-	//blockMap_->Debug("BlockMap");
-	SoLib::ImGuiWidget(&vFallSpan_);
-	SoLib::ImGuiText("アイテム数", std::to_string(itemCount_) + '/' + std::to_string(vClearItemCount_));
-	SoLib::ImGuiText("残り時間", std::to_string(gameTimer_->GetDeltaTimer().GetNowFlame()) + '/' + std::to_string(gameTimer_->GetDeltaTimer().GetGoalFlame()));
+	////blockMap_->Debug("BlockMap");
+	//SoLib::ImGuiWidget(&vFallSpan_);
+	//SoLib::ImGuiText("アイテム数", std::to_string(itemCount_) + '/' + std::to_string(vClearItemCount_));
+	//SoLib::ImGuiText("残り時間", std::to_string(gameTimer_->GetDeltaTimer().GetNowFlame()) + '/' + std::to_string(gameTimer_->GetDeltaTimer().GetGoalFlame()));
 
-	blockMap_->Debug("BlockMap");
+	//blockMap_->Debug("BlockMap");
+
+
+	for (int32_t yi = BlockMap::kMapY - 1; yi >= 0; yi--) {
+		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+			SoLib::ImGuiWidget(("##" + std::to_string(yi) + ' ' + std::to_string(xi)).c_str(), &blockMapData_[yi][xi]);
+			ImGui::SameLine();
+		}
+		ImGui::NewLine();
+	}
+
+
+	if (ImGui::Button("Save")) {
+
+		std::array<int32_t, 9u> saveData{};
+		for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
+			for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+				reinterpret_cast<std::bitset<15> &>(saveData[BlockMap::kMapY - yi - 1]).set(BlockMap::kMapX - xi - 1, blockMapData_[yi][xi]);
+			}
+		}
+		const SelectToGame *select = SelectToGame::GetInstance();
+		const char *const kFilePath = "Resources/Datas/LevelData.jsonc";
+		std::ifstream ifs;
+
+		nlohmann::json root;
+
+		ifs.open(kFilePath);
+		if (ifs.fail()) {
+			assert(0 and "レベルデータのロードに失敗しました");
+			return {};
+		}
+
+		ifs >> root;
+		ifs.close();
+
+		root["LevelData"][select->GetSelect()] = saveData;
+
+		std::ofstream ofs;
+		ofs.open(kFilePath);
+		ofs << root;
+		ofs.close();
+
+	}
+
 
 	ImGui::End();
 
@@ -1335,9 +1378,16 @@ void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const
 			return;
 		}
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
-
+			bool targetBit = not lineData[BlockMap::kMapX - xi - 1];
 			// もし、そこのデータが空であったら飛ばす
-			if (not lineData[BlockMap::kMapX - xi - 1]) { continue; }
+			if (targetBit) { continue; }
+#ifdef _DEBUG
+
+			blockMapData_[yi][xi] = true;
+
+#endif // _DEBUG
+
+
 			std::bitset<static_cast<int32_t>(Block::BlockType::kMax) - 1> blockSet{};
 			int32_t blockChainCount = 0;
 			do {

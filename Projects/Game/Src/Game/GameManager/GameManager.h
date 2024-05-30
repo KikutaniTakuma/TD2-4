@@ -188,9 +188,16 @@ private:
 
 	std::array<int32_t, 9u> LoadLevelData(int32_t levelIndex);
 
-	void RandomStartBlockFill(const std::array<int32_t, 9u>&map, const int32_t blockTypeCount, const int32_t maxChainCount);
+	void RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount);
 
 private:
+
+#ifdef _DEBUG
+
+	std::array<std::array<bool, BlockMap::kMapX>, BlockMap::kMapY> blockMapData_;
+
+#endif // _DEBUG
+
 
 	uint32_t pointTex_;
 	SoLib::Time::DeltaTimer bonusPointDrawTimer_;
