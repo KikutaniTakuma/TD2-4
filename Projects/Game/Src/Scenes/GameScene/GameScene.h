@@ -154,7 +154,7 @@ private:
 	bool isFadeOut_ = false;
 
 	//始点と終点
-	Vector2 easePoint_ = { 750.0f,0.0f };
+	Vector2 easePoint_ = { 900.0f,0.0f };
 
 	int32_t easeCount_ = 90;
 
