@@ -14,6 +14,7 @@
 #include "Utils/ScreenOut/ScreenOut.h"
 #include"Scenes/SelectToGame/SelectToGame.h"
 #include "Utils/Random/Random.h"
+#include "../ResultScene/ResultScene.h"
 
 GameScene::GameScene() :
 	BaseScene(BaseScene::ID::Game)
@@ -112,6 +113,8 @@ void GameScene::TextureInitialize() {
 
 
 void GameScene::Initialize() {
+	ResultScene::SetIsGameClear(false);
+
 	collisionManager_ = CollisionManager::GetInstance();
 
 	currentCamera_->farClip = 3000.0f;
