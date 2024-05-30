@@ -206,6 +206,9 @@
     <ClCompile Include="Src\Scenes\SubMenu\PauseMenu\PauseMenu.cpp">
       <Filter>Scenes\SubMenu\PauseMenu</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\NumberSprite\NumberSprite.cpp">
+      <Filter>Game\NumberSprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -354,6 +357,9 @@
     </Filter>
     <Filter Include="Scenes\SubMenu\PauseMenu">
       <UniqueIdentifier>{4faa3c32-68c4-4663-a0f7-e8c46dfcdf9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\NumberSprite">
+      <UniqueIdentifier>{71c591ae-a2d9-4ad5-b340-f72aa014507c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -572,6 +578,9 @@
     </ClInclude>
     <ClInclude Include="Src\Scenes\SubMenu\PauseMenu\PauseMenu.h">
       <Filter>Scenes\SubMenu\PauseMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\NumberSprite\NumberSprite.h">
+      <Filter>Game\NumberSprite</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
