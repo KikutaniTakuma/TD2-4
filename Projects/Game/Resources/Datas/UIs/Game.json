@@ -43,7 +43,7 @@
                 ],
                 "translate": [
                     385.0,
-                    -271.0,
+                    -83.0,
                     -30.0
                 ]
             },
@@ -204,7 +204,7 @@
                 ],
                 "translate": [
                     385.0,
-                    -83.0,
+                    -271.0,
                     -30.0
                 ]
             },
@@ -221,12 +221,12 @@
                 ],
                 "color": 4294967295,
                 "scale": [
-                    192.0,
+                    154.0,
                     64.0,
                     1.0
                 ],
                 "translate": [
-                    542.0,
+                    560.0,
                     -83.0,
                     0.0
                 ]
@@ -252,6 +252,52 @@
                     -140.0,
                     -21.0,
                     12.0
+                ]
+            },
+            {
+                "TextureFullPath": "./Resources/UI/GameMain\\Control\\pauseButton.png",
+                "TextureName": "GameMain\\Control\\pauseButton",
+                "UVScale": [
+                    0.5,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    64.0,
+                    64.0,
+                    1.0
+                ],
+                "translate": [
+                    -590.0,
+                    -319.0,
+                    -0.800000011920929
+                ]
+            },
+            {
+                "TextureFullPath": "./Resources/UI/GameMain\\Control\\pause.png",
+                "TextureName": "GameMain\\Control\\pause",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    128.0,
+                    48.0,
+                    1.0
+                ],
+                "translate": [
+                    -487.0,
+                    -318.0,
+                    -0.800000011920929
                 ]
             }
         ]

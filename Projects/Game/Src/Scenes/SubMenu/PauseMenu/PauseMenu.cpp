@@ -7,6 +7,7 @@
 #include "Utils/EngineInfo/EngineInfo.h"
 
 #include "Scenes/Manager/SceneManager.h"
+#include "Scenes/SelectToGame/SelectToGame.h"
 
 #ifdef _DEBUG
 #include "imgui.h"
@@ -145,6 +146,7 @@ void PauseMenu::Update() {
 		choiceSE_->Start(0.2f, false);
 		if (isRetryChoice_) {
 			sceneManager_->SceneChange(BaseScene::ID::Game);
+			SelectToGame::GetInstance()->SetRetryFlug(true);
 		}
 		else {
 			sceneManager_->SceneChange(BaseScene::ID::StageSelect);

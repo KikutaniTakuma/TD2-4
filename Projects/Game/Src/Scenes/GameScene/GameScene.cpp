@@ -97,7 +97,17 @@ void GameScene::TextureInitialize() {
 	clockNumberPos_ = { -55.0f,-43.0f };
 	potNumberPos_ = { -55.0f,-166.0f };
 
+	timerPos_ = { -170.0f, -43.0f ,-25.0f };
+	clockHandsPos_ = { -170.0f, -46.0f ,-25.0f };
+	potPos_ = { -170.0f, -170.0f ,-25.0f };
+
 	numberDistance_ = 105.0f;
+
+	ease_.Start(false, 1.5f, Easeing::InBack);
+
+	easeCount_ = 90;
+
+	isFadeOut_ = false;;
 }
 
 
@@ -140,7 +150,7 @@ void GameScene::Initialize() {
 	audioManager_->Load("./Resources/Sounds/SE/damege.mp3");
 	audioManager_->Load("./Resources/Sounds/SE/noSpace.mp3");
 
-	
+
 
 	shakePower_ = { 3.0f,3.0f };
 
@@ -152,7 +162,14 @@ void GameScene::Initialize() {
 	pause_->SetSceneManger(sceneManager_);
 
 	isFirstLoadFlag_ = true;
-	isEndObjective_ = false;
+
+	if (SelectToGame::GetInstance()->GetRetryFlug()) {
+		isEndObjective_ = true;
+		SelectToGame::GetInstance()->SetRetryFlug(false);
+	}
+	else {
+		isEndObjective_ = false;
+	}
 }
 
 void GameScene::Finalize() {
@@ -169,6 +186,8 @@ void GameScene::Update() {
 	Lamb::SafePtr gamepad = Input::GetInstance()->GetGamepad();
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 
+	
+
 	Debug();
 
 	if (not isEndObjective_ and  not isFirstLoadFlag_) {
@@ -178,8 +197,8 @@ void GameScene::Update() {
 		CalcUVPos(static_cast<float>(itemMax), potNumberTexture_);
 
 		for (uint32_t i = 0; i < 3; i++) {
-			potNumberTexture_[i]->transform.translate = { potNumberPos_.x + numberDistance_ * i,potNumberPos_.y ,-41.0f };
-			timerNumberTexture_[i]->transform.translate = { clockNumberPos_.x + numberDistance_ * i,clockNumberPos_.y ,-41.0f };
+			potNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + potNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + potNumberPos_.y ,-41.0f };
+			timerNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + clockNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + clockNumberPos_.y ,-41.0f };
 
 			timerNumberTexture_[i]->transform.CalcMatrix();
 			timerNumberTexture_[i]->uvTransform.CalcMatrix();
@@ -187,13 +206,40 @@ void GameScene::Update() {
 			potNumberTexture_[i]->uvTransform.CalcMatrix();
 		}
 
+		if (not ease_.GetIsActive() && not isFadeOut_) {
+			easeCount_ -= 1;
+		}
+
+		if (easeCount_ == 0){
+			ease_.Start(false, 1.5f, Easeing::OutQuint);
+			isFadeOut_ = true;
+			easeCount_ = -1;
+		}
+		ease_.Update();
+
+		if (not isFadeOut_) {
+			objectiveFrame_->transform.translate.y = ease_.Get(easePoint_.x, easePoint_.y);
+		}
+		else {
+			objectiveFrame_->transform.translate.y = ease_.Get(easePoint_.y, -easePoint_.x);
+		}
+
+		if (isFadeOut_ && not ease_.GetIsActive()) {
+			isEndObjective_ = true;
+			gameBGM_->Start(0.1f, true);
+		}
+
+		timerState_->transform.translate = objectiveFrame_->transform.translate + timerPos_;
+		clockHandsState_->transform.translate = objectiveFrame_->transform.translate + clockHandsPos_;
+		potState_->transform.translate = objectiveFrame_->transform.translate + potPos_;
+
 		timerState_->transform.CalcMatrix();
 		clockHandsState_->transform.CalcMatrix();
 		potState_->transform.CalcMatrix();
 
 		objectiveBackGround_->transform.CalcMatrix();
 		objectiveFrame_->transform.CalcMatrix();
-		if (gamepad->GetButton(Gamepad::Button::A) || key->Pushed(DIK_SPACE)) {
+		if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)) {
 			isEndObjective_ = true;
 			gameBGM_->Start(0.1f, true);
 		}
@@ -337,9 +383,11 @@ void GameScene::TextureDraw() {
 void GameScene::Debug() {
 #ifdef _DEBUG
 	ImGui::Begin("目的表示関連");
-	ImGui::DragFloat3("時計本体の位置", timerState_->transform.translate.data(), 1.0f);
-	ImGui::DragFloat3("時計の針の位置", clockHandsState_->transform.translate.data(), 1.0f);
-	ImGui::DragFloat3("釜の位置", potState_->transform.translate.data(), 1.0f);
+	ImGui::DragFloat3("目的表示自体の座標", objectiveFrame_->transform.translate.data(), 1.0f);
+
+	ImGui::DragFloat3("時計本体の位置", timerPos_.data(), 1.0f);
+	ImGui::DragFloat3("時計の針の位置", clockHandsPos_.data(), 1.0f);
+	ImGui::DragFloat3("釜の位置", potPos_.data(), 1.0f);
 	ImGui::DragFloat3("時計の数字の位置", clockNumberPos_.data(), 1.0f);
 	ImGui::DragFloat3("釜の数字の位置", potNumberPos_.data(), 1.0f);
 	ImGui::DragFloat("数字の間隔", &numberDistance_, 1.0f);

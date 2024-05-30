@@ -1,5 +1,6 @@
 #pragma once
 #include"Math/Mat4x4.h"
+#include"LambEngine/Utils/Flg/Flg.h"
 
 class SelectToGame{
 private:
@@ -44,6 +45,10 @@ public:
 	/// <param name="number">クリアしたステージ</param>
 	void SetClearFlug(const int32_t number) { isStageClear_[number] = true; }
 
+	void SetRetryFlug(const bool isRetry) { isRetry_ = isRetry; }
+
+	const Lamb::Flg GetRetryFlug() const{ return isRetry_; }
+
 	uint32_t GetStageItemTextureID(int32_t stageNumber) const;
 
 public:
@@ -53,7 +58,9 @@ public:
 	void Debug();
 
 public:
-	int32_t selectNum_;	
+	int32_t selectNum_;
+
+	Lamb::Flg isRetry_;
 
 	std::array <bool, kMaxStage> isStageClear_;
 
