@@ -1,6 +1,7 @@
 #pragma once
 #include "../SoLib/Containers/VItem.h"
 #include "../SoLib/SoLib_Traits.h"
+#include "../SoLib/SoLib_Timer.h"
 #include "Drawers/DrawerManager.h"
 #include "Game/Ground/Ground.h"
 #include "Math/Vector2.h"
@@ -197,9 +198,19 @@ public:
 
 	inline static SoLib::VItem<"中心座標", Vector2> vCenterDiff_{ {} };
 
+	void StartTimer(float time = 0.25f) {
+		hitTimer_.Start(time);
+	}
+
+	const auto &GetTimer() const {
+		return hitTimer_;
+	}
+
 private:
 
 	BlockBitMap hitMap_;
+
+	SoLib::Time::DeltaTimer hitTimer_{ 0.25f };
 
 	BlockBitMap breakMap_;
 
