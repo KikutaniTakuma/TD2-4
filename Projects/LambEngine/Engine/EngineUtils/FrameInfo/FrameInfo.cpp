@@ -168,6 +168,14 @@ void FrameInfo::End() {
 void FrameInfo::DrawFps() {
 	if (isDrawFps_) {
 		fpsStringOutPut_.Clear();
+		float ratio = static_cast<float>(fps_ / maxFpsLimit_);
+		Vector4&& red = Vector4::kXIdentity + Vector4::kWIdentity;
+		Vector4&& yellow = Vector4::kXIdentity + Vector4::kYIdentity + Vector4::kWIdentity;
+		Vector4&& green = Vector4::kYIdentity + Vector4::kWIdentity;
+		float t = 0.5f < ratio ? (ratio - 0.5f) * 2.0f : ratio * 2.0f;
+
+		uint32_t color = 0.5 < ratio ? ColorLerp(yellow, green, t).GetColorRGBA() : ColorLerp(red, yellow, t).GetColorRGBA();
+		fpsStringOutPut_.color = color;
 		fpsStringOutPut_ << "fps : " << static_cast<int32_t>(fps_);
 		fpsStringOutPut_.Draw();
 	}
