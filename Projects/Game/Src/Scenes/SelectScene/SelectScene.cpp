@@ -27,6 +27,8 @@ void SelectScene::Initialize() {
 
 	selectNum_ = selectToGame->GetSelect();
 
+	selectToGame->SetRetryFlug(false);
+
 	for (uint32_t i = 0; i < frameTexies_.size(); i++) {
 		frameTexies_[i] = std::make_unique<Tex2DState>();
 		frameTexies_[i]->transform.scale = Vector2{ 936.0f,554.0f } * 0.8f;

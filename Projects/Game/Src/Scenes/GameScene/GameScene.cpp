@@ -150,7 +150,7 @@ void GameScene::Initialize() {
 	audioManager_->Load("./Resources/Sounds/SE/damege.mp3");
 	audioManager_->Load("./Resources/Sounds/SE/noSpace.mp3");
 
-	
+
 
 	shakePower_ = { 3.0f,3.0f };
 
@@ -162,7 +162,13 @@ void GameScene::Initialize() {
 	pause_->SetSceneManger(sceneManager_);
 
 	isFirstLoadFlag_ = true;
-	isEndObjective_ = false;
+
+	if (SelectToGame::GetInstance()->GetRetryFlug()) {
+		isEndObjective_ = true;
+	}
+	else {
+		isEndObjective_ = false;
+	}
 }
 
 void GameScene::Finalize() {
