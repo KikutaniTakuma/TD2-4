@@ -168,6 +168,7 @@ void GameScene::Initialize() {
 
 	if (SelectToGame::GetInstance()->GetRetryFlug()) {
 		isEndObjective_ = true;
+		gameBGM_->Start(0.1f, true);
 		SelectToGame::GetInstance()->SetRetryFlug(false);
 	}
 	else {

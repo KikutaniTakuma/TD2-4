@@ -54,9 +54,13 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 		if (afterItemNum_ > nowCount) {
 			isItemReduction_ = true;
 			isItemReductionNow_ = true;
+			isItemIncreaseNow_ = false;
 		}
 		else {
 			isItemReductionNow_ = false;
+			isItemIncreaseNow_ = true;
+			beforeIncreaseGaugeCenterPos_ = moveGaugeCenterState_->transform.translate.x;
+			beforeIncreaseGaugeCenterScale_ = moveGaugeCenterState_->transform.scale.x;
 		}
 
 		

@@ -78,5 +78,7 @@ private:
 	//100の位のテクスチャ
 	std::unique_ptr<Tex2DState> timeNumberHundredState_;
 
+	bool isFirstLoad_ = true;
+
 
 };
