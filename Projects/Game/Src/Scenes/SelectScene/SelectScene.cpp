@@ -128,16 +128,16 @@ void SelectScene::Update(){
 		itemTexies_[i]->color = 0xffffff88;
 		itemTexies_[selectNum_]->color = 0xffffffff;
 
-		//const auto& clearFlug = selectToGame->GetClearFlug();
+		const auto& clearFlug = selectToGame->GetClearFlug();
 
-		if (/*clearFlug[i]*/true) {
+		if (clearFlug[i]) {
 			itemTexies_[i]->uvTransform.translate.x = 0.5f;
 		}
 
 		
 
 		frameTexies_[i]->transform.translate.x = ease_.Get(startPos_[i], endPos_[i]);
-		if (/*clearFlug[i]*/true) {
+		if (clearFlug[i]) {
 			frameTexies_[i]->uvTransform.translate.x = 0.5f;
 		}
 		else {
