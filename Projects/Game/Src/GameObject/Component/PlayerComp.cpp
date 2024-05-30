@@ -117,7 +117,7 @@ void PlayerComp::Input()
 		}
 	}
 
-	if (fireCoolTime_ <= 0.f and (key->Pushed(DIK_SPACE) or pad->Pushed(Gamepad::Button::RIGHT_SHOULDER))) {
+	if (fireCoolTime_ <= 0.f and (key->Pushed(DIK_Z) or pad->Pushed(Gamepad::Button::RIGHT_SHOULDER))) {
 		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/shot.mp3");
 		audio->Start(0.2f, false);
 		isAttack_ = true;
@@ -129,7 +129,7 @@ void PlayerComp::Input()
 
 	// 着地している場合
 	if (pHitMapComp_->hitNormal_.y > 0) {
-		if (key->Pushed(DIK_Z) or pad->GetButton(Gamepad::Button::A) or pad->GetButton(Gamepad::Button::B)) {
+		if (key->Pushed(DIK_SPACE) or pad->GetButton(Gamepad::Button::A) or pad->GetButton(Gamepad::Button::B)) {
 			pLocalRigidbody_->ApplyInstantForce(Vector2::kYIdentity * 13.f);
 		}
 	}
