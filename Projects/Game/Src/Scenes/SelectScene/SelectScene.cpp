@@ -248,7 +248,7 @@ void SelectScene::SelectMove(){
 		}		
 	}
 
-	if ((input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::A)) && !sceneManager_->GetFadeActive()) {
+	if ((input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::A)) && !sceneManager_->GetFadeActive() && not ease_.GetIsActive()) {
 		SelectToGame::GetInstance()->SetSelect(selectNum_);
 		gameDecision_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Game);
