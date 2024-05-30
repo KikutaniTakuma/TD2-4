@@ -168,11 +168,16 @@ void FrameInfo::End() {
 void FrameInfo::DrawFps() {
 	if (isDrawFps_) {
 		fpsStringOutPut_.Clear();
+#ifdef _DEBUG
+		float ratio = ratio_;
+#else
 		float ratio = static_cast<float>(fps_ / maxFpsLimit_);
+#endif // _DEBUG
+
 		Vector4&& red = Vector4::kXIdentity + Vector4::kWIdentity;
 		Vector4&& yellow = Vector4::kXIdentity + Vector4::kYIdentity + Vector4::kWIdentity;
 		Vector4&& green = Vector4::kYIdentity + Vector4::kWIdentity;
-		float t = 0.5f < ratio ? (ratio - 0.5f) * 2.0f : ratio * 2.0f;
+		float t = 0.5f < ratio ? (ratio - 0.5f) * 2.0f : (ratio - 0.1f) * 2.5f;
 
 		uint32_t color = 0.5 < ratio ? ColorLerp(yellow, green, t).GetColorRGBA() : ColorLerp(red, yellow, t).GetColorRGBA();
 		fpsStringOutPut_.color = color;
@@ -230,6 +235,7 @@ void FrameInfo::Debug() {
 		else {
 			ImGui::Checkbox("is fixed deltaTime", &isFixedDeltaTime_);
 		}
+		ImGui::DragFloat("ratio", &ratio_, 0.001f, 0.0f, 1.0f);
 		ImGui::TreePop();
 	}
 	ImGui::End();
