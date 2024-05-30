@@ -80,6 +80,11 @@ private:
 	//アイテムが増加したときにtrue
 	Lamb::Flg isItemIncreaseNow_ = false;
 
+	float beforeIncreaseGaugeCenterPos_;
+	float afterIncreaseGaugeCenterPos_;
+	float beforeIncreaseGaugeCenterScale_;
+	float afterIncreaseGaugeCenterScale_;
+
 	//右から左の設定
 	//const Vector2 kGaugePosX_ = { 283.0f,-338.0f };
 
@@ -89,8 +94,6 @@ private:
 	const float kGaugeScale_ = 624.0f;
 
 	const float kGaugeYPos = 315.0f;
-
-
 
 	float num_ = 0.0f;
 	//外側の縁
