@@ -125,10 +125,11 @@ public:
 	static inline SoLib::VItem<"落下するブロックの発生係数", int32_t> vFallPosCalc_{ 2 };
 
 	static inline SoLib::VItem<"出てくるアイテムの間隔", float> vItemSpawnSpan_{ 0.25f };
+	static inline SoLib::VItem<"初期化の時の最大連結数", int32_t> vMaxChainBlockCount_{ 6 };
 
 	/// @brief 調整項目
 	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallBegin_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_ };
-	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_, &GameManager::vFallPosCalc_ };
+	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_, &GameManager::vFallPosCalc_, &GameManager::vMaxChainBlockCount_ };
 
 	inline static constexpr SoLib::VItemList vItemStatus_ = { &vItemSpawnSpan_ };
 
@@ -185,7 +186,18 @@ private:
 
 	void PlayerMoveSafeArea();
 
+	std::array<int32_t, 9u> LoadLevelData(int32_t levelIndex);
+
+	void RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount);
+
 private:
+
+#ifdef _DEBUG
+
+	std::array<std::array<bool, BlockMap::kMapX>, BlockMap::kMapY> blockMapData_;
+
+#endif // _DEBUG
+
 
 	uint32_t pointTex_;
 	SoLib::Time::DeltaTimer bonusPointDrawTimer_;

@@ -63,7 +63,7 @@ void GameScene::TextureInitialize() {
 	for (uint32_t i = 0; i < 3; i++) {
 		potNumberTexture_[i] = std::make_unique<Tex2DState>();
 		potNumberTexture_[i]->transform.scale = { 80.0f,80.0f };
-		potNumberTexture_[i]->transform.translate = { 70.0f * i,-300.0f ,-41.0f};
+		potNumberTexture_[i]->transform.translate = { 70.0f * i,-300.0f ,-41.0f };
 		potNumberTexture_[i]->uvTransform.scale = { 0.1f,1.0f };
 		potNumberTexture_[i]->color = 0xffffffff;
 		potNumberTexture_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/Timer/timeLimitNumber.png");
@@ -168,6 +168,7 @@ void GameScene::Initialize() {
 
 	if (SelectToGame::GetInstance()->GetRetryFlug()) {
 		isEndObjective_ = true;
+		gameBGM_->Start(0.1f, true);
 		SelectToGame::GetInstance()->SetRetryFlug(false);
 	}
 	else {
@@ -189,11 +190,11 @@ void GameScene::Update() {
 	Lamb::SafePtr gamepad = Input::GetInstance()->GetGamepad();
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 
-	
+
 
 	Debug();
 
-	if (not isEndObjective_ and  not isFirstLoadFlag_) {
+	if (not isEndObjective_ and not isFirstLoadFlag_) {
 		auto itemMax = gameManager_->GetClearItemCount();
 
 		CalcUVPos(gameManager_->GetGameTimer()->GetDeltaTimer().GetGoalFlame(), timerNumberTexture_);
@@ -212,9 +213,16 @@ void GameScene::Update() {
 		if (not ease_.GetIsActive() && not isFadeOut_) {
 			easeCount_ -= 1;
 		}
+		if (easeCount_ > 0) {
+			if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)){
+				ease_.Start(false, 1.0f, Easeing::InBack);
+				isFadeOut_ = true;
+				easeCount_ = -1;
+			}
+		}
 
-		if (easeCount_ == 0){
-			ease_.Start(false, 1.5f, Easeing::OutQuint);
+		if (easeCount_ == 0) {
+			ease_.Start(false, 1.5f, Easeing::InBack);
 			isFadeOut_ = true;
 			easeCount_ = -1;
 		}
@@ -242,10 +250,10 @@ void GameScene::Update() {
 
 		objectiveBackGround_->transform.CalcMatrix();
 		objectiveFrame_->transform.CalcMatrix();
-		if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)) {
+		/*if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)) {
 			isEndObjective_ = true;
 			gameBGM_->Start(0.1f, true);
-		}
+		}*/
 	}
 	else {
 		if (gamepad->Pushed(Gamepad::Button::START) or key->Pushed(DIK_ESCAPE)) {
@@ -267,7 +275,6 @@ void GameScene::Update() {
 
 		currentTexCamera_->Update();
 
-		
 
 		if (not pause_->isActive_) {
 			//enemyManager_->Update();
@@ -337,6 +344,10 @@ void GameScene::Draw() {
 		tex2D_->Draw(clouds_[i]->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, clouds_[i]->textureID, clouds_[i]->color, BlendType::kNormal);
 	}
+
+	gameManager_->Draw(*currentCamera_);
+	gameUIManager_->Draw(*currentTexCamera_);
+
 	if (not isEndObjective_) {
 		tex2D_->Draw(objectiveBackGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kNormal);
@@ -345,7 +356,7 @@ void GameScene::Draw() {
 			, objectiveFrame_->textureID, objectiveFrame_->color, BlendType::kNormal);
 
 		for (size_t i = 0; i < 3; i++) {
-			
+
 			tex2D_->Draw(potNumberTexture_[i]->transform.matWorld_, potNumberTexture_[i]->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
 				, potNumberTexture_[i]->textureID, potNumberTexture_[i]->color, BlendType::kNormal);
 
@@ -364,10 +375,7 @@ void GameScene::Draw() {
 			, potState_->textureID, potState_->color, BlendType::kNormal);
 	}
 
-	
 
-	gameManager_->Draw(*currentCamera_);
-	gameUIManager_->Draw(*currentTexCamera_);
 
 	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	TextureDraw();

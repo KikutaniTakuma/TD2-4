@@ -46,6 +46,7 @@ void GameManager::Init()
 	GlobalVariables::GetInstance()->LoadFile();
 
 	const SelectToGame *select = SelectToGame::GetInstance();
+	const auto &mapData = LoadLevelData(select->GetSelect());
 	LoadGlobalVariant(select->GetSelect());
 	SaveGlobalVariant(select->GetSelect());
 
@@ -84,7 +85,9 @@ void GameManager::Init()
 	gameTimer_->Init();
 	gameTimer_->TimerStart(static_cast<float>(vMaxTime_));
 
-	for (int32_t yi = 0; yi < vStartBlockHeight_; yi++) {
+
+	RandomStartBlockFill(mapData, vBlockTypeCount_, vMaxChainBlockCount_);
+	/*for (int32_t yi = 0; yi < vStartBlockHeight_; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
 			const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
 
@@ -93,9 +96,9 @@ void GameManager::Init()
 			blockMap_->SetBlocks(pos, Vector2::kIdentity, type);
 
 		}
-	}
+	}*/
 
-	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,10.f };
+	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,static_cast<float>(vStartBlockHeight_) };
 
 
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
@@ -218,7 +221,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType(), fallComp->blockDamage_);
 			fallingBlock->SetActive(false);
 			if (fallComp->hasDamage_) {
-				gameEffectManager_->fallingBlock_.set(static_cast<uint32_t>(blockBody->localPos_.x), false);
+				gameEffectManager_->fallingBlock_.reset();
 			}
 			isLanding |= true;
 		}
@@ -481,12 +484,55 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 
 	ImGui::Begin(str);
 
-	//blockMap_->Debug("BlockMap");
-	SoLib::ImGuiWidget(&vFallSpan_);
-	SoLib::ImGuiText("アイテム数", std::to_string(itemCount_) + '/' + std::to_string(vClearItemCount_));
-	SoLib::ImGuiText("残り時間", std::to_string(gameTimer_->GetDeltaTimer().GetNowFlame()) + '/' + std::to_string(gameTimer_->GetDeltaTimer().GetGoalFlame()));
+	////blockMap_->Debug("BlockMap");
+	//SoLib::ImGuiWidget(&vFallSpan_);
+	//SoLib::ImGuiText("アイテム数", std::to_string(itemCount_) + '/' + std::to_string(vClearItemCount_));
+	//SoLib::ImGuiText("残り時間", std::to_string(gameTimer_->GetDeltaTimer().GetNowFlame()) + '/' + std::to_string(gameTimer_->GetDeltaTimer().GetGoalFlame()));
 
-	blockMap_->Debug("BlockMap");
+	//blockMap_->Debug("BlockMap");
+
+
+	for (int32_t yi = BlockMap::kMapY - 1; yi >= 0; yi--) {
+		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+			SoLib::ImGuiWidget(("##" + std::to_string(yi) + ' ' + std::to_string(xi)).c_str(), &blockMapData_[yi][xi]);
+			ImGui::SameLine();
+		}
+		ImGui::NewLine();
+	}
+
+
+	if (ImGui::Button("Save")) {
+
+		std::array<int32_t, 9u> saveData{};
+		for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
+			for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+				reinterpret_cast<std::bitset<15> &>(saveData[BlockMap::kMapY - yi - 1]).set(BlockMap::kMapX - xi - 1, blockMapData_[yi][xi]);
+			}
+		}
+		const SelectToGame *select = SelectToGame::GetInstance();
+		const char *const kFilePath = "Resources/Datas/LevelData.jsonc";
+		std::ifstream ifs;
+
+		nlohmann::json root;
+
+		ifs.open(kFilePath);
+		if (ifs.fail()) {
+			assert(0 and "レベルデータのロードに失敗しました");
+			return {};
+		}
+
+		ifs >> root;
+		ifs.close();
+
+		root["LevelData"][select->GetSelect()] = saveData;
+
+		std::ofstream ofs;
+		ofs.open(kFilePath);
+		ofs << root;
+		ofs.close();
+
+	}
+
 
 	ImGui::End();
 
@@ -1296,4 +1342,76 @@ void GameManager::PlayerMoveSafeArea()
 		}
 	}
 
+}
+
+std::array<int32_t, 9u> GameManager::LoadLevelData(int32_t levelIndex)
+{
+	const char *const kFilePath = "Resources/Datas/LevelData.jsonc";
+	std::ifstream ifs;
+
+	nlohmann::json root;
+
+	ifs.open(kFilePath);
+	if (ifs.fail()) {
+		assert(0 and "レベルデータのロードに失敗しました");
+		return {};
+	}
+
+	ifs >> root;
+	ifs.close();
+
+	const auto &levelData = root["LevelData"][levelIndex];
+	std::array<int32_t, 9u> map = levelData;
+
+	return map;
+
+}
+
+void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount)
+{
+	for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
+
+		std::bitset<15u> lineData = reinterpret_cast<const std::bitset<15u>&>(map.at(BlockMap::kMapY - yi - 1));
+
+		// その行が空であったら終わる
+		if (lineData.none()) {
+			return;
+		}
+		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+			bool targetBit = not lineData[BlockMap::kMapX - xi - 1];
+			// もし、そこのデータが空であったら飛ばす
+			if (targetBit) { continue; }
+#ifdef _DEBUG
+
+			blockMapData_[yi][xi] = true;
+
+#endif // _DEBUG
+
+
+			std::bitset<static_cast<int32_t>(Block::BlockType::kMax) - 1> blockSet{};
+			int32_t blockChainCount = 0;
+			do {
+				const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
+
+				Block::BlockType type = static_cast<Block::BlockType>(std::clamp(Lamb::Random(1, blockTypeCount), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1));
+
+
+				blockMap_->SetBlocks(pos, Vector2::kIdentity, type);
+
+				// データを確認
+				const auto &chainMap = blockMap_->FindChainBlocks({ static_cast<int16_t>(pos.x),static_cast<int16_t>(pos.y) }, type, {});
+
+				for (const auto &line : chainMap) {
+					// 数字があるうえで、連結数が増えなかった場合終わる
+					if (line.none() and blockChainCount) { break; }
+
+					blockChainCount += static_cast<int32_t>(line.count());
+				}
+				blockSet.set(static_cast<uint32_t>(type) - 1, true);
+				if (blockSet.count() >= blockTypeCount) {
+					break;
+				}
+			} while (blockChainCount > maxChainCount);
+		}
+	}
 }

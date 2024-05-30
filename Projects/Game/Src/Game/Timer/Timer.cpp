@@ -58,6 +58,8 @@ void GameTimerRender::Init([[maybe_unused]] GameTimer *gameTimer){
 	timeNumberHundredState_->transform.translate = { 400.0f, 80.0f };
 	timeNumberHundredState_->uvTransform.scale = { 0.1f,1.0f };
 	timeNumberHundredState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timeLimitNumber.png");
+
+	isFirstLoad_ = true;
 }
 
 void GameTimerRender::Update([[maybe_unused]] const float deltaTime){
@@ -106,8 +108,16 @@ void GameTimerRender::Draw([[maybe_unused]] const Camera &camera) const{
 
 void GameTimerRender::TimeNumberMove() {
 	const auto& deltaTimer = pGameTimer_->GetDeltaTimer();
-	//現在の残り時間
 	float nowRemainingTime = deltaTimer.GetGoalFlame() - deltaTimer.GetNowFlame();
+	//現在の残り時間
+	if (isFirstLoad_){
+		nowRemainingTime = deltaTimer.GetGoalFlame();
+		isFirstLoad_ = false;
+	}
+	else {
+		nowRemainingTime = deltaTimer.GetGoalFlame() - deltaTimer.GetNowFlame();
+	}
+	
 
 	timeNumberNum_ = static_cast<int32_t>(nowRemainingTime) % 10;
 	timeNumberTenNum_ = static_cast<int32_t>(nowRemainingTime / 10.0f) % 10;
