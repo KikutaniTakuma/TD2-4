@@ -321,7 +321,7 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 		if (sceneManager_->GetIsPad()){
 			if (i == static_cast<size_t>(sceneNum)) {
 				tex->transform.scale = { 64.0f,64.0f };
-				tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerAttack.png");
+				tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerJump.png");
 			}
 			else {
 				tex->transform.scale = { 64.0f,64.0f };
@@ -334,12 +334,13 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 				tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
 			}
 			else {
+				tex->transform.scale = { 128.0f,48.0f };
 				tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
 			}
 		}
 
 		if (key->LongPush(DIK_SPACE) or 
-			(pad->GetButton(Gamepad::Button::RIGHT_SHOULDER) and i == static_cast<size_t>(sceneNum)) or
+			(pad->GetButton(Gamepad::Button::A) and i == static_cast<size_t>(sceneNum)) or
 			(pad->GetButton(Gamepad::Button::A) and i != static_cast<size_t>(sceneNum))) {
 			tex->uvTransform.translate.x = 0.5f;
 		}
@@ -391,13 +392,13 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 	if (tex->textureName == "jumpButton") {
 		if (sceneManager_->GetIsPad()) {
 			tex->transform.scale = { 64.0f,64.0f };
-			tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerJump.png");
+			tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerAttack.png");
 		}
 		else {
 			tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
 		}
 
-		if (key->LongPush(DIK_Z) or pad->GetButton(Gamepad::Button::A)) {
+		if (key->LongPush(DIK_Z) or pad->GetButton(Gamepad::Button::RIGHT_SHOULDER)) {
 			tex->uvTransform.translate.x = 0.5f;
 		}
 		else {
