@@ -50,7 +50,7 @@ private:
 private:
 	Texture2D* tex2D_;
 	//始点終点
-	const Vector2 kGaugePosX_ = { -394.0f,229.0f };
+	const Vector2 kGaugePosX_ = { -404.0f,220.0f };
 	float gaugePosLength_ = 659.0f;
 
 	//現在のアイテムの個数

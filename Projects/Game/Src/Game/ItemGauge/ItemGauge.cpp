@@ -27,13 +27,13 @@ void ItemGauge::Initialize(){
 
 	moveGaugeCenterState_ = std::make_unique<Tex2DState>();
 	moveGaugeCenterState_->color = 0x5ea632ff;
-	moveGaugeCenterState_->transform.scale = { 0.0f,72.0f };
+	moveGaugeCenterState_->transform.scale = { 0.0f,46.0f };
 	moveGaugeCenterState_->transform.translate = { 0.0f, kGaugeYPos };
 	moveGaugeCenterState_->textureID = TextureManager::GetInstance()->GetWhiteTex();
 
 	moveGaugeReduction_ = std::make_unique<Tex2DState>();
 	moveGaugeReduction_->color = 0xff0000ff;
-	moveGaugeReduction_->transform.scale = { 0.0f,48.0f };
+	moveGaugeReduction_->transform.scale = { 0.0f,46.0f };
 	moveGaugeReduction_->transform.translate = { 0.0f, 315.0f ,-5.0f};
 	moveGaugeReduction_->textureID = TextureManager::GetInstance()->GetWhiteTex();
 
@@ -68,7 +68,6 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 		afterItemNum_ = nowCount;
 	}
 	
-
 	num_ = static_cast<float>(nowCount) / static_cast<float>(maxCount);
 
 	if (num_ > 1.0f) {
@@ -159,7 +158,7 @@ void ItemGauge::MoveGauge(){
 		tex.scale.x = reductionGaugeScale_;
 
 		
-		moveGaugeReductionRight_->transform.translate.x = tex.translate.x + (tex.scale.x * 0.5f) + (moveGaugeReductionRight_->transform.scale.x * 0.49f);
+		moveGaugeReductionRight_->transform.translate.x = tex.translate.x + (tex.scale.x * 0.5f) + (moveGaugeReductionRight_->transform.scale.x * 0.25f);
 
 	}
 
@@ -183,11 +182,11 @@ void ItemGauge::MoveGauge(){
 
 		}
 
-		moveGaugeReductionRight_->transform.translate.x = tex.translate.x + (tex.scale.x * 0.5f) + (moveGaugeReductionRight_->transform.scale.x * 0.49f);
+		moveGaugeReductionRight_->transform.translate.x = tex.translate.x + (tex.scale.x * 0.5f) + (moveGaugeReductionRight_->transform.scale.x * 0.25f);
 
 	}
 
 	
-	moveGaugeCenterState_->transform.scale.y = 48.0f;
+	/*moveGaugeCenterState_->transform.scale.y = 48.0f;*/
 	
 }
