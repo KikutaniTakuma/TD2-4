@@ -85,7 +85,7 @@ void GameManager::Init()
 	gameTimer_->TimerStart(static_cast<float>(vMaxTime_));
 
 
-	RandomStartBlockFill(vStartBlockHeight_, vBlockTypeCount_);
+	RandomStartBlockFill(vStartBlockHeight_, vBlockTypeCount_, vMaxChainBlockCount_);
 	/*for (int32_t yi = 0; yi < vStartBlockHeight_; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
 			const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
@@ -1300,12 +1300,12 @@ void GameManager::PlayerMoveSafeArea()
 
 }
 
-void GameManager::RandomStartBlockFill(const int32_t height, const int32_t blockTypeCount)
+void GameManager::RandomStartBlockFill(const int32_t height, const int32_t blockTypeCount, const int32_t maxChainCount)
 {
 	for (int32_t yi = 0; yi < height; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
 			std::bitset<static_cast<int32_t>(Block::BlockType::kMax) - 1> blockSet{};
-			uint32_t blockChain = 0;
+			int32_t blockChain = 0;
 			do {
 				const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
 
@@ -1321,13 +1321,13 @@ void GameManager::RandomStartBlockFill(const int32_t height, const int32_t block
 					// 数字があるうえで、連結数が増えなかった場合終わる
 					if (line.none() and blockChain) { break; }
 
-					blockChain += static_cast<uint32_t>(line.count());
+					blockChain += static_cast<int32_t>(line.count());
 				}
 				blockSet.set(static_cast<uint32_t>(type) - 1, true);
 				if (blockSet.count() >= blockTypeCount) {
 					break;
 				}
-			} while (blockChain > 6);
+			} while (blockChain > maxChainCount);
 		}
 	}
 }
