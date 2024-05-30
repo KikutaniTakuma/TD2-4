@@ -52,24 +52,17 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 			if (modelState) {
 
 				const auto &block = (*blockMap_)[yi][xi];
-				//if (hitMap_[yi][xi]) {
-				//pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, 0xFFFFFFFF, BlendType::kNone);
-
-				//}
-				//else {
 				pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), block.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 
-				//}
-			}
+				if (hitTimer_.IsActive() and hitMap_[yi][xi]) {
+					Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
 
+					pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, SoLib::ColorLerp(0xFFFFFFFF, 0xFFFFFF55, hitTimer_.GetProgress()), BlendType::kNormal);
 
-			// 破壊フラグが立っていたら
-			if (hitTimer_.IsActive() and hitMap_[yi][xi]) {
-				Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
-
-				pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, SoLib::ColorLerp(0xFFFFFFFF, 0xFFFFFF55, hitTimer_.GetProgress()), BlendType::kNormal);
+				}
 
 			}
+
 			// 破壊フラグが立っていたら
 			if (isBreakDraw and breakBlockMap_[yi][xi]) {
 				Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
