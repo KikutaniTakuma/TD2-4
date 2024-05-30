@@ -683,6 +683,7 @@ void ResultScene::UpdateUI() {
 			sceneManager_->SceneChange(BaseScene::ID::Game);
 			break;
 		case ResultScene::CurrentUIPick::kRetry:
+			SelectToGame::GetInstance()->SetRetryFlug(true);
 			SelectToGame::GetInstance()->SetSelect(preGameStageNumber_);
 			gameDecision_->Start(0.2f, false);
 			sceneManager_->SceneChange(BaseScene::ID::Game);
