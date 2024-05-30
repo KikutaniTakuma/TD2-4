@@ -127,7 +127,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 	GlobalVariables::GetInstance()->Update();
 
-	GetMap()->SetHitMap({});
+	//GetMap()->SetHitMap({});
 
 	const float fixDeltaTime = std::clamp(deltaTime, 0.f, 0.1f);
 
@@ -678,7 +678,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 	for (const POINTS pos : dwarfPosSet) {
 		if (not BlockMap::IsOutSide(pos)) {
 			// もし、ブロックが存在しなかった場合はそこを折る
-			if (blockMap_->GetBlockType(pos) == Block::BlockType::kNone) {
+			if (blockMap_->GetBlockType(pos) != block) {
 				breakBlock[pos.y][pos.x] = false;
 			}
 		}
@@ -736,7 +736,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 	//Block::BlockType breakBlockType = Block::BlockType::kNone;
 
 	for (targetPos.y = 0; targetPos.y < BlockMap::kMapY; targetPos.y++) {
-		const auto &breakLine = chainBlockMap[targetPos.y];
+		const auto &breakLine = breakBlock[targetPos.y];
 		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
 			if (breakLine[targetPos.x]) {
 				const auto blockType = blockMap_->GetBlockType(targetPos);
@@ -787,6 +787,7 @@ BlockMap::BlockBitMap &&GameManager::HitChainBlocks(POINTS localPos) {
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
 
 	blockMap_->SetHitMap(chainBlockMap);
+	blockMap_->StartTimer();
 
 	return std::move(chainBlockMap);
 }

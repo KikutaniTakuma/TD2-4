@@ -124,7 +124,7 @@ private:
 
 	bool isFirstLoadFlag_ = true;
 
-	/*時計とかのための*/
+	///////////*時計とかのための*///////////
 	//必要な情報を描画するためのテクスチャ
 	std::array<std::unique_ptr<Tex2DState>, 3> potNumberTexture_;
 	//0から1の位、10の位、100の位
@@ -142,6 +142,22 @@ private:
 	Vector3 potNumberPos_;
 	//制限時間
 	Vector3 clockNumberPos_;
+
+	Vector3 timerPos_;
+
+	Vector3 clockHandsPos_;
+
+	Vector3 potPos_;
+
+	Easeing ease_;
+
+	bool isFadeOut_ = false;
+
+	//始点と終点
+	Vector2 easePoint_ = { 750.0f,0.0f };
+
+	int32_t easeCount_ = 90;
+
 
 	float numberDistance_;
 
