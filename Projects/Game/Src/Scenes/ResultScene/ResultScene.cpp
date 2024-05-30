@@ -31,6 +31,8 @@ void ResultScene::Initialize(){
 	// ステージ番号入力
 	preGameStageNumber_ = static_cast<uint32_t>(SelectToGame::GetInstance()->GetSelect());
 
+	isLastStage_ = preGameStageNumber_ == SelectToGame::kMaxStage - 1;
+
 	effectStatus_ = EffectState::kFirst;
 
 	currentCamera_->pos = { 0.f, 0.f ,-10.0f };
@@ -668,6 +670,9 @@ void ResultScene::DrawConstantUI() {
 void ResultScene::UpdateUI() {
 	Lamb::SafePtr gamepad = input_->GetGamepad();
 	Lamb::SafePtr key = input_->GetKey();
+	if (isLastStage_ and currentUIPick_ == CurrentUIPick::kToNext) {
+		currentUIPick_ = CurrentUIPick::kToStageSelect;
+	}
 
 	if (isSkip_ and (gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE))) {
 		switch (currentUIPick_)
@@ -702,7 +707,12 @@ void ResultScene::UpdateUI() {
 			currentUIPick_ = CurrentUIPick::kToStageSelect;
 			break;
 		case ResultScene::CurrentUIPick::kRetry:
-			currentUIPick_ = CurrentUIPick::kToNext;
+			if (isLastStage_) {
+				currentUIPick_ = CurrentUIPick::kToStageSelect;
+			}
+			else {
+				currentUIPick_ = CurrentUIPick::kToNext;
+			}
 			break;
 		case ResultScene::CurrentUIPick::kToStageSelect:
 			currentUIPick_ = CurrentUIPick::kRetry;
@@ -723,7 +733,12 @@ void ResultScene::UpdateUI() {
 			currentUIPick_ = CurrentUIPick::kToStageSelect;
 			break;
 		case ResultScene::CurrentUIPick::kToStageSelect:
-			currentUIPick_ = CurrentUIPick::kToNext;
+			if (isLastStage_) {
+				currentUIPick_ = CurrentUIPick::kRetry;
+			}
+			else {
+				currentUIPick_ = CurrentUIPick::kToNext;
+			}
 			break;
 		default:
 			break;
@@ -782,14 +797,16 @@ void ResultScene::UpdateUI() {
 }
 
 void ResultScene::DrawUI() {
-	tex2D_->Draw(
-		toNextUI_->transform.matWorld_,
-		toNextUI_->uvTransform.matWorld_,
-		currentCamera_->GetViewOthographics(),
-		toNextUI_->textureID,
-		toNextUI_->color,
-		BlendType::kNormal
-	);
+	if (not isLastStage_) {
+		tex2D_->Draw(
+			toNextUI_->transform.matWorld_,
+			toNextUI_->uvTransform.matWorld_,
+			currentCamera_->GetViewOthographics(),
+			toNextUI_->textureID,
+			toNextUI_->color,
+			BlendType::kNormal
+		);
+	}
 	tex2D_->Draw(
 		retryUI_->transform.matWorld_,
 		retryUI_->uvTransform.matWorld_,

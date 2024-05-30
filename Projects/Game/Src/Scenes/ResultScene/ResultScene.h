@@ -129,6 +129,8 @@ private:
 
 	bool isFirstEnd_ = false;
 
+	bool isLastStage_ = false;
+
 
 	// ああゲームの音～
 	Audio* gameDecision_ = nullptr;
