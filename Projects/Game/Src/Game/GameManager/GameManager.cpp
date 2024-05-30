@@ -84,7 +84,9 @@ void GameManager::Init()
 	gameTimer_->Init();
 	gameTimer_->TimerStart(static_cast<float>(vMaxTime_));
 
-	for (int32_t yi = 0; yi < vStartBlockHeight_; yi++) {
+
+	RandomStartBlockFill(vStartBlockHeight_, vBlockTypeCount_);
+	/*for (int32_t yi = 0; yi < vStartBlockHeight_; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
 			const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
 
@@ -93,7 +95,7 @@ void GameManager::Init()
 			blockMap_->SetBlocks(pos, Vector2::kIdentity, type);
 
 		}
-	}
+	}*/
 
 	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,static_cast<float>(vStartBlockHeight_) };
 
@@ -1296,4 +1298,36 @@ void GameManager::PlayerMoveSafeArea()
 		}
 	}
 
+}
+
+void GameManager::RandomStartBlockFill(const int32_t height, const int32_t blockTypeCount)
+{
+	for (int32_t yi = 0; yi < height; yi++) {
+		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+			std::bitset<static_cast<int32_t>(Block::BlockType::kMax) - 1> blockSet{};
+			uint32_t blockChain = 0;
+			do {
+				const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
+
+				Block::BlockType type = static_cast<Block::BlockType>(std::clamp(Lamb::Random(1, blockTypeCount), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1));
+
+
+				blockMap_->SetBlocks(pos, Vector2::kIdentity, type);
+
+				// データを確認
+				const auto &map = blockMap_->FindChainBlocks({ static_cast<int16_t>(pos.x),static_cast<int16_t>(pos.y) }, type, {});
+
+				for (const auto &line : map) {
+					// 数字があるうえで、連結数が増えなかった場合終わる
+					if (line.none() and blockChain) { break; }
+
+					blockChain += static_cast<uint32_t>(line.count());
+				}
+				blockSet.set(static_cast<uint32_t>(type) - 1, true);
+				if (blockSet.count() >= blockTypeCount) {
+					break;
+				}
+			} while (blockChain > 6);
+		}
+	}
 }

@@ -185,6 +185,8 @@ private:
 
 	void PlayerMoveSafeArea();
 
+	void RandomStartBlockFill(const int32_t height, const int32_t blockTypeCount);
+
 private:
 
 	uint32_t pointTex_;
