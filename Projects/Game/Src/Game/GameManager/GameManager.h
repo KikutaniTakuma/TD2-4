@@ -186,7 +186,9 @@ private:
 
 	void PlayerMoveSafeArea();
 
-	void RandomStartBlockFill(const int32_t height, const int32_t blockTypeCount, const int32_t maxChainCount);
+	std::array<int32_t, 9u> LoadLevelData(int32_t levelIndex);
+
+	void RandomStartBlockFill(const std::array<int32_t, 9u>&map, const int32_t blockTypeCount, const int32_t maxChainCount);
 
 private:
 
