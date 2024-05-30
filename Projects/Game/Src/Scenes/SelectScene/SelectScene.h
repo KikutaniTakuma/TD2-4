@@ -73,7 +73,6 @@ private:
 
 	Texture2D* tex2D_;
 	std::array<std::unique_ptr<Tex2DState>, kMaxStage_> frameTexies_;
-	std::array<std::unique_ptr<Tex2DState>, kMaxStage_> stageBackGroundTexies_;
 	std::array<std::unique_ptr<Tex2DState>, kMaxStage_> itemTexies_;
 
 	std::array<InGameData, kMaxStage_> inGameDatas_;
