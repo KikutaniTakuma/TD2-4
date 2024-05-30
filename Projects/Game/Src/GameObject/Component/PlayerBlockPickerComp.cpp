@@ -80,6 +80,7 @@ void PlayerBlockPickerComp::PickUp(int32_t facing)
 		}
 
 		const POINTS pos = { .x = static_cast<int16_t>(targetPos.x), .y = static_cast<int16_t>(targetPos.y) };
+		if (BlockMap::IsOutSide(pos)) { return; }
 		auto &block = pBlockMap_->GetBlockMap()->at(pos.y).at(pos.x);
 
 		if (block) {
@@ -153,12 +154,12 @@ void PlayerBlockPickerComp::Drop(int32_t facing)
 
 		}
 		else {
-			Audio* noSpace = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/noSpace.mp3");
+			Audio *noSpace = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/noSpace.mp3");
 			noSpace->Start(0.2f, false);
 		}
 	}
 	else {
-		Audio* noSpace = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/noSpace.mp3");
+		Audio *noSpace = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/noSpace.mp3");
 		noSpace->Start(0.2f, false);
 	}
 }

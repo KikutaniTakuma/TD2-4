@@ -63,17 +63,21 @@ void DwarfAnimatorComp::Update()
 		}
 		bool isAttack = 0.9f < pDwarfComp_->AttackTimer().GetProgress() and pDwarfComp_->AttackTimer().GetProgress() <= 1.0f;
 		if ((not spriteAnimator_->GetIsActive() and isAttack)/* or isDrakDwarf_.OnEnter()*/) {
-			pSpriteComp_->SetTexture(textureID_[isHit][2]);
 			spriteAnimator_->SetLoopAnimation(false);
 			spriteAnimator_->SetDuration(0.25f);
 			spriteAnimator_->Start();
 			absorptionParticle_->Start();
 		}
 		else if (not spriteAnimator_->GetIsActive()) {
-			pSpriteComp_->SetTexture(textureID_[isHit][3]);
 			spriteAnimator_->SetLoopAnimation(false);
 			spriteAnimator_->SetDuration(0.35f);
 			spriteAnimator_->Start();
+		}
+		if (isAttack) {
+			pSpriteComp_->SetTexture(textureID_[isHit][2]);
+		}
+		else {
+			pSpriteComp_->SetTexture(textureID_[isHit][3]);
 		}
 		if (0.99f < pDwarfComp_->AttackTimer().GetProgress()) {
 			absorptionParticle_->Stop();
