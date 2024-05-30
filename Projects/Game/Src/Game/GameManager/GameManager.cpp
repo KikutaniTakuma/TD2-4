@@ -1327,11 +1327,17 @@ std::array<int32_t, 9u> GameManager::LoadLevelData(int32_t levelIndex)
 void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount)
 {
 	for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
+
+		std::bitset<15u> lineData = reinterpret_cast<const std::bitset<15u>&>(map.at(BlockMap::kMapY - yi - 1));
+
 		// その行が空であったら終わる
-		if (map.at(BlockMap::kMapY - yi - 1) == 0) {
+		if (lineData.none()) {
 			return;
 		}
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+
+			// もし、そこのデータが空であったら飛ばす
+			if (not lineData[BlockMap::kMapX - xi - 1]) { continue; }
 			std::bitset<static_cast<int32_t>(Block::BlockType::kMax) - 1> blockSet{};
 			int32_t blockChainCount = 0;
 			do {
