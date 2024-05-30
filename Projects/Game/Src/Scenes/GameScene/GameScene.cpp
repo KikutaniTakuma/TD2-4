@@ -212,9 +212,16 @@ void GameScene::Update() {
 		if (not ease_.GetIsActive() && not isFadeOut_) {
 			easeCount_ -= 1;
 		}
+		if (easeCount_ > 0) {
+			if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)){
+				ease_.Start(false, 1.0f, Easeing::InBack);
+				isFadeOut_ = true;
+				easeCount_ = -1;
+			}
+		}
 
 		if (easeCount_ == 0){
-			ease_.Start(false, 1.5f, Easeing::OutQuint);
+			ease_.Start(false, 1.5f, Easeing::InBack);
 			isFadeOut_ = true;
 			easeCount_ = -1;
 		}
@@ -242,10 +249,10 @@ void GameScene::Update() {
 
 		objectiveBackGround_->transform.CalcMatrix();
 		objectiveFrame_->transform.CalcMatrix();
-		if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)) {
+		/*if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)) {
 			isEndObjective_ = true;
 			gameBGM_->Start(0.1f, true);
-		}
+		}*/
 	}
 	else {
 		if (gamepad->Pushed(Gamepad::Button::START) or key->Pushed(DIK_ESCAPE)) {
