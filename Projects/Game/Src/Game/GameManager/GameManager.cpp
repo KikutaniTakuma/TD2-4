@@ -95,7 +95,7 @@ void GameManager::Init()
 		}
 	}
 
-	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,10.f };
+	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,static_cast<float>(vStartBlockHeight_) };
 
 
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
