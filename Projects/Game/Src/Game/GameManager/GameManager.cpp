@@ -806,7 +806,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 
 	for (auto *const dwarf : deadDwarfList) {
 
-		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kBlue, itemSpawnCount_);
+		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kGreen, itemSpawnCount_);
 		dwarf->SetActive(false);
 
 	}
