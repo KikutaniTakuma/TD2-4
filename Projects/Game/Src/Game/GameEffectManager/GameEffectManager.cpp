@@ -101,7 +101,7 @@ void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
 		i->Draw(
 			camera.rotate,
 			camera.GetViewOthographics(),
-			BlendType::kNormal
+			BlendType::kUnenableDepthNormal
 		);
 	}
 	for (uint32_t i = 0; i < fallingBlock_.size(); i++) {
