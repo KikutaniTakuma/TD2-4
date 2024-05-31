@@ -27,13 +27,13 @@ void PauseMenu::Initialize() {
 	menu_->textureID = drawerManager->LoadTexture("./Resources/Pause/pauseFrame.png");
 	modoru_ = std::make_unique<Tex2DState>();
 	modoru_->transform.scale = { 100.0f, 60.0f };
-	modoru_->transform.translate = {-230.0f, 100.0f };
+	modoru_->transform.translate = {-230.0f, 77.5f };
 	modoru_->textureID = drawerManager->LoadTexture("./Resources/Pause/back.png");
 	modoruUI_ = std::make_unique<Tex2DState>();
 	modoruUI_->textureID = drawerManager->LoadTexture("./Resources/Pause/pauseButton.png");
 	modoruUI_->uvTransform.scale.x = 0.5f;
 	modoruUI_->transform.scale = { 60.0f, 60.0f };
-	modoruUI_->transform.translate = { -315.0f, 100.0f };
+	modoruUI_->transform.translate = { -315.0f, 77.5f };
 	retry_ = std::make_unique<Tex2DState>();
 	retry_->uvTransform.scale.x = 0.5f;
 	retry_->textureID = drawerManager->LoadTexture("./Resources/Result/retry.png");
@@ -47,7 +47,7 @@ void PauseMenu::Initialize() {
 	puaseMenuUI_ = std::make_unique<Tex2DState>();
 	puaseMenuUI_->textureID = drawerManager->LoadTexture("./Resources/Pause/pause.png");
 	puaseMenuUI_->transform.scale = { 200.0f, 60.0f };
-	puaseMenuUI_->transform.translate = { 0.0f, 100.0f };
+	puaseMenuUI_->transform.translate = { 0.0f, 77.5f };
 
 	isRetryChoice_ = true;
 	isStick_ = false;
