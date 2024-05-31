@@ -7,11 +7,16 @@ void GameEffectManager::Init()
 	pGameManager_ = GameManager::GetInstance();
 	pMap_ = pGameManager_->GetMap();
 
-	particles_.resize(20);
-	for (auto &i : particles_) {
+	blockParticles_.resize(20);
+	for (auto &i : blockParticles_) {
 		i = std::make_unique<Particle>();
 
 		i->LoadSettingDirectory("Block-Break");
+	}
+	for (auto &i : dwarfParticle_) {
+		i = std::make_unique<Particle>();
+
+		i->LoadSettingDirectory("MergeSlime");
 	}
 	AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockBreak.mp3");
 
@@ -35,10 +40,10 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 	if (blockBreakPos_.first != Block::BlockType::kNone) {
 		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockBreak.mp3");
 		audio->Start(0.2f, false);
-		auto particle = particles_.begin();
+		auto particle = blockParticles_.begin();
 		for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
 			for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
-				if (particle != particles_.end()) {
+				if (particle != blockParticles_.end()) {
 					if (blockBreakPos_.second[yi][xi]) {
 						(*particle)->ParticleStart({ ToGrobal(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -10.f }, Vector2::kIdentity);
 						(*particle)->SetParticleScale(0.5f);
@@ -53,14 +58,43 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 		}
 	}
 
-	for (auto &i : particles_) {
+	for (const Vector2 pos : margeDwarfPos_) {
+		auto particle = dwarfParticle_.begin() + dwarfParticleIndex_;
+		if (particle != dwarfParticle_.end()) {
+			(*particle)->ParticleStart({ ToGrobal(pos), -10.f }, Vector2::kIdentity);
+			(*particle)->SetParticleScale(0.2f);
+			++particle;
+			dwarfParticleIndex_ = std::clamp(dwarfParticleIndex_++, 0, 19);
+		}
+		else {
+			break;
+		}
+	}
+
+	for (auto i = dwarfParticle_.begin(); i != dwarfParticle_.end(); i++) {
+		auto &item = *i;
+		item->Update();
+		if (not item->GetIsParticleStart()) {
+			std::swap(item, dwarfParticle_.at(dwarfParticleIndex_));
+			dwarfParticleIndex_ = std::clamp(dwarfParticleIndex_--, 0, 19);
+		}
+	}
+
+	for (auto &i : blockParticles_) {
 		i->Update();
 	}
 }
 
 void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
 {
-	for (auto &i : particles_) {
+	for (auto &i : blockParticles_) {
+		i->Draw(
+			camera.rotate,
+			camera.GetViewOthographics(),
+			BlendType::kNormal
+		);
+	}
+	for (auto &i : dwarfParticle_) {
 		i->Draw(
 			camera.rotate,
 			camera.GetViewOthographics(),
@@ -90,5 +124,5 @@ void GameEffectManager::Clear()
 {
 	blockBreakPos_ = {};
 	dwarfDeadPos_.clear();
-
+	margeDwarfPos_.clear();
 }

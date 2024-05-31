@@ -1264,6 +1264,7 @@ void GameManager::MargeDwarf()
 
 						// 召喚先
 						Vector2 spawnPos = fBody->localPos_;
+						gameEffectManager_->margeDwarfPos_.push_back(spawnPos);
 
 						AddDarkDwarf(spawnPos);
 
