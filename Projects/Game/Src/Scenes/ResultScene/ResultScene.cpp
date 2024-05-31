@@ -153,8 +153,8 @@ void ResultScene::Initialize(){
 	toStageSelectUI_->uvTransform.scale.x = 0.5f;
 
 	toNextUI_->transform.scale = { 256.0f, 72.0f, 1.0f };
-	retryUI_->transform.scale = { 256.0f, 72.0f, 1.0f };
-	toStageSelectUI_->transform.scale = { 256.0f, 72.0f, 1.0f };
+	retryUI_->transform.scale = { 256.0f, 90.0f, 1.0f };
+	toStageSelectUI_->transform.scale = { 256.0f, 90.0f, 1.0f };
 
 	toNextUI_->transform.translate = { 470.0f, -150.0f, 0.0f };
 	retryUI_->transform.translate = { 470.0f, -222.0f, 0.0f };
@@ -756,8 +756,8 @@ void ResultScene::UpdateUI() {
 		toStageSelectUI_->uvTransform.translate.x = 0.0f;
 
 		toNextUI_->transform.scale = Vector3{ 256.0f, 72.0f, 1.0f } * 1.1f;
-		retryUI_->transform.scale = Vector3{ 256.0f, 72.0f, 1.0f };
-		toStageSelectUI_->transform.scale = Vector3{ 256.0f, 72.0f, 1.0f };
+		retryUI_->transform.scale = Vector3{ 266.0f, 85.0f, 1.0f };
+		toStageSelectUI_->transform.scale = Vector3{ 266.0f, 85.0f, 1.0f };
 		break;
 	case ResultScene::CurrentUIPick::kRetry:
 		toNextUI_->uvTransform.translate.x = 0.0f;
@@ -765,8 +765,8 @@ void ResultScene::UpdateUI() {
 		toStageSelectUI_->uvTransform.translate.x = 0.0f;
 
 		toNextUI_->transform.scale = Vector3{ 256.0f, 72.0f, 1.0f };
-		retryUI_->transform.scale = Vector3{ 256.0f, 72.0f, 1.0f }*1.1f;
-		toStageSelectUI_->transform.scale = Vector3{ 256.0f, 72.0f, 1.0f };
+		retryUI_->transform.scale = Vector3{ 266.0f, 85.0f, 1.0f }*1.1f;
+		toStageSelectUI_->transform.scale = Vector3{ 266.0f, 85.0f, 1.0f };
 		break;
 	case ResultScene::CurrentUIPick::kToStageSelect:
 		toNextUI_->uvTransform.translate.x = 0.0f;
@@ -774,8 +774,8 @@ void ResultScene::UpdateUI() {
 		toStageSelectUI_->uvTransform.translate.x = 0.5f;
 
 		toNextUI_->transform.scale = Vector3{ 256.0f, 72.0f, 1.0f };
-		retryUI_->transform.scale = Vector3{ 256.0f, 72.0f, 1.0f };
-		toStageSelectUI_->transform.scale = Vector3{ 256.0f, 72.0f, 1.0f }*1.1f;
+		retryUI_->transform.scale = Vector3{ 266.0f, 85.0f, 1.0f };
+		toStageSelectUI_->transform.scale = Vector3{ 266.0f, 85.0f, 1.0f }*1.1f;
 		break;
 	default:
 		break;
