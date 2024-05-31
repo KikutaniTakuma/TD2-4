@@ -53,19 +53,25 @@ private:
 	const Vector2 kGaugePosX_ = { -404.0f,220.0f };
 	float gaugePosLength_ = 659.0f;
 
+	uint32_t gaugeColorBase_ = 0x5ea632ff;
+
+	const uint32_t gaugeColor_ = 0x5ea632ff;
+
+	const uint32_t gaugeColorChange_ = 0x7fc854ff;
+
 	//現在のアイテムの個数
 	int32_t beforeItemNum_;
 	int32_t afterItemNum_;
 
+	//前のフレームのゲージの真ん中の右端
 	float beforeGaugeCenterRight_;
+	//後のフレームのゲージの真ん中の右端
 	float afterGaugeCenterRight_;
-
-	float beforeReductionRightPos_;
-
+	//減った後のゲージのポジション
 	float reductionGaugePos_;
-
+	//減った後のゲージのスケール
 	float reductionGaugeScale_;
-
+	//減っているときの色
 	uint32_t reductionColor_ = 0xff0000ff;
 
 	const uint32_t RedWhite_ = 0xff9999ff;
@@ -79,10 +85,20 @@ private:
 
 	//アイテムが増加したときにtrue
 	Lamb::Flg isItemIncreaseNow_ = false;
-
+	//増加するときのやつ
+	//前のフレームの真ん中のポジション
 	float beforeIncreaseGaugeCenterPos_;
+	//後のフレームの真ん中のポジション
 	float afterIncreaseGaugeCenterPos_;
+
+	//前のフレームの右のポジション
+	float beforeIncreaseGaugeRightPos_;
+	//後のフレームの右のポジション
+	float afterIncreaseGaugeRightPos_;
+
+	//前のフレームの真ん中のスケール
 	float beforeIncreaseGaugeCenterScale_;
+	//後のフレームの真ん中のスケール
 	float afterIncreaseGaugeCenterScale_;
 
 	//右から左の設定
