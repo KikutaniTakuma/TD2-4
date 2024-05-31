@@ -211,7 +211,7 @@ void GameScene::Update() {
 		
 
 		if (not ease_.GetIsActive() && not isFadeOut_) {
-			//easeCount_ -= 1;
+			easeCount_ -= 1;
 		}
 		if (easeCount_ > 0) {
 			if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)){
@@ -359,26 +359,26 @@ void GameScene::Draw() {
 			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kUnenableDepthNormal);
 
 		tex2D_->Draw(objectiveFrame_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, objectiveFrame_->textureID, objectiveFrame_->color, BlendType::kNormal);
+			, objectiveFrame_->textureID, objectiveFrame_->color, BlendType::kUnenableDepthNormal);
 
 		for (size_t i = 0; i < 3; i++) {
 
 			tex2D_->Draw(potNumberTexture_[i]->transform.matWorld_, potNumberTexture_[i]->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
-				, potNumberTexture_[i]->textureID, potNumberTexture_[i]->color, BlendType::kNormal);
+				, potNumberTexture_[i]->textureID, potNumberTexture_[i]->color, BlendType::kUnenableDepthNormal);
 
 			tex2D_->Draw(timerNumberTexture_[i]->transform.matWorld_, timerNumberTexture_[i]->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
-				, timerNumberTexture_[i]->textureID, timerNumberTexture_[i]->color, BlendType::kNormal);
+				, timerNumberTexture_[i]->textureID, timerNumberTexture_[i]->color, BlendType::kUnenableDepthNormal);
 		}
 
 		tex2D_->Draw(timerState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, timerState_->textureID, timerState_->color, BlendType::kNormal);
+			, timerState_->textureID, timerState_->color, BlendType::kUnenableDepthNormal);
 
 
 		tex2D_->Draw(clockHandsState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, clockHandsState_->textureID, clockHandsState_->color, BlendType::kNormal);
+			, clockHandsState_->textureID, clockHandsState_->color, BlendType::kUnenableDepthNormal);
 
 		tex2D_->Draw(potState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, potState_->textureID, potState_->color, BlendType::kNormal);
+			, potState_->textureID, potState_->color, BlendType::kUnenableDepthNormal);
 	}
 
 
