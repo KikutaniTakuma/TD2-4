@@ -62,21 +62,24 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 		auto particle = dwarfParticle_.begin() + dwarfParticleIndex_;
 		if (particle != dwarfParticle_.end()) {
 			(*particle)->ParticleStart({ ToGrobal(pos), -10.f }, Vector2::kIdentity);
-			(*particle)->SetParticleScale(0.2f);
+			(*particle)->SetParticleScale(0.15f);
 			++particle;
-			dwarfParticleIndex_ = std::clamp(dwarfParticleIndex_++, 0, 19);
+			dwarfParticleIndex_ = std::clamp(dwarfParticleIndex_+1, 0, 19);
 		}
 		else {
 			break;
 		}
 	}
 
-	for (auto i = dwarfParticle_.begin(); i != dwarfParticle_.end(); i++) {
+	for (auto i = dwarfParticle_.begin(); i != dwarfParticle_.end();) {
 		auto &item = *i;
 		item->Update();
-		if (not item->GetIsParticleStart()) {
+		if (item->GetIsParticleStart().OnExit()) {
 			std::swap(item, dwarfParticle_.at(dwarfParticleIndex_));
-			dwarfParticleIndex_ = std::clamp(dwarfParticleIndex_--, 0, 19);
+			dwarfParticleIndex_ = std::clamp(dwarfParticleIndex_-1, 0, 19);
+		}
+		else {
+			i++;
 		}
 	}
 
