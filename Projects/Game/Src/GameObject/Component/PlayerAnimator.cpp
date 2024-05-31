@@ -52,101 +52,42 @@ void PlayerAnimatorComp::Init()
 
 void PlayerAnimatorComp::Update()
 {
-	/*if (not spriteAnimator_->GetIsActive()) {
-		spriteAnimator_->SetDuration(0.25f);
-		spriteAnimator_->SetLoopAnimation(true);
-		spriteAnimator_->SetAnimationNumber(4u);
-		spriteAnimator_->Start();
-		isAttackAnimation_ = false;
-	}*/
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 	Lamb::SafePtr pad = Input::GetInstance()->GetGamepad();
-	bool isAttack = pPlayerComp_->GetIsAttack();
-	isHaveBlock_ = pPlayerPickerComp_->IsPicking();
-	bool isUnderHave = pPlayerPickerComp_->GetFacing() == 0 and isHaveBlock_;
-	if (not isUnderHave and isUnderAnimation_) {
-		isUnderAnimation_ = false;
-	}
-	if (not isHaveBlock_) {
-		isNormalPickAnimation_ = false;
-	}
-	if (isAttackAnimation_ and not spriteAnimator_->GetIsActive() and not isAttack) {
-		isAttackAnimation_ = false;
+	
+	switch (currentState_)
+	{
+	case PlayerAnimatorComp::State::kAttack:
+		AttackAnimationUpdate();
+		break;
+	case PlayerAnimatorComp::State::kHave:
+		HaveAnimationUpdate();
+		break;
+	case PlayerAnimatorComp::State::kHaveUnder:
+		HaveUnderAnimationUpdate();
+		break;
 	}
 
-	// もし攻撃してたら攻撃アニメーション
-	if (isAttack) {
-		spriteAnimator_->SetDuration(0.1f);
-		spriteAnimator_->SetLoopAnimation(false);
-		spriteAnimator_->Start();
-		pSpriteComp_->SetTexture("./Resources/Player/witchShot.png");
-		isAttackAnimation_ = true;
-	}
-	// もしブロックを持った瞬間
-	else if (isHaveBlock_) {
-		// もし下向きのブロックを持ったら
-		if(isUnderHave and isHaveBlock_.OnEnter()){
-			isUnderAnimation_ = true;
-			spriteAnimator_->SetDuration(0.1f);
-			pSpriteComp_->SetTexture("./Resources/Player/witchPickUp.png");
-			spriteAnimator_->Start();
-			isUnderAnimationEnd_ = false;
-		}
-		else if(isUnderHave and isUnderAnimation_ and not spriteAnimator_->GetIsActive()){
-			isUnderAnimationEnd_ = true;
-			isUnderAnimation_ = false;
-			isNormalPickAnimation_ = true;
-		}
-		else if(isUnderAnimationEnd_){
-			spriteAnimator_->SetDuration(0.2f);
-			if (3 < spriteAnimator_->GetCurrentAnimationNumber()) {
-				spriteAnimator_->Stop();
-			}
-			if (not spriteAnimator_->GetIsActive()) {
-				spriteAnimator_->Start();
-			}
-			pSpriteComp_->SetTexture("./Resources/Player/witchShot.png");
-			isNormalPickAnimation_ = true;
-		}
-	}
-	// もし攻撃してなくて攻撃アニメーションをしてなかったら
-	else if (not isAttack and not isAttackAnimation_) {
-		// 移動してない
-		if (pPlayerComp_->GetInputVec().x == 0.0f) {
-			pSpriteComp_->SetTexture("./Resources/Player/witchWait.png");
-			spriteAnimator_->SetDuration(0.5f);
-		}
-		// 移動してる
-		else {
-			pSpriteComp_->SetTexture("./Resources/Player/witchWalk.png");
-			spriteAnimator_->SetDuration(0.25f);
-		}
-	}
-	if (not spriteAnimator_->GetIsActive()) {
-		spriteAnimator_->Start();
-	}
+	SetState();
 
 	// プレイヤーの方向に応じて反転
 	spriteAnimator_->FlipHorizontal(pPlayerComp_->GetFacing() < 0);
 
-	// 持っているか
-	isPicking_ = isHaveBlock_;
-
 	// 持った瞬間
-	if (isPicking_.OnEnter()) {
+	if (isHaveBlock_.OnEnter()) {
 		haveParticle_->ParticleStart(pPlayerPickerComp_->GetBlockAffine().GetTranslate());
 	}
 	// 置いた瞬間
-	else if (isPicking_.OnExit()) {
+	else if (isHaveBlock_.OnExit()) {
 		haveParticle_->ParticleStop();
 	}
 
 	// 持っている間のパーティクルのエミッターの場所を設定
-	if (isPicking_) {
+	if (isHaveBlock_) {
 		haveParticle_->emitterPos = pPlayerPickerComp_->GetBlockAffine().GetTranslate();
 	}
 
-	isShoting_ = isAttackAnimation_;
+	isShoting_ = isAttack_;
 	// 攻撃した瞬間
 	if (isShoting_.OnEnter()) {
 		shotParticle_->ParticleStart(transform_.translate + Vector3{ pPlayerComp_->GetFacing() * 0.5f,0.f,-50.f }, Vector2::kIdentity);
@@ -172,32 +113,6 @@ void PlayerAnimatorComp::Update()
 	}
 
 	isDamage_ = pPlayerComp_->GetIsDamage();
-	/*if (isDamage_.OnEnter()) {
-		damageParticleRed_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
-		damageParticleRed_->SetParticleScale(0.5f);
-		damageParticlePurple_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
-		damageParticlePurple_->SetParticleScale(0.5f);
-		damageParticleYellow_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
-		damageParticleYellow_->SetParticleScale(0.5f);
-		damageParticleBlue_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
-		damageParticleBlue_->SetParticleScale(0.5f);
-		damageParticleGreen_->ParticleStart(transform_.translate + Vector3{ 0.f, 0.f,-50.f }, Vector2::kIdentity);
-		damageParticleGreen_->SetParticleScale(0.5f);
-	}
-	if (isDamage_) {
-		damageParticleRed_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
-		damageParticlePurple_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
-		damageParticleYellow_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
-		damageParticleBlue_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
-		damageParticleGreen_->emitterPos = transform_.translate + Vector3{ 0.f, 0.f,-50.f };
-
-	}
-
-	damageParticleRed_->Update();
-	damageParticlePurple_->Update();
-	damageParticleYellow_->Update();
-	damageParticleBlue_->Update();
-	damageParticleGreen_->Update();*/
 
 
 	smokeParticle_->Update();
@@ -217,33 +132,6 @@ void PlayerAnimatorComp::Update()
 void PlayerAnimatorComp::Draw(const Camera &camera) const {
 	// 描画順を変えるコスト考えて無理矢理変えた
 	pSpriteComp_->Draw(camera);
-	/*damageParticleRed_->Draw(
-		camera.rotate,
-		camera.GetViewOthographics(),
-		BlendType::kUnenableDepthNormal
-	);
-	damageParticlePurple_->Draw(
-		camera.rotate,
-		camera.GetViewOthographics(),
-		BlendType::kUnenableDepthNormal
-	);
-	damageParticleYellow_->Draw(
-		camera.rotate,
-		camera.GetViewOthographics(),
-		BlendType::kUnenableDepthNormal
-	);
-	damageParticleBlue_->Draw(
-		camera.rotate,
-		camera.GetViewOthographics(),
-		BlendType::kUnenableDepthNormal
-	);
-	damageParticleGreen_->Draw(
-		camera.rotate,
-		camera.GetViewOthographics(),
-		BlendType::kUnenableDepthNormal
-	);*/
-
-
 
 	smokeParticle_->Draw(
 		camera.rotate,
@@ -260,4 +148,142 @@ void PlayerAnimatorComp::Draw(const Camera &camera) const {
 		camera.GetViewOthographics(),
 		BlendType::kUnenableDepthNormal
 	);
+}
+
+void PlayerAnimatorComp::SetState() {
+	bool isAttack = pPlayerComp_->GetIsAttack();
+	isHaveBlock_ = pPlayerPickerComp_->IsPicking();
+	isUnderHave_ = pPlayerComp_->InputDown();
+	isMove_ = pPlayerComp_->GetInputVec().x != 0.0f;
+
+	preState_ = currentState_;
+
+	// 何よりも攻撃モーションは優先
+	if (isAttack or isAttack_) {
+		currentState_ = State::kAttack;
+		if (isAttack or not isAttack_) {
+			// 新しいアニメーションをするために再スタート
+			spriteAnimator_->Stop();
+			spriteAnimator_->Start();
+			isAttack_ = true;
+		}
+	}
+	// ブロックを持ってる
+	else if(isHaveBlock_) {
+		// ブロックを下から持った瞬間
+		if (isUnderHave_ or isUnderAnimation_) {
+			currentState_ = State::kHaveUnder;
+		}
+		//// 移動してたら
+		else if (isMove_) {
+			currentState_ = State::kHaveMove;
+		}
+		// 下から持ち上げたアニメーションが終了した瞬間
+		else if (isUnderAnimationEnd_.OnEnter()) {
+			currentState_ = State::kHave;
+		}
+		// それ以外
+		else {
+			currentState_ = State::kHave;
+		}
+	}
+	// 移動してら
+	else if(isMove_){
+		currentState_ = State::kMove;
+	}
+	// それ以外
+	else {
+		currentState_ = State::kWiat;
+	}
+
+	// ステータスが変わってたら
+	if (currentState_ != preState_) {
+		// 新しいアニメーションをするために再スタート
+		spriteAnimator_->Stop();
+		spriteAnimator_->Start();
+
+		// それぞれのステートに応じて情報をセット
+		switch (currentState_)
+		{
+		case PlayerAnimatorComp::State::kWiat:
+			SetWait();
+			break;
+		case PlayerAnimatorComp::State::kMove:
+			SetMove();
+			break;
+		case PlayerAnimatorComp::State::kAttack:
+			SetAttack();
+			break;
+		case PlayerAnimatorComp::State::kHave:
+			SetHave();
+			break;
+		case PlayerAnimatorComp::State::kHaveUnder:
+			SetHaveUnder();
+			break;
+		case PlayerAnimatorComp::State::kHaveMove:
+			SetHaveMove();
+			break;
+		default:
+			throw Lamb::Error::Code<PlayerAnimatorComp>("The condition is strange", ErrorPlace);
+			break;
+		}
+	}
+	// アニメーションが止まってたら再スタート
+	else if (not spriteAnimator_->GetIsActive()) {
+		spriteAnimator_->Start();
+	}
+}
+
+void PlayerAnimatorComp::SetWait() {
+	pSpriteComp_->SetTexture("./Resources/Player/witchWait.png");
+	spriteAnimator_->SetDuration(0.5f);
+}
+
+void PlayerAnimatorComp::SetMove() {
+	pSpriteComp_->SetTexture("./Resources/Player/witchWalk.png");
+	spriteAnimator_->SetDuration(0.1f);
+}
+
+void PlayerAnimatorComp::SetAttack() {
+	spriteAnimator_->SetDuration(0.1f);
+	pSpriteComp_->SetTexture("./Resources/Player/witchShot.png");
+}
+
+void PlayerAnimatorComp::SetHave() {
+	spriteAnimator_->SetDuration(0.2f);
+	pSpriteComp_->SetTexture("./Resources/Player/witchShot.png");
+}
+
+void PlayerAnimatorComp::SetHaveUnder() {
+	isUnderAnimation_ = true;
+	spriteAnimator_->SetDuration(0.2f);
+	pSpriteComp_->SetTexture("./Resources/Player/witchPickUp.png");
+	isUnderAnimationEnd_ = false;
+}
+
+void PlayerAnimatorComp::SetHaveMove() {
+	spriteAnimator_->SetDuration(0.1f);
+	pSpriteComp_->SetTexture("./Resources/Player/witchHaveWalk.png");
+}
+
+void PlayerAnimatorComp::AttackAnimationUpdate() {
+	if (not spriteAnimator_->GetIsActive()) {
+		isAttack_ = false;
+	}
+}
+
+void PlayerAnimatorComp::HaveAnimationUpdate()
+{
+	// アニメーションナンバーが3を超えたら止める
+	if (2 < spriteAnimator_->GetCurrentAnimationNumber()) {
+		spriteAnimator_->Stop();
+		spriteAnimator_->Start();
+	}
+}
+
+void PlayerAnimatorComp::HaveUnderAnimationUpdate() {
+	if (not spriteAnimator_->GetIsActive()) {
+		isUnderAnimationEnd_ = true;
+		isUnderAnimation_ = false;
+	}
 }
