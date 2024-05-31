@@ -137,7 +137,7 @@ void FrameInfo::End() {
 	fps_ = 1.0 / deltaTime_;
 
 
-	if (std::chrono::duration_cast<std::chrono::seconds>(end - gameStartTime_) > std::chrono::seconds(1)) {
+	if (std::chrono::duration_cast<std::chrono::seconds>(end - gameStartTime_) > std::chrono::seconds(10)) {
 		maxFps_ = std::max(fps_, maxFps_);
 		minFps_ = std::min(fps_, minFps_);
 	}
@@ -168,11 +168,7 @@ void FrameInfo::End() {
 void FrameInfo::DrawFps() {
 	if (isDrawFps_) {
 		fpsStringOutPut_.Clear();
-#ifdef _DEBUG
-		float ratio = ratio_;
-#else
 		float ratio = static_cast<float>(fps_ / maxFpsLimit_);
-#endif // _DEBUG
 
 		Vector4&& red = Vector4::kXIdentity + Vector4::kWIdentity;
 		Vector4&& yellow = Vector4::kXIdentity + Vector4::kYIdentity + Vector4::kWIdentity;
@@ -235,7 +231,6 @@ void FrameInfo::Debug() {
 		else {
 			ImGui::Checkbox("is fixed deltaTime", &isFixedDeltaTime_);
 		}
-		ImGui::DragFloat("ratio", &ratio_, 0.001f, 0.0f, 1.0f);
 		ImGui::TreePop();
 	}
 	ImGui::End();
