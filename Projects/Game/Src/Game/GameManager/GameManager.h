@@ -38,7 +38,7 @@ private:
 	~GameManager() = default;
 
 public:
-	inline static const char *kDwarfModelName = "Resources/Cube.obj";
+	inline static const char *const kDwarfModelName = "Resources/Cube.obj";
 
 	using DwarfPick = std::pair<Vector2, std::unique_ptr<GameObject>>;
 
