@@ -86,6 +86,9 @@ private:
 
 private:
 
+	// もし足場が虚空なら、1つ前の座標を保存しておく
+	POINTS preIndex_;
+
 	SoLib::Time::DeltaTimer timer_ = { *vBulletFireSpan_ , true };
 
 	int32_t facing_ = 1;
