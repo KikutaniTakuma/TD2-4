@@ -194,24 +194,24 @@ void GameScene::Update() {
 
 	Debug();
 
+	currentCamera_->Debug("カメラ");
+	currentCamera_->Shake(1.0f);
+	currentCamera_->Update();
+
+	currentTexCamera_->Debug("UIカメラ");
+
+	currentTexCamera_->Update();
+
 	if (not isEndObjective_ and not isFirstLoadFlag_) {
 		auto itemMax = gameManager_->GetClearItemCount();
 
 		CalcUVPos(gameManager_->GetGameTimer()->GetDeltaTimer().GetGoalFlame(), timerNumberTexture_);
 		CalcUVPos(static_cast<float>(itemMax), potNumberTexture_);
 
-		for (uint32_t i = 0; i < 3; i++) {
-			potNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + potNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + potNumberPos_.y ,-41.0f };
-			timerNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + clockNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + clockNumberPos_.y ,-41.0f };
-
-			timerNumberTexture_[i]->transform.CalcMatrix();
-			timerNumberTexture_[i]->uvTransform.CalcMatrix();
-			potNumberTexture_[i]->transform.CalcMatrix();
-			potNumberTexture_[i]->uvTransform.CalcMatrix();
-		}
+		
 
 		if (not ease_.GetIsActive() && not isFadeOut_) {
-			easeCount_ -= 1;
+			//easeCount_ -= 1;
 		}
 		if (easeCount_ > 0) {
 			if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)){
@@ -235,6 +235,16 @@ void GameScene::Update() {
 			objectiveFrame_->transform.translate.y = ease_.Get(easePoint_.y, -easePoint_.x);
 		}
 
+		for (uint32_t i = 0; i < 3; i++) {
+			potNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + potNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + potNumberPos_.y ,-41.0f };
+			timerNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + clockNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + clockNumberPos_.y ,-41.0f };
+
+			timerNumberTexture_[i]->transform.CalcMatrix();
+			timerNumberTexture_[i]->uvTransform.CalcMatrix();
+			potNumberTexture_[i]->transform.CalcMatrix();
+			potNumberTexture_[i]->uvTransform.CalcMatrix();
+		}
+
 		if (isFadeOut_ && not ease_.GetIsActive()) {
 			isEndObjective_ = true;
 			gameBGM_->Start(0.1f, true);
@@ -250,6 +260,8 @@ void GameScene::Update() {
 
 		objectiveBackGround_->transform.CalcMatrix();
 		objectiveFrame_->transform.CalcMatrix();
+
+
 		/*if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)) {
 			isEndObjective_ = true;
 			gameBGM_->Start(0.1f, true);
@@ -267,13 +279,7 @@ void GameScene::Update() {
 		}
 
 
-		currentCamera_->Debug("カメラ");
-		currentCamera_->Shake(1.0f);
-		currentCamera_->Update();
-
-		currentTexCamera_->Debug("UIカメラ");
-
-		currentTexCamera_->Update();
+		
 
 
 		if (not pause_->isActive_) {
@@ -350,7 +356,7 @@ void GameScene::Draw() {
 
 	if (not isEndObjective_) {
 		tex2D_->Draw(objectiveBackGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kNormal);
+			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kUnenableDepthNormal);
 
 		tex2D_->Draw(objectiveFrame_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, objectiveFrame_->textureID, objectiveFrame_->color, BlendType::kNormal);
@@ -402,6 +408,8 @@ void GameScene::Debug() {
 	ImGui::DragFloat3("時計の数字の位置", clockNumberPos_.data(), 1.0f);
 	ImGui::DragFloat3("釜の数字の位置", potNumberPos_.data(), 1.0f);
 	ImGui::DragFloat("数字の間隔", &numberDistance_, 1.0f);
+
+	ImGui::DragFloat3("カットした背景", backGround_->transform.translate.data(), 1.0f);
 
 	ImGui::End();
 #endif // _DEBUG
