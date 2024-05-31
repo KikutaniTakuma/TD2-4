@@ -191,8 +191,6 @@ private:
 	bool isDebugStopGame_;
 	bool isOneFrameActive_;
 	bool isFixedDeltaTime_;
-
-	float ratio_ = 1.0f;
 #endif // _DEBUG
 
 };
