@@ -712,8 +712,8 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 					minMax.first.y = static_cast<float>(yi);
 				}
 
-				minMax.second.x = static_cast<float>(xi);
-				minMax.second.y = static_cast<float>(yi);
+				minMax.second.x = std::max(minMax.second.x, static_cast<float>(xi));
+				minMax.second.y = std::max(minMax.second.y, static_cast<float>(yi));
 			}
 		}
 	}
