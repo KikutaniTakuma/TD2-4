@@ -32,6 +32,9 @@ void DwarfAnimatorComp::Init()
 
 	pSpriteComp_->SetTexture(textureID_[kNormal][1]);
 
+	pSpriteComp_->offsetTransform_.translate = { 0.f,-0.075f,0.f };
+	pSpriteComp_->offsetTransform_.CalcMatrix();
+
 	absorptionParticle_ = std::make_unique<FlaskParticle>();
 	absorptionParticle_->Resize(100);
 	absorptionParticle_->SetDeathTime({ 0.5f, 1.0f });
