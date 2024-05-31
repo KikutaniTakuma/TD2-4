@@ -13,7 +13,7 @@ public:
 
 	/// @brief マップ上のローカル座標を取得
 	/// @return マップのIndex
-	POINTS GetMapPos() const { return {.x = static_cast<int16_t>(localPos_.x + 0.5f), .y = static_cast<int16_t>(localPos_.y + 0.5f)}; }
+	POINTS GetMapPos() const { return {.x = static_cast<int16_t>(localPos_.x + 0.5f), .y = static_cast<int16_t>(localPos_.y/* + 0.5f*/)}; }
 
 	// マップの参照
 	inline static Lamb::SafePtr<BlockMap> pMap_;

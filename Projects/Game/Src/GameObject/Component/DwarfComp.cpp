@@ -89,9 +89,16 @@ void DwarfComp::ClimbUp()
 	if (climbFlag) {
 		pLocalBodyComp_->localPos_.y += GetDeltaTime() * vClimbSpeed_;
 		isClimbing_ = true;
+		if (const Vector2 pos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * (0.5f) - Vector2::kYIdentity; LocalBodyComp::pMap_->GetBlockType(pos) == Block::BlockType::kNone) {
+			preIndex_ = { static_cast<int16_t>(pos.x), static_cast<int16_t>(pos.y) };
+		}
+		else {
+			preIndex_ = { -1,-1 };
+		}
 	}
 	// 折れていたら登っていない
 	else {
+		preIndex_ = { -1,-1 };
 		isClimbing_ = false;
 	}
 }
