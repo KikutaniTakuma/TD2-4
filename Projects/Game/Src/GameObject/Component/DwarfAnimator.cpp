@@ -55,7 +55,7 @@ void DwarfAnimatorComp::Update()
 	Lamb::SafePtr body = object_.GetComponent<LocalBodyComp>();
 	Vector2 targetPos = body->localPos_ + Vector2::kIdentity * 0.5f;
 
-	bool isHit = BlockMap::IsOutSide(targetPos) ? false : hitMap[static_cast<int32_t>(body->localPos_.y + 0.5f)][static_cast<int32_t>(body->localPos_.x + 0.5f)] and map->GetTimer().IsActive();
+	bool isHit = BlockMap::IsOutSide(targetPos) ? false : hitMap[static_cast<int32_t>(body->localPos_.y)][static_cast<int32_t>(body->localPos_.x + 0.5f)] and map->GetTimer().IsActive();
 
 	if (isDrakDwarf_) {
 		if (isDrakDwarf_.OnEnter()) {
