@@ -211,7 +211,7 @@ void GameScene::Update() {
 		
 
 		if (not ease_.GetIsActive() && not isFadeOut_) {
-			//easeCount_ -= 1;
+			easeCount_ -= 1;
 		}
 		if (easeCount_ > 0) {
 			if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)){
