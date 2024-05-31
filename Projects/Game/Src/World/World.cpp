@@ -7,12 +7,23 @@
 
 void World::Initialize() {
 	// ウィンドウ初期化オプション
+#ifdef _DEBUG
 	initDesc_ = Framework::InitDesc{
 		.windowName = "チェイン魔女娘",
 		.windowSize = {1280.0f, 720.0f},
 		.maxFps = 60.0f,
-		.isFullesceen = false
+		.isFullesceen = false,
+		.isMouseShow = true
 	};
+#else
+	initDesc_ = Framework::InitDesc{
+		.windowName = "チェイン魔女娘",
+		.windowSize = {1280.0f, 720.0f},
+		.maxFps = 60.0f,
+		.isFullesceen = true,
+		.isMouseShow = false
+	};
+#endif // _DEBUG
 
 	// ロードのステータス
 	SceneLoad::setting = SceneLoad::Desc{
