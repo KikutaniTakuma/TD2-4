@@ -39,38 +39,30 @@ void SelectScene::Initialize() {
 		endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
 
 		itemTexies_[i] = std::make_unique<Tex2DState>();
-		itemTexies_[i]->transform.scale = Vector2{ 80.0f,80.0f } * 4.0f;
-		itemTexies_[i]->transform.translate = { stageInterbal * i, 0.0f ,0 };
+		itemTexies_[i]->transform.scale = Vector2{ 80.0f,80.0f } * 2.5f;
+		itemTexies_[i]->transform.translate = { stageInterbal * i, -70.0f ,0 };
 		itemTexies_[i]->uvTransform.scale = { 0.5f,1.0f };
 		itemTexies_[i]->textureID = selectToGame->GetStageItemTextureID(i);
 		startItemPos_[i] = frameTexies_[i]->transform.translate.x;
 		endItemPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
-	}
 
-	for (uint32_t i = 0; i < 3; i++){
-		potNumberTexture_[i] = std::make_unique<Tex2DState>();
-		potNumberTexture_[i]->transform.scale = { 60.0f,60.0f };
-		potNumberTexture_[i]->transform.translate = { 70.0f * i,-300.0f };
-		potNumberTexture_[i]->uvTransform.scale = { 0.1f,1.0f };
-		potNumberTexture_[i]->color = 0xffffffff;
-		potNumberTexture_[i]->textureID = drawerManager_->LoadTexture("./Resources/UI/Timer/timeLimitNumber.png");
-
-		timerNumberTexture_[i] = std::make_unique<Tex2DState>();
-		timerNumberTexture_[i]->transform.scale = { 60.0f,60.0f };
-		timerNumberTexture_[i]->transform.translate = { 70.0f * i,-227.0f };
-		timerNumberTexture_[i]->uvTransform.scale = { 0.1f,1.0f };
-		timerNumberTexture_[i]->color = 0xffffffff;
-		timerNumberTexture_[i]->textureID = drawerManager_->LoadTexture("./Resources/UI/Timer/timeLimitNumber.png");
-
+		stageNumTexies_[i] = std::make_unique<Tex2DState>();
+		stageNumTexies_[i]->transform.scale = Vector2{ 480.0f,80.0f };
+		stageNumTexies_[i]->transform.translate = { stageNumDistance_ + (stageInterbal * i), 100.0f ,0 };
+		stageNumTexies_[i]->uvTransform.scale = { 0.1f,1.0f };
+		stageNumTexies_[i]->uvTransform.translate = { 0.1f * i,1.0f };
+		stageNumTexies_[i]->textureID = drawerManager_->LoadTexture("./Resources/UI/stageNumber.png");
+		startStageNumPos_[i] = stageNumTexies_[i]->transform.translate.x;
+		endStageNumPos_[i] = stageNumDistance_ + (stageInterbal * i) - (stageInterbal * selectNum_);
 	}
 
 	selectTex_ = std::make_unique<Tex2DState>();
 	selectTex_->transform.scale = { 452.0f,72.0f };
 	selectTex_->transform.translate = { 0.0f, 282.0f ,0 };
 	selectTex_->uvTransform.translate = { 0.f, 0.01f };
-	selectTex_->uvTransform.scale.x = { 0.1f };
+	selectTex_->uvTransform.scale.x = { 1.0f };
 	selectTex_->color = 0xffffffff;
-	selectTex_->textureID = drawerManager_->LoadTexture("./Resources/UI/stageNumber.png");
+	selectTex_->textureID = drawerManager_->LoadTexture("./Resources/UI/stageSelectMessege.png");
 
 	selectBGM_ = audioManager_->Load("./Resources/Sounds/BGM/StageSelect.mp3");
 
@@ -111,16 +103,6 @@ void SelectScene::Update(){
 		coolTime_--;
 	}
 
-	CalcUVPos(inGameDatas_[selectNum_].timeLimit, timerNumberTexture_);
-	CalcUVPos(inGameDatas_[selectNum_].clearItemNum, potNumberTexture_);
-
-	for (uint32_t i = 0; i < 3; i++){
-		timerNumberTexture_[i]->transform.CalcMatrix();
-		timerNumberTexture_[i]->uvTransform.CalcMatrix();
-		potNumberTexture_[i]->transform.CalcMatrix();
-		potNumberTexture_[i]->uvTransform.CalcMatrix();
-	}
-	
 
 	ease_.Update();
 
@@ -129,6 +111,8 @@ void SelectScene::Update(){
 		frameTexies_[selectNum_]->color = 0xffffffff;
 		itemTexies_[i]->color = 0xffffff88;
 		itemTexies_[selectNum_]->color = 0xffffffff;
+		stageNumTexies_[i]->color = 0xffffff88;
+		stageNumTexies_[selectNum_]->color = 0xffffffff;
 
 		const auto& clearFlug = selectToGame->GetClearFlug();
 
@@ -147,22 +131,24 @@ void SelectScene::Update(){
 		}
 		frameTexies_[i]->uvTransform.CalcMatrix();
 		itemTexies_[i]->transform.translate.x = ease_.Get(startItemPos_[i], endItemPos_[i]);// +itemDistanceCenter_.x;
+		stageNumTexies_[i]->transform.translate.x = ease_.Get(startStageNumPos_[i], endStageNumPos_[i]);
+
 		//itemTexies_[i]->transform.translate.y = itemDistanceCenter_.y;
 
 		frameTexies_[i]->transform.CalcMatrix();
 		itemTexies_[i]->transform.CalcMatrix();
 		itemTexies_[i]->uvTransform.CalcMatrix();
+		stageNumTexies_[i]->transform.CalcMatrix();
+		stageNumTexies_[i]->uvTransform.CalcMatrix();
 	}
 
 	selectTex_->transform.CalcMatrix();
-	selectTex_->uvTransform.translate.x = 0.1f * selectNum_;
 	selectTex_->uvTransform.CalcMatrix();
 }
 
 void SelectScene::Draw(){
 	UIEditor::GetInstance()->Draw(currentCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
-	tex2D_->Draw(selectTex_->transform.matWorld_, selectTex_->uvTransform.matWorld_ , currentCamera_->GetViewOthographics()
-		, selectTex_->textureID, selectTex_->color, BlendType::kNormal);
+	
 
 	for (size_t i = 0; i < frameTexies_.size(); i++) {
 		
@@ -171,22 +157,15 @@ void SelectScene::Draw(){
 
 		tex2D_->Draw(itemTexies_[i]->transform.matWorld_, itemTexies_[i]->uvTransform.matWorld_, currentCamera_->GetViewOthographics()
 			, itemTexies_[i]->textureID, itemTexies_[i]->color, BlendType::kNormal);
+
+		tex2D_->Draw(stageNumTexies_[i]->transform.matWorld_, stageNumTexies_[i]->uvTransform.matWorld_, currentCamera_->GetViewOthographics()
+			, stageNumTexies_[i]->textureID, stageNumTexies_[i]->color, BlendType::kNormal);
 	}
 
-	for (size_t i = 0; i < 3; i++) {
-		if (ease_.GetIsActive()){
-			UIEditor::GetInstance()->SetSelectDraw(true);
-			return;
-		}
-		else {
-			UIEditor::GetInstance()->SetSelectDraw(false);
-		}
-		tex2D_->Draw(potNumberTexture_[i]->transform.matWorld_, potNumberTexture_[i]->uvTransform.matWorld_, currentCamera_->GetViewOthographics()
-			, potNumberTexture_[i]->textureID, potNumberTexture_[i]->color, BlendType::kNormal);
-
-		tex2D_->Draw(timerNumberTexture_[i]->transform.matWorld_, timerNumberTexture_[i]->uvTransform.matWorld_, currentCamera_->GetViewOthographics()
-			, timerNumberTexture_[i]->textureID, timerNumberTexture_[i]->color, BlendType::kNormal);
-	}
+	
+	tex2D_->Draw(selectTex_->transform.matWorld_, selectTex_->uvTransform.matWorld_, currentCamera_->GetViewOthographics()
+		, selectTex_->textureID, selectTex_->color, BlendType::kNormal);
+	
 
 #ifdef _DEBUG
 
@@ -200,14 +179,8 @@ void SelectScene::Debug(){
 	if (ImGui::Button("シェイクテスト")){
 		currentCamera_->BeginShake(shakePower_);
 	}
-	ImGui::DragFloat3("ポットの百の位", potNumberTexture_[0]->transform.translate.data(), 0.1f);
-	ImGui::DragFloat3("ポットの十の位", potNumberTexture_[1]->transform.translate.data(), 0.1f);
-	ImGui::DragFloat3("ポットの一の位", potNumberTexture_[2]->transform.translate.data(), 0.1f);
-	ImGui::DragFloat3("タイマーの百の位", timerNumberTexture_[0]->transform.translate.data(), 0.1f);
-	ImGui::DragFloat3("タイマーの十の位", timerNumberTexture_[1]->transform.translate.data(), 0.1f);
-	ImGui::DragFloat3("タイマーの一の位", timerNumberTexture_[2]->transform.translate.data(), 0.1f);
+	ImGui::DragFloat("ステージ番号の座標補正", &stageNumDistance_, 1.0f);
 
-	ImGui::DragFloat2("アイテムの相対位置", itemDistanceCenter_.data(), 1.0f);
 	ImGui::End();
 #endif // _DEBUG
 }
@@ -228,6 +201,9 @@ void SelectScene::SelectMove(){
 
 				startItemPos_[i] = frameTexies_[i]->transform.translate.x;
 				endItemPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
+
+				startStageNumPos_[i] = stageNumTexies_[i]->transform.translate.x;
+				endStageNumPos_[i] = stageNumDistance_ + (stageInterbal * i) - (stageInterbal * selectNum_);
 			}
 		
 		}		
@@ -246,6 +222,9 @@ void SelectScene::SelectMove(){
 
 				startItemPos_[i] = frameTexies_[i]->transform.translate.x;
 				endItemPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
+
+				startStageNumPos_[i] = stageNumTexies_[i]->transform.translate.x;
+				endStageNumPos_[i] = stageNumDistance_ + (stageInterbal * i) - (stageInterbal * selectNum_);
 			}
 		}		
 	}
@@ -288,8 +267,6 @@ void SelectScene::LoadGameData(const uint32_t stageNumber){
 	//未登録チェック
 	assert(itGroup != root.end());
 
-	inGameDatas_[stageNumber].timeLimit = root[stageName]["最大時間"];
-	inGameDatas_[stageNumber].clearItemNum = root[stageName]["クリアに必要なアイテムの数"];
 
 
 //#ifdef _DEBUG
@@ -300,16 +277,6 @@ void SelectScene::LoadGameData(const uint32_t stageNumber){
 
 }
 
-void SelectScene::CalcUVPos(float InGameData, std::array<std::unique_ptr<Tex2DState>, 3>& uvPos)
-{
-	texUVPos_[0] = static_cast<int32_t>(InGameData) % 10;
-	texUVPos_[1] = static_cast<int32_t>(InGameData / 10.0f) % 10;
-	texUVPos_[2] = static_cast<int32_t>(InGameData / 100.0f) % 10;
-
-	uvPos[0]->uvTransform.translate.x = texUVPos_[2] * 0.1f;
-	uvPos[1]->uvTransform.translate.x = texUVPos_[1] * 0.1f;
-	uvPos[2]->uvTransform.translate.x = texUVPos_[0] * 0.1f;
-}
 
 
 

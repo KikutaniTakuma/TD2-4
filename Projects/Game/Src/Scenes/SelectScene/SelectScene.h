@@ -43,7 +43,7 @@ private:
 	//Jsonファイルから必要な情報を読み込む
 	void LoadGameData(const uint32_t stageNumber);
 
-	void CalcUVPos(const float InGameData, std::array<std::unique_ptr<Tex2DState>, 3>& uvPos);
+	//void CalcUVPos(const float InGameData, std::array<std::unique_ptr<Tex2DState>, 3>& uvPos);
 
 private:
 	//アイテムのファイルパス
@@ -53,14 +53,7 @@ private:
 	//名前
 	inline static const std::string kItemName_ = "Stage";
 
-	//必要な情報を描画するためのテクスチャ
-	std::array<std::unique_ptr<Tex2DState>, 3> potNumberTexture_;
-	//0から1の位、10の位、100の位
-	std::array<int32_t, 3> texUVPos_;
-
-	std::array<std::unique_ptr<Tex2DState>, 3> timerNumberTexture_;
-
-	
+		
 private:
 	//ステージセレクト用の変数
 	int32_t selectNum_;
@@ -74,17 +67,20 @@ private:
 	Texture2D* tex2D_;
 	std::array<std::unique_ptr<Tex2DState>, kMaxStage_> frameTexies_;
 	std::array<std::unique_ptr<Tex2DState>, kMaxStage_> itemTexies_;
+	std::array<std::unique_ptr<Tex2DState>, kMaxStage_> stageNumTexies_;
 
-	std::array<InGameData, kMaxStage_> inGameDatas_;
+	float stageNumDistance_ = 35.0f;
+
 
 	std::array<float, kMaxStage_> startPos_;
 	std::array<float, kMaxStage_> endPos_;
 
 	std::array<float, kMaxStage_> startItemPos_;
 	std::array<float, kMaxStage_> endItemPos_;
-	Vector2 itemDistanceCenter_ = { 300.0f,-140.0f };
 
-	std::array<float, kMaxStage_> easeT_;
+	std::array<float, kMaxStage_> startStageNumPos_;
+	std::array<float, kMaxStage_> endStageNumPos_;
+
 	const float kAddEase_ = 0.2f;
 
 	std::unique_ptr<Tex2DState> selectTex_;
