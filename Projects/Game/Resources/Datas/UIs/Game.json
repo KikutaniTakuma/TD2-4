@@ -256,7 +256,7 @@
             },
             {
                 "TextureFullPath": "./Resources/UI/GameMain\\Control\\pauseButton.png",
-                "TextureName": "GameMain\\Control\\pauseButton",
+                "TextureName": "pauseButton",
                 "UVScale": [
                     0.5,
                     1.0
@@ -279,7 +279,7 @@
             },
             {
                 "TextureFullPath": "./Resources/UI/GameMain\\Control\\pause.png",
-                "TextureName": "GameMain\\Control\\pause",
+                "TextureName": "pause",
                 "UVScale": [
                     1.0,
                     1.0

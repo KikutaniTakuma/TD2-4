@@ -406,6 +406,17 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 		}
 	}
 
+	if (tex->textureName == "pauseButton") {
+		if (sceneManager_->GetIsPad()) {
+			tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerPause.png");
+		}
+		else {
+			tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
+		}
+
+		
+	}
+
 }
 
 void UIEditor::PotScaleMove(const size_t i, const size_t j){
