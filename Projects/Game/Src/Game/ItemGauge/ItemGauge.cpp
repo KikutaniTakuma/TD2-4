@@ -27,8 +27,8 @@ void ItemGauge::Initialize(){
 
 	moveGaugeCenterState_ = std::make_unique<Tex2DState>();
 	moveGaugeCenterState_->color = gaugeColorBase_;
-	moveGaugeCenterState_->transform.scale = { 0.0f,46.0f };
-	moveGaugeCenterState_->transform.translate = { -417.0f, kGaugeYPos };
+	moveGaugeCenterState_->transform.scale = { 0.0f,47.0f };
+	moveGaugeCenterState_->transform.translate = { -417.0f, kGaugeYPos-1.0f };
 	moveGaugeCenterState_->textureID = TextureManager::GetInstance()->GetWhiteTex();
 
 	moveGaugeReduction_ = std::make_unique<Tex2DState>();
@@ -151,7 +151,7 @@ void ItemGauge::MoveGauge(){
 
 	afterIncreaseGaugeRightPos_ = rightPosAfter;
 	afterIncreaseGaugeCenterPos_ = (leftPos + rightPosAfter) * 0.5f;
-	afterIncreaseGaugeCenterScale_ = (kGaugeScale_ * (num_));
+	afterIncreaseGaugeCenterScale_ = (kGaugeScale_ * (num_) * 1.01f);
 	
 
 	const auto& gaugeRightPos_ = ((leftPos + rightPosAfter) * 0.5f) + ((kGaugeScale_ * num_) * 0.5f);
