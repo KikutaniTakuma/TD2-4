@@ -27,7 +27,7 @@ void PlayerAnimatorComp::Init()
 	spriteAnimator_->SetAnimationNumber(4u);
 	spriteAnimator_->Start();
 
-	pSpriteComp_->SetTexture("./Resources/Player/witchWalk.png");
+	SetWait();
 
 	haveParticle_ = std::make_unique<Particle>();
 	haveParticle_->LoadSettingDirectory("MagicHand");

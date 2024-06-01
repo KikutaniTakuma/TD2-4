@@ -54,8 +54,8 @@ private:
 
 
 private:
-	State currentState_;
-	State preState_;
+	State currentState_ = State::kWiat;
+	State preState_ = State::kWiat;
 
 	Lamb::SafePtr<PlayerComp> pPlayerComp_ = nullptr;
 	Lamb::SafePtr<PlayerBlockPickerComp> pPlayerPickerComp_ = nullptr;
