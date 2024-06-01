@@ -27,6 +27,8 @@ void TitleScene::Initialize(){
 
 	titleDirection_->Initialize(sceneManager_);
 
+	isFirstSound_ = true;
+
 }
 
 void TitleScene::Finalize(){
@@ -44,7 +46,10 @@ void TitleScene::Update()
 
 
 	if ((input_->GetGamepad()->GetButton(Gamepad::Button::A)||key->Pushed(DIK_SPACE)) && !titleDirection_->GetIsFirstFade()) {
-		beginGame_->Start(0.1f, false);
+		if (isFirstSound_) {
+			beginGame_->Start(0.1f, false);
+			isFirstSound_ = false;
+		}
 		sceneManager_->SceneChange(BaseScene::ID::StageSelect);
 	}
 
