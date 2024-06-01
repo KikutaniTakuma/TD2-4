@@ -50,7 +50,8 @@ private:
 private:
 	Texture2D* tex2D_;
 	//始点終点
-	const Vector2 kGaugePosX_ = { -404.0f,220.0f };
+	const Vector2 kGaugePosX_ = { -454.0f,220.0f };
+	const float kGaugeLeftPosX_ = -480.0f;
 	float gaugePosLength_ = 659.0f;
 
 	uint32_t gaugeColorBase_ = 0x5ea632ff;
@@ -59,6 +60,16 @@ private:
 
 	const uint32_t gaugeColorChange_ = 0x7fc854ff;
 
+	//減っているときの色
+	uint32_t reductionColor_ = 0xff0000ff;
+
+	const uint32_t RedWhite_ = 0xff9999ff;
+
+	const uint32_t Red_ = 0xff0000ff;
+
+	//フレーム刻みで変化させる
+	const uint32_t kChangeColorTime_ = 3;
+	uint32_t colorTime_ = 0;
 	//現在のアイテムの個数
 	int32_t beforeItemNum_;
 	int32_t afterItemNum_;
@@ -71,12 +82,6 @@ private:
 	float reductionGaugePos_;
 	//減った後のゲージのスケール
 	float reductionGaugeScale_;
-	//減っているときの色
-	uint32_t reductionColor_ = 0xff0000ff;
-
-	const uint32_t RedWhite_ = 0xff9999ff;
-
-	const uint32_t Red_ = 0xff0000ff;
 
 	//アイテムが減少したときtrue
 	Lamb::Flg isItemReduction_ = false;
@@ -107,13 +112,16 @@ private:
 	//始点終点
 	const Vector2 kGaugeCenterPosX_ = { 320.0f,-38.0f };
 	float gaugePosCenterLength_ = 358.0f;
-	const float kGaugeScale_ = 624.0f;
+	const float kGaugeScale_ = 675.0f;
 
 	const float kGaugeYPos = 315.0f;
 
 	float num_ = 0.0f;
 	//外側の縁
-	std::unique_ptr<Tex2DState> gaugeState_;
+	std::unique_ptr<Tex2DState> gaugeFrameState_;
+
+	//外側の縁
+	std::unique_ptr<Tex2DState> gaugeVoidState_;
 	//内側の緑色のやつ
 	std::unique_ptr<Tex2DState> moveGaugeLeftState_;
 

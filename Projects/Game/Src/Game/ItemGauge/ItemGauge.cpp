@@ -6,29 +6,35 @@
 void ItemGauge::Initialize(){
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
 
-	gaugeState_ = std::make_unique<Tex2DState>();
-	gaugeState_->color = 0xffffffff;
-	gaugeState_->transform.scale = { 780.0f,72.0f };
-	gaugeState_->transform.translate = { -135.0f, kGaugeYPos };
-	gaugeState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeFrame.png");
+	gaugeFrameState_ = std::make_unique<Tex2DState>();
+	gaugeFrameState_->color = 0xffffffff;
+	gaugeFrameState_->transform.scale = { 780.0f,72.0f };
+	gaugeFrameState_->transform.translate = { -135.0f, kGaugeYPos };
+	gaugeFrameState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeFrame.png");
+
+	gaugeVoidState_ = std::make_unique<Tex2DState>();
+	gaugeVoidState_->color = 0xffffffff;
+	gaugeVoidState_->transform.scale = { 780.0f,72.0f };
+	gaugeVoidState_->transform.translate = { -135.0f, kGaugeYPos };
+	gaugeVoidState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeFrameVoid.png");
 
 	moveGaugeLeftState_ = std::make_unique<Tex2DState>();
 	moveGaugeLeftState_->color = gaugeColorBase_;
 	moveGaugeLeftState_->transform.scale = { 36.0f,48.0f };
-	moveGaugeLeftState_->transform.translate = { -430.0f, kGaugeYPos };
+	moveGaugeLeftState_->transform.translate = { kGaugeLeftPosX_, kGaugeYPos };
 	moveGaugeLeftState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeSideWhite.png");
 
 	moveGaugeRightState_ = std::make_unique<Tex2DState>();
 	moveGaugeRightState_->color = gaugeColorBase_;
 	moveGaugeRightState_->transform.scale = { 36.0f,48.0f };
-	moveGaugeRightState_->transform.translate = { -404.0f, kGaugeYPos };
+	moveGaugeRightState_->transform.translate = { kGaugePosX_.x, kGaugeYPos };
 	moveGaugeRightState_->uvTransform.scale = { -1.0f,1.0f };
 	moveGaugeRightState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeSideWhite.png");
 
 	moveGaugeCenterState_ = std::make_unique<Tex2DState>();
 	moveGaugeCenterState_->color = gaugeColorBase_;
 	moveGaugeCenterState_->transform.scale = { 0.0f,47.0f };
-	moveGaugeCenterState_->transform.translate = { -417.0f, kGaugeYPos-1.0f };
+	moveGaugeCenterState_->transform.translate = { -467.0f, kGaugeYPos-1.0f };
 	moveGaugeCenterState_->textureID = TextureManager::GetInstance()->GetWhiteTex();
 
 	moveGaugeReduction_ = std::make_unique<Tex2DState>();
@@ -64,11 +70,11 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 			beforeIncreaseGaugeCenterScale_ = moveGaugeCenterState_->transform.scale.x;
 		}
 
-		
+		colorTime_ = 0;
 		beforeItemNum_ = afterItemNum_;
 		afterItemNum_ = nowCount;
 	}
-	
+	//maxCount;
 	num_ = static_cast<float>(nowCount) / static_cast<float>(maxCount);
 
 	if (num_ > 1.0f) {
@@ -84,7 +90,8 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 
 	MoveGauge();
 
-	gaugeState_->transform.CalcMatrix();
+	gaugeFrameState_->transform.CalcMatrix();
+	gaugeVoidState_->transform.CalcMatrix();
 	moveGaugeLeftState_->transform.CalcMatrix();
 	moveGaugeRightState_->transform.CalcMatrix();
 	moveGaugeRightState_->uvTransform.CalcMatrix();
@@ -97,8 +104,8 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 
 void ItemGauge::Draw(const Camera& camera) const{
 
-	tex2D_->Draw(gaugeState_->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
-		, gaugeState_->textureID, gaugeState_->color, BlendType::kNormal);
+	tex2D_->Draw(gaugeFrameState_->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
+		, gaugeFrameState_->textureID, gaugeFrameState_->color, BlendType::kNormal);
 	
 
 	tex2D_->Draw(moveGaugeRightState_->transform.matWorld_,moveGaugeRightState_->uvTransform.matWorld_, camera.GetViewOthographics()
@@ -117,6 +124,8 @@ void ItemGauge::Draw(const Camera& camera) const{
 		tex2D_->Draw(moveGaugeReductionRight_->transform.matWorld_, moveGaugeReductionRight_->uvTransform.matWorld_, camera.GetViewOthographics()
 			, moveGaugeReductionRight_->textureID, reductionColor_, BlendType::kNormal);
 	}
+	tex2D_->Draw(gaugeVoidState_->transform.matWorld_, Mat4x4::kIdentity, camera.GetViewOthographics()
+		, gaugeVoidState_->textureID, gaugeVoidState_->color, BlendType::kNormal);
 }
 
 void ItemGauge::Debug(){
@@ -187,17 +196,23 @@ void ItemGauge::MoveGauge(){
 		else {
 			tex.scale.x -= reductionGaugeScale_ * Lamb::DeltaTime();
 			tex.translate.x -= (reductionGaugePos_ - afterGaugeCenterRight_) * Lamb::DeltaTime();
-			if (reductionColor_ == RedWhite_){
-				reductionColor_ = Red_;
+
+			colorTime_++;
+			if (colorTime_ == kChangeColorTime_) {
+				if (reductionColor_ == RedWhite_) {
+					reductionColor_ = Red_;
+				}
+				else {
+					reductionColor_ = RedWhite_;
+				}
+				colorTime_ = 0;
 			}
-			else {
-				reductionColor_ = RedWhite_;
-			}
+			
 
 		}
 
 		moveGaugeReductionRight_->transform.translate.x = tex.translate.x + (tex.scale.x * 0.5f) + (moveGaugeReductionRight_->transform.scale.x * 0.25f);
-
+		colorTime_++;
 	}
 
 	if (isItemIncreaseNow_) {
@@ -223,16 +238,20 @@ void ItemGauge::MoveGauge(){
 			}
 
 			rightPos += (addPosRight) * Lamb::DeltaTime();
-			if (gaugeColorBase_ == gaugeColorChange_) {
-				gaugeColorBase_ = gaugeColor_;
-			}
-			else {
-				gaugeColorBase_ = gaugeColorChange_;
+			colorTime_++;
+			if (colorTime_ == kChangeColorTime_) {
+				if (gaugeColorBase_ == gaugeColorChange_) {
+					gaugeColorBase_ = gaugeColor_;
+				}
+				else {
+					gaugeColorBase_ = gaugeColorChange_;
+				}
+				colorTime_ = 0;
 			}
 
 		}
 
-
+		
 	}
 
 	
