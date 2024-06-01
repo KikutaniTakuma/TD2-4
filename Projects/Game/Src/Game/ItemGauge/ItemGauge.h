@@ -60,6 +60,16 @@ private:
 
 	const uint32_t gaugeColorChange_ = 0x7fc854ff;
 
+	//減っているときの色
+	uint32_t reductionColor_ = 0xff0000ff;
+
+	const uint32_t RedWhite_ = 0xff9999ff;
+
+	const uint32_t Red_ = 0xff0000ff;
+
+	//フレーム刻みで変化させる
+	const uint32_t kChangeColorTime_ = 3;
+	uint32_t colorTime_ = 0;
 	//現在のアイテムの個数
 	int32_t beforeItemNum_;
 	int32_t afterItemNum_;
@@ -72,12 +82,6 @@ private:
 	float reductionGaugePos_;
 	//減った後のゲージのスケール
 	float reductionGaugeScale_;
-	//減っているときの色
-	uint32_t reductionColor_ = 0xff0000ff;
-
-	const uint32_t RedWhite_ = 0xff9999ff;
-
-	const uint32_t Red_ = 0xff0000ff;
 
 	//アイテムが減少したときtrue
 	Lamb::Flg isItemReduction_ = false;

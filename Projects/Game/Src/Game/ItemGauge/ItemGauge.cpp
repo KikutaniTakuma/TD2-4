@@ -70,7 +70,7 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 			beforeIncreaseGaugeCenterScale_ = moveGaugeCenterState_->transform.scale.x;
 		}
 
-		
+		colorTime_ = 0;
 		beforeItemNum_ = afterItemNum_;
 		afterItemNum_ = nowCount;
 	}
@@ -196,17 +196,23 @@ void ItemGauge::MoveGauge(){
 		else {
 			tex.scale.x -= reductionGaugeScale_ * Lamb::DeltaTime();
 			tex.translate.x -= (reductionGaugePos_ - afterGaugeCenterRight_) * Lamb::DeltaTime();
-			if (reductionColor_ == RedWhite_){
-				reductionColor_ = Red_;
+
+			colorTime_++;
+			if (colorTime_ == kChangeColorTime_) {
+				if (reductionColor_ == RedWhite_) {
+					reductionColor_ = Red_;
+				}
+				else {
+					reductionColor_ = RedWhite_;
+				}
+				colorTime_ = 0;
 			}
-			else {
-				reductionColor_ = RedWhite_;
-			}
+			
 
 		}
 
 		moveGaugeReductionRight_->transform.translate.x = tex.translate.x + (tex.scale.x * 0.5f) + (moveGaugeReductionRight_->transform.scale.x * 0.25f);
-
+		colorTime_++;
 	}
 
 	if (isItemIncreaseNow_) {
@@ -232,16 +238,20 @@ void ItemGauge::MoveGauge(){
 			}
 
 			rightPos += (addPosRight) * Lamb::DeltaTime();
-			if (gaugeColorBase_ == gaugeColorChange_) {
-				gaugeColorBase_ = gaugeColor_;
-			}
-			else {
-				gaugeColorBase_ = gaugeColorChange_;
+			colorTime_++;
+			if (colorTime_ == kChangeColorTime_) {
+				if (gaugeColorBase_ == gaugeColorChange_) {
+					gaugeColorBase_ = gaugeColor_;
+				}
+				else {
+					gaugeColorBase_ = gaugeColorChange_;
+				}
+				colorTime_ = 0;
 			}
 
 		}
 
-
+		
 	}
 
 	
