@@ -49,6 +49,8 @@ void PauseMenu::Initialize() {
 	puaseMenuUI_->transform.scale = { 200.0f, 60.0f };
 	puaseMenuUI_->transform.translate = { 0.0f, 77.5f };
 
+	gamepadUITextureID_ = drawerManager->LoadTexture("./Resources/UI/GameMain/Control/controllerPause.png");
+
 	isRetryChoice_ = true;
 	isStick_ = false;
 
@@ -102,7 +104,7 @@ void PauseMenu::Draw() {
 		modoruUI_->transform.matWorld_,
 		modoruUI_->uvTransform.matWorld_,
 		camera_->GetViewOthographics(),
-		modoruUI_->textureID,
+		sceneManager_->GetIsPad() ? gamepadUITextureID_ : modoruUI_->textureID,
 		std::numeric_limits<uint32_t>::max(),
 		BlendType::kUnenableDepthNormal
 	);

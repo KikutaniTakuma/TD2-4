@@ -32,6 +32,8 @@ private:
 	std::unique_ptr<Tex2DState> retry_;
 	std::unique_ptr<Tex2DState> stageSelect_;
 
+	uint32_t gamepadUITextureID_;
+
 	bool isRetryChoice_;
 	bool isStick_;
 
