@@ -276,7 +276,7 @@ void GameScene::Update() {
 		if (gamepad->Pushed(Gamepad::Button::START) or key->Pushed(DIK_ESCAPE)) {
 			pause_->isActive_ = !pause_->isActive_;
 			if (pause_->isActive_) {
-				gameBGM_->SetAudio(0.01f);
+				gameBGM_->SetAudio(0.033333f);
 			}
 			else {
 				gameBGM_->SetAudio(0.1f);
