@@ -90,13 +90,22 @@ namespace SoLib {
 			return n1 * (x -= 2.625f / d1) * x + 0.984375f;
 		}
 	}
+	float easeInElastic(float x) {
+		const float  c4 = (2 * std::numbers::pi_v<float>) / 3;
+
+		return x == 0.f
+			? 0.f
+			: x == 1.f
+			? 1.f
+			: -std::pow(2.f, 10.f * x - 10.f) * std::sin((x * 10.f - 10.75f) * c4);
+	}
 
 	float easeOutElastic(float x) {
 		const float c4 = (2 * std::numbers::pi_v<float>) / 3.0f;
 
 		return x == 0.0f
 			? 0.0f
-			: x ==1.0f
+			: x == 1.0f
 			? 1.0f
 			: std::pow(2.0f, -10.0f * x) * std::sin((x * 10.0f - 0.75f) * c4) + 1.0f;
 	}

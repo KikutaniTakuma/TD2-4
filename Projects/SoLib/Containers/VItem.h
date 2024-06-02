@@ -1,6 +1,7 @@
 #pragma once
 #include "../Text/StaticString.h"
 #include <ostream>
+#include <variant>
 
 namespace SoLib {
 	namespace Containers {
@@ -29,6 +30,34 @@ namespace SoLib {
 			T &operator*() { return item; }
 			const T &operator*() const { return item; }
 
+		};
+
+
+
+		template<typename... Ts>
+		class VItemList {
+		public:
+			constexpr VItemList(Ts... args) : variants_{ std::variant<Ts...>(args)... } {}
+
+			constexpr auto size() const noexcept {
+				return sizeof...(Ts);
+			}
+
+			const std::variant<Ts...> &operator[](size_t index) const {
+				return variants_[index];
+			}
+
+			template<typename T>
+			void LoadVariant(const T &t) const {
+				for (const auto &val : variants_) {
+					std::visit([&t](const auto &arg) {
+						t.*arg;
+						}, val);
+				}
+			}
+
+
+			const std::array<std::variant<Ts...>, sizeof...(Ts)> variants_;
 		};
 	}
 	using namespace Containers;

@@ -5,7 +5,7 @@
 #include "Utils/Easeing/Easeing.h"
 #include <numbers>
 
-FlaskParticle::FlaskParticle():
+FlaskParticle::FlaskParticle() :
     emitter_(),
     freq_(0.1f, 0.2f),
     latesetFreq_(0.0f),
@@ -14,7 +14,10 @@ FlaskParticle::FlaskParticle():
     appParticleNumMax_(10),
     particles_(100),
     curentParticleIndex_(0u),
-    isActive_()
+    isActive_(),
+    currentActiveParticleCount_(0u),
+    isLoop_(false),
+    color_(0xffffffff)
 {
     texture2D_ = DrawerManager::GetInstance()->GetTexture2D();
     textureID_ = DrawerManager::GetInstance()->LoadTexture("./Resources/Ball.png");
@@ -31,10 +34,15 @@ FlaskParticle::FlaskParticle():
 
 void FlaskParticle::Update() {
     if (isActive_) {
+        if (particles_.empty()) {
+            isActive_ = false;
+        }
+
         if (randomFreq_ < latesetFreq_ and curentParticleIndex_ < static_cast<uint32_t>(particles_.size())) {
             uint32_t appParticle = Lamb::Random(appParticleNumMin_, appParticleNumMax_);
 
             for (size_t index = curentParticleIndex_; index < (curentParticleIndex_ + appParticle) and index < particles_.size(); index++) {
+                currentActiveParticleCount_++;
                 particles_[index].isActive = true;
                 particles_[index].activeTime = 0.0f;
                 particles_[index].startScale = Lamb::Random(scaleMin_, scaleMax_);
@@ -57,8 +65,13 @@ void FlaskParticle::Update() {
                 i->scale= Vector3::Lerp(i->startScale, i->startScale * 0.1f, t);
                 if (1.0f <= t) {
                     i->isActive = false;
-                    if (i == (--particles_.end())) {
+                    currentActiveParticleCount_--;
+                    if (currentActiveParticleCount_ == 0) {
                         isActive_ = false;
+                        if (isLoop_) {
+                            isActive_ = true;
+                            Start();
+                        }
                     }
                 }
                 i->activeTime += deltatime;
@@ -78,8 +91,8 @@ void FlaskParticle::Draw(const Mat4x4& camera) {
                 Mat4x4::kIdentity,
                 camera,
                 textureID_,
-                0xffffffff,
-                BlendType::kNormal
+                color_,
+                BlendType::kUnenableDepthNormal
             );
         }
     }

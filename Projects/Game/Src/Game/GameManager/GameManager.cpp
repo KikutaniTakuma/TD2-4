@@ -7,6 +7,7 @@
 #include "GameObject/Component/IvyComponent.h"
 #include "Utils/Random/Random.h"
 #include "Utils/SafePtr/SafePtr.h"
+#include "Scenes/ResultScene/ResultScene.h"
 #include <Game/CollisionManager/Capsule/Capsule.h>
 #include <Game/CollisionManager/Collider/Collider.h>
 #include <GameObject/Component/DwarfAnimator.h>
@@ -24,11 +25,39 @@
 
 #include "Drawers/Particle/Particle.h"
 #include "Scenes/GameScene/GameScene.h"
+#include <Scenes/SelectToGame/SelectToGame.h>
+
+
+static POINTS operator+(const POINTS l, const POINTS r) {
+	return POINTS{ static_cast<int16_t>(l.x + r.x), static_cast<int16_t>(l.y + r.y) };
+}
+
+static POINTS operator-(const POINTS l, const POINTS r) {
+	return POINTS{ static_cast<int16_t>(l.x - r.x), static_cast<int16_t>(l.y - r.y) };
+}
+
+static POINTS operator*(const POINTS l, const float r) {
+	return POINTS{ static_cast<int16_t>(l.x * r), static_cast<int16_t>(l.y * r) };
+}
 
 
 void GameManager::Init()
 {
+	GlobalVariables::GetInstance()->LoadFile();
+
+	const SelectToGame *select = SelectToGame::GetInstance();
+	const auto &mapData = LoadLevelData(select->GetSelect());
+	LoadGlobalVariant(select->GetSelect());
+	SaveGlobalVariant(select->GetSelect());
+
 	Block::StaticLoad();
+	DwarfAnimatorComp::StaticLoad();
+	EnemyBulletComp::StaticLoad();
+	PlayerAnimatorComp::StaticLoad();
+	PlayerBulletComp::StaticLoad();
+	PlayerComp::StaticLoad();
+	putBlock_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
+	slimeDeath_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
 
 	blockGauge_ = std::make_unique<BlockGauge>();
 	blockGauge_->Init();
@@ -39,63 +68,70 @@ void GameManager::Init()
 	blockMap_->Init();
 
 	Lamb::SafePtr drawerManager = DrawerManager::GetInstance();
-	drawerManager->LoadModel("Resources/Cube.obj");
+	drawerManager->LoadModel("./Resources/Cube.obj");
 
 	// 参照を渡す
 	LocalBodyComp::pGameManager_ = this;
 	LocalBodyComp::pMap_ = GetMap();
 
-	//spawner_ = std::make_unique<GameObject>();
-
-	/*{
-		Lamb::SafePtr spriteComp = spawner_->AddComponent<SpriteComp>();
-		spriteComp->SetTexture("./Resources/uvChecker.png");
-		spriteComp->CalcTexUv();
-	}
-
-	{
-		Lamb::SafePtr playerComp = spawner_->AddComponent<FallingBlockSpawnerComp>();
-		playerComp->SetGauge(blockGauge_.get());
-	}*/
-
 	player_ = std::make_unique<GameObject>();
 	player_->AddComponent<PlayerComp>();
 	player_->AddComponent<PlayerAnimatorComp>();
 
-	//for (float i = 0; i < 15.f; i++) {
-	//	AddDwarf(Vector2::kXIdentity * i);
-	//}
+	// タイマーを用意
+	gameTimer_ = std::make_unique<GameTimer>();
 
-	for (int32_t yi = 0; yi < 3; yi++) {
+	// 初期化する
+	gameTimer_->Init();
+	gameTimer_->TimerStart(static_cast<float>(vMaxTime_));
+
+
+	RandomStartBlockFill(mapData, vBlockTypeCount_, vMaxChainBlockCount_);
+	/*for (int32_t yi = 0; yi < vStartBlockHeight_; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
 			const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
 
-			Block::BlockType type = static_cast<Block::BlockType>(Lamb::Random(static_cast<uint32_t>(Block::BlockType::kNone) + 1, static_cast<uint32_t>(Block::BlockType::kMax) - 1));
+			Block::BlockType type = static_cast<Block::BlockType>(std::clamp(Lamb::Random(1, *vBlockTypeCount_), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1));
 
 			blockMap_->SetBlocks(pos, Vector2::kIdentity, type);
 
 		}
-	}
+	}*/
 
-	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,10.f };
+	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,static_cast<float>(vStartBlockHeight_) };
 
 
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
 	gameEffectManager_->Init();
+
+	fallBlockSpawnTimer_.Start(static_cast<float>(vFallBegin_));
+
+
+	pointTex_ = TextureManager::GetInstance()->LoadTexture("Resources/UI/bonusNumber.png");
 }
 
 void GameManager::Update([[maybe_unused]] const float deltaTime)
 {
+
+#ifdef _DEBUG
+
 	Debug("GameManager");
+	const SelectToGame *select = SelectToGame::GetInstance();
+	LoadGlobalVariant(select->GetSelect());
+
+#endif // _DEBUG
 
 	ClearCheck();
+	for (auto &item : removeTypes_) {
+		item = 0;
+	}
 
 	// 演出用のデータの破棄
 	gameEffectManager_->Clear();
 
 	GlobalVariables::GetInstance()->Update();
 
-	GetMap()->SetHitMap({});
+	//GetMap()->SetHitMap({});
 
 	const float fixDeltaTime = std::clamp(deltaTime, 0.f, 0.1f);
 
@@ -157,13 +193,16 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	}
 	AddPoint();
 
+	fallingBlocksPos_.clear();
+	bool isLanding = false;
+
 	for (auto &fallingBlock : fallingBlocks_) {
 		// 落下しているブロックのコンポーネント
 		Lamb::SafePtr fallComp = fallingBlock->GetComponent<FallingBlockComp>();
 		// 落下しているブロックの座標
 		Lamb::SafePtr blockBody = fallComp->pLocalPos_;
 
-		if (fallingBlock->GetActive()) {
+		if (fallingBlock->GetActive() and fallComp->hasDamage_) {
 			if (player_) {
 				Lamb::SafePtr playerBody = player_->GetComponent<LocalBodyComp>();
 				const Vector2 centorDiff = blockBody->localPos_ - playerBody->localPos_;
@@ -171,17 +210,23 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 				if (std::abs(centorDiff.x) <= sizeSum.x and std::abs(centorDiff.y) <= sizeSum.y) {
 					fallingBlock->OnCollision(player_.get());
 					player_->OnCollision(fallingBlock.get());
-					player_->GetComponent<LocalRigidbody>()->ApplyInstantForce(Vector2{ SoLib::Math::Sign(centorDiff.x) * -2.f, 2.f });
 				}
 			}
 		}
 
 		// もしブロックがあったら
 		if (fallComp->IsLanding()) {
-			Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
-			audio->Start(0.2f, false);
-			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType());
+			putBlock_->Start(0.2f, false);
+			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType(), fallComp->blockDamage_);
 			fallingBlock->SetActive(false);
+			if (fallComp->hasDamage_) {
+				gameEffectManager_->fallingBlock_.reset();
+			}
+			isLanding |= true;
+		}
+
+		if (fallingBlock->GetActive()) {
+			fallingBlocksPos_.push_back(blockBody->localPos_);
 		}
 	}
 
@@ -267,6 +312,12 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		}
 	}
 
+	// 設置されたら
+	if (isLanding) {
+		// プレイヤを埋まらない位置に移動する
+		PlayerMoveSafeArea();
+	}
+
 	damageAreaList_.clear();
 
 	// ボタンを押していない間はゲージを回復する
@@ -274,18 +325,27 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 		blockGauge_->EnergyRecovery(localDeltaTime);
 	}
 
-	if (player_) {
-		// プレイヤの体力が0になっていたら終わる
-		if (player_->GetComponent<HealthComp>()->GetNowHealth() <= 0.f) {
-			player_.reset();
-		}
-	}
+	//if (player_) {
+	//	// プレイヤの体力が0になっていたら終わる
+	//	if (player_->GetComponent<HealthComp>()->GetNowHealth() <= 0.f) {
+	//		player_.reset();
+	//	}
+	//}
+
+	gameTimer_->Update(localDeltaTime);
 
 	blockGauge_->Update(localDeltaTime);
 	//}
 	//gameEffectManager_->fallingBlock_ = spawner_->GetComponent<FallingBlockSpawnerComp>()->GetFutureBlockPos();
 
 	gameEffectManager_->Update(fixDeltaTime);
+
+	if (bonusPointDrawTimer_.IsActive()) {
+		bonusPointDrawTimer_.Update(fixDeltaTime);
+		bonusTexTransform_.scale = Vector3::kIdentity * SoLib::Lerp(2.5f, 0.5f, SoLib::easeInOutBack(bonusPointDrawTimer_.GetProgress()));
+	}
+
+	bonusTexTransform_.CalcMatrix();
 
 	// AABBのデータを転送
 	blockMap_->TransferBoxData();
@@ -313,12 +373,105 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	for (const auto &dwarf : darkDwarfList_) {
 		dwarf->Draw(camera);
 	}
-	for (auto& item : itemList_) {
+	for (auto &item : itemList_) {
 		item->Draw(camera.GetViewOthographics());
 	}
 	blockGauge_->Draw(camera);
 
 	gameEffectManager_->Draw(camera);
+
+	if (bonusPointDrawTimer_.IsActive()) {
+		DrawerManager::GetInstance()->GetTexture2D()->Draw(bonusTexTransform_.matWorld_, Mat4x4::MakeAffin({ 0.25f,1.f,1.f }, Vector3{}, { 0.25f * (itemSpawnCount_ - 1),0,0 }), camera.GetViewOthographics(), pointTex_, 0xFFFFFFFF, BlendType::kNormal);
+	}
+}
+
+void GameManager::LoadGlobalVariant([[maybe_unused]] const uint32_t stageIndex)
+{
+	const auto *const gVariable = GlobalVariables::GetInstance();
+	{
+		const auto *const group = gVariable->GetGroup("Stage" + std::to_string(stageIndex));
+		if (group) {
+			LoadValue(*group, *GetInstance(), vGameManagerItems_);
+		}
+	}
+	{
+		const auto *const group = gVariable->GetGroup("BlockMap");
+		if (group) {
+			LoadValue(*group, vBlockMapItems_);
+		}
+	}
+	{
+		const auto *const group = gVariable->GetGroup("PlayerComp");
+		if (group) {
+			LoadValue(*group, PlayerComp::vPlayerItems_);
+		}
+	}
+	{
+		const auto *const group = gVariable->GetGroup("DwarfComp");
+		if (group) {
+			LoadValue(*group, DwarfComp::vDwarfItems_);
+		}
+	}
+	{
+		const auto *const group = gVariable->GetGroup("ItemStatus");
+		if (group) {
+			LoadValue(*group, vItemStatus_);
+		}
+	}
+	{
+		const auto *const group = gVariable->GetGroup("FallBlockStatus");
+		if (group) {
+			LoadValue(*group, FallingBlockComp::vFallBlockStatus_);
+		}
+	}
+
+}
+
+void GameManager::SaveGlobalVariant([[maybe_unused]] const uint32_t stageIndex) const
+{
+
+#ifdef _DEBUG
+
+	auto *const gVariable = GlobalVariables::GetInstance();
+	{
+		auto *const group = gVariable->AddGroup("Stage" + std::to_string(stageIndex));
+		if (group) {
+			SaveValue(*group, *GetInstance(), vGameManagerItems_);
+		}
+	}
+	{
+		auto *const group = gVariable->AddGroup("BlockMap");
+		if (group) {
+			SaveValue(*group, vBlockMapItems_);
+
+		}
+	}
+	{
+		auto *const group = gVariable->AddGroup("PlayerComp");
+		if (group) {
+			SaveValue(*group, PlayerComp::vPlayerItems_);
+		}
+	}
+	{
+		auto *const group = gVariable->AddGroup("DwarfComp");
+		if (group) {
+			SaveValue(*group, DwarfComp::vDwarfItems_);
+		}
+	}
+	{
+		auto *const group = gVariable->AddGroup("ItemStatus");
+		if (group) {
+			SaveValue(*group, vItemStatus_);
+		}
+	}
+	{
+		auto *const group = gVariable->AddGroup("FallBlockStatus");
+		if (group) {
+			SaveValue(*group, FallingBlockComp::vFallBlockStatus_);
+		}
+	}
+#endif // _DEBUG
+
 }
 
 bool GameManager::Debug([[maybe_unused]] const char *const str)
@@ -330,9 +483,55 @@ bool GameManager::Debug([[maybe_unused]] const char *const str)
 
 	ImGui::Begin(str);
 
+	////blockMap_->Debug("BlockMap");
+	//SoLib::ImGuiWidget(&vFallSpan_);
+	//SoLib::ImGuiText("アイテム数", std::to_string(itemCount_) + '/' + std::to_string(vClearItemCount_));
+	//SoLib::ImGuiText("残り時間", std::to_string(gameTimer_->GetDeltaTimer().GetNowFlame()) + '/' + std::to_string(gameTimer_->GetDeltaTimer().GetGoalFlame()));
+
 	//blockMap_->Debug("BlockMap");
-	SoLib::ImGuiWidget(vFallSpan_.c_str(), &*vFallSpan_);
-	SoLib::ImGuiText("アイテム数", std::to_string(itemCount_) + '/' + std::to_string(vClearItemCount_));
+
+
+	for (int32_t yi = BlockMap::kMapY - 1; yi >= 0; yi--) {
+		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+			SoLib::ImGuiWidget(("##" + std::to_string(yi) + ' ' + std::to_string(xi)).c_str(), &blockMapData_[yi][xi]);
+			ImGui::SameLine();
+		}
+		ImGui::NewLine();
+	}
+
+
+	if (ImGui::Button("Save")) {
+
+		std::array<int32_t, 9u> saveData{};
+		for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
+			for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+				reinterpret_cast<std::bitset<15> &>(saveData[BlockMap::kMapY - yi - 1]).set(BlockMap::kMapX - xi - 1, blockMapData_[yi][xi]);
+			}
+		}
+		const SelectToGame *select = SelectToGame::GetInstance();
+		const char *const kFilePath = "Resources/Datas/LevelData.jsonc";
+		std::ifstream ifs;
+
+		nlohmann::json root;
+
+		ifs.open(kFilePath);
+		if (ifs.fail()) {
+			assert(0 and "レベルデータのロードに失敗しました");
+			return {};
+		}
+
+		ifs >> root;
+		ifs.close();
+
+		root["LevelData"][select->GetSelect()] = saveData;
+
+		std::ofstream ofs;
+		ofs.open(kFilePath);
+		ofs << root;
+		ofs.close();
+
+	}
+
 
 	ImGui::End();
 
@@ -351,6 +550,10 @@ GameObject *GameManager::AddPlayerBullet(Vector2 centerPos, Vector2 velocity)
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
 	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+
+	auto *const mapHit = bullet->AddComponent<LocalMapHitComp>();
+	mapHit->isHitFallBlock_ = false;
+	mapHit->isPermeable_ = true;
 	plBulletList_.push_back(std::move(bullet));
 
 	return plBulletList_.back().get();
@@ -366,25 +569,37 @@ GameObject *GameManager::AddEnemyBullet(Vector2 centerPos, Vector2 velocity)
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
 	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+
+	auto *const mapHit = bullet->AddComponent<LocalMapHitComp>();
+	mapHit->isHitFallBlock_ = false;
+	mapHit->isPermeable_ = true;
 	enemyBulletList_.push_back(std::move(bullet));
 
 	return enemyBulletList_.back().get();
 }
 
-GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity)
+GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity, bool hasDamage, uint32_t blockDamage)
 {
 	std::unique_ptr<GameObject> addBlock = std::make_unique<GameObject>();
 
 	// 落下するブロックのコンポーネント
 	Lamb::SafePtr fallingComp = addBlock->AddComponent<FallingBlockComp>();
 	Lamb::SafePtr localBodyComp = addBlock->AddComponent<LocalBodyComp>();
+	Lamb::SafePtr localHitMap = addBlock->AddComponent<LocalMapHitComp>();
+
+	localHitMap->isHitFallBlock_ = false;
 
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = size;
 
 	fallingComp->blockType_ = blockType;
+	fallingComp->velocity_ = velocity;
 	fallingComp->gravity_ = gravity;
-	addBlock->GetComponent<LocalRigidbody>()->SetVelocity(velocity);
+	fallingComp->hasDamage_ = hasDamage;
+
+	fallingComp->blockDamage_ = blockDamage;
+
+	addBlock->GetComponent<LocalRigidbody>();
 
 	// 末尾に追加
 	fallingBlocks_.push_back(std::move(addBlock));
@@ -446,7 +661,7 @@ GameObject *GameManager::AddDarkDwarf(Vector2 centerPos)
 	// コンポーネントの追加
 	Lamb::SafePtr dwarfComp = dwarf->AddComponent<DwarfComp>();
 	Lamb::SafePtr localBody = dwarf->GetComponent<LocalBodyComp>();
-	localBody->localPos_ = centerPos; // 座標の指定
+	localBody->localPos_ = { std::round(centerPos.x), centerPos.y }; // 座標の指定
 	localBody->drawScale_ = 1.f;
 
 	dwarf->AddComponent<DwarfAnimatorComp>();
@@ -481,14 +696,28 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), dwarfPosSet);
 
-	for (const auto &line : chainBlockMap) {
-		// どこか1つでも壊れてたらタイマー開始
-		if (line.any()) {
+	std::pair<Vector2, Vector2> minMax{ {-1,-1}, {-1,-1} };
 
-			blockBreakTimer_.Start(vBreakStopTime_);
-			break;
+	for (int16_t yi = 0; yi < chainBlockMap.size(); yi++) {
+
+		for (int16_t xi = 0; xi < chainBlockMap[yi].size(); xi++) {
+			if (chainBlockMap[yi][xi]) {
+				blockBreakTimer_.Start(vBreakStopTime_);
+				bonusPointDrawTimer_.Start(1.f);
+				if (minMax.first.x == -1) {
+					minMax.first.x = static_cast<float>(xi);
+				}
+				if (minMax.first.y == -1) {
+					minMax.first.y = static_cast<float>(yi);
+				}
+
+				minMax.second.x = std::max(minMax.second.x, static_cast<float>(xi));
+				minMax.second.y = std::max(minMax.second.y, static_cast<float>(yi));
+			}
 		}
 	}
+
+	Vector2 center = SoLib::Lerp(minMax.first, minMax.second, 0.5f);
 
 	POINTS targetPos{};
 
@@ -503,7 +732,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 	for (const POINTS pos : dwarfPosSet) {
 		if (not BlockMap::IsOutSide(pos)) {
 			// もし、ブロックが存在しなかった場合はそこを折る
-			if (blockMap_->GetBlockType(pos) == Block::BlockType::kNone) {
+			if (blockMap_->GetBlockType(pos) != block) {
 				breakBlock[pos.y][pos.x] = false;
 			}
 		}
@@ -544,29 +773,30 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 		}
 	}
 
-	uint32_t itemSpawnCount = 0;
-	if (breakCount <= 4) {
-		itemSpawnCount = 1;
+	if (breakCount <= 3) {
+		itemSpawnCount_ = 1;
+	}
+	else if (breakCount <= 6) {
+		itemSpawnCount_ = 2;
 	}
 	else if (breakCount <= 9) {
-		itemSpawnCount = 2;
+		itemSpawnCount_ = 3;
 	}
-	else
-	{
-		itemSpawnCount = 3;
+	else {
+		itemSpawnCount_ = 4;
 	}
 
 
 	//Block::BlockType breakBlockType = Block::BlockType::kNone;
 
 	for (targetPos.y = 0; targetPos.y < BlockMap::kMapY; targetPos.y++) {
-		const auto &breakLine = chainBlockMap[targetPos.y];
+		const auto &breakLine = breakBlock[targetPos.y];
 		for (targetPos.x = 0; targetPos.x < BlockMap::kMapX; targetPos.x++) {
 			if (breakLine[targetPos.x]) {
 				const auto blockType = blockMap_->GetBlockType(targetPos);
 				blockMap_->BreakBlock(targetPos);
 
-				AddItem(BlockMap::GetGlobalPos(targetPos), blockType, itemSpawnCount);
+				AddItem(BlockMap::GetGlobalPos(targetPos), blockType, itemSpawnCount_);
 				//breakBlockType = blockType;
 
 			}
@@ -575,20 +805,19 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 
 	for (auto *const dwarf : deadDwarfList) {
 
-		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kBlue, itemSpawnCount);
+		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kGreen, itemSpawnCount_);
 		dwarf->SetActive(false);
 
 	}
 
 	for (auto *const dwarf : deadDarkDwarfList) {
-		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kRed, itemSpawnCount);
+		AddItem(dwarf->GetComponent<LocalBodyComp>()->GetGlobalPos(), Block::BlockType::kRed, itemSpawnCount_);
 		dwarf->SetActive(false);
 	}
 
 	// どれか一体でも死んでたら鳴らす
 	if (not deadDwarfList.empty() or not deadDarkDwarfList.empty()) {
-		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
-		audio->Start(0.2f, false);
+		slimeDeath_->Start(0.2f, false);
 	}
 
 
@@ -597,6 +826,8 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 	blockMap_->SetBreakBlockMap(breakBlock);
 
 	blockMap_->SetBreakMap(chainBlockMap);
+
+	bonusTexTransform_.translate = Vector3{ BlockMap::GetGlobalPos(center), -15.f };
 
 	return std::move(chainBlockMap);
 }
@@ -609,10 +840,11 @@ BlockMap::BlockBitMap &&GameManager::HitChainBlocks(POINTS localPos) {
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
 
 	blockMap_->SetHitMap(chainBlockMap);
+	blockMap_->StartTimer();
 
 	return std::move(chainBlockMap);
 }
-std::list<GameManager::DwarfPick> GameManager::PickUpBlockSideObject(const POINTS localPos)
+std::list<GameManager::DwarfPick> GameManager::PickUpObject(const POINTS localPos)
 {
 	std::list<DwarfPick> result;
 
@@ -626,7 +858,7 @@ std::list<GameManager::DwarfPick> GameManager::PickUpBlockSideObject(const POINT
 
 			// もし隣であったら取る
 	//		if (std::abs(bodyPos.x - localPos.x) + std::abs(bodyPos.y - localPos.y) <= 1) {
-			if (bodyPos.x == localPos.x and bodyPos.y - localPos.y == 1) {
+			if (bodyPos == localPos) {
 
 				result.push_back({ body->localPos_ - Vector2{static_cast<float>(localPos.x), static_cast<float>(localPos.y)}, std::move(*dwarfItr) });
 
@@ -644,7 +876,7 @@ std::list<GameManager::DwarfPick> GameManager::PickUpBlockSideObject(const POINT
 
 			// もし隣であったら取る
 	//		if (std::abs(bodyPos.x - localPos.x) + std::abs(bodyPos.y - localPos.y) <= 1) {
-			if (bodyPos.x == localPos.x and bodyPos.y - localPos.y == 1) {
+			if (bodyPos == localPos) {
 
 				result.push_back({ body->localPos_ - Vector2{static_cast<float>(localPos.x), static_cast<float>(localPos.y)}, std::move(*dwarfItr) });
 
@@ -664,8 +896,8 @@ std::list<GameManager::DwarfPick> GameManager::PickUpBlockSideObject(const POINT
 void GameManager::RandomDwarfSpawn()
 {
 	if (not dwarfSpawnTimer_.IsActive()) {
-		dwarfSpawnTimer_.Start(5.f);
-		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
+		dwarfSpawnTimer_.Start(vSpawnSpan_);
+		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX - 1);
 		AddDwarf(Vector2{ static_cast<float>(spawnPos), 0 });
 	}
 }
@@ -673,12 +905,67 @@ void GameManager::RandomFallBlockSpawn()
 {
 	if (not fallBlockSpawnTimer_.IsActive()) {
 		fallBlockSpawnTimer_.Start(vFallSpan_);
-		int32_t spawnPos = Lamb::Random(0, BlockMap::kMapX);
-		uint32_t blockType = Lamb::Random(static_cast<uint32_t>(Block::BlockType::kNone) + 1, static_cast<uint32_t>(Block::BlockType::kMax) - 1);
+		/*	std::vector<uint8_t> vec;
+			vec.reserve(BlockMap::kMapX - gameEffectManager_->fallingBlock_.count());
+			for (uint8_t i = 0; i < BlockMap::kMapX; i++) {
+				if (not gameEffectManager_->fallingBlock_.test(i)) {
+					vec.push_back(i);
+				}
+			}
+		*/
+
+		// 高い場所をもとに割合を出す
+		std::vector<uint8_t> randVec;
+
+		std::array<int16_t, BlockMap::kMapX> mapHeight{};
+		int16_t heighest = -1;
+
+		for (int16_t yi = 0u; yi < BlockMap::kMapY; yi++) {
+			for (int16_t xi = 0u; xi < BlockMap::kMapX; xi++) {
+				Block::BlockType block = blockMap_->GetBlockType(POINTS{ xi,yi });
+				// ブロックが存在する場合
+				if (block != Block::BlockType::kNone) {
+					mapHeight[xi] = yi;
+					heighest = yi;
+				}
+
+			}
+			if (heighest != yi) {
+				break;
+			}
+		}
+
+		std::vector<uint8_t> targets{};
+		for (int32_t i = 0; i < mapHeight.size(); i++) {
+			// もし生成してるなら飛ばす
+			if (gameEffectManager_->fallingBlock_.test(i)) {
+				continue;
+			}
+			for (int32_t c = 0; c < (heighest == -1 ? 1 : (heighest - mapHeight[i]) * vFallPosCalc_ + 1); c++) {
+				targets.push_back(static_cast<uint8_t>(i));
+			}
+		}
 
 
-		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -5, Vector2::kZero);
+
+		const int32_t spawnPos = targets[Lamb::Random(0, static_cast<int32_t>(targets.size() - 1))];
+		const uint32_t blockType = std::clamp(Lamb::Random(1, *vBlockTypeCount_), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1);
+
+		gameEffectManager_->fallingBlock_.set(spawnPos);
+
+		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -5, Vector2::kZero)->GetComponent<FallingBlockComp>()->stopTimer_ = FallingBlockComp::vSpawnFallBlockStop_;
 	}
+
+	//for (uint32_t i = 0; i < spawnLeftTime_.size(); i++) {
+	//	auto &&[spawnTime, type] = spawnLeftTime_[i];
+	//	if (spawnTime > 0) {
+	//		spawnTime = std::clamp(spawnTime - deltaTime, 0.f, *vBreakStopTime_);
+	//		if (spawnTime <= 0) {
+	//			AddFallingBlock(Vector2{ static_cast<float>(i), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, type, Vector2::kYIdentity * -5, Vector2::kZero);
+	//		}
+	//	}
+	//}
+
 }
 //
 // std::pair<PickUpBlockData, Vector2> GameManager::PickUp(Vector2 localPos, [[maybe_unused]] int hasBlockWeight, [[maybe_unused]] int maxWeight, [[maybe_unused]] bool isPowerful)
@@ -800,8 +1087,16 @@ void GameManager::AddItem([[maybe_unused]] const Vector2 globalPos, const Block:
 
 	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
 	for (uint32_t i = 0; i < count; i++) {
-		const Vector2 endPos = { 0.0f,11.0f };
-		std::unique_ptr<BlockItem> item = std::make_unique<BlockItem>(globalPos, endPos, blockType);
+		const Camera &texCamera = *pGameUIManager_->GetCamera();
+		const Camera &gameCamera = *camera_;
+		Vector3 endPos = pGameUIManager_->GetItemGauge()->GetGaugeRightPos();
+
+		// スクリーン座標に変換
+		endPos *= texCamera.GetViewOthographicsVp();
+		// ゲーム空間に変換
+		endPos *= gameCamera.GetViewOthographicsVp().Inverse();
+
+		std::unique_ptr<BlockItem> item = std::make_unique<BlockItem>(globalPos, Vector2{ endPos.x, endPos.y }, blockType, i * vItemSpawnSpan_);
 		itemList_.emplace_back(std::move(item));
 	}
 	// ↑ アイテムのクラスができたら､この処理を置き換える
@@ -818,12 +1113,64 @@ void GameManager::AddPoint()
 			// 破壊時の処理
 			itemCount_++;
 
+			// アイテムの属性で数値を増やす
+			uint32_t index = static_cast<uint32_t>((*item)->GetItemType());
+			index = std::clamp(index, 1u, static_cast<uint32_t>(Block::BlockType::kMax) - 1) - 1;
+			itemTypeCount_[index]++;
+
+			UIEditor::GetInstance()->BeginScaleMove(UIEditor::scaleMoveSpeed);
+
+
 			item = itemList_.erase(item); // オブジェクトを破棄してイテレータを変更
 			continue;
 		}
 
 		// 何もなかったら次へ
 		++item;
+	}
+}
+
+struct CountIndex {
+	int32_t count_;
+	int32_t index_;
+};
+
+static bool comp(const CountIndex a, const CountIndex b) { return  a.count_ > b.count_; }
+
+
+void GameManager::RemovePoint(const int32_t count)
+{
+	int32_t total = std::min(count, itemCount_);
+	itemCount_ -= total;
+	//itemCount_ = std::clamp(itemCount_, 0, *vClearItemCount_);
+
+	std::array<CountIndex, 5u> indexedArr{};
+	for (int32_t i = 0; i < 5u; ++i) {
+		indexedArr[i] = { itemTypeCount_[i], i };
+	}
+
+	// ソート（値が大きい順に並べる）
+	std::sort(indexedArr.rbegin(), indexedArr.rend(), comp);
+
+
+	for (uint32_t i = 0; i < itemTypeCount_.size(); i++) {
+		auto &item = itemTypeCount_[indexedArr[i].index_];
+		auto &removeTypes = removeTypes_[indexedArr[i].index_];
+
+		const int32_t removeCount = total / static_cast<int32_t>(itemTypeCount_.size() - i);
+		const int32_t result = item - removeCount;
+
+		// もし減少のほうが多かったらちょっと色々する
+		if (result < 0) {
+			total -= item;
+			removeTypes = item;
+			item = 0;
+		}
+		else {
+			total -= removeCount;
+			item -= removeCount;
+			removeTypes = removeCount;
+		}
 	}
 }
 
@@ -880,7 +1227,7 @@ void GameManager::BlockMapDropDown()
 			}
 			// そこにブロックがあり、接地していない場合は虚空にして落下させる
 			else if (isFloatBlock[index]) {
-				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -10, Vector2::kZero);
+				AddFallingBlock(localPos, Vector2::kIdentity, block.GetBlockType(), Vector2::kYIdentity * -5, Vector2::kZero, false, block.GetDamage());
 				block.SetBlockType(Block::BlockType::kNone);
 				blockMap_->GetBlockStatusMap()->at(static_cast<int32_t>(localPos.y)).at(static_cast<int32_t>(localPos.x)).reset();
 			}
@@ -922,6 +1269,7 @@ void GameManager::MargeDwarf()
 
 						// 召喚先
 						Vector2 spawnPos = fBody->localPos_;
+						gameEffectManager_->margeDwarfPos_.push_back(spawnPos);
 
 						AddDarkDwarf(spawnPos);
 
@@ -936,11 +1284,140 @@ void GameManager::MargeDwarf()
 void GameManager::ClearCheck()
 {
 	if (not player_) {
+		ResultScene::SetIsGameClear(false);
 		pGameScene_->ChangeToResult();
 	}
-
 	if (vClearItemCount_ < itemCount_) {
+		ResultScene::SetIsGameClear(true);
+		pGameScene_->ChangeToResult();
+	}
+	if (gameTimer_->IsFinish()) {
+		ResultScene::SetIsGameClear(false);
 		pGameScene_->ChangeToResult();
 	}
 
+}
+
+void GameManager::PlayerMoveSafeArea()
+{
+	const Vector2 playerPos = player_->GetComponent<LocalBodyComp>()->localPos_;
+	const POINTS intPos = { static_cast<int16_t>(playerPos.x + 0.5f), static_cast<int16_t>(playerPos.y + 0.5f) };
+
+
+	if (not BlockMap::IsOutSide(intPos)) {
+		// もし､空なら終わり
+		if (blockMap_->GetBlockType(intPos) == Block::BlockType::kNone) {
+			return;
+		}
+		int16_t begin = 1;
+		// 左右が埋まっていたならそこに置く
+		if (blockMap_->GetBlockType(intPos + POINTS{ 1, 0 }) != Block::BlockType::kNone and blockMap_->GetBlockType(intPos - POINTS{ 1, 0 }) != Block::BlockType::kNone) {
+			begin = 0;
+		}
+
+		bool left = true, right = true;
+		for (int16_t xi = begin; xi < BlockMap::kMapX and (left or right); xi++) {
+			if (left) {
+				if (BlockMap::IsOutSide(intPos + POINTS{ static_cast<int16_t>(-xi), 0 })) {
+					left = false;
+				}
+
+			}
+			if (right) {
+				if (BlockMap::IsOutSide(intPos + POINTS{ xi, 0 })) {
+					right = false;
+				}
+
+			}
+			for (int16_t yi = 0; yi < BlockMap::kMapY - intPos.y; yi++) {
+				const POINTS offsetX = { xi, 0 };
+				const POINTS targetPos = intPos + POINTS{ 0, yi };
+
+				const bool leftVoid = left && blockMap_->GetBlockType(targetPos - offsetX) == Block::BlockType::kNone;
+				const bool rightVoid = right && blockMap_->GetBlockType(targetPos + offsetX) == Block::BlockType::kNone;
+
+				if (leftVoid) {
+					player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x - xi),static_cast<float>(targetPos.y) };
+					return;
+				}
+				if (rightVoid) {
+					player_->GetComponent<LocalBodyComp>()->localPos_ = { static_cast<float>(targetPos.x + xi),static_cast<float>(targetPos.y) };
+					return;
+				}
+			}
+		}
+	}
+
+}
+
+std::array<int32_t, 9u> GameManager::LoadLevelData(int32_t levelIndex)
+{
+	const char *const kFilePath = "Resources/Datas/LevelData.jsonc";
+	std::ifstream ifs;
+
+	nlohmann::json root;
+
+	ifs.open(kFilePath);
+	if (ifs.fail()) {
+		assert(0 and "レベルデータのロードに失敗しました");
+		return {};
+	}
+
+	ifs >> root;
+	ifs.close();
+
+	const auto &levelData = root["LevelData"][levelIndex];
+	std::array<int32_t, 9u> map = levelData;
+
+	return map;
+
+}
+
+void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount)
+{
+	for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
+
+		std::bitset<15u> lineData = reinterpret_cast<const std::bitset<15u>&>(map.at(BlockMap::kMapY - yi - 1));
+
+		// その行が空であったら終わる
+		if (lineData.none()) {
+			return;
+		}
+		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
+			bool targetBit = not lineData[BlockMap::kMapX - xi - 1];
+			// もし、そこのデータが空であったら飛ばす
+			if (targetBit) { continue; }
+#ifdef _DEBUG
+
+			blockMapData_[yi][xi] = true;
+
+#endif // _DEBUG
+
+
+			std::bitset<static_cast<int32_t>(Block::BlockType::kMax) - 1> blockSet{};
+			int32_t blockChainCount = 0;
+			do {
+				const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
+
+				Block::BlockType type = static_cast<Block::BlockType>(std::clamp(Lamb::Random(1, blockTypeCount), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1));
+
+
+				blockMap_->SetBlocks(pos, Vector2::kIdentity, type);
+
+				// データを確認
+				const auto &chainMap = blockMap_->FindChainBlocks({ static_cast<int16_t>(pos.x),static_cast<int16_t>(pos.y) }, type, {});
+
+				for (const auto &line : chainMap) {
+					// 数字があるうえで、連結数が増えなかった場合終わる
+					if (line.none() and blockChainCount) { break; }
+
+					blockChainCount += static_cast<int32_t>(line.count());
+				}
+				blockSet.set(static_cast<uint32_t>(type) - 1, true);
+				if (blockSet.count() >= blockTypeCount) {
+					break;
+				}
+			} while (blockChainCount > maxChainCount);
+		}
+	}
 }

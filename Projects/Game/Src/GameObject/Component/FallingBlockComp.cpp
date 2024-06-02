@@ -9,19 +9,24 @@ void FallingBlockComp::Init()
 	pRigidbody_ = object_.AddComponent<LocalRigidbody>();
 	pHitMapComp_ = object_.AddComponent<LocalMapHitComp>();
 
-	
+
 }
 
 void FallingBlockComp::Start()
 {
-	
+
 }
 
 void FallingBlockComp::Update()
 {
 	// 時間差分
-	//const float deltaTime = GetDeltaTime();
-
+	const float deltaTime = GetDeltaTime();
+	if (stopTimer_ > 0) {
+		stopTimer_ -= deltaTime;
+		if (stopTimer_ <= 0) {
+			pRigidbody_->SetVelocity(velocity_);
+		}
+	}
 	pRigidbody_->ApplyContinuousForce(gravity_);
 
 	// グローバル空間に持ってくる
@@ -30,15 +35,16 @@ void FallingBlockComp::Update()
 
 void FallingBlockComp::Draw(const Camera &camera) const
 {
-	Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { pLocalPos_->GetGlobalPos() + Vector2::kYIdentity, -5.f });
-	DrawerManager::GetInstance()->GetTexture2D()->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), blockType_.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
+	Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { pLocalPos_->GetGlobalPos(), -5.f });
+	DrawerManager::GetInstance()->GetTexture2D()->Draw(affine, Block::kUvMatrix_[blockDamage_], camera.GetViewOthographics(), blockType_.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 }
 
 void FallingBlockComp::OnCollision(GameObject *other)
 {
 	Lamb::SafePtr playerComp = other->GetComponent<PlayerComp>();
+
 	if (playerComp) {
-		playerComp->InflictDamage(1);
+		playerComp->InflictDamage({ SoLib::Math::Sign(other->GetComponent<LocalBodyComp>()->localPos_.x - pLocalPos_->localPos_.x) * -2.f, 2.f });
 	}
 
 }

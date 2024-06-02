@@ -3,6 +3,7 @@
 #include "SpriteAnimatorComp.h"
 #include "SpriteComp.h"
 #include <Drawers/DrawerManager.h>
+#include <Utils/Random/Random.h>
 
 void DwarfComp::Init()
 {
@@ -86,17 +87,26 @@ void DwarfComp::ClimbUp()
 
 	// 登るフラグが立っていたら登る
 	if (climbFlag) {
-		pLocalBodyComp_->localPos_.y += GetDeltaTime() * 2.f;
+		pLocalBodyComp_->localPos_.y += GetDeltaTime() * vClimbSpeed_;
 		isClimbing_ = true;
+		if (const Vector2 pos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * (0.5f) - Vector2::kYIdentity; LocalBodyComp::pMap_->GetBlockType(pos) == Block::BlockType::kNone) {
+			preIndex_ = { static_cast<int16_t>(pos.x), static_cast<int16_t>(pos.y) };
+		}
+		else {
+			preIndex_ = { -1,-1 };
+		}
 	}
 	// 折れていたら登っていない
 	else {
+		preIndex_ = { -1,-1 };
 		isClimbing_ = false;
 	}
 }
 
 bool DwarfComp::FallDown()
 {
+
+	const auto &blocks = GameManager::GetInstance()->GetFallingBlocksPos();
 	const float downPower = 2.f * GetDeltaTime();
 	float afterPosY = pLocalBodyComp_->localPos_.y - downPower;
 	// 落下先の座標
@@ -104,6 +114,15 @@ bool DwarfComp::FallDown()
 	if (afterPosY > 0) {
 		// 落下先がブロックでない場合 なおかつ前がブロックでない場合
 		if (LocalBodyComp::pMap_->GetBlockType(downSide) == Block::BlockType::kNone and LocalBodyComp::pMap_->GetBlockType(downSide + Vector2::kXIdentity * (0.25f * facing_)) == Block::BlockType::kNone) {
+
+			for (const Vector2 pos : blocks) {
+				//Vector2 targetPos;
+				if (std::abs(downSide.x - (pos.x + 0.5f)) <= 0.5f and std::abs(downSide.y - (pos.y + 0.5f)) <= 0.5f) {
+					pLocalBodyComp_->localPos_.y = pos.y + 1;
+					return false;
+				}
+			}
+
 			// 下げる
 			pLocalBodyComp_->localPos_.y -= downPower;
 			return true;
@@ -139,24 +158,24 @@ void DwarfComp::ChangeMovementTarget()
 
 void DwarfComp::FireBullet()
 {
-
 	timer_.Update(GetDeltaTime());
+	Lamb::SafePtr player = GameManager::GetInstance()->GetPlayer();
+	if (player) {
+
+		Lamb::SafePtr plBody = player->GetComponent<LocalBodyComp>();
+		facing_ = static_cast<int32_t>(SoLib::Math::Sign(plBody->localPos_.x - pLocalBodyComp_->localPos_.x));
+	}
 	if (not timer_.IsActive()) {
-		Lamb::SafePtr player = GameManager::GetInstance()->GetPlayer();
-		if (player) {
-			Lamb::SafePtr plBody = player->GetComponent<LocalBodyComp>();
 
-			facing_ = static_cast<int32_t>(SoLib::Math::Sign(plBody->localPos_.x - pLocalBodyComp_->localPos_.x));
 
-			timer_.Start(5.f);
+		timer_.Start(vBulletFireSpan_);
 
-			Lamb::SafePtr pGManager = GameManager::GetInstance();
+		Lamb::SafePtr pGManager = GameManager::GetInstance();
 
-			if (facing_) {
-				const Vector2 facingVec = Vector2::kXIdentity * static_cast<float>(facing_);
+		if (facing_) {
+			const Vector2 facingVec = Vector2::kXIdentity * static_cast<float>(facing_);
 
-				pGManager->AddEnemyBullet(pLocalBodyComp_->localPos_ + facingVec, Vector2::kXIdentity * (facing_ * 5.f));
-			}
+			pGManager->AddEnemyBullet(pLocalBodyComp_->localPos_ + facingVec, Vector2::kXIdentity * (facing_ * vBulletSpeed_));
 		}
 	}
 }
@@ -319,25 +338,29 @@ void DwarfComp::FreeTargetMove()
 	if (pPickUpComp_->GetBlockWeight() > 0) {
 		return;
 	}
-
-	// ローカルの座標
-	float localX = pLocalBodyComp_->localPos_.x;
-
-	if (targetPos_ == -Vector2::kIdentity) {
-		movementFacing_ = 1;
+	if (movementFacing_ == 0) {
+		movementFacing_ = Lamb::Random(0, 1) ? 1 : -1;
 	}
+	else {
 
-	// 右端にいる場合
-	if ((BlockMap::kMapX - 1.5f) <= localX) {
-		// 左端に行くように指定
-		movementFacing_ = -1;
-	}
-	// 左端にいる場合
-	else if (0.5f >= localX) {
-		// 右端に行くように指定
-		movementFacing_ = 1;
-	}
+		// ローカルの座標
+		float localX = pLocalBodyComp_->localPos_.x;
 
+		if (targetPos_ == -Vector2::kIdentity) {
+			movementFacing_ = 1;
+		}
+
+		// 右端にいる場合
+		if ((BlockMap::kMapX - 1.5f) <= localX) {
+			// 左端に行くように指定
+			movementFacing_ = -1;
+		}
+		// 左端にいる場合
+		else if (0.5f >= localX) {
+			// 右端に行くように指定
+			movementFacing_ = 1;
+		}
+	}
 	// 向いている方向の端に移動先を設定する
 	if (movementFacing_ == 1) {
 		// 右下に移動

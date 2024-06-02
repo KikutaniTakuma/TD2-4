@@ -12,11 +12,13 @@ class DwarfComp : public IComponent
 {
 public:
 	// 移動速度
-	inline static const float kMovementSpeed_ = 1.0f;
-	// 移動の減少値
-	inline static const float kMovementResistance_ = 0.1f;
+	inline static SoLib::VItem<"移動速度", float> vMovementSpeed_ = 1.5f;
+	inline static SoLib::VItem<"壁を登るスピード", float> vClimbSpeed_ = 2.f;
 
-	inline static const float kMovementMul_ = 1.5f;
+	inline static SoLib::VItem<"弾の発射間隔", float> vBulletFireSpan_ = 5.f;
+	inline static SoLib::VItem<"弾の速度", float> vBulletSpeed_ = 5.f;
+
+	inline static constexpr SoLib::VItemList vDwarfItems_{ &vMovementSpeed_, &vBulletSpeed_, &vClimbSpeed_, &vBulletFireSpan_ };
 
 public:
 	using IComponent::IComponent;
@@ -71,7 +73,7 @@ private:
 		}
 
 		float xMove = target.x - pLocalBodyComp_->localPos_.x;
-		pLocalBodyComp_->localPos_.x += std::clamp(xMove, -1.f, 1.f) * kMovementMul_ * GetDeltaTime() * (kMovementSpeed_ - kMovementResistance_ * pPickUpComp_->GetBlockWeight());
+		pLocalBodyComp_->localPos_.x += std::clamp(xMove, -1.f, 1.f) * vMovementSpeed_ * GetDeltaTime();
 
 		// 移動距離が有効なら
 		if (xMove != 0) {
@@ -84,7 +86,10 @@ private:
 
 private:
 
-	SoLib::Time::DeltaTimer timer_;
+	// もし足場が虚空なら、1つ前の座標を保存しておく
+	POINTS preIndex_;
+
+	SoLib::Time::DeltaTimer timer_ = { *vBulletFireSpan_ , true };
 
 	int32_t facing_ = 1;
 

@@ -17,14 +17,14 @@ void BlockMap::Init()
 	drawerManager->LoadModel("Resources/Cube.obj");
 	model_ = drawerManager->GetModel("Resources/Cube.obj");
 
-	ground_ = std::make_unique<Ground>();
-	ground_->Init();
+	//ground_ = std::make_unique<Ground>();
+	//ground_->Init();
 
 }
 
 void BlockMap::Update([[maybe_unused]] const float deltaTime)
 {
-
+	hitTimer_.Update(deltaTime);
 	for (auto &blockStatusLine : *blockStatesMap_) {
 		for (auto &blockStatus : blockStatusLine) {
 			if (blockStatus) {
@@ -38,34 +38,36 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 {
 	Lamb::SafePtr texManager = TextureManager::GetInstance();
 	const uint32_t whiteTex = texManager->GetWhiteTex();
-	uint32_t blockTex = 0;
+	//uint32_t blockTex = 0;
 
 	const auto &breakTimer = GameManager::GetInstance()->GetBreakTimer();
-	bool isDraw = std::fmodf(breakTimer.GetProgress(), 0.2f) > 0.1f;
+	bool isBreakDraw = std::fmodf(breakTimer.GetProgress(), 0.2f) > 0.1f;
+
+	const uint32_t breakIndex = GameManager::GetInstance()->GetItemSpawnCount() - 1;
 
 	int32_t yi = 0;
 	for (const auto &modelStateArr : modelStateMap_) {
 		int32_t xi = 0;
 		for (const auto &modelState : modelStateArr) {
 			if (modelState) {
-				for (uint32_t typeIndex = 1; typeIndex < static_cast<uint32_t>(Block::BlockType::kMax); typeIndex++) {
-					if (modelState->color == Block::kBlockColor_[typeIndex]) {
-						if (modelState->color == damageColor_ and hitMap_[yi][xi]) {
 
-							blockTex = whiteTex;
-						}
-						else {
-							blockTex = Block::kTextures_[typeIndex - 1];
-						}
-					}
+				const auto &block = (*blockMap_)[yi][xi];
+				pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), block.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
+
+				if (hitTimer_.IsActive() and hitMap_[yi][xi]) {
+					Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
+
+					pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, SoLib::ColorLerp(0xFFFFFFFF, 0xFFFFFF55, hitTimer_.GetProgress()), BlendType::kNormal);
+
 				}
-				pTexture2d_->Draw(modelState->transMat, Mat4x4::kIdentity, camera.GetViewOthographics(), blockTex, 0xFFFFFFFF, BlendType::kNone);
+
 			}
+
 			// 破壊フラグが立っていたら
-			if (isDraw and breakBlockMap_[yi][xi]) {
+			if (isBreakDraw and breakBlockMap_[yi][xi]) {
 				Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
 
-				pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, 0xFFFFFFFF, BlendType::kNone);
+				pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, kBreakColor_[breakIndex], BlendType::kNone);
 
 			}
 
@@ -74,7 +76,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 		}
 		yi++;
 	}
-	ground_->Draw(camera);
+	//ground_->Draw(camera);
 }
 
 bool BlockMap::Debug(const char *const str)
@@ -85,20 +87,22 @@ bool BlockMap::Debug(const char *const str)
 
 	if (ImGui::TreeNode(str)) {
 
-		for (size_t y = 0; y < kMapY; y++) {
-			//
-			// if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
-			// for (size_t z = 0; z < kMapZ; z++) {
-			for (size_t x = 0; x < kMapX; x++) {
-				isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(y) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*blockMap_)[y][x]));
-				if (x != 9) {
-					ImGui::SameLine();
-				}
-			}
-			//}
-			// ImGui::TreePop();
-			//}
-		}
+		//for (size_t y = 0; y < kMapY; y++) {
+		//	//
+		//	// if (ImGui::TreeNode(("階層" + SoLib::to_string(y)).c_str())) {
+		//	// for (size_t z = 0; z < kMapZ; z++) {
+		//	for (size_t x = 0; x < kMapX; x++) {
+		//		isChange |= ImGui::Checkbox(("##Checkbox" + std::to_string(y) + ' ' + std::to_string(x)).c_str(), &reinterpret_cast<bool &>((*blockMap_)[y][x]));
+		//		if (x != 9) {
+		//			ImGui::SameLine();
+		//		}
+		//	}
+		//	//}
+		//	// ImGui::TreePop();
+		//	//}
+		//}
+
+		isChange |= SoLib::ImGuiWidget(&vCenterDiff_);
 
 		ImGui::TreePop();
 	}
@@ -128,7 +132,7 @@ void BlockMap::TransferBoxData()
 				}
 				// 描画先の座標
 				const Vector2 drawPos = GetGlobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) } /*+ (*blockStatesMap_)[yi][xi]->drawOffset_*/);
-				modelState->transMat = SoLib::Math::Affine(Vector3{ vBlockScale_->x, vBlockScale_->y, vBlockScale_->y }, Vector3::kZero, { drawPos, -1.f });
+				modelState->transMat = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { drawPos, -1.f });
 				// 色を指定する
 				modelState->color = box.GetColor();
 
@@ -157,7 +161,7 @@ void BlockMap::SetDamageColor(uint32_t color)
 	damageColor_ = color;
 }
 
-void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType)
+void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType, uint32_t damage)
 {
 	// 半径
 	Vector2 halfSize = Vector2{ std::floor(size.x * 0.5f), std::floor(size.y * 0.5f) };
@@ -184,6 +188,7 @@ void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxTy
 			auto &box = (*blockMap_)[yPos][xPos];
 			// データを代入する
 			box.SetBlockType(boxType);
+			box.SetDamage(damage);
 
 			// ブロックのステータスの参照
 			auto &blockState = (*blockStatesMap_)[yPos][xPos];
@@ -244,7 +249,6 @@ void BlockMap::BreakBlock(POINTS localPos)
 	auto &targetBlock = blockMap_->at(localPos.y).at(localPos.x);
 	// ブロックがあるなら破壊
 	if (targetBlock) {
-		targetBlock.SetIsDestroy(false);
 		targetBlock.SetDamage(0);
 		targetBlock.SetBlockType(Block::BlockType::kNone);
 		damageColor_ = 0;

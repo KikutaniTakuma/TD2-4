@@ -17,6 +17,8 @@ void Framework::Initialize() {
 	// 入力処理初期化
 	Input::Initialize();
 
+	Input::GetInstance()->GetMouse()->Show(initDesc_.isMouseShow);
+
 	Line::Initialize();
 }
 
@@ -80,9 +82,11 @@ void Framework::Execution() {
 		}
 	}
 	catch (const Lamb::Error& err) {
+		Input::GetInstance()->GetMouse()->Show(true);
 		Lamb::ErrorLog(err);
 	}
 	catch (const std::exception& err) {
+		Input::GetInstance()->GetMouse()->Show(true);
 		Lamb::ErrorLog(err.what(), __func__);
 	}
 	this->Finalize();

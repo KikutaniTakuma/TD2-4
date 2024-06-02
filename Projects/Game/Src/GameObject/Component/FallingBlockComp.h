@@ -22,6 +22,11 @@ public:
 
 	void OnCollision(GameObject *other) override;
 
+	static inline SoLib::VItem<"ダメージ判定のある落下ブロックの待機する時間", float> vSpawnFallBlockStop_{ 1.f };
+	static inline SoLib::VItem<"落下ブロックの待機する時間", float> vFallBlockStop_{ 0.5f };
+
+	inline static constexpr SoLib::VItemList vFallBlockStatus_ = { &vSpawnFallBlockStop_, &vFallBlockStop_ };
+
 public:
 
 	/// @brief ブロックの重さを返す
@@ -41,13 +46,19 @@ public:
 
 	Block blockType_ = Block::BlockType::kRed;
 
+	uint32_t blockDamage_ = 0;
+
 public:
+
+	float stopTimer_ = vFallBlockStop_;
 
 	// ローカル座標コンポーネント
 	Lamb::SafePtr<LocalBodyComp> pLocalPos_ = nullptr;
 	Lamb::SafePtr<LocalRigidbody> pRigidbody_ = nullptr;
 	Lamb::SafePtr<LocalMapHitComp> pHitMapComp_ = nullptr;
 
+	// 速度
+	Vector2 velocity_;
 	// 重力
 	Vector2 gravity_;
 	// ダメージがあるか

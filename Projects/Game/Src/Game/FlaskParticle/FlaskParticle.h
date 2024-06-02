@@ -64,6 +64,10 @@ public:
 		particles_.resize(size);
 	}
 
+	size_t GetSize() const {
+		return particles_.size();
+	}
+
 	void SetEmitter(const Emitter& emitter) {
 		emitter_ = emitter;
 	}
@@ -101,6 +105,18 @@ public:
 		freq_ = freq;
 	}
 
+	size_t GetCurrentActiveParticleNum() const {
+		return currentActiveParticleCount_;
+	}
+
+	void SetIsLoop(bool isLoop) {
+		isLoop_ = isLoop;
+	}
+
+	void SetColor(uint32_t color) {
+		color_ = color;
+	}
+
 private:
 	Vector3 GetRandomVector();
 
@@ -129,4 +145,10 @@ private:
 
 	Lamb::SafePtr<Texture2D> texture2D_;
 	uint32_t textureID_;
+
+	size_t currentActiveParticleCount_;
+
+	bool isLoop_;
+
+	uint32_t color_;
 };

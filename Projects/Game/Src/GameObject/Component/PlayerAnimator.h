@@ -16,9 +16,23 @@
 
 class PlayerAnimatorComp : public IComponent
 {
+private:
+	enum class State {
+		kWiat,
+		kMove,
+		kAttack,
+		kHave,
+		kHaveUnder,
+		kHaveMove,
+		kJump,
+		kFall,
+	};
+
 public:
 	using IComponent::IComponent;
 	~PlayerAnimatorComp() = default;
+
+	static void StaticLoad();
 
 	void Init() override;
 
@@ -27,6 +41,25 @@ public:
 	void Draw(const Camera &camera) const override;
 
 private:
+	void SetState();
+
+	void SetWait();
+	void SetMove();
+	void SetAttack();
+	void SetHave();
+	void SetHaveUnder();
+	void SetHaveMove();
+	void SetJump();
+	void SetFall();
+
+	void AttackAnimationUpdate();
+	void HaveAnimationUpdate();
+	void HaveUnderAnimationUpdate();
+
+
+private:
+	State currentState_ = State::kWiat;
+	State preState_ = State::kWiat;
 
 	Lamb::SafePtr<PlayerComp> pPlayerComp_ = nullptr;
 	Lamb::SafePtr<PlayerBlockPickerComp> pPlayerPickerComp_ = nullptr;
@@ -37,17 +70,26 @@ private:
 
 	Lamb::SafePtr<Tex2DAniamtor> spriteAnimator_ = nullptr;
 
-	bool isAttackAnimation_;
-
 	std::unique_ptr<Particle> haveParticle_;
 	std::unique_ptr<Particle> shotParticle_;
 	std::unique_ptr<Particle> smokeParticle_;
-	std::unique_ptr<Particle> damageParticle_;
 
-	Lamb::Flg isPicking_;
+	Lamb::Flg isHaveBlock_;
+	Lamb::Flg isUnderHave_;
+	Lamb::Flg isMove_;
+	Lamb::Flg isAttack_;
 
 	Lamb::Flg isLanding_;
 	Lamb::Flg isDamage_;
 
 	Lamb::Flg isShoting_;
+
+
+	Lamb::Flg isUnderAnimation_;
+	Lamb::Flg isUnderAnimationEnd_;
+
+	Lamb::Flg isNormalPickAnimation_;
+
+	Lamb::Flg isJumpAnimation_;
+	Lamb::Flg isFallAnimation_;
 };

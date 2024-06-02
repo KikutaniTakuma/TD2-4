@@ -57,7 +57,7 @@ Fade::Fade() :
 	}
 
 
-	starTexID_ = DrawerManager::GetInstance()->LoadTexture("./Resources/star.png");
+	starTexID_ = DrawerManager::GetInstance()->LoadTexture("./Resources/FadeStar.png");
 }
 
 void Fade::OutStart() {
@@ -136,7 +136,7 @@ void Fade::Draw([[maybe_unused]]const Mat4x4& viewProjection) {
 
 		for (size_t index = 0; auto & i : starTransform_) {
 			float startPos = Lamb::ClientSize().x * -0.5f;
-			float xSize = i->translate.x - startPos;
+			float xSize = i->translate.x - startPos - (i->scale.x * 0.5f) + 10.0f;
 			xSize = std::max(0.0f, xSize);
 			tex_->Draw(
 				Mat4x4::MakeTranslate(Vector3::kXIdentity * 0.5f) * 
@@ -151,14 +151,25 @@ void Fade::Draw([[maybe_unused]]const Mat4x4& viewProjection) {
 			index++;
 		}
 
-
-		for (auto& i : starTransform_) {
-			tex_->Draw(
-				i->matWorld_,
-				//Mat4x4::MakeScalar(Vector3::kXIdentity * 0.333f + Vector3::kYIdentity * (isInStart_ ? -1.0f : 1.0f)),
-				Mat4x4::kIdentity,
-				viewProjection, starTexID_, std::numeric_limits<uint32_t>::max(), BlendType::kUnenableDepthNormal
-			);
+		if (isOutStart_) {
+			for (auto i = starTransform_.rbegin(); i != starTransform_.rend(); i++) {
+				tex_->Draw(
+					(*i)->matWorld_,
+					//Mat4x4::MakeScalar(Vector3::kXIdentity * 0.333f + Vector3::kYIdentity * (isInStart_ ? -1.0f : 1.0f)),
+					Mat4x4::kIdentity,
+					viewProjection, starTexID_, std::numeric_limits<uint32_t>::max(), BlendType::kUnenableDepthNormal
+				);
+			}
+		}
+		else {
+			for (auto i = starTransform_.begin(); i != starTransform_.end(); i++) {
+				tex_->Draw(
+					(*i)->matWorld_,
+					//Mat4x4::MakeScalar(Vector3::kXIdentity * 0.333f + Vector3::kYIdentity * (isInStart_ ? -1.0f : 1.0f)),
+					Mat4x4::kIdentity,
+					viewProjection, starTexID_, std::numeric_limits<uint32_t>::max(), BlendType::kUnenableDepthNormal
+				);
+			}
 		}
 	}
 }

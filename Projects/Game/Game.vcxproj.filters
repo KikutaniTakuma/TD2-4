@@ -194,6 +194,21 @@
     <ClCompile Include="Src\Game\Item\BlockItem.cpp">
       <Filter>Game\Item</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Game\Timer\Timer.cpp">
+      <Filter>Game\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\GameUIManager\GameUIManager.cpp">
+      <Filter>Game\Manager\GameUIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\ItemGauge\ItemGauge.cpp">
+      <Filter>Game\ItemGauge</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenes\SubMenu\PauseMenu\PauseMenu.cpp">
+      <Filter>Scenes\SubMenu\PauseMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game\NumberSprite\NumberSprite.cpp">
+      <Filter>Game\NumberSprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GlobalVariables">
@@ -330,6 +345,21 @@
     </Filter>
     <Filter Include="Game\Item">
       <UniqueIdentifier>{fceb8355-3f72-4d68-ab50-01ce12dddd4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Timer">
+      <UniqueIdentifier>{af5ee753-ca06-40f6-9a67-3325f7815c4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager\GameUIManager">
+      <UniqueIdentifier>{e393ad7a-e72e-4e77-ad2f-498489131cf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\ItemGauge">
+      <UniqueIdentifier>{63f4319e-fae0-4af8-ae87-b1de07044cd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\SubMenu\PauseMenu">
+      <UniqueIdentifier>{4faa3c32-68c4-4663-a0f7-e8c46dfcdf9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\NumberSprite">
+      <UniqueIdentifier>{71c591ae-a2d9-4ad5-b340-f72aa014507c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -536,6 +566,21 @@
     </ClInclude>
     <ClInclude Include="Src\Game\Item\BlockItem.h">
       <Filter>Game\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Timer\Timer.h">
+      <Filter>Game\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\GameUIManager\GameUIManager.h">
+      <Filter>Game\Manager\GameUIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\ItemGauge\ItemGauge.h">
+      <Filter>Game\ItemGauge</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenes\SubMenu\PauseMenu\PauseMenu.h">
+      <Filter>Scenes\SubMenu\PauseMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\NumberSprite\NumberSprite.h">
+      <Filter>Game\NumberSprite</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

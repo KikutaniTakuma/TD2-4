@@ -3,6 +3,7 @@
 #include"Game/GameManager/GameManager.h"
 #include"Scenes/Manager/BaseScene/BaseScene.h"
 #include"Engine/Graphics/Tex2DAniamtor/Tex2DAniamtor.h"
+#include"Scenes/Manager/SceneManager.h"
 
 class UIEditor{
 private:
@@ -23,7 +24,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	void Initialize(SceneManager* sceneManager);
 
 	/// <summary>
 	/// 終了処理
@@ -44,6 +45,11 @@ public:
 	/// 設置位置描画処理
 	/// </summary>
 	void PutDraw(const Mat4x4& camera);
+
+	//ポットのscale変更処理
+	void BeginScaleMove(const float time);
+
+	void SetSelectDraw(const bool flug);
 
 	/// <summary>
 	/// Imguiの情報
@@ -87,11 +93,23 @@ public:
 		}
 		return texStateResult;
 	}
+public:
+	static const float scaleMoveSpeed;
 
+private:
+	void GameControlUIMove(const size_t i, const size_t j);
+
+	void PotScaleMove(const size_t i, const size_t j);
+
+	
 private:
 	Input* input_ = nullptr;
 
 	Texture2D* tex2D_ = nullptr;
+
+	SceneManager* sceneManager_ = nullptr;
+
+	DrawerManager* drawerManager_ = nullptr;
 
 	//std::unique_ptr<Tex2DAniamtor> texAnim_;
 	//uint32_t animNum_;
@@ -104,6 +122,23 @@ private:
 	std::array<std::vector<std::unique_ptr<Tex2DState>>, BaseScene::kMaxScene> texies_;
 
 	std::unique_ptr<Tex2DState> newTex_;
+
+	//スケールイージングするための
+	bool isScaleMove_ = false;
+
+	bool isScaleMoveReverse_ = false;
+
+	float time_ = 0;
+
+	bool isSelectFlug_ = false;
+
+	std::unique_ptr<Easeing> easing_;
+
+	Vector2 potGoalScale_;
+
+	Vector2 potBaseScale_;
+
+	Mat4x4 camera_;
 
 	BaseScene::ID id_;
 

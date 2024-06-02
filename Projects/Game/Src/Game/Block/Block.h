@@ -18,6 +18,7 @@ public:
 		kBlue,
 		kGreen,
 		kYellow,
+		kPurple,
 
 		kMax
 	};
@@ -28,6 +29,7 @@ public:
 		0x0000FFFF,
 		0x00FF00FF,
 		0xFFFF00FF,
+		0xFF00FFFF,
 	};
 	inline static const std::array<Mat4x4, 3> kUvMatrix_{
 		Mat4x4::MakeScalar(Vector3{1.f / 3.f,1,1}),
@@ -36,8 +38,15 @@ public:
 	};
 
 	// ブロックのテクスチャ
-	// 赤、青、緑、黄の四種(順番も)
-	inline static  std::array<uint32_t, 4u> kTextures_{
+	// 赤、青、緑、黄、紫の五種(順番も)
+	inline static  std::array<uint32_t, static_cast<uint32_t>(BlockType::kMax) - 1> kTextures_{
+
+	};
+
+
+	// アイテムのテクスチャ
+	// 赤、青、緑、黄、紫の五種(順番も)
+	inline static  std::array<uint32_t, static_cast<uint32_t>(BlockType::kMax) - 1> kItemTexture{
 
 	};
 
@@ -46,11 +55,20 @@ public:
 	~Block() = default;
 
 	static void StaticLoad() {
+		auto *textureManager = TextureManager::GetInstance();
 		kTextures_ = {
-			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/lizardTailBlock.png"),
-			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/waterBlock.png"),
-			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/herbBlock.png"),
-			TextureManager::GetInstance()->LoadTexture("Resources/BlockTex/mineralBlock.png"),
+			textureManager->LoadTexture("./Resources/BlockTex/powderBlock.png"),
+			textureManager->LoadTexture("./Resources/BlockTex/waterBlock.png"),
+			textureManager->LoadTexture("./Resources/BlockTex/herbBlock.png"),
+			textureManager->LoadTexture("./Resources/BlockTex/mineralBlock.png"),
+			textureManager->LoadTexture("./Resources/BlockTex/lizardTailBlock.png"),
+		};
+		kItemTexture = {
+			textureManager->LoadTexture("./Resources/Item/powder.png"),
+			textureManager->LoadTexture("./Resources/Item/water.png"),
+			textureManager->LoadTexture("./Resources/Item/herbs.png"),
+			textureManager->LoadTexture("./Resources/Item/mineral.png"),
+			textureManager->LoadTexture("./Resources/Item/lizardTail.png"),
 		};
 	}
 
@@ -69,6 +87,21 @@ public:
 	int32_t AddDamage(const int32_t val) { damage_ += val; return damage_; }
 	void SetDamage(const int32_t val) { damage_ = val; }
 
+	/// @brief アイテムのテクスチャを取ってくる
+	/// @param blockType ブロックのタイプ
+	/// @return テクスチャのID
+	static uint32_t GetItemTexture(const BlockType blockType) {
+		if (blockType == BlockType::kNone) { return 0; }
+		else
+		{
+			return kItemTexture[static_cast<uint32_t>(blockType) - 1];
+		}
+	}
+
+	uint32_t GetItemTexture() const {
+		return GetItemTexture(blockType_);
+	}
+
 	const Mat4x4 &GetDamageUv() const { return kUvMatrix_[damage_]; }
 
 	uint32_t GetTexture() const {
@@ -79,12 +112,8 @@ public:
 		}
 	}
 
-	void SetIsDestroy(bool val) { isDestroy_ = val; }
-	bool GetIsDestroy() const { return isDestroy_; }
-
 private:	// 物理的にゲーム内に影響をもたらすデータ。
 	// ブロックの状態
 	BlockType blockType_ = BlockType::kNone;
 	int32_t damage_ = 0;
-	bool isDestroy_ = false;
 };

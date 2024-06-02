@@ -7,12 +7,18 @@ void GameEffectManager::Init()
 	pGameManager_ = GameManager::GetInstance();
 	pMap_ = pGameManager_->GetMap();
 
-	particles_.resize(20);
-	for (auto &i : particles_) {
+	blockParticles_.resize(20);
+	for (auto &i : blockParticles_) {
 		i = std::make_unique<Particle>();
 
 		i->LoadSettingDirectory("Block-Break");
 	}
+	for (auto &i : dwarfParticle_) {
+		i = std::make_unique<Particle>();
+
+		i->LoadSettingDirectory("MergeSlime");
+	}
+	blockBreak_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockBreak.mp3");
 
 	pSpriteDrawer = DrawerManager::GetInstance()->GetTexture2D();
 
@@ -32,12 +38,11 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 	}*/
 
 	if (blockBreakPos_.first != Block::BlockType::kNone) {
-		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockBreak.mp3");
-		audio->Start(0.3f, false);
-		auto particle = particles_.begin();
+		blockBreak_->Start(0.2f, false);
+		auto particle = blockParticles_.begin();
 		for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
 			for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
-				if (particle != particles_.end()) {
+				if (particle != blockParticles_.end()) {
 					if (blockBreakPos_.second[yi][xi]) {
 						(*particle)->ParticleStart({ ToGrobal(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -10.f }, Vector2::kIdentity);
 						(*particle)->SetParticleScale(0.5f);
@@ -52,39 +57,74 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 		}
 	}
 
-	for (auto &i : particles_) {
+	for (const Vector2 pos : margeDwarfPos_) {
+		auto particle = dwarfParticle_.begin() + dwarfParticleIndex_;
+		if (particle != dwarfParticle_.end()) {
+			(*particle)->ParticleStart({ ToGrobal(pos), -10.f }, Vector2::kIdentity);
+			(*particle)->SetParticleScale(0.15f);
+			++particle;
+			dwarfParticleIndex_ = std::clamp(dwarfParticleIndex_+1, 0, 19);
+		}
+		else {
+			break;
+		}
+	}
+
+	for (auto i = dwarfParticle_.begin(); i != dwarfParticle_.end();) {
+		auto &item = *i;
+		item->Update();
+		if (item->GetIsParticleStart().OnExit()) {
+			std::swap(item, dwarfParticle_.at(dwarfParticleIndex_));
+			dwarfParticleIndex_ = std::clamp(dwarfParticleIndex_-1, 0, 19);
+		}
+		else {
+			i++;
+		}
+	}
+
+	for (auto &i : blockParticles_) {
 		i->Update();
 	}
 }
 
 void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
 {
-	for (auto &i : particles_) {
+	for (auto &i : blockParticles_) {
 		i->Draw(
 			camera.rotate,
 			camera.GetViewOthographics(),
 			BlendType::kNormal
 		);
 	}
-	if (fallingBlock_.first != -1) {
-		Vector2 centerPos{};
-		centerPos.x = std::lerp(static_cast<float>(fallingBlock_.first), static_cast<float>(fallingBlock_.second), 0.5f);
-		centerPos.y = std::lerp(0.f, static_cast<float>(BlockMap::kMapY), 0.5f);
-
-		// グローバル座標に変換
-		centerPos = ToGrobal(centerPos);
-
-		Mat4x4 affineMat = Mat4x4::MakeScalar(Vector3{ std::abs(fallingBlock_.first - fallingBlock_.second) + 1.f,32.f,1.f });
-		reinterpret_cast<Vector2 &>(affineMat.at(3)) = centerPos;
-		affineMat.at(3).at(2) = -1.f;
-
-		pSpriteDrawer->Draw(affineMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex_, 0x55005555, BlendType::kNormal);
+	for (auto &i : dwarfParticle_) {
+		i->Draw(
+			camera.rotate,
+			camera.GetViewOthographics(),
+			BlendType::kUnenableDepthNormal
+		);
 	}
+	for (uint32_t i = 0; i < fallingBlock_.size(); i++) {
+		if (fallingBlock_[i]) {
+			Vector2 centerPos{};
+			centerPos.x = static_cast<float>(i);
+			centerPos.y = std::lerp(0.f, static_cast<float>(BlockMap::kMapY), 0.5f);
+
+			// グローバル座標に変換
+			centerPos = ToGrobal(centerPos);
+
+			Mat4x4 affineMat = Mat4x4::MakeScalar(Vector3{ 1.f,static_cast<float>(BlockMap::kMapY + 1),1.f });
+			reinterpret_cast<Vector2 &>(affineMat.at(3)) = centerPos;	// x,y座標
+			affineMat.at(3).at(2) = -1.f;						// z座標
+
+			pSpriteDrawer->Draw(affineMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex_, 0x55005555, BlendType::kNormal);
+		}
+	}
+
 }
 
 void GameEffectManager::Clear()
 {
 	blockBreakPos_ = {};
 	dwarfDeadPos_.clear();
-	fallingBlock_ = { -1,-1 };
+	margeDwarfPos_.clear();
 }

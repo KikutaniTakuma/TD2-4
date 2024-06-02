@@ -63,6 +63,7 @@ private:
 		{700.0f + minusPos_.x,100.0f + minusPos_.y},
 		{1000.0f + minusPos_.x,200.0f + minusPos_.y}
 	};
+	bool isFirstSound_ = true;
 
 	//タイマー関連
 	Tex2DState timerState_;

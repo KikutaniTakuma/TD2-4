@@ -23,6 +23,9 @@
 
 #include "Editor/BlockEditor/BlockEditor.h"
 #include "Editor/EnemyEditor/EnemyEditor.h"
+#include <Game/GameUIManager/GameUIManager.h>
+
+#include "../SubMenu/PauseMenu/PauseMenu.h"
 
 class GameScene : public BaseScene {
 public:
@@ -58,11 +61,18 @@ private:
 
 
 private:
+
+	void CalcUVPos(const float InGameData, std::array<std::unique_ptr<Tex2DState>, 3>& uvPos);
+
+private:
+
 	//class Water *water_ = nullptr;
 
 	
 
 	GameManager* gameManager_ = nullptr;
+
+	std::unique_ptr<GameUIManager> gameUIManager_ = nullptr;
 
 	Vector2 shakePower_;
 
@@ -89,10 +99,9 @@ private:
 
 	Audio* gameBGM_ = nullptr;
 
-	//一の位
-	std::unique_ptr<Tex2DState> dwarfNumTex_;
-	//十の位
-	std::unique_ptr<Tex2DState> dwarfTenNumTex_;
+	Audio* cancel_ = nullptr;
+
+	Audio* telop_ = nullptr;
 
 	static const uint32_t kCloudNum_ = 8;
 
@@ -109,6 +118,54 @@ private:
 
 	std::unique_ptr<Tex2DState> backGround_;
 
+	//目的表示のフレーム
+	std::unique_ptr<Tex2DState> objectiveFrame_;
+	//目的表示の背景の暗いやつ
+	std::unique_ptr<Tex2DState> objectiveBackGround_;
+
+	//演出が終わったかどうか
+	Lamb::Flg isEndObjective_ = false;
+
+	bool isFirstLoadFlag_ = true;
+
+	///////////*時計とかのための*///////////
+	//必要な情報を描画するためのテクスチャ
+	std::array<std::unique_ptr<Tex2DState>, 3> potNumberTexture_;
+	//0から1の位、10の位、100の位
+	std::array<int32_t, 3> texUVPos_;
+
+	std::array<std::unique_ptr<Tex2DState>, 3> timerNumberTexture_;
+
+	//時計本体
+	std::unique_ptr<Tex2DState> timerState_;
+	//時計の針
+	std::unique_ptr<Tex2DState> clockHandsState_;
+	//釜
+	std::unique_ptr<Tex2DState> potState_;
+	//クリア必要個数
+	Vector3 potNumberPos_;
+	//制限時間
+	Vector3 clockNumberPos_;
+
+	Vector3 timerPos_;
+
+	Vector3 clockHandsPos_;
+
+	Vector3 potPos_;
+
+	Easeing ease_;
+
+	bool isFadeOut_ = false;
+
+	//始点と終点
+	Vector2 easePoint_ = { 900.0f,0.0f };
+
+	int32_t easeCount_ = 90;
 
 
+	float numberDistance_;
+
+	std::unique_ptr<SubMenu> pause_;
+
+	bool isFirstUpdate_ = false;
 };

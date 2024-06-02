@@ -137,7 +137,7 @@ void FrameInfo::End() {
 	fps_ = 1.0 / deltaTime_;
 
 
-	if (std::chrono::duration_cast<std::chrono::seconds>(end - gameStartTime_) > std::chrono::seconds(1)) {
+	if (std::chrono::duration_cast<std::chrono::seconds>(end - gameStartTime_) > std::chrono::seconds(10)) {
 		maxFps_ = std::max(fps_, maxFps_);
 		minFps_ = std::min(fps_, minFps_);
 	}
@@ -168,6 +168,15 @@ void FrameInfo::End() {
 void FrameInfo::DrawFps() {
 	if (isDrawFps_) {
 		fpsStringOutPut_.Clear();
+		float ratio = static_cast<float>(fps_ / fpsLimit_);
+
+		Vector4&& red = Vector4::kXIdentity + Vector4::kWIdentity;
+		Vector4&& yellow = Vector4::kXIdentity + Vector4::kYIdentity + Vector4::kWIdentity;
+		Vector4&& green = Vector4::kYIdentity + Vector4::kWIdentity;
+		float t = 0.5f < ratio ? (ratio - 0.5f) * 2.0f : std::max((ratio - 0.1f) * 2.5f, 0.0f);
+
+		uint32_t color = 0.5 < ratio ? ColorLerp(yellow, green, t).GetColorRGBA() : ColorLerp(red, yellow, t).GetColorRGBA();
+		fpsStringOutPut_.color = color;
 		fpsStringOutPut_ << "fps : " << static_cast<int32_t>(fps_);
 		fpsStringOutPut_.Draw();
 	}

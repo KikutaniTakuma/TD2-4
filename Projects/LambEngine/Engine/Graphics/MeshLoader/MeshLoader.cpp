@@ -11,6 +11,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "Engine/EngineUtils/ResourceLoadLog/ResourceLoadLog.h"
+
 Mesh MeshLoader::LoadModel(const std::string& fileName)
 {
 	Assimp::Importer importer;
@@ -158,6 +160,8 @@ Mesh MeshLoader::LoadModel(const std::string& fileName)
 	result.vertexView.StrideInBytes = static_cast<uint32_t>(sizeof(Vertex));
 	result.vertexView.BufferLocation = result.vertexResource->GetGPUVirtualAddress();
 
+	ResourceLoadLog::Set(fileName);
+
 	return result;
 }
 
@@ -210,6 +214,8 @@ Animations MeshLoader::LoadAnimation(const std::string& fileName)
 			}
 		}
 	}
+
+	ResourceLoadLog::Set(fileName);
 
 	return result;
 }

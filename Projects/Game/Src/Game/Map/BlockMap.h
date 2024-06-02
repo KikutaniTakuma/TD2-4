@@ -1,6 +1,7 @@
 #pragma once
 #include "../SoLib/Containers/VItem.h"
 #include "../SoLib/SoLib_Traits.h"
+#include "../SoLib/SoLib_Timer.h"
 #include "Drawers/DrawerManager.h"
 #include "Game/Ground/Ground.h"
 #include "Math/Vector2.h"
@@ -81,7 +82,7 @@ public:
 		}
 	};
 
-	inline static constexpr int32_t kMapX = 15u, kMapY = 10u;
+	inline static constexpr int32_t kMapX = 15u, kMapY = 9u;
 
 	// マップの配列 [y][x]
 	template <SoLib::IsRealType T>
@@ -93,6 +94,13 @@ public:
 	using BlockStatusMap = Map2dMap<std::unique_ptr<BlockStatus>>;
 
 	using BlockBitMap = std::array<std::bitset<kMapX>, kMapY>;
+
+	static inline std::array<uint32_t, 4u> kBreakColor_{
+		0x5555FFFF,
+		0x33FF33FF,
+		0xAAAA33FF,
+		0xFF3333FF,
+	};
 
 public:
 	BlockMap() = default;
@@ -119,7 +127,7 @@ public:
 	/// @param centerPos 中心座標
 	/// @param size 直径
 	/// @param boxType ブロックのタイプ
-	void SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType);
+	void SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType, uint32_t damage = 0);
 
 	const Block::BlockType GetBlockType(const Vector2 localPos) const;
 	const Block::BlockType GetBlockType(const POINTS localPos) const;
@@ -152,23 +160,14 @@ public:
 
 	static Vector2 GetGlobalPos(Vector2 localPos) noexcept
 	{
-		return localPos - Vector2::kXIdentity * vBlockScale_->x * ((kMapX - 1) / 2.f);
+		return localPos - Vector2::kXIdentity * ((kMapX - 1) / 2.f) + vCenterDiff_;
 	}
 
 	static Vector2 GetGlobalPos(const POINTS localPos) noexcept
 	{
-		return Vector2{ static_cast<float>(localPos.x), static_cast<float>(localPos.y) } - Vector2::kXIdentity * vBlockScale_->x * ((kMapX - 1) / 2.f);
+		return Vector2{ static_cast<float>(localPos.x), static_cast<float>(localPos.y) } - Vector2::kXIdentity * ((kMapX - 1) / 2.f) + vCenterDiff_;
 	}
 
-	static Vector2 LocalPos(const Vector2 gPos) noexcept
-	{
-		return Vector2{ gPos.x / vBlockScale_->x, gPos.y / vBlockScale_->y } + Vector2::kXIdentity * vBlockScale_->x / ((kMapX - 1) / 2.f);
-	}
-
-	static float GetMapDistance()
-	{
-		return vBlockScale_->y;
-	}
 
 	static Vector2 GetMapSize() noexcept
 	{
@@ -197,10 +196,21 @@ public:
 		}
 	}
 
+	inline static SoLib::VItem<"中心座標", Vector2> vCenterDiff_{ {} };
+
+	void StartTimer(float time = 0.25f) {
+		hitTimer_.Start(time);
+	}
+
+	const auto &GetTimer() const {
+		return hitTimer_;
+	}
 
 private:
 
 	BlockBitMap hitMap_;
+
+	SoLib::Time::DeltaTimer hitTimer_{ 0.25f };
 
 	BlockBitMap breakMap_;
 
@@ -216,8 +226,11 @@ private:
 	// 拠点のリスト
 	// HouseList houseList_;
 
-	inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale_{ {1.f, 1.f} };
-	inline static SoLib::VItem<"敵拠点の横幅", int32_t> vEnemyHouseWidth_{ 3 };
+	//inline static SoLib::VItem<"ブロックのサイズ", Vector2> vBlockScale_{ {1.f, 1.f} };
+	//inline static SoLib::VItem<"ブロック1個のスクリーンサイズ", int32_t> vWindowSize_{ 64 };
+	//inline static SoLib::VItem<"ブロック1個のスクリーンサイズ", int32_t> vWindowSize_{ 64 };
+	//inline static SoLib::VItem<"敵拠点の横幅", int32_t> vEnemyHouseWidth_{ 3 };
+
 
 	Model *model_;
 
@@ -227,7 +240,7 @@ private:
 	Map2dMap<std::unique_ptr<MatrixModelState>> modelStateMap_;
 
 	// 床のクラス
-	std::unique_ptr<Ground> ground_;
+	// std::unique_ptr<Ground> ground_;
 
 	Texture2D *pTexture2d_ = nullptr;
 

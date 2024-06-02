@@ -3,10 +3,11 @@
 #include "Math/Mat4x4.h"
 #include "Drawers/Texture2D/Texture2D.h"
 #include "Drawers/PeraRender/PeraRender.h"
+#include <SoLib_Timer.h>
 
-class BlockItem{
+class BlockItem {
 public:
-	BlockItem(const Vector2& startPos, const Vector2& endPos, const Block::BlockType& type);
+	BlockItem(const Vector2 &startPos, const Vector2 &endPos, const Block::BlockType &type, float startTime = 0);
 
 
 	/// <summary>
@@ -17,7 +18,7 @@ public:
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	void Draw(const Mat4x4& cameraMat);
+	void Draw(const Mat4x4 &cameraMat);
 
 
 private:
@@ -34,8 +35,10 @@ public:
 		return isEndMove_;
 	}
 
+	const auto GetItemType() const { return itemType_; }
+
 private:
-	Texture2D* tex2D_ = nullptr;	
+	Texture2D *tex2D_ = nullptr;
 
 	std::unique_ptr<Tex2DState> texState_;
 
@@ -51,11 +54,15 @@ private:
 	//補完変数
 	float t_ = 0.0f;
 
+	Block::BlockType itemType_;
 
 	//現在移動しているライン
 	uint32_t linePass_ = 0;
 
-	//アイテムが動くかどうか
+	// アイテムが動くまでの時間
+	SoLib::Time::DeltaTimer startTimer_;
+
+	// アイテムが動くかどうか
 	bool isMove_;
 	//移動が終点にまで達していたら
 	bool isEndMove_;

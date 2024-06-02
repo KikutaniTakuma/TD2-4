@@ -145,6 +145,7 @@
     <ClCompile Include="Engine\EngineUtils\ErrorCheck\ErrorCheck.cpp" />
     <ClCompile Include="Engine\EngineUtils\FlgManager\FlgManager.cpp" />
     <ClCompile Include="Engine\EngineUtils\FrameInfo\FrameInfo.cpp" />
+    <ClCompile Include="Engine\EngineUtils\ResourceLoadLog\ResourceLoadLog.cpp" />
     <ClCompile Include="Engine\Graphics\AnimationManager\AnimationManager.cpp" />
     <ClCompile Include="Engine\Graphics\Animator\Animator.cpp" />
     <ClCompile Include="Engine\Graphics\DepthBuffer\DepthBuffer.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="Engine\EngineUtils\FlgManager\FlgManager.h" />
     <ClInclude Include="Engine\EngineUtils\FrameInfo\FrameInfo.h" />
     <ClInclude Include="Engine\EngineUtils\LambPtr\LambPtr.h" />
+    <ClInclude Include="Engine\EngineUtils\ResourceLoadLog\ResourceLoadLog.h" />
     <ClInclude Include="Engine\Graphics\AnimationManager\AnimationManager.h" />
     <ClInclude Include="Engine\Graphics\Animator\Animator.h" />
     <ClInclude Include="Engine\Graphics\DepthBuffer\DepthBuffer.h" />

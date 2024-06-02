@@ -99,6 +99,10 @@ public:
 
 	void SetVerticalSize(float ySize);
 
+	uint32_t GetCurrentAnimationNumber() const {
+		return currentAnimationNumber_;
+	}
+
 private:
 	Vector3 startPos_;
 	Vector3 currentPos_;
@@ -108,7 +112,7 @@ private:
 
 	float animationTime_ = 0.0f;
 	float duration_ = 0.0f;
-	Mat4x4 animationMatrix_;
+	Mat4x4 animationMatrix_ = Mat4x4::kIdentity;
 
 	Lamb::Flg isActive_ = false;
 	bool isLoop_ = false;

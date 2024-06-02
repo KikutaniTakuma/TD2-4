@@ -2,6 +2,8 @@
 #include "Editor/CatmullRomEditor/CatmullRomEditor.h"
 #include "Drawers/Texture2D/Texture2D.h"
 #include "Drawers/PeraRender/PeraRender.h"
+#include"Scenes/Manager/SceneManager.h"
+
 #include"Scenes/Manager/Fade/SimpleFade.h"
 
 class TitleDirection{
@@ -20,13 +22,13 @@ public:
 		return &instance;
 	}
 
-	void Initialize() ;
+	void Initialize(SceneManager* sceneManager) ;
 
 	void TextureInitialize();
 
 	void Finalize() ;
 
-	void Update() ;
+	void Update(Input* input);
 
 	void Draw(const Mat4x4& cameraMat) ;
 
@@ -40,8 +42,12 @@ public:
 	//始点と終点の位置関係で第二、第三点目の座標を設定
 	void SetControlPoint();
 
-	bool GetIsActiveExit() {
+	const bool GetIsActiveExit() {
 		return n_Status_.easing->ActiveExit();
+	}
+
+	const bool GetIsFirstFade() {
+		return isFirstFade_;
 	}
 
 	void Debug();
@@ -54,7 +60,11 @@ private:
 		Vector2 easePos;
 	};
 
+	SceneManager* sceneManager_ = nullptr;
+
 	Texture2D* tex2D_;
+
+	Audio* putBlock_ = nullptr;
 
 	std::unique_ptr<SimpleFade> fade_;
 
@@ -113,5 +123,7 @@ private:
 	bool isMove_ = false;
 	//初回のフェードかどうか
 	bool isFirstFade_ = true;
+
+	bool isDirectionSkep_ = false;
 };
 

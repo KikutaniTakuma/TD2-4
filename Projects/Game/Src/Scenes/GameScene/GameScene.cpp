@@ -1,4 +1,6 @@
 #include "GameScene.h"
+
+#include "Engine/Core/WindowFactory/WindowFactory.h"
 #include "Engine/Graphics/MeshManager/MeshManager.h"
 #include "Engine/Graphics/TextureManager/TextureManager.h"
 #include "AudioManager/AudioManager.h"
@@ -14,44 +16,13 @@
 #include "Utils/ScreenOut/ScreenOut.h"
 #include"Scenes/SelectToGame/SelectToGame.h"
 #include "Utils/Random/Random.h"
+#include "../ResultScene/ResultScene.h"
 
 GameScene::GameScene() :
 	BaseScene(BaseScene::ID::Game)
 {}
 
 void GameScene::TextureInitialize() {
-	/*//一の位
-	std::unique_ptr<Tex2DState> dwarfNumTex_;
-	//十の位
-	std::unique_ptr<Tex2DState> dwarfTenNumTex_;
-	//操作UI
-	std::unique_ptr<Tex2DState> spaceTex_, keyTex_;*/
-	//dwarfNumTex_ = std::make_unique<Tex2DState>();
-	//dwarfNumTex_->transform.scale = { 64.0f,64.0f };
-	//dwarfNumTex_->transform.translate = { 510.0f, -200.0f ,-10 };
-	//dwarfNumTex_->uvTrnasform.translate = { 0.f, 0.01f };
-	//dwarfNumTex_->uvTrnasform.scale.x = { 0.1f };
-	//dwarfNumTex_->color = 0xffffffff;
-	//dwarfNumTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/dwarfNumber.png");
-
-	//dwarfTenNumTex_ = std::make_unique<Tex2DState>();
-	//dwarfTenNumTex_->transform.scale = { 64.0f,64.0f };
-	//dwarfTenNumTex_->transform.translate = { 442.0f, -200.0f ,-10 };
-	//dwarfTenNumTex_->uvTrnasform.translate = { 0.f, 0.01f };
-	//dwarfTenNumTex_->uvTrnasform.scale.x = { 0.1f };
-	//dwarfTenNumTex_->color = 0xffffffff;
-	//dwarfTenNumTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/dwarfNumber.png");
-
-	//雲関係
-	/*//雲
-	std::array<std::unique_ptr<Tex2DState>, 6> clouds_;
-
-	std::array<float, kCloudNum_> cloudsSpeed_;
-
-	std::unordered_map<std::string, Vector2> cloudScale_;
-
-	std::array<std::string, 3> cloudType_;*/
-
 	cloudType_[0] = "cloud1.png";
 	cloudType_[1] = "cloud2.png";
 	cloudType_[2] = "cloud3.png";
@@ -66,7 +37,7 @@ void GameScene::TextureInitialize() {
 		clouds_[i]->textureName = cloudType_[num];
 		cloudsSpeed_[i] = Lamb::Random(3.0f, 1.0f);
 
-		clouds_[i]->transform.translate = { Lamb::Random(0.0f,-600.0f), Lamb::Random(-50.0f,250.0f) };
+		clouds_[i]->transform.translate = { Lamb::Random(300.0f,-1200.0f), Lamb::Random(-100.0f,300.0f) ,10.0f };
 		clouds_[i]->transform.scale = cloudScale_[clouds_[i]->textureName];
 		clouds_[i]->color = 0xffffffff;
 		clouds_[i]->textureID = DrawerManager::GetInstance()->LoadTexture(("./Resources/UI/GameMain/" + clouds_[i]->textureName).c_str());
@@ -75,19 +46,81 @@ void GameScene::TextureInitialize() {
 
 	backGround_ = std::make_unique<Tex2DState>();
 	backGround_->transform.scale = { 1280.0f,720.0f };
-	backGround_->transform.translate = { 0.0f, 10.0f ,0 };
+	backGround_->transform.translate = { 0.0f, 10.0f ,8.0f };
 	backGround_->color = 0xffffffff;
-	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/GameMain/gameBackGround.png");
+	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/cutBackGround.png");
 
+	objectiveBackGround_ = std::make_unique<Tex2DState>();
+	objectiveBackGround_->transform.scale = { 1280.0f,720.0f };
+	objectiveBackGround_->transform.translate = { 0.0f, 10.0f ,-40.0f };
+	objectiveBackGround_->color = 0x000000aa;/*C:\Users\aoaomidori\Desktop\TD2-4\Solustion\Projects\Game\Resources\GameObjective*/
+	objectiveBackGround_->textureID = TextureManager::GetInstance()->GetWhiteTex();
 
+	objectiveFrame_ = std::make_unique<Tex2DState>();
+	objectiveFrame_->transform.scale = { 768.0f,512.0f };
+	objectiveFrame_->transform.translate = { 0.0f, 10.0f ,-41.0f };
+	objectiveFrame_->color = 0xffffffff;/*C:\Users\aoaomidori\Desktop\TD2-4\Solustion\Projects\Game\Resources\GameObjective*/
+	objectiveFrame_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/GameObjective/goalFramSet.png");
+
+	for (uint32_t i = 0; i < 3; i++) {
+		potNumberTexture_[i] = std::make_unique<Tex2DState>();
+		potNumberTexture_[i]->transform.scale = { 80.0f,80.0f };
+		potNumberTexture_[i]->transform.translate = { 70.0f * i,-300.0f ,-41.0f };
+		potNumberTexture_[i]->uvTransform.scale = { 0.1f,1.0f };
+		potNumberTexture_[i]->color = 0xffffffff;
+		potNumberTexture_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/Timer/timeLimitNumber.png");
+
+		timerNumberTexture_[i] = std::make_unique<Tex2DState>();
+		timerNumberTexture_[i]->transform.scale = { 80.0f,80.0f };
+		timerNumberTexture_[i]->transform.translate = { 70.0f * i,-227.0f ,-41.0f };
+		timerNumberTexture_[i]->uvTransform.scale = { 0.1f,1.0f };
+		timerNumberTexture_[i]->color = 0xffffffff;
+		timerNumberTexture_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/Timer/timeLimitNumber.png");
+
+	}
+
+	timerState_ = std::make_unique<Tex2DState>();
+	timerState_->color = 0xffffffff;
+	timerState_->transform.scale = { 90.0f,102.0f };//136
+	timerState_->transform.translate = { -170.0f, -43.0f ,-41.0f };
+	timerState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timer.png");
+
+	clockHandsState_ = std::make_unique<Tex2DState>();
+	clockHandsState_->color = 0xffffffff;
+	clockHandsState_->transform.scale = { 90.0f,102.0f };
+	clockHandsState_->transform.translate = { -170.0f, -46.0f ,-41.0f };
+	clockHandsState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timerNeedle.png");
+
+	potState_ = std::make_unique<Tex2DState>();
+	potState_->color = 0xffffffff;
+	potState_->transform.scale = { 90.0f,102.0f };
+	potState_->transform.translate = { -170.0f, -170.0f ,-41.0f };
+	potState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/pot.png");
+
+	clockNumberPos_ = { -55.0f,-43.0f };
+	potNumberPos_ = { -55.0f,-166.0f };
+
+	timerPos_ = { -170.0f, -43.0f ,-25.0f };
+	clockHandsPos_ = { -170.0f, -46.0f ,-25.0f };
+	potPos_ = { -170.0f, -170.0f ,-25.0f };
+
+	numberDistance_ = 105.0f;
+
+	ease_.Start(false, 1.5f, Easeing::InBack);
+
+	easeCount_ = 90;
+
+	isFadeOut_ = false;;
 }
 
 
 void GameScene::Initialize() {
+	ResultScene::SetIsGameClear(false);
+
 	collisionManager_ = CollisionManager::GetInstance();
 
 	currentCamera_->farClip = 3000.0f;
-	currentCamera_->pos.y = 5.0f;
+	currentCamera_->pos.y = 6.0f;
 	currentCamera_->pos.z = -70.0f;
 	currentCamera_->offset.z = -60.0f;
 	currentCamera_->offset.y = 8.0f;
@@ -105,53 +138,68 @@ void GameScene::Initialize() {
 	currentTexCamera_->rotate.x = 0_deg;
 	currentTexCamera_->drawScale = 1.0f;
 
+	GameManager::Finalize();
 	gameManager_ = GameManager::GetInstance();
 	gameManager_->Init();
 
 	gameManager_->SetGameScene(this);
 
+	gameManager_->SetCamera(currentCamera_.get());
+
 	//aabb_ = AABB::Create({ 0.0f,-0.5f,0.0f }, { 20.0f,1.0f,20.0f });
 
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
-	// player_ = std::make_unique<Player>();
-	// player_->Initialize();
 
-	//blockEditor_ = std::make_unique<BlockEditor>();
-	//blockEditor_->Initialize();
-
-
-	//enemyManager_ = EnemyManager::GetInstance();
-	//enemyManager_->Initialize();
-
-	//enemyEditor_ = std::make_unique<EnemyEditor>();
-	//enemyEditor_->Initialize();
-
-	//blockEditor_->LoadFiles(SelectToGame::GetInstance()->GetSelect());
-	//enemyEditor_->LoadFiles(SelectToGame::GetInstance()->GetSelect());
-
-	//enemyMode_ = false;
 
 	TextureInitialize();
 
 	gameBGM_ = audioManager_->Load("./Resources/Sounds/BGM/game.mp3");
+	cancel_ = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
+	telop_ = audioManager_->Load("./Resources/Sounds/SE/telop.mp3");
+	audioManager_->Load("./Resources/Sounds/SE/damege.mp3");
+	audioManager_->Load("./Resources/Sounds/SE/noSpace.mp3");
 
 
-	gameBGM_->Start(0.1f, true);
 
 	shakePower_ = { 3.0f,3.0f };
+
+	gameUIManager_ = std::make_unique<GameUIManager>();
+	gameUIManager_->Init(gameManager_);
+	gameUIManager_->SetCamera(currentTexCamera_.get());
+
+	pause_ = std::make_unique<PauseMenu>();
+	pause_->Initialize();
+	pause_->SetSceneManger(sceneManager_);
+
+	isFirstLoadFlag_ = true;
+
+	if (SelectToGame::GetInstance()->GetRetryFlug()) {
+		isEndObjective_ = true;
+		gameBGM_->Start(0.1f, true);
+		SelectToGame::GetInstance()->SetRetryFlug(false);
+	}
+	else {
+		isEndObjective_ = false;
+	}
 }
 
 void GameScene::Finalize() {
+	if (pause_) { pause_->Finalize(); }
 	gameBGM_->Stop();
 
 	//enemyManager_->Finalize();
-	// 実体の破棄
-	GameManager::Finalize();
 }
 
 void GameScene::Update() {
 	// デルタタイム
 	const float deltaTime = Lamb::DeltaTime();
+
+	Lamb::SafePtr gamepad = Input::GetInstance()->GetGamepad();
+	Lamb::SafePtr key = Input::GetInstance()->GetKey();
+
+	
+
+	Debug();
 
 	currentCamera_->Debug("カメラ");
 	currentCamera_->Shake(1.0f);
@@ -161,37 +209,132 @@ void GameScene::Update() {
 
 	currentTexCamera_->Update();
 
-	Debug();
+	if (not isEndObjective_ and not isFirstLoadFlag_) {
+		
 
-	//enemyManager_->Update();
-	//enemyManager_->Debug();
+		auto itemMax = gameManager_->GetClearItemCount();
 
-	gameManager_->InputAction();
-	gameManager_->Update(deltaTime);
+		CalcUVPos(gameManager_->GetGameTimer()->GetDeltaTimer().GetGoalFlame(), timerNumberTexture_);
+		CalcUVPos(static_cast<float>(itemMax), potNumberTexture_);
 
-	/*gameManager_->Debug("GameManager");*/
+		
 
-	collisionManager_->Update();
-	collisionManager_->Debug();
+		if (not ease_.GetIsActive() && not isFadeOut_) {
+			easeCount_ -= 1;
+		}
+		if (easeCount_ > 0) {
+			if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)){
+				ease_.Start(false, 1.0f, Easeing::InBack);
+				isFadeOut_ = true;
+				easeCount_ = -1;
+			}
+		}
 
-	TextureUpdate();
+		if (easeCount_ == 0) {
+			ease_.Start(false, 1.5f, Easeing::InBack);
+			isFadeOut_ = true;
+			easeCount_ = -1;
+		}
+		ease_.Update();
+
+		if (ease_.ActiveExit() && not isFadeOut_) {
+			telop_->Start(0.2f, false);
+		}
+
+		if (not isFadeOut_) {
+			objectiveFrame_->transform.translate.y = ease_.Get(easePoint_.x, easePoint_.y);
+		}
+		else {
+			objectiveFrame_->transform.translate.y = ease_.Get(easePoint_.y, -easePoint_.x);
+		}
+
+		for (uint32_t i = 0; i < 3; i++) {
+			potNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + potNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + potNumberPos_.y ,-41.0f };
+			timerNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + clockNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + clockNumberPos_.y ,-41.0f };
+
+			timerNumberTexture_[i]->transform.CalcMatrix();
+			timerNumberTexture_[i]->uvTransform.CalcMatrix();
+			potNumberTexture_[i]->transform.CalcMatrix();
+			potNumberTexture_[i]->uvTransform.CalcMatrix();
+		}
+
+		if (isFadeOut_ && not ease_.GetIsActive()) {
+			isEndObjective_ = true;
+			gameBGM_->Start(0.1f, true);
+		}
+
+		timerState_->transform.translate = objectiveFrame_->transform.translate + timerPos_;
+		clockHandsState_->transform.translate = objectiveFrame_->transform.translate + clockHandsPos_;
+		potState_->transform.translate = objectiveFrame_->transform.translate + potPos_;
+
+		timerState_->transform.CalcMatrix();
+		clockHandsState_->transform.CalcMatrix();
+		potState_->transform.CalcMatrix();
+
+		objectiveBackGround_->transform.CalcMatrix();
+		objectiveFrame_->transform.CalcMatrix();
 
 
-	//for (auto& house : *gameManager_->GetMap()->GetHouseList()) {
-	//	if (house.IsBreaked()){
- //			currentCamera_->BeginShake(shakePower_);
-	//		break;
-	//	}
-	//}
-	//player_->AllTrade();
+		/*if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)) {
+			isEndObjective_ = true;
+			gameBGM_->Start(0.1f, true);
+		}*/
+	}
+	else {
+		if ((gamepad->Pushed(Gamepad::Button::START) or key->Pushed(DIK_ESCAPE))) {
+			pause_->isActive_ = !pause_->isActive_;
+			if (pause_->isActive_) {
+				gameBGM_->SetAudio(0.033333f);
+			}
+			else {
+				gameBGM_->SetAudio(0.1f);
+			}
+		}
 
-	if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
-		Audio *cancel = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
+#ifndef _DEBUG
+		if (not pause_->isActive_ and not WindowFactory::GetInstance()->IsThisWindowaActive()) {
+			pause_->isActive_ = true;
+		}
+#endif // _DEBUG
 
-		gameBGM_->Stop();
-		cancel->Start(0.1f, false);
 
-		sceneManager_->SceneChange(BaseScene::ID::StageSelect);
+		if (not isFirstUpdate_ and pause_->isActive_) {
+			pause_->isActive_ = false;
+		}
+		
+
+
+		if (not pause_->isActive_) {
+			//enemyManager_->Update();
+			//enemyManager_->Debug();
+
+			gameManager_->InputAction();
+			gameManager_->Update(deltaTime);
+
+			/*gameManager_->Debug("GameManager");*/
+
+			collisionManager_->Update();
+			collisionManager_->Debug();
+
+			TextureUpdate();
+
+			gameUIManager_->Update(deltaTime);
+
+			if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
+				
+
+				gameBGM_->Stop();
+				cancel_->Start(0.1f, false);
+
+				sceneManager_->SceneChange(BaseScene::ID::StageSelect);
+			}
+
+			isFirstUpdate_ = true;
+		}
+		else {
+			pause_->ActiveUpdate();
+		}
+		isFirstLoadFlag_ = false;
 	}
 }
 
@@ -203,20 +346,18 @@ void GameScene::TextureUpdate() {
 		}
 		clouds_[i]->transform.CalcMatrix();
 	}
-	//dwarfNumTex_->transform.CalcMatrix();
-	//dwarfNumTex_->uvTrnasform.CalcMatrix();
-
-	//dwarfTenNumTex_->transform.CalcMatrix();
-	//dwarfTenNumTex_->uvTrnasform.CalcMatrix();
 
 
 	backGround_->transform.CalcMatrix();
+	backGround_->uvTransform.CalcMatrix();
+
+	
 
 }
 
 void GameScene::CloudReset(const uint32_t cloudNumber) {
 	clouds_[cloudNumber]->textureName = cloudType_[Lamb::Random(0, 2)];
-	clouds_[cloudNumber]->transform.translate = { -640.0f - cloudScale_[clouds_[cloudNumber]->textureName].x,Lamb::Random(-50.0f,250.0f) };
+	clouds_[cloudNumber]->transform.translate = { -640.0f - cloudScale_[clouds_[cloudNumber]->textureName].x,Lamb::Random(-100.0f,300.0f) };
 	cloudsSpeed_[cloudNumber] = Lamb::Random(3.0f, 1.0f);
 	clouds_[cloudNumber]->transform.scale = cloudScale_[clouds_[cloudNumber]->textureName];
 	clouds_[cloudNumber]->color = 0xffffffff;
@@ -225,14 +366,8 @@ void GameScene::CloudReset(const uint32_t cloudNumber) {
 
 
 void GameScene::Draw() {
-	/*cloud_->Draw();
-	skydome_->Draw(*currentCamera_);*/
 
-	// player_->Draw(*currentCamera_);
-
-	//enemyManager_->Draw(*currentCamera_);
-
-	tex2D_->Draw(backGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+	tex2D_->Draw(backGround_->transform.matWorld_, backGround_->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, backGround_->textureID, backGround_->color, BlendType::kNormal);
 
 	for (uint32_t i = 0; i < kCloudNum_; i++) {
@@ -241,104 +376,76 @@ void GameScene::Draw() {
 	}
 
 	gameManager_->Draw(*currentCamera_);
+	gameUIManager_->Draw(*currentTexCamera_);
+
+	if (not isEndObjective_) {
+		tex2D_->Draw(objectiveBackGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kUnenableDepthNormal);
+
+		tex2D_->Draw(objectiveFrame_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, objectiveFrame_->textureID, objectiveFrame_->color, BlendType::kUnenableDepthNormal);
+
+		for (size_t i = 0; i < 3; i++) {
+
+			tex2D_->Draw(potNumberTexture_[i]->transform.matWorld_, potNumberTexture_[i]->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
+				, potNumberTexture_[i]->textureID, potNumberTexture_[i]->color, BlendType::kUnenableDepthNormal);
+
+			tex2D_->Draw(timerNumberTexture_[i]->transform.matWorld_, timerNumberTexture_[i]->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
+				, timerNumberTexture_[i]->textureID, timerNumberTexture_[i]->color, BlendType::kUnenableDepthNormal);
+		}
+
+		tex2D_->Draw(timerState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, timerState_->textureID, timerState_->color, BlendType::kUnenableDepthNormal);
+
+
+		tex2D_->Draw(clockHandsState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, clockHandsState_->textureID, clockHandsState_->color, BlendType::kUnenableDepthNormal);
+
+		tex2D_->Draw(potState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, potState_->textureID, potState_->color, BlendType::kUnenableDepthNormal);
+	}
+
+
 
 	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
-	/*if (editorMode_) {
-		if (enemyMode_) {
-			enemyEditor_->Draw(*currentCamera_);
-		}
-		else {
-			blockEditor_->Draw(*currentCamera_);
-		}
-	}*/
 	TextureDraw();
 #ifdef _DEBUG
 
 	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
 #endif // _DEBUG
+
+	pause_->ActiveDraw();
 }
 
 void GameScene::TextureDraw() {
-
-
-
-
-	/*tex2D_->Draw(dwarfNumTex_->transform.matWorld_, dwarfNumTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
-		, dwarfNumTex_->textureID, dwarfNumTex_->color, BlendType::kNormal);
-
-	tex2D_->Draw(dwarfTenNumTex_->transform.matWorld_, dwarfTenNumTex_->uvTrnasform.matWorld_, currentTexCamera_->GetViewOthographics()
-		, dwarfTenNumTex_->textureID, dwarfTenNumTex_->color, BlendType::kNormal);*/
 
 }
 
 void GameScene::Debug() {
 #ifdef _DEBUG
-	ImGui::Begin("ゲームテクスチャ");
-	/*if (ImGui::TreeNode("一の位")){
-		ImGui::DragFloat2("Transform", &dwarfNumTex_->transform.translate.x, 1.0f);
-		ImGui::DragFloat2("Scale", &dwarfNumTex_->transform.scale.x, 1.0f);
-		ImGui::DragFloat2("UVTransform", &dwarfNumTex_->uvTrnasform.translate.x, 0.01f);
-		ImGui::DragFloat2("UVScale", &dwarfNumTex_->uvTrnasform.scale.x, 0.01f);
-		ImGui::TreePop();
-	}
-	if (ImGui::TreeNode("十の位")) {
-		ImGui::DragFloat2("Transform", &dwarfTenNumTex_->transform.translate.x, 1.0f);
-		ImGui::DragFloat2("Scale", &dwarfTenNumTex_->transform.scale.x, 1.0f);
-		ImGui::DragFloat2("UVTransform", &dwarfTenNumTex_->uvTrnasform.translate.x, 0.01f);
-		ImGui::DragFloat2("UVScale", &dwarfTenNumTex_->uvTrnasform.scale.x, 0.01f);
-		ImGui::TreePop();
-	}*/
-	//if (ImGui::TreeNode("spaceキー")) {
-	//	ImGui::DragFloat2("Transform", &spaceTex_->transform.translate.x, 1.0f);
-	//	ImGui::DragFloat2("Scale", &spaceTex_->transform.scale.x, 1.0f);
-	//	ImGui::DragFloat2("UVTransform", &spaceTex_->uvTrnasform.translate.x, 0.01f);
-	//	ImGui::DragFloat2("UVScale", &spaceTex_->uvTrnasform.scale.x, 0.01f);
-	//	ImGui::TreePop();
-	//}
-	//if (ImGui::TreeNode("WASDキー")) {
-	//	ImGui::DragFloat2("Transform", &keyTex_->transform.translate.x, 1.0f);
-	//	ImGui::DragFloat2("Scale", &keyTex_->transform.scale.x, 1.0f);
-	//	ImGui::DragFloat2("UVTransform", &keyTex_->uvTrnasform.translate.x, 0.01f);
-	//	ImGui::DragFloat2("UVScale", &keyTex_->uvTrnasform.scale.x, 0.01f);
-	//	ImGui::TreePop();
-	//}
+	ImGui::Begin("目的表示関連");
+	ImGui::DragFloat3("目的表示自体の座標", objectiveFrame_->transform.translate.data(), 1.0f);
+
+	ImGui::DragFloat3("時計本体の位置", timerPos_.data(), 1.0f);
+	ImGui::DragFloat3("時計の針の位置", clockHandsPos_.data(), 1.0f);
+	ImGui::DragFloat3("釜の位置", potPos_.data(), 1.0f);
+	ImGui::DragFloat3("時計の数字の位置", clockNumberPos_.data(), 1.0f);
+	ImGui::DragFloat3("釜の数字の位置", potNumberPos_.data(), 1.0f);
+	ImGui::DragFloat("数字の間隔", &numberDistance_, 1.0f);
+
+	ImGui::DragFloat3("カットした背景", backGround_->transform.translate.data(), 1.0f);
 
 	ImGui::End();
-
-
-	ImGui::Begin("モード変更");
-	//ImGui::Checkbox("エディターモード", &editorMode_);
-	//ImGui::Checkbox("エネミーモード", &enemyMode_);
-	//ImGui::DragFloat("エディター時のカメラの距離", &editorCameraPosZ_, 1.0f, -100.0f, 0.0f);
-	ImGui::End();
-	/*if (input_->GetKey()->Pushed(DIK_E) && input_->GetKey()->LongPush(DIK_LSHIFT)) {
-		if (!editorMode_)
-			editorMode_ = true;
-		else if (editorMode_)
-			editorMode_ = false;
-	}
-
-	if (editorMode_) {
-		currentCamera_->pos.y = -2.0f;
-		currentCamera_->pos.z = editorCameraPosZ_;
-		if (Mouse::GetInstance()->GetWheelVelocity() != 0) {
-			if (!enemyMode_)
-				enemyMode_ = true;
-			else if (enemyMode_)
-				enemyMode_ = false;
-		}
-		if (enemyMode_) {
-			enemyEditor_->MousePosTrans(*currentCamera_);
-			enemyEditor_->Debug();
-			enemyEditor_->Update();
-		}
-		else {
-			blockEditor_->MousePosTrans(*currentCamera_);
-			blockEditor_->Debug();
-			blockEditor_->Update();
-		}
-
-	}*/
-
 #endif // _DEBUG
+}
+
+void GameScene::CalcUVPos(const float InGameData, std::array<std::unique_ptr<Tex2DState>, 3>& uvPos){
+
+	texUVPos_[0] = static_cast<int32_t>(InGameData) % 10;
+	texUVPos_[1] = static_cast<int32_t>(InGameData / 10.0f) % 10;
+	texUVPos_[2] = static_cast<int32_t>(InGameData / 100.0f) % 10;
+
+	uvPos[0]->uvTransform.translate.x = texUVPos_[2] * 0.1f;
+	uvPos[1]->uvTransform.translate.x = texUVPos_[1] * 0.1f;
+	uvPos[2]->uvTransform.translate.x = texUVPos_[0] * 0.1f;
 }

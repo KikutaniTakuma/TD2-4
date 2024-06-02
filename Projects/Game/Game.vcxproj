@@ -171,10 +171,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Game\GameEffectManager\GameEffectManager.cpp" />
     <ClCompile Include="Src\Game\FlaskParticle\FlaskParticle.cpp" />
     <ClCompile Include="Src\Game\GameManager\GameManager.cpp" />
+    <ClCompile Include="Src\Game\GameUIManager\GameUIManager.cpp" />
     <ClCompile Include="Src\Game\Ground\Ground.cpp" />
+    <ClCompile Include="Src\Game\ItemGauge\ItemGauge.cpp" />
     <ClCompile Include="Src\Game\Item\BlockItem.cpp" />
     <ClCompile Include="Src\Game\Map\BlockMap.cpp" />
+    <ClCompile Include="Src\Game\NumberSprite\NumberSprite.cpp" />
     <ClCompile Include="Src\Game\SkyDome\SkyDome.cpp" />
+    <ClCompile Include="Src\Game\Timer\Timer.cpp" />
     <ClCompile Include="Src\Game\Water\Water.cpp" />
     <ClCompile Include="Src\GlobalVariables\GlobalVariables.cpp" />
     <ClCompile Include="Src\main.cpp" />
@@ -188,6 +192,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Src\Scenes\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Src\Scenes\SelectScene\SelectScene.cpp" />
     <ClCompile Include="Src\Scenes\SelectToGame\SelectToGame.cpp" />
+    <ClCompile Include="Src\Scenes\SubMenu\PauseMenu\PauseMenu.cpp" />
     <ClCompile Include="Src\Scenes\SubMenu\SubMenu.cpp" />
     <ClCompile Include="Src\Scenes\TitleScene\TitleDirection.cpp" />
     <ClCompile Include="Src\Scenes\TitleScene\TitleScene.cpp" />
@@ -243,9 +248,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Game\GameEffectManager\GameEffectManager.h" />
     <ClInclude Include="Src\Game\GameManager\GameManager.h" />
     <ClInclude Include="Src\Game\Ground\Ground.h" />
+    <ClInclude Include="Src\Game\ItemGauge\ItemGauge.h" />
     <ClInclude Include="Src\Game\Item\BlockItem.h" />
     <ClInclude Include="Src\Game\Map\BlockMap.h" />
+    <ClInclude Include="Src\Game\NumberSprite\NumberSprite.h" />
     <ClInclude Include="Src\Game\SkyDome\SkyDome.h" />
+    <ClInclude Include="Src\Game\Timer\Timer.h" />
+    <ClInclude Include="Src\Game\GameUIManager\GameUIManager.h">
+      <DeploymentContent>false</DeploymentContent>
+    </ClInclude>
     <ClInclude Include="Src\Game\Water\Water.h" />
     <ClInclude Include="Src\GlobalVariables\GlobalVariables.h" />
     <ClInclude Include="Src\Scenes\GameScene\GameScene.h" />
@@ -258,6 +269,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Src\Scenes\ResultScene\ResultScene.h" />
     <ClInclude Include="Src\Scenes\SelectScene\SelectScene.h" />
     <ClInclude Include="Src\Scenes\SelectToGame\SelectToGame.h" />
+    <ClInclude Include="Src\Scenes\SubMenu\PauseMenu\PauseMenu.h" />
     <ClInclude Include="Src\Scenes\SubMenu\SubMenu.h" />
     <ClInclude Include="Src\Scenes\TitleScene\TitleDirection.h" />
     <ClInclude Include="Src\Scenes\TitleScene\TitleScene.h" />

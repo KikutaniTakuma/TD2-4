@@ -21,11 +21,13 @@ void TitleScene::Initialize(){
 
 	titleBGM_ = audioManager_->Load("./Resources/Sounds/BGM/title.mp3");
 	beginGame_ = audioManager_->Load("./Resources/Sounds/SE/choice.mp3");
-	titleBGM_->Start(0.01f, true);
+	titleBGM_->Start(0.1f, true);
 
 	titleDirection_ = TitleDirection::GetInstance();
 
-	titleDirection_->Initialize();
+	titleDirection_->Initialize(sceneManager_);
+
+	isFirstSound_ = true;
 
 }
 
@@ -43,12 +45,15 @@ void TitleScene::Update()
 	auto* const key = input_->GetKey();
 
 
-	if (key->Pushed(DIK_SPACE)) {
-		beginGame_->Start(0.1f, false);
+	if ((input_->GetGamepad()->GetButton(Gamepad::Button::A)||key->Pushed(DIK_SPACE)) && !titleDirection_->GetIsFirstFade()) {
+		if (isFirstSound_) {
+			beginGame_->Start(0.1f, false);
+			isFirstSound_ = false;
+		}
 		sceneManager_->SceneChange(BaseScene::ID::StageSelect);
 	}
 
-	titleDirection_->Update();
+	titleDirection_->Update(input_);
 	if (titleDirection_->GetIsActiveExit()){
 		currentCamera_->BeginShake(shakePower_);
 	}
@@ -65,7 +70,7 @@ void TitleScene::Draw(){
 
 #ifdef _DEBUG
 
-	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
+	UIEditor::GetInstance()->PutDraw(currentCamera_->GetViewOthographics());
 #endif // _DEBUG
 }
 

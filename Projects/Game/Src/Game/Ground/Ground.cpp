@@ -22,10 +22,15 @@ void Ground::Update([[maybe_unused]] const float deltaTime)
 {
 }
 
-void Ground::Draw(const Camera &camera) const
+void Ground::Draw([[maybe_unused]] const Camera &camera) const
 {
-	model_->Draw(groundModelStates_.transMat, camera.GetViewOthographics(), groundModelStates_.color, BlendType::kNone);
+	/*model_->Draw(
+		groundModelStates_.transMat,
+		camera.GetViewOthographics(),
+		groundModelStates_.color, BlendType::kNone
+	);
 
+	camera;*/
 }
 
 void GroundEditor::Init() {

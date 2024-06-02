@@ -9,6 +9,7 @@ public:
 		Vector2 windowSize = {1280.0f, 720.0f};
 		float maxFps = 60.0f;
 		bool isFullesceen = false;
+		bool isMouseShow = true;
 	};
 
 public:

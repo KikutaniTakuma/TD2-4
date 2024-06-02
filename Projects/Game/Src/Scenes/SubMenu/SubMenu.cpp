@@ -10,3 +10,10 @@ void SubMenu::ActiveUpdate() {
 		Update();
 	}
 }
+
+void SubMenu::ActiveDraw()
+{
+	if (isActive_) {
+		Draw();
+	}
+}

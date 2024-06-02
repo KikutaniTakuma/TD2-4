@@ -13,8 +13,14 @@ UIEditor::~UIEditor(){
 
 }
 
-void UIEditor::Initialize(){
+const float UIEditor::scaleMoveSpeed = 0.075f;
+
+void UIEditor::Initialize(SceneManager* sceneManager){
 	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
+
+	drawerManager_ = DrawerManager::GetInstance();
+	
+	sceneManager_ = sceneManager;
 
 	sceneName_[BaseScene::ID::Title] = "Title";
 	sceneName_[BaseScene::ID::Game] = "Game";
@@ -22,22 +28,28 @@ void UIEditor::Initialize(){
 	sceneName_[BaseScene::ID::Result] = "Result";
 
 	newTex_ = std::make_unique<Tex2DState>();
-	newTex_->transform.translate = Vector2(0, 0);
+	newTex_->transform.translate = Vector3(0, 0, -0.8f);
 	newTex_->transform.translate.y *= -1;
 	newTex_->transform.translate += Vector2(-640, 360);
 	newTex_->transform.scale = { 64,64 };
 	newTex_->color = 0x000000ff;
-	newTex_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/white2x2.png");
+	newTex_->textureID = drawerManager_->LoadTexture("./Resources/white2x2.png");
 	
+	input_ = Input::GetInstance();
+
+	easing_ = std::make_unique<Easeing>();
 	//texAnim_ = std::make_unique<Tex2DAniamtor>();
 
-	//texAnim_->SetStartPos(Vector2::kZero);
-	//texAnim_->SetDuration(0.1f);
-	//texAnim_->SetAnimationNumber(6);
-	//texAnim_->SetLoopAnimation(true);
-	//texAnim_->Start();
-	//animNum_ = DrawerManager::GetInstance()->LoadTexture("./Resources/Load.png");
+	//パッド用UIの読み込み
+	drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerAttack.png");
+	drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/ControllerCarry.png");
+	drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerJump.png");
+	drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerMove.png");
 
+	potGoalScale_ = { 84.0f,44.0f };
+	potBaseScale_ = { 64.0f,64.0f };
+
+	camera_.Identity();
 }
 
 void UIEditor::Finalize(){
@@ -52,17 +64,28 @@ void UIEditor::Update(const BaseScene::ID id){
 		newTex_->transform.translate.y *= -1;
 		newTex_->transform.translate += Vector2{ -640, 360 };
 	}
+
 	
 	newTex_->transform.CalcMatrix();
-	
+	easing_->Update();
+
+	if (!isScaleMoveReverse_ and easing_->ActiveExit()) {
+		isScaleMoveReverse_ = true;
+		easing_->Start(false, time_, Easeing::InSine);
+	}
+	else if (isScaleMoveReverse_ and easing_->ActiveExit()) {
+		isScaleMoveReverse_ = false;
+		isScaleMove_ = false;
+	}
 
 	for (size_t i = 0; i < BaseScene::kMaxScene; i++){
 		if (i != static_cast<size_t>(id))
 			continue;
 
 		for (size_t j = 0; j < texies_[i].size(); j++){
+			auto& tex = texies_[i][j];
 			if (texies_[i][j]->textureName == "backGround") {
-				Vector3& uvTranslate = texies_[i][j]->uvTrnasform.translate;
+				Vector3& uvTranslate = texies_[i][j]->uvTransform.translate;
 
 				uvTranslate.x += 0.001f;
 				uvTranslate.y += 0.0005f;
@@ -74,8 +97,38 @@ void UIEditor::Update(const BaseScene::ID id){
 				}
 			}
 
+			if (texies_[i][j]->textureName == "pot") {
+				if (isSelectFlug_){
+					tex->color = 0xffffff00;
+				}
+				else {
+					tex->color = 0xffffffff;
+				}
+			}
+
+			if (texies_[i][j]->textureName == "Timer\\timer") {
+				if (isSelectFlug_) {
+					tex->color = 0xffffff00;
+				}
+				else {
+					tex->color = 0xffffffff;
+				}
+			}
+
+			if (texies_[i][j]->textureName == "Timer\\timerNeedle") {
+				if (isSelectFlug_) {
+					tex->color = 0xffffff00;
+				}
+				else {
+					tex->color = 0xffffffff;
+				}
+			}
+
+			GameControlUIMove(i, j);
+			PotScaleMove(i, j);
+
 			texies_[i][j]->transform.CalcMatrix();
-			texies_[i][j]->uvTrnasform.CalcMatrix();
+			texies_[i][j]->uvTransform.CalcMatrix();
 		}
 	}
 
@@ -83,7 +136,7 @@ void UIEditor::Update(const BaseScene::ID id){
 }
 
 void UIEditor::Draw(const Mat4x4& camera, const BaseScene::ID id){
-	
+	camera_ = camera;
 	//texAnim_->Update();
 	//tex2D_->Draw(
 	//	Mat4x4::MakeAffin(Vector3(Lamb::ClientSize(), 1.0f), Vector3::kZero, Vector3::kZero),
@@ -98,7 +151,7 @@ void UIEditor::Draw(const Mat4x4& camera, const BaseScene::ID id){
 		if (i != static_cast<size_t>(id))
 			continue;
 		for (size_t j = 0; j < texies_[i].size(); j++) {
-			tex2D_->Draw(texies_[i][j]->transform.matWorld_, texies_[i][j]->uvTrnasform.matWorld_, camera
+			tex2D_->Draw(texies_[i][j]->transform.matWorld_, texies_[i][j]->uvTransform.matWorld_, camera
 				, texies_[i][j]->textureID, texies_[i][j]->color, BlendType::kNormal);
 		}
 	}
@@ -118,7 +171,7 @@ void UIEditor::Debug(const BaseScene::ID id){
 		if (ImGui::BeginMenu("UI生成")) {
 			ImGui::DragFloat2("生成するポジション", &newTex_->transform.translate.x, 1.0f);
 			if (ImGui::TreeNode("生成するUI画像")) {
-				auto file = Lamb::GetFilePathFormDir("Resources/UI/", ".png");
+				auto file = Lamb::GetFilePathFormDir("./Resources/UI/", ".png");
 				for (auto& i : file) {
 					if (ImGui::Button(i.string().c_str())) {						
 						if (OperationConfirmation()) {
@@ -131,9 +184,17 @@ void UIEditor::Debug(const BaseScene::ID id){
 							std::string result;
 
 							size_t slashPos_ = i.string().find_last_of('/');
+							size_t lSlashPos_ = i.string().find_last_of('\\');
 							size_t dotPos_ = i.string().find_last_of('.');
-							if (slashPos_ != std::string::npos && dotPos_ != std::string::npos && dotPos_ > slashPos_) {
-								result = i.string().substr(slashPos_ + 1, dotPos_ - slashPos_ - 1);
+							if (lSlashPos_ < slashPos_) {
+								if (lSlashPos_ != std::string::npos && dotPos_ != std::string::npos && dotPos_ > lSlashPos_) {
+									result = i.string().substr(lSlashPos_ + 1, dotPos_ - lSlashPos_ - 1);
+								}
+							}
+							else {
+								if (slashPos_ != std::string::npos && dotPos_ != std::string::npos && dotPos_ > slashPos_) {
+									result = i.string().substr(slashPos_ + 1, dotPos_ - slashPos_ - 1);
+								}
 							}
 							setTex_->textureName = result;
 							texies_[static_cast<size_t>(id)].emplace_back(std::move(setTex_));
@@ -152,8 +213,8 @@ void UIEditor::Debug(const BaseScene::ID id){
 				if (ImGui::TreeNode((texies_[static_cast<size_t>(id)][i]->textureName.c_str() + std::to_string(i)).c_str())) {
 					ImGui::DragFloat3("ポジション", texies_[static_cast<size_t>(id)][i]->transform.translate.data(), 1.0f);
 					ImGui::DragFloat2("大きさ", texies_[static_cast<size_t>(id)][i]->transform.scale.data(), 1.0f);
-					ImGui::DragFloat2("UVポジション", texies_[static_cast<size_t>(id)][i]->uvTrnasform.translate.data(), 1.0f);
-					ImGui::DragFloat2("UV大きさ",texies_[static_cast<size_t>(id)][i]->uvTrnasform.scale.data(), 1.0f);
+					ImGui::DragFloat2("UVポジション", texies_[static_cast<size_t>(id)][i]->uvTransform.translate.data(), 1.0f);
+					ImGui::DragFloat2("UV大きさ",texies_[static_cast<size_t>(id)][i]->uvTransform.scale.data(), 1.0f);
 					uint32_t colorInt = texies_[static_cast<size_t>(id)][i]->color;					
 					Vector4 color = colorInt;
 					 ImGui::ColorEdit4("テクスチャの色", &color.vec.x, true);
@@ -248,6 +309,156 @@ void UIEditor::LoadFiles(const std::string& fileName){
 	MessageBoxW(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), L"UIないよぉ！", 0);
 }
 
+void UIEditor::GameControlUIMove(const size_t i, const size_t j){
+	const auto& key = input_->GetKey();
+	const auto& pad = input_->GetGamepad();
+
+	auto sceneNum = BaseScene::ID::Game;
+
+	auto& tex = texies_[i][j];
+
+	if (tex->textureName == "attackButton") {
+		if (sceneManager_->GetIsPad()){
+			if (i == static_cast<size_t>(sceneNum)) {
+				tex->transform.scale = { 48.0f,48.0f };
+				tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerJump.png");
+			}
+			else {
+				tex->transform.scale = { 64.0f,64.0f };
+				tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerJump.png");
+			}			
+		}
+		else {
+			if (i == static_cast<size_t>(sceneNum)) {
+				tex->transform.scale = { 144.0f,48.0f };
+				tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
+			}
+			else {
+				tex->transform.scale = { 128.0f,48.0f };
+				tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
+			}
+		}
+
+		if (key->LongPush(DIK_SPACE) or 
+			(pad->GetButton(Gamepad::Button::A) and i == static_cast<size_t>(sceneNum)) or
+			(pad->GetButton(Gamepad::Button::A) and i != static_cast<size_t>(sceneNum))) {
+			tex->uvTransform.translate.x = 0.5f;
+		}
+		else {
+			tex->uvTransform.translate.x = 0.0f;
+		}
+	}
+
+	if (tex->textureName == "carryButton") {
+		if (sceneManager_->GetIsPad()) {
+			tex->transform.scale = { 48.0f,48.0f };
+			tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerCarry.png");
+		}
+		else {
+			tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
+		}
+
+		if (key->LongPush(DIK_X) or pad->GetButton(Gamepad::Button::X)) {
+			tex->uvTransform.translate.x = 0.5f;
+		}
+		else {
+			tex->uvTransform.translate.x = 0.0f;
+		}
+	}
+
+	if (tex->textureName == "moveButton") {
+		if (tex->uvTransform.scale.x > 0) {
+			if (key->GetKey(DIK_A) or key->GetKey(DIK_LEFT) or
+				(pad->GetStick(Gamepad::Stick::LEFT_X) < 0.0f) or
+				(pad->GetButton(Gamepad::Button::LEFT))) {
+				tex->uvTransform.translate.x = 0.5f;
+			}
+			else {
+				tex->uvTransform.translate.x = 0.0f;
+			}
+		}
+		else {
+			if (key->GetKey(DIK_D) or key->GetKey(DIK_RIGHT) or
+				(pad->GetStick(Gamepad::Stick::LEFT_X) > 0.0f) or
+				(pad->GetButton(Gamepad::Button::RIGHT))) {
+				tex->uvTransform.translate.x = 0.0f;
+			}
+			else {
+				tex->uvTransform.translate.x = 0.5f;
+			}
+		}
+	}
+
+	if (tex->textureName == "jumpButton") {
+		if (sceneManager_->GetIsPad()) {
+			tex->transform.scale = { 48.0f,48.0f };
+			tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerAttack.png");
+		}
+		else {
+			tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
+		}
+
+		if (key->LongPush(DIK_Z) or pad->GetButton(Gamepad::Button::RIGHT_SHOULDER)) {
+			tex->uvTransform.translate.x = 0.5f;
+		}
+		else {
+			tex->uvTransform.translate.x = 0.0f;
+		}
+	}
+
+	if (tex->textureName == "pauseButton") {
+		if (sceneManager_->GetIsPad()) {
+			tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerPause.png");
+		}
+		else {
+			tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
+		}
+
+		
+	}
+
+}
+
+void UIEditor::PotScaleMove(const size_t i, const size_t j){
+	auto& texScale = texies_[i][j]->transform.scale;
+	auto& texName = texies_[i][j]->textureName;
+	if (texName == "pot"){
+		texScale = potBaseScale_;
+	}	
+
+	if (!isScaleMove_)
+	return;
+		
+	
+	if (texName == "pot") {	
+		if (!isScaleMoveReverse_){
+			texScale = easing_->Get(potBaseScale_, potGoalScale_);
+		}
+		else {
+			texScale = easing_->Get(potGoalScale_, potBaseScale_);
+		}
+	}
+
+}
+
+void UIEditor::BeginScaleMove(const float time){
+	if (isScaleMove_){
+		easing_->Start(false, time, Easeing::InSine);
+		time_ = time;
+		isScaleMoveReverse_ = false;
+	}
+	else {
+		isScaleMove_ = true;
+		time_ = time;
+		easing_->Start(false, time, Easeing::InSine);
+		isScaleMoveReverse_ = false;
+	}
+}
+
+void UIEditor::SetSelectDraw(const bool flug){
+	isSelectFlug_ = flug;	
+}
+
 void UIEditor::SaveFile(const std::string& fileName){
 	//保存
 	json root;
@@ -277,12 +488,12 @@ void UIEditor::SaveFile(const std::string& fileName){
 			   texies_[1][i]->transform.scale.z
 			});
 		root[kItemName_]["Title"][i]["UVTranslate"] = json::array({
-			   texies_[1][i]->uvTrnasform.translate.x,
-			   texies_[1][i]->uvTrnasform.translate.y
+			   texies_[1][i]->uvTransform.translate.x,
+			   texies_[1][i]->uvTransform.translate.y
 			});
 		root[kItemName_]["Title"][i]["UVScale"] = json::array({
-			   texies_[1][i]->uvTrnasform.scale.x,
-			   texies_[1][i]->uvTrnasform.scale.y
+			   texies_[1][i]->uvTransform.scale.x,
+			   texies_[1][i]->uvTransform.scale.y
 			});
 			root[kItemName_]["Title"][i]["color"] = texies_[1][i]->color;
 			root[kItemName_]["Title"][i]["TextureName"] = texies_[1][i]->textureName;
@@ -303,12 +514,12 @@ void UIEditor::SaveFile(const std::string& fileName){
 				   texies_[3][i]->transform.scale.z
 				});
 			root[kItemName_]["Game"][i]["UVTranslate"] = json::array({
-				   texies_[3][i]->uvTrnasform.translate.x,
-				   texies_[3][i]->uvTrnasform.translate.y
+				   texies_[3][i]->uvTransform.translate.x,
+				   texies_[3][i]->uvTransform.translate.y
 				});
 			root[kItemName_]["Game"][i]["UVScale"] = json::array({
-				   texies_[3][i]->uvTrnasform.scale.x,
-				   texies_[3][i]->uvTrnasform.scale.y
+				   texies_[3][i]->uvTransform.scale.x,
+				   texies_[3][i]->uvTransform.scale.y
 				});
 			root[kItemName_]["Game"][i]["color"] = texies_[3][i]->color;
 			root[kItemName_]["Game"][i]["TextureName"] = texies_[3][i]->textureName;
@@ -329,12 +540,12 @@ void UIEditor::SaveFile(const std::string& fileName){
 				   texies_[2][i]->transform.scale.z
 				});
 			root[kItemName_]["Select"][i]["UVTranslate"] = json::array({
-				   texies_[2][i]->uvTrnasform.translate.x,
-				   texies_[2][i]->uvTrnasform.translate.y
+				   texies_[2][i]->uvTransform.translate.x,
+				   texies_[2][i]->uvTransform.translate.y
 				});
 			root[kItemName_]["Select"][i]["UVScale"] = json::array({
-				   texies_[2][i]->uvTrnasform.scale.x,
-				   texies_[2][i]->uvTrnasform.scale.y
+				   texies_[2][i]->uvTransform.scale.x,
+				   texies_[2][i]->uvTransform.scale.y
 				});
 			root[kItemName_]["Select"][i]["color"] = texies_[2][i]->color;
 			root[kItemName_]["Select"][i]["TextureName"] = texies_[2][i]->textureName;
@@ -355,12 +566,12 @@ void UIEditor::SaveFile(const std::string& fileName){
 				   texies_[0][i]->transform.scale.z
 				});
 			root[kItemName_]["Result"][i]["UVTranslate"] = json::array({
-				   texies_[0][i]->uvTrnasform.translate.x,
-				   texies_[0][i]->uvTrnasform.translate.y
+				   texies_[0][i]->uvTransform.translate.x,
+				   texies_[0][i]->uvTransform.translate.y
 				});
 			root[kItemName_]["Result"][i]["UVScale"] = json::array({
-				   texies_[0][i]->uvTrnasform.scale.x,
-				   texies_[0][i]->uvTrnasform.scale.y
+				   texies_[0][i]->uvTransform.scale.x,
+				   texies_[0][i]->uvTransform.scale.y
 				});
 			root[kItemName_]["Result"][i]["color"] = texies_[0][i]->color;
 			root[kItemName_]["Result"][i]["TextureName"] = texies_[0][i]->textureName;
@@ -494,8 +705,8 @@ void UIEditor::LoadFile(const std::string& fileName){
 		setTex_->color = i["color"];
 		setTex_->transform.scale = scale;
 		setTex_->transform.translate = pos;
-		setTex_->uvTrnasform.scale = UVscale;
-		setTex_->uvTrnasform.translate = UVpos;
+		setTex_->uvTransform.scale = UVscale;
+		setTex_->uvTransform.translate = UVpos;
 		setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i["TextureFullPath"]);
 		setTex_->textureFullPath = i["TextureFullPath"];
 		setTex_->textureName = i["TextureName"];
@@ -558,8 +769,8 @@ void UIEditor::LoadFileAll(){
 			setTex_->color = i["color"];
 			setTex_->transform.scale = scale;
 			setTex_->transform.translate = pos;
-			setTex_->uvTrnasform.scale = UVscale;
-			setTex_->uvTrnasform.translate = UVpos;
+			setTex_->uvTransform.scale = UVscale;
+			setTex_->uvTransform.translate = UVpos;
 			setTex_->textureID = DrawerManager::GetInstance()->LoadTexture(i["TextureFullPath"]);
 			setTex_->textureFullPath = i["TextureFullPath"];
 			setTex_->textureName = i["TextureName"];

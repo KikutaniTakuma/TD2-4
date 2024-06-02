@@ -5,11 +5,11 @@
 
 struct Tex2DState {
 	Transform transform;//座標
-	Transform uvTrnasform;//uv座標
-	uint32_t textureID;//識別番号
+	Transform uvTransform;//uv座標
+	uint32_t textureID = 0u;//識別番号
 	std::string textureName;//テクスチャの名前
 	std::string textureFullPath;//テクスチャのフルパス
-	uint32_t color;//色
+	uint32_t color = 0xffffffff;//色
 };
 /// <summary>
 /// 板ポリ描画

@@ -15,6 +15,8 @@
 #include <Drawers/Model/Model.h>
 #include <Game/CollisionManager/AABB/AABB.h>
 #include <Game/GameEffectManager/GameEffectManager.h>
+#include <Game/Timer/Timer.h>
+#include <Game/GameUIManager/GameUIManager.h>
 #include"Game/Item/BlockItem.h"
 
 class GameScene;
@@ -36,7 +38,7 @@ private:
 	~GameManager() = default;
 
 public:
-	inline static const char *kDwarfModelName = "Resources/Cube.obj";
+	inline static const char *const kDwarfModelName = "Resources/Cube.obj";
 
 	using DwarfPick = std::pair<Vector2, std::unique_ptr<GameObject>>;
 
@@ -46,6 +48,12 @@ public:
 	void Update(const float deltaTime);
 
 	void Draw(const Camera &camera) const;
+
+	void SetUIManager(GameUIManager *uiManager) { pGameUIManager_ = uiManager; }
+
+	void LoadGlobalVariant(const uint32_t stageIndex = 0);
+
+	void SaveGlobalVariant(const uint32_t stageIndex = 0) const;
 
 public:
 	bool Debug(const char *const str);
@@ -66,7 +74,7 @@ public:
 	/// <param name="size">直径</param>
 	/// <param name="velocity">瞬間加速</param>
 	/// <param name="gravity">定期加速</param>
-	GameObject *AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity);
+	GameObject *AddFallingBlock(Vector2 centerPos, Vector2 size, Block::BlockType blockType, Vector2 velocity, Vector2 gravity, bool hasDamage = true, uint32_t blockDamage = 0);
 
 	/// @brief ブロックが接地した時の処理
 	/// @param centerPos 中心座標
@@ -97,7 +105,7 @@ public:
 	//弾が当たったときに当たった個所からつながっているブロックを検索して色を変化させる
 	BlockMap::BlockBitMap &&HitChainBlocks(POINTS localPos);
 
-	std::list<DwarfPick> PickUpBlockSideObject(const POINTS localPos);
+	std::list<DwarfPick> PickUpObject(const POINTS localPos);
 
 	void RandomDwarfSpawn();
 
@@ -105,22 +113,80 @@ public:
 
 	SoLib::VItem<"破壊時の停止時間", float> vBreakStopTime_{ 0.5f };
 
+	SoLib::VItem<"開始してからブロックが沸くまでの時間", float> vFallBegin_{ 2.5f };
 	SoLib::VItem<"落下するまでの間隔(sec)", float> vFallSpan_{ 2.5f };
+	SoLib::VItem<"敵の沸く間隔(sec)", float> vSpawnSpan_{ 2.5f };
 
 	SoLib::VItem<"クリアに必要なアイテムの数", int32_t> vClearItemCount_{ 150 };
+	SoLib::VItem<"最大時間", int32_t> vMaxTime_{ 90 };
+
+	SoLib::VItem<"ブロックの種類", int32_t> vBlockTypeCount_{ 4 };
+	SoLib::VItem<"生成するブロックの高さ", int32_t> vStartBlockHeight_{ 3 };
+	static inline SoLib::VItem<"落下するブロックの発生係数", int32_t> vFallPosCalc_{ 2 };
+
+	static inline SoLib::VItem<"出てくるアイテムの間隔", float> vItemSpawnSpan_{ 0.25f };
+	static inline SoLib::VItem<"初期化の時の最大連結数", int32_t> vMaxChainBlockCount_{ 6 };
+
+	/// @brief 調整項目
+	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallBegin_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_ };
+	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_, &GameManager::vFallPosCalc_, &GameManager::vMaxChainBlockCount_ };
+
+	inline static constexpr SoLib::VItemList vItemStatus_ = { &vItemSpawnSpan_ };
 
 	const auto &GetBreakTimer() const { return blockBreakTimer_; }
 
 	GameObject *GetPlayer() { return player_.get(); }
 
+	void SetGameUIManager(GameUIManager* pGameUIManager) {
+		pGameUIManager_ = pGameUIManager;
+	}
 	/// @brief ブロック破壊時のアイテム追加
 	void AddItem(const Vector2 globalPos, const Block::BlockType blockType, const uint32_t count = 1);
 
 	void AddPoint();
 
+	void RemovePoint(const int32_t count);
+
 public:
 	/// @brief 入力動作
 	void InputAction();
+
+	GameTimer *GetGameTimer() const { return gameTimer_.get(); }
+
+	const int32_t GetClearItemCount() const { return vClearItemCount_.item; }
+
+	const int32_t GetItemCount()const { return itemCount_; }
+
+	const uint32_t GetItemSpawnCount() const { return itemSpawnCount_; }
+
+	/// @brief 各アイテムごとの個数
+	/// @param blockType アイテムのタイプ
+	/// @return アイテムの個数
+	const int32_t GetItemTypeCount(const Block::BlockType blockType) const {
+		uint32_t index = static_cast<uint32_t>(blockType);
+		index = std::clamp(index, 1u, static_cast<uint32_t>(Block::BlockType::kMax) - 1) - 1;
+		return itemTypeCount_[index];
+	}
+	/// @brief 各アイテムが破棄された個数
+	/// @param blockType アイテムのタイプ
+	/// @return アイテムの個数
+	const int32_t GetRemoveTypeCount(const Block::BlockType blockType) const {
+		uint32_t index = static_cast<uint32_t>(blockType);
+		index = std::clamp(index, 1u, static_cast<uint32_t>(Block::BlockType::kMax) - 1) - 1;
+		return removeTypes_[index];
+	}
+
+	const auto &GetFallingBlocksPos() const {
+		return fallingBlocksPos_;
+	}
+
+	void SetCamera(Camera* camera) {
+		camera_ = camera;
+	}
+
+	const Camera* const GetCamera() const {
+		return camera_.get();
+	}
 
 private:
 	void BlockMapDropDown();
@@ -129,7 +195,32 @@ private:
 
 	void ClearCheck();
 
+	void PlayerMoveSafeArea();
+
+	std::array<int32_t, 9u> LoadLevelData(int32_t levelIndex);
+
+	void RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount);
+
 private:
+
+#ifdef _DEBUG
+
+	std::array<std::array<bool, BlockMap::kMapX>, BlockMap::kMapY> blockMapData_;
+
+#endif // _DEBUG
+
+
+	uint32_t pointTex_;
+	SoLib::Time::DeltaTimer bonusPointDrawTimer_;
+
+	Transform bonusTexTransform_;
+
+	uint32_t itemSpawnCount_;
+
+	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> itemTypeCount_;
+	std::array<int32_t, static_cast<uint32_t>(Block::BlockType::kMax) - 1> removeTypes_;
+
+	std::list<Vector2> fallingBlocksPos_;
 
 	std::list<std::unique_ptr<BlockItem>> itemList_;
 
@@ -141,6 +232,8 @@ private:
 	SoLib::Time::DeltaTimer fallBlockSpawnTimer_;
 	// 入力マネージャ
 	Input *input_ = nullptr;
+
+	std::unique_ptr<GameTimer> gameTimer_;
 
 	std::unique_ptr<BlockGauge> blockGauge_ = nullptr;
 
@@ -167,6 +260,12 @@ private:
 	std::list<std::unique_ptr<GameObject>> darkDwarfList_;
 
 	std::unique_ptr<GameEffectManager> gameEffectManager_ = nullptr;
+	Lamb::SafePtr<GameUIManager> pGameUIManager_ = nullptr;
 
 	GameScene *pGameScene_ = nullptr;
+
+	Lamb::SafePtr<Camera> camera_;
+
+	Audio* slimeDeath_ = nullptr;
+	Audio* putBlock_ = nullptr;
 };

@@ -14,6 +14,9 @@ public:
 
 	Vector2 hitNormal_;
 
+	bool isHitFallBlock_ = true;
+	bool isPermeable_ = false;
+
 private:
 
 	Lamb::SafePtr<LocalBodyComp> pLocalBodyComp_ = nullptr;

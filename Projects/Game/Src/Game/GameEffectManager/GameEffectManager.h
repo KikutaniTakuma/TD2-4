@@ -4,6 +4,7 @@
 #include <Drawers/Texture2D/Texture2D.h>
 
 #include "Drawers/Particle/Particle.h"
+#include <Game/Timer/Timer.h>
 
 // ゲームマネージャ
 class GameManager;	// シングルトン。前方宣言なのでSafePtrは使えない。
@@ -41,12 +42,17 @@ private:
 	// 破壊されたブロックのローカル座標
 	std::pair<Block::BlockType, BlockMap::BlockBitMap> blockBreakPos_;
 
+	std::list<Vector2> margeDwarfPos_;
+
 	// 小人が死んだ時のローカル座標
 	std::list<Vector2> dwarfDeadPos_;
 
 	// 落下ブロックの予測
-	std::pair<int32_t, int32_t> fallingBlock_;	// -1なら無効
+	std::bitset<BlockMap::kMapX> fallingBlock_;	// -1なら無効
 
+	std::vector<std::unique_ptr<Particle>> blockParticles_;
+	std::array<std::unique_ptr<Particle>, 20> dwarfParticle_;
+	int32_t dwarfParticleIndex_ = 0;
 
-	std::vector<std::unique_ptr<Particle>> particles_;
+	class Audio* blockBreak_ = nullptr;
 };

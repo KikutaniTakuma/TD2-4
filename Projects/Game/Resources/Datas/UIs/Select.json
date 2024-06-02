@@ -9,8 +9,8 @@
                     1.0
                 ],
                 "UVTranslate": [
-                    0.0,
-                    0.0
+                    0.23556332290172577,
+                    0.6184313297271729
                 ],
                 "color": 4294967295,
                 "scale": [
@@ -48,7 +48,99 @@
                 ]
             },
             {
-                "TextureFullPath": "Resources/UI/decision.png",
+                "TextureFullPath": "Resources/UI/GameMain/Control/moveButton.png",
+                "TextureName": "moveButton",
+                "UVScale": [
+                    0.5,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    48.0,
+                    48.0,
+                    1.0
+                ],
+                "translate": [
+                    -548.0,
+                    -313.0,
+                    0.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/moveButton.png",
+                "TextureName": "moveButton",
+                "UVScale": [
+                    -0.5,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.5,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    48.0,
+                    48.0,
+                    1.0
+                ],
+                "translate": [
+                    -495.0,
+                    -313.0,
+                    0.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/move.png",
+                "TextureName": "move",
+                "UVScale": [
+                    1.0,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    96.0,
+                    48.0,
+                    1.0
+                ],
+                "translate": [
+                    -392.0,
+                    -309.0,
+                    0.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain/Control/attackButton.png",
+                "TextureName": "attackButton",
+                "UVScale": [
+                    0.5,
+                    1.0
+                ],
+                "UVTranslate": [
+                    0.0,
+                    0.0
+                ],
+                "color": 4294967295,
+                "scale": [
+                    128.0,
+                    48.0,
+                    1.0
+                ],
+                "translate": [
+                    -522.0,
+                    -248.0,
+                    0.0
+                ]
+            },
+            {
+                "TextureFullPath": "Resources/UI/GameMain\\Control\\decision.png",
                 "TextureName": "decision",
                 "UVScale": [
                     1.0,
@@ -60,13 +152,13 @@
                 ],
                 "color": 4294967295,
                 "scale": [
-                    320.0,
-                    112.0,
+                    96.0,
+                    48.0,
                     1.0
                 ],
                 "translate": [
-                    -455.0,
-                    -270.0,
+                    -390.0,
+                    -244.0,
                     0.0
                 ]
             }

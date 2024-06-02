@@ -6,6 +6,8 @@
 #include <cassert>
 #include <filesystem>
 
+#include "Engine/EngineUtils/ResourceLoadLog/ResourceLoadLog.h"
+
 #include "Error/Error.h"
 
 Lamb::SafePtr<TextureManager> TextureManager::instance_ = nullptr;
@@ -60,6 +62,8 @@ uint32_t TextureManager::LoadTexture(const std::string& fileName) {
 		textures_.insert(std::make_pair(fileName, std::move(tex)));
 
 		thisFrameLoadFlg_ = true;
+
+		ResourceLoadLog::Set(fileName);
 	}
 
 	return textures_[fileName]->GetHandleUINT();
