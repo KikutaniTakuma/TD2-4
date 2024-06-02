@@ -159,7 +159,7 @@ void PlayerAnimatorComp::SetState() {
 	isUnderHave_ = pPlayerComp_->InputDown();
 	isMove_ = pPlayerComp_->GetInputVec().x != 0.0f;
 	isJumpAnimation_ = pPlayerComp_->GetInputVec().y > 0.0f;
-	isFallAnimation_ = pPlayerComp_->GetInputVec().y < 0.0f;
+	//isFallAnimation_ = pPlayerComp_-;
 
 	preState_ = currentState_;
 

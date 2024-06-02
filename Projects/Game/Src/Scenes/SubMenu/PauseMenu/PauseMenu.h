@@ -43,12 +43,9 @@ private:
 	std::unique_ptr<Tex2DState> usuGurai_;
 	std::unique_ptr<Tex2DState> puaseMenuUI_;
 	std::unique_ptr<Tex2DState> menu_;
-	std::unique_ptr<Tex2DState> modoruMassage_;
 	std::unique_ptr<Tex2DState> modoruUI_;
 	std::unique_ptr<Tex2DState> retryUI_;
 	std::unique_ptr<Tex2DState> stageSelectUI_;
-
-	uint32_t gamepadUITextureID_ = 0;
 
 	State curretnState_;
 

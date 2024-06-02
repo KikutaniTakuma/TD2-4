@@ -23,16 +23,13 @@ void PauseMenu::Initialize() {
 	usuGurai_->textureID = TextureManager::GetInstance()->GetWhiteTex();
 	usuGurai_->transform.scale = Lamb::ClientSize();
 	menu_ = std::make_unique<Tex2DState>();
-	menu_->transform.scale = { 800.0f, 300.0f };
+	menu_->transform.scale = { 400.0f, 450.0f };
+	menu_->transform.translate.y = 10.0f;
 	menu_->textureID = drawerManager->LoadTexture("./Resources/Pause/pauseFrame.png");
-	modoruMassage_ = std::make_unique<Tex2DState>();
-	modoruMassage_->transform.scale = { 100.0f, 60.0f };
-	modoruMassage_->transform.translate = {-230.0f, 77.5f };
-	modoruMassage_->textureID = drawerManager->LoadTexture("./Resources/Pause/back.png");
 	modoruUI_ = std::make_unique<Tex2DState>();
-	modoruUI_->textureID = drawerManager->LoadTexture("./Resources/Pause/pauseButton.png");
+	modoruUI_->textureID = drawerManager->LoadTexture("./Resources/Pause/gameBack.png");
 	modoruUI_->uvTransform.scale.x = 0.5f;
-	modoruUI_->transform.scale = { 60.0f, 60.0f };
+	modoruUI_->transform.scale = { 350.0f, 120.0f };
 	modoruUI_->transform.translate = { 0.0f, 90.0f };
 	retryUI_ = std::make_unique<Tex2DState>();
 	retryUI_->uvTransform.scale.x = 0.5f;
@@ -46,10 +43,8 @@ void PauseMenu::Initialize() {
 	stageSelectUI_->transform.translate = { 0.0f, -130.0f };
 	puaseMenuUI_ = std::make_unique<Tex2DState>();
 	puaseMenuUI_->textureID = drawerManager->LoadTexture("./Resources/Pause/pause.png");
-	puaseMenuUI_->transform.scale = { 200.0f, 60.0f };
-	puaseMenuUI_->transform.translate = { 0.0f, 77.5f };
-
-	gamepadUITextureID_ = drawerManager->LoadTexture("./Resources/UI/GameMain/Control/controllerPause.png");
+	puaseMenuUI_->transform.scale = { 180.0f, 60.0f };
+	puaseMenuUI_->transform.translate = { 0.0f, 195.0f, -1.0f };
 
 	curretnState_ = State::kBack;
 
@@ -94,18 +89,10 @@ void PauseMenu::Draw() {
 		BlendType::kUnenableDepthNormal
 	);
 	tex2D_->Draw(
-		modoruMassage_->transform.matWorld_,
-		modoruMassage_->uvTransform.matWorld_,
-		camera_->GetViewOthographics(),
-		modoruMassage_->textureID,
-		std::numeric_limits<uint32_t>::max(),
-		BlendType::kUnenableDepthNormal
-	);
-	tex2D_->Draw(
 		modoruUI_->transform.matWorld_,
 		modoruUI_->uvTransform.matWorld_,
 		camera_->GetViewOthographics(),
-		sceneManager_->GetIsPad() ? gamepadUITextureID_ : modoruUI_->textureID,
+		modoruUI_->textureID,
 		std::numeric_limits<uint32_t>::max(),
 		BlendType::kUnenableDepthNormal
 	);
@@ -133,7 +120,6 @@ void PauseMenu::Update() {
 	ImGui::Begin("PauseMenu");
 	usuGurai_->transform.ImGuiWidget("usuGurai");
 	menu_->transform.ImGuiWidget("menu");
-	modoruMassage_->transform.ImGuiWidget("modoru");
 	modoruUI_->transform.ImGuiWidget("modoruUI");
 	retryUI_->transform.ImGuiWidget("retry");
 	stageSelectUI_->transform.ImGuiWidget("stageSelect");
@@ -152,7 +138,6 @@ void PauseMenu::Update() {
 	modoruUI_->uvTransform.CalcMatrix();
 	usuGurai_->transform.CalcMatrix();
 	menu_->transform.CalcMatrix();
-	modoruMassage_->transform.CalcMatrix();
 	modoruUI_->transform.CalcMatrix();
 	retryUI_->transform.CalcMatrix();
 	stageSelectUI_->transform.CalcMatrix();
@@ -226,6 +211,10 @@ void PauseMenu::ChangeState()
 void PauseMenu::SceneChange() {
 	Lamb::SafePtr gamepad = Input::GetInstance()->GetGamepad();
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
+	if (gamepad->Pushed(Gamepad::Button::B)) {
+		curretnState_ = State::kBack;
+		isActive_ = false;
+	}
 	if (gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE)) {
 		switch (curretnState_)
 		{
