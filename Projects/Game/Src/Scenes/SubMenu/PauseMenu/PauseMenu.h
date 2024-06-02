@@ -4,6 +4,7 @@
 #include "Utils/SafePtr/SafePtr.h"
 
 class PauseMenu : public SubMenu {
+private:
 	enum class State {
 		kBack,
 		kRetry,
@@ -28,26 +29,32 @@ public:
 private:
 	void Update() override;
 
-	//void Change();
+	void ChangeUP();
+	void ChangeDown();
+
+	void ChangeState();
+
+	void SceneChange();
+
+	void StateUpdate();
 
 private:
 	Lamb::SafePtr<Texture2D> tex2D_;
 	std::unique_ptr<Tex2DState> usuGurai_;
 	std::unique_ptr<Tex2DState> puaseMenuUI_;
 	std::unique_ptr<Tex2DState> menu_;
-	std::unique_ptr<Tex2DState> modoru_;
+	std::unique_ptr<Tex2DState> modoruMassage_;
 	std::unique_ptr<Tex2DState> modoruUI_;
-	std::unique_ptr<Tex2DState> retry_;
-	std::unique_ptr<Tex2DState> stageSelect_;
+	std::unique_ptr<Tex2DState> retryUI_;
+	std::unique_ptr<Tex2DState> stageSelectUI_;
 
-	uint32_t gamepadUITextureID_;
+	uint32_t gamepadUITextureID_ = 0;
 
-	//State curretnState_;
+	State curretnState_;
 
-	bool isRetryChoice_;
 	bool isStick_;
 
-	class Audio* modoruSE_;
-	class Audio* selectSE_;
-	class Audio* choiceSE_;
+	class Audio* modoruSE_ = nullptr;
+	class Audio* selectSE_ = nullptr;
+	class Audio* choiceSE_ = nullptr;
 };
