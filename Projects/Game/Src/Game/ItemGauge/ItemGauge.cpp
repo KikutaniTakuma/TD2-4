@@ -52,6 +52,8 @@ void ItemGauge::Initialize(){
 
 	gaugePosLength_ = kGaugePosX_.x - kGaugePosX_.y;
 	gaugePosCenterLength_ = kGaugeCenterPosX_.x - kGaugeCenterPosX_.y;
+
+	isItemGaugeMax_ = false;
 }
 
 void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
@@ -77,15 +79,9 @@ void ItemGauge::Update(const int32_t& nowCount, const int32_t& maxCount){
 	//maxCount;
 	num_ = static_cast<float>(nowCount) / static_cast<float>(maxCount);
 
-	if (num_ > 1.0f) {
+	if (num_ >= 1.0f) {
 		num_ = 1.0f;
-		float& rightPos = moveGaugeRightState_->transform.translate.x;
-		float& leftPos = moveGaugeLeftState_->transform.translate.x;
-		auto& centerTrans = moveGaugeCenterState_->transform;
-		const float rightPosAfter = kGaugePosX_.x - (gaugePosLength_ * (num_));
-		rightPos = rightPosAfter;
-		centerTrans.translate.x = (leftPos + rightPosAfter) * 0.5f;
-		centerTrans.scale.x = (kGaugeScale_ * (num_));
+		
 	}
 
 	MoveGauge();
@@ -158,6 +154,12 @@ void ItemGauge::MoveGauge(){
 	auto& centerTrans = moveGaugeCenterState_->transform;
 	const float rightPosAfter = kGaugePosX_.x - (gaugePosLength_ * (num_));
 
+	if (rightPos >= kGaugePosX_.y) {
+		isItemGaugeMax_ = true;
+	}
+
+	float multiNum = 2.0f;
+
 	afterIncreaseGaugeRightPos_ = rightPosAfter;
 	afterIncreaseGaugeCenterPos_ = (leftPos + rightPosAfter) * 0.5f;
 	afterIncreaseGaugeCenterScale_ = (kGaugeScale_ * (num_) * 1.01f);
@@ -194,8 +196,8 @@ void ItemGauge::MoveGauge(){
 			isItemReductionNow_ = false;
 		}
 		else {
-			tex.scale.x -= reductionGaugeScale_ * Lamb::DeltaTime();
-			tex.translate.x -= (reductionGaugePos_ - afterGaugeCenterRight_) * Lamb::DeltaTime();
+			tex.scale.x -= reductionGaugeScale_ * Lamb::DeltaTime() * multiNum;
+			tex.translate.x -= (reductionGaugePos_ - afterGaugeCenterRight_) * Lamb::DeltaTime() * multiNum;
 
 			colorTime_++;
 			if (colorTime_ == kChangeColorTime_) {
@@ -216,6 +218,7 @@ void ItemGauge::MoveGauge(){
 	}
 
 	if (isItemIncreaseNow_) {
+		
 
 		if (centerTrans.scale.x >= afterIncreaseGaugeCenterScale_) {
 			centerTrans.scale.x = afterIncreaseGaugeCenterScale_;
@@ -223,21 +226,22 @@ void ItemGauge::MoveGauge(){
 			gaugeColorBase_ = gaugeColor_;
 		}
 		else {
-			centerTrans.scale.x += (afterIncreaseGaugeCenterScale_ - beforeIncreaseGaugeCenterScale_) * Lamb::DeltaTime();
+			centerTrans.scale.x += (afterIncreaseGaugeCenterScale_ - beforeIncreaseGaugeCenterScale_) * Lamb::DeltaTime() * multiNum;
 
 			float addPosCenter = (afterIncreaseGaugeCenterPos_ - beforeIncreaseGaugeCenterPos_);
 			if (addPosCenter < 0) {
 				addPosCenter *= -1;
 			}
 
-			centerTrans.translate.x += (addPosCenter) * Lamb::DeltaTime();
+			centerTrans.translate.x += (addPosCenter) * Lamb::DeltaTime() * multiNum;
 
 			float addPosRight = (afterIncreaseGaugeRightPos_ - beforeIncreaseGaugeRightPos_);
 			if (addPosRight < 0) {
 				addPosRight *= -1;
 			}
 
-			rightPos += (addPosRight) * Lamb::DeltaTime();
+			rightPos += (addPosRight) * Lamb::DeltaTime() * multiNum;
+			
 			colorTime_++;
 			if (colorTime_ == kChangeColorTime_) {
 				if (gaugeColorBase_ == gaugeColorChange_) {

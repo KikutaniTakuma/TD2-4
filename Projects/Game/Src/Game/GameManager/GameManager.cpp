@@ -1140,6 +1140,8 @@ static bool comp(const CountIndex a, const CountIndex b) { return  a.count_ > b.
 
 void GameManager::RemovePoint(const int32_t count)
 {
+	if (pGameUIManager_->GetItemGauge()->GetItemGaugeMax())
+		return;
 	int32_t total = std::min(count, itemCount_);
 	itemCount_ -= total;
 	//itemCount_ = std::clamp(itemCount_, 0, *vClearItemCount_);
@@ -1289,7 +1291,7 @@ void GameManager::ClearCheck()
 	}
 	if (vClearItemCount_ < itemCount_) {
 		ResultScene::SetIsGameClear(true);
-		pGameScene_->ChangeToResult();
+		//pGameScene_->ChangeToResult();
 	}
 	if (gameTimer_->IsFinish()) {
 		ResultScene::SetIsGameClear(false);

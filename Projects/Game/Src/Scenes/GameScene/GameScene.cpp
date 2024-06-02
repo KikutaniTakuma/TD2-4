@@ -320,6 +320,10 @@ void GameScene::Update() {
 
 			gameUIManager_->Update(deltaTime);
 
+			if (gameUIManager_->GetItemGauge()->GetItemGaugeMax()){
+				sceneManager_->SceneChange(BaseScene::ID::Result);
+			}
+
 			if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
 				
 
