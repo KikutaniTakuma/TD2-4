@@ -291,9 +291,12 @@ void GameScene::Update() {
 			}
 		}
 
+#ifndef _DEBUG
 		if (not pause_->isActive_ and not WindowFactory::GetInstance()->IsThisWindowaActive()) {
 			pause_->isActive_ = true;
 		}
+#endif // _DEBUG
+
 
 		if (not isFirstUpdate_ and pause_->isActive_) {
 			pause_->isActive_ = false;

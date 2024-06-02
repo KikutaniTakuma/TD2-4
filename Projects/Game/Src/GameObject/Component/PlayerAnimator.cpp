@@ -158,8 +158,12 @@ void PlayerAnimatorComp::SetState() {
 	isHaveBlock_ = pPlayerPickerComp_->IsPicking();
 	isUnderHave_ = pPlayerComp_->InputDown();
 	isMove_ = pPlayerComp_->GetInputVec().x != 0.0f;
-	isJumpAnimation_ = pPlayerComp_->GetInputVec().y > 0.0f;
-	//isFallAnimation_ = pPlayerComp_-;
+	isJumpAnimation_ = pPlayerComp_->GetIsJumping();
+	isFallAnimation_ = pPlayerComp_->GetIsFalling();
+
+	if (not isFallAnimation_) {
+		isFallAnimation_ = false;
+	}
 
 	preState_ = currentState_;
 
@@ -172,6 +176,14 @@ void PlayerAnimatorComp::SetState() {
 			spriteAnimator_->Start();
 			isAttack_ = true;
 		}
+	}
+	// 次にジャンプアニメーション
+	else if (isJumpAnimation_) {
+		currentState_ = State::kJump;
+	}
+	// 次に落ちるアニメーション
+	else if (isFallAnimation_) {
+		currentState_ = State::kFall;
 	}
 	// ブロックを持ってる
 	else if(isHaveBlock_) {
@@ -240,7 +252,7 @@ void PlayerAnimatorComp::SetState() {
 		}
 	}
 	// アニメーションが止まってたら再スタート
-	else if (not spriteAnimator_->GetIsActive()) {
+	else if (not spriteAnimator_->GetIsActive() and not isJumpAnimation_ and not isFallAnimation_) {
 		spriteAnimator_->Start();
 	}
 }
@@ -281,14 +293,12 @@ void PlayerAnimatorComp::SetJump()
 {
 	spriteAnimator_->SetDuration(0.1f);
 	pSpriteComp_->SetTexture("./Resources/Player/witchJumpUp.png");
-	isJumpAnimation_ = true;
 }
 
 void PlayerAnimatorComp::SetFall()
 {
 	spriteAnimator_->SetDuration(0.1f);
 	pSpriteComp_->SetTexture("./Resources/Player/witchJumpDown.png");
-	isFallAnimation_ = true;
 }
 
 void PlayerAnimatorComp::AttackAnimationUpdate() {
