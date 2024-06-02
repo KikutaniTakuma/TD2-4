@@ -320,7 +320,7 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 	if (tex->textureName == "attackButton") {
 		if (sceneManager_->GetIsPad()){
 			if (i == static_cast<size_t>(sceneNum)) {
-				tex->transform.scale = { 64.0f,64.0f };
+				tex->transform.scale = { 48.0f,48.0f };
 				tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerJump.png");
 			}
 			else {
@@ -330,7 +330,7 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 		}
 		else {
 			if (i == static_cast<size_t>(sceneNum)) {
-				tex->transform.scale = { 192.0f,64.0f };
+				tex->transform.scale = { 144.0f,48.0f };
 				tex->textureID = drawerManager_->LoadTexture(tex->textureFullPath);
 			}
 			else {
@@ -351,7 +351,7 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 
 	if (tex->textureName == "carryButton") {
 		if (sceneManager_->GetIsPad()) {
-			tex->transform.scale = { 64.0f,64.0f };
+			tex->transform.scale = { 48.0f,48.0f };
 			tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerCarry.png");
 		}
 		else {
@@ -391,7 +391,7 @@ void UIEditor::GameControlUIMove(const size_t i, const size_t j){
 
 	if (tex->textureName == "jumpButton") {
 		if (sceneManager_->GetIsPad()) {
-			tex->transform.scale = { 64.0f,64.0f };
+			tex->transform.scale = { 48.0f,48.0f };
 			tex->textureID = drawerManager_->LoadTexture("./Resources/UI/GameMain/Control/controllerAttack.png");
 		}
 		else {
