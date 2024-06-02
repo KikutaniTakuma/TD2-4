@@ -1,4 +1,6 @@
 #include "GameScene.h"
+
+#include "Engine/Core/WindowFactory/WindowFactory.h"
 #include "Engine/Graphics/MeshManager/MeshManager.h"
 #include "Engine/Graphics/TextureManager/TextureManager.h"
 #include "AudioManager/AudioManager.h"
@@ -272,13 +274,17 @@ void GameScene::Update() {
 	}
 	else {
 		if (gamepad->Pushed(Gamepad::Button::START) or key->Pushed(DIK_ESCAPE)) {
-			pause_->isActive_ = not pause_->isActive_;
+			pause_->isActive_ = !pause_->isActive_;
 			if (pause_->isActive_) {
 				gameBGM_->SetAudio(0.01f);
 			}
 			else {
 				gameBGM_->SetAudio(0.1f);
 			}
+		}
+
+		if (not pause_->isActive_ and not WindowFactory::GetInstance()->IsThisWindowaActive()) {
+			pause_->isActive_ = true;
 		}
 
 
