@@ -168,7 +168,7 @@ void FrameInfo::End() {
 void FrameInfo::DrawFps() {
 	if (isDrawFps_) {
 		fpsStringOutPut_.Clear();
-		float ratio = static_cast<float>(fps_ / maxFpsLimit_);
+		float ratio = static_cast<float>(fps_ / fpsLimit_);
 
 		Vector4&& red = Vector4::kXIdentity + Vector4::kWIdentity;
 		Vector4&& yellow = Vector4::kXIdentity + Vector4::kYIdentity + Vector4::kWIdentity;

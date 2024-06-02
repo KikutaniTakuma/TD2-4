@@ -57,7 +57,12 @@ void ResultScene::Initialize(){
 	if (isGameClear_) {
 		backGround_->textureID = drawerManager_->LoadTexture("./Resources/BackGround/clearBackGround.png");
 		resultMessage_->textureID = drawerManager_->LoadTexture("./Resources/Result/clearUi.png");
-		currentUIPick_ = CurrentUIPick::kToNext;
+		if (isLastStage_) {
+			currentUIPick_ = CurrentUIPick::kToStageSelect;
+		}
+		else {
+			currentUIPick_ = CurrentUIPick::kToNext;
+		}
 
 		clearItem_ = std::make_unique<Tex2DState>();
 		clearItem_->transform.translate.z = -5.0f;
