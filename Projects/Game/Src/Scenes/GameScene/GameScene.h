@@ -99,6 +99,10 @@ private:
 
 	Audio* gameBGM_ = nullptr;
 
+	Audio* cancel_ = nullptr;
+
+	Audio* telop_ = nullptr;
+
 	static const uint32_t kCloudNum_ = 8;
 
 	//雲

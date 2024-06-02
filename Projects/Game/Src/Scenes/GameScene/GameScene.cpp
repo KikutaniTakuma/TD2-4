@@ -154,6 +154,8 @@ void GameScene::Initialize() {
 	TextureInitialize();
 
 	gameBGM_ = audioManager_->Load("./Resources/Sounds/BGM/game.mp3");
+	cancel_ = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
+	telop_ = audioManager_->Load("./Resources/Sounds/SE/telop.mp3");
 	audioManager_->Load("./Resources/Sounds/SE/damege.mp3");
 	audioManager_->Load("./Resources/Sounds/SE/noSpace.mp3");
 
@@ -195,7 +197,7 @@ void GameScene::Update() {
 	Lamb::SafePtr gamepad = Input::GetInstance()->GetGamepad();
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 
-
+	
 
 	Debug();
 
@@ -208,6 +210,8 @@ void GameScene::Update() {
 	currentTexCamera_->Update();
 
 	if (not isEndObjective_ and not isFirstLoadFlag_) {
+		
+
 		auto itemMax = gameManager_->GetClearItemCount();
 
 		CalcUVPos(gameManager_->GetGameTimer()->GetDeltaTimer().GetGoalFlame(), timerNumberTexture_);
@@ -232,6 +236,10 @@ void GameScene::Update() {
 			easeCount_ = -1;
 		}
 		ease_.Update();
+
+		if (ease_.ActiveExit() && not isFadeOut_) {
+			telop_->Start(0.2f, false);
+		}
 
 		if (not isFadeOut_) {
 			objectiveFrame_->transform.translate.y = ease_.Get(easePoint_.x, easePoint_.y);
@@ -308,10 +316,10 @@ void GameScene::Update() {
 			gameUIManager_->Update(deltaTime);
 
 			if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
-				Audio* cancel = audioManager_->Load("./Resources/Sounds/SE/cancel.mp3");
+				
 
 				gameBGM_->Stop();
-				cancel->Start(0.1f, false);
+				cancel_->Start(0.1f, false);
 
 				sceneManager_->SceneChange(BaseScene::ID::StageSelect);
 			}
