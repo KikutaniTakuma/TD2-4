@@ -48,6 +48,10 @@ public:
 
 	bool InputDown() const;
 
+	Lamb::Flg GetIsJumping() const { return isJumping_; }
+
+	Lamb::Flg GetIsFalling() const { return isFalling_; }
+
 private:
 
 	float invincibleTime_ = 0.f;
@@ -65,6 +69,9 @@ private:
 
 	bool isAttack_;
 
+	Lamb::Flg isJumping_;
+	Lamb::Flg isFalling_;
+
 	//int32_t preHealth_;
 
 	Lamb::Flg damageFlag_;
@@ -76,7 +83,7 @@ private:
 
 	//Lamb::SafePtr<HealthComp> pHealthComp_ = nullptr;
 
-	Audio* damege_ = nullptr;
-	Audio* shot_ = nullptr;
+	Audio *damege_ = nullptr;
+	Audio *shot_ = nullptr;
 
 };

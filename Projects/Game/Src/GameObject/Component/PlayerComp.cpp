@@ -43,6 +43,8 @@ void PlayerComp::Update()
 
 	pLocalRigidbody_->ApplyContinuousForce(kGrovity_);
 
+	isJumping_ = pLocalRigidbody_->GetVelocity().y > 0;
+	isFalling_ = pLocalRigidbody_->GetVelocity().y < 0;
 	Input();
 	transform_.translate = pLocalBodyComp_->GetGlobalPos();
 
@@ -132,6 +134,7 @@ void PlayerComp::Input()
 	if (pHitMapComp_->hitNormal_.y > 0) {
 		if (key->Pushed(DIK_SPACE) or pad->GetButton(Gamepad::Button::A) or pad->GetButton(Gamepad::Button::B)) {
 			pLocalRigidbody_->ApplyInstantForce(Vector2::kYIdentity * 13.f);
+			isJumping_ = true;
 		}
 	}
 	Vector2 velocity = pLocalRigidbody_->GetVelocity();
