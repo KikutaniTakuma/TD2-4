@@ -22,9 +22,10 @@ public:
 
 	void OnCollision(GameObject *other) override;
 
+	static inline SoLib::VItem<"ダメージ判定のある落下ブロックの待機する時間", float> vSpawnFallBlockStop_{ 1.f };
 	static inline SoLib::VItem<"落下ブロックの待機する時間", float> vFallBlockStop_{ 0.5f };
 
-	inline static constexpr SoLib::VItemList vFallBlockStatus_ = { &vFallBlockStop_ };
+	inline static constexpr SoLib::VItemList vFallBlockStatus_ = { &vSpawnFallBlockStop_, &vFallBlockStop_ };
 
 public:
 

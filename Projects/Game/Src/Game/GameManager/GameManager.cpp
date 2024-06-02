@@ -953,7 +953,7 @@ void GameManager::RandomFallBlockSpawn()
 
 		gameEffectManager_->fallingBlock_.set(spawnPos);
 
-		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -5, Vector2::kZero);
+		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -5, Vector2::kZero)->GetComponent<FallingBlockComp>()->stopTimer_ = FallingBlockComp::vSpawnFallBlockStop_;
 	}
 
 	//for (uint32_t i = 0; i < spawnLeftTime_.size(); i++) {
@@ -1087,8 +1087,8 @@ void GameManager::AddItem([[maybe_unused]] const Vector2 globalPos, const Block:
 
 	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
 	for (uint32_t i = 0; i < count; i++) {
-		const Camera& texCamera = *pGameUIManager_->GetCamera();
-		const Camera& gameCamera = *camera_;
+		const Camera &texCamera = *pGameUIManager_->GetCamera();
+		const Camera &gameCamera = *camera_;
 		Vector3 endPos = pGameUIManager_->GetItemGauge()->GetGaugeRightPos();
 
 		// スクリーン座標に変換
