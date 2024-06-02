@@ -1089,9 +1089,16 @@ void GameManager::AddItem([[maybe_unused]] const Vector2 globalPos, const Block:
 
 	// ブロックを追加する処理｡仮なので､float型の時間だけを格納している｡
 	for (uint32_t i = 0; i < count; i++) {
-		Vector2 endPos = { -8.8f,11.5f };
+		const Camera& texCamera = *pGameUIManager_->GetCamera();
+		const Camera& gameCamera = *camera_;
+		Vector3 endPos = pGameUIManager_->GetItemGauge()->GetGaugeRightPos();
 
-		std::unique_ptr<BlockItem> item = std::make_unique<BlockItem>(globalPos, endPos, blockType, i * vItemSpawnSpan_);
+		// スクリーン座標に変換
+		endPos *= texCamera.GetViewOthographicsVp();
+		// ゲーム空間に変換
+		endPos *= gameCamera.GetViewOthographicsVp().Inverse();
+
+		std::unique_ptr<BlockItem> item = std::make_unique<BlockItem>(globalPos, Vector2{ endPos.x, endPos.y }, blockType, i * vItemSpawnSpan_);
 		itemList_.emplace_back(std::move(item));
 	}
 	// ↑ アイテムのクラスができたら､この処理を置き換える

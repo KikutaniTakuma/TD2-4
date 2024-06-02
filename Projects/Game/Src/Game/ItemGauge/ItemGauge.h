@@ -37,7 +37,7 @@ public:
 		return isItemReduction_;
 	}
 
-	Vector3 GetReductionGaugePos()const {
+	Vector3 GetGaugeRightPos()const {
 		return moveGaugeRightState_->transform.translate;
 	}
 

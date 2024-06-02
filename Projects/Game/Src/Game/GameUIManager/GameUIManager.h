@@ -19,6 +19,18 @@ public:
 
 	void Draw(const Camera &camera) const;
 
+	const ItemGauge* const GetItemGauge() const {
+		return itemGauge_.get();
+	}
+
+	void SetCamera(Camera* camera) {
+		camera_ = camera;
+	}
+
+	const Camera* const GetCamera() const {
+		return camera_.get();
+	}
+
 private:
 
 
@@ -46,4 +58,6 @@ private:
 	std::unique_ptr<Particle> damageParticleYellow_;
 	std::unique_ptr<Particle> damageParticleBlue_;
 	std::unique_ptr<Particle> damageParticleGreen_;
+
+	Lamb::SafePtr<Camera> camera_;
 };

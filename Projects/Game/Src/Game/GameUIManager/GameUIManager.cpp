@@ -6,6 +6,8 @@ void GameUIManager::Init(GameManager *pGameManager)
 {
 	pGameManager_ = pGameManager;
 
+	pGameManager_->SetGameUIManager(this);
+
 	gameTimerRender_ = std::make_unique<GameTimerRender>();
 	gameTimerRender_->Init(pGameManager_->GetGameTimer());
 
@@ -49,11 +51,11 @@ void GameUIManager::Update([[maybe_unused]] const float deltaTime)
 
 #ifdef _DEBUG
 		ImGui::Begin("gaugePosX");
-		ImGui::Text("%f", itemGauge_->GetReductionGaugePos().x);
+		ImGui::Text("%f", itemGauge_->GetGaugeRightPos().x);
 		ImGui::End();
 #endif // _DEBUG
 	if (itemGauge_->GetItemReduction().OnEnter()) {
-		Vector3 pos = itemGauge_->GetReductionGaugePos();
+		Vector3 pos = itemGauge_->GetGaugeRightPos();
 		pos += Vector3::kZIdentity * -50.0f;
 		damageParticleRed_->ParticleStart(pos, Vector2::kIdentity);
 		damageParticlePurple_->ParticleStart(pos, Vector2::kIdentity);

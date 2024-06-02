@@ -137,6 +137,9 @@ public:
 
 	GameObject *GetPlayer() { return player_.get(); }
 
+	void SetGameUIManager(GameUIManager* pGameUIManager) {
+		pGameUIManager_ = pGameUIManager;
+	}
 	/// @brief ブロック破壊時のアイテム追加
 	void AddItem(const Vector2 globalPos, const Block::BlockType blockType, const uint32_t count = 1);
 
@@ -175,6 +178,14 @@ public:
 
 	const auto &GetFallingBlocksPos() const {
 		return fallingBlocksPos_;
+	}
+
+	void SetCamera(Camera* camera) {
+		camera_ = camera;
+	}
+
+	const Camera* const GetCamera() const {
+		return camera_.get();
 	}
 
 private:
@@ -252,4 +263,6 @@ private:
 	Lamb::SafePtr<GameUIManager> pGameUIManager_ = nullptr;
 
 	GameScene *pGameScene_ = nullptr;
+
+	Lamb::SafePtr<Camera> camera_;
 };
