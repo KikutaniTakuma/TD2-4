@@ -44,4 +44,6 @@ private:
 
 	int32_t facing_;
 
+	Audio* noSpace_ = nullptr;
+
 };

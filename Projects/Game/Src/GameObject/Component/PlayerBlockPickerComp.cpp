@@ -16,7 +16,9 @@ void PlayerBlockPickerComp::Init()
 		{
 			pTexture_ = DrawerManager::GetInstance()->GetTexture2D();
 			texID_ = TextureManager::GetInstance()->GetWhiteTex();
-		}
+	}
+
+	noSpace_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/noSpace.mp3");
 }
 
 void PlayerBlockPickerComp::Update()
@@ -154,12 +156,10 @@ void PlayerBlockPickerComp::Drop(int32_t facing)
 
 		}
 		else {
-			Audio *noSpace = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/noSpace.mp3");
-			noSpace->Start(0.2f, false);
+			noSpace_->Start(0.2f, false);
 		}
 	}
 	else {
-		Audio *noSpace = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/noSpace.mp3");
-		noSpace->Start(0.2f, false);
+		noSpace_->Start(0.2f, false);
 	}
 }

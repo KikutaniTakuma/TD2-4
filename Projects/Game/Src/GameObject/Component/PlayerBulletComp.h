@@ -27,4 +27,6 @@ private:
 	Lamb::SafePtr<SpriteComp> pSpriteComp_ = nullptr;
 
 	std::unique_ptr<Particle> shotParticle_;
+
+	Audio* HitSE_ = nullptr;
 };

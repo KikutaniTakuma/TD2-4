@@ -25,11 +25,11 @@ void PlayerBulletComp::Init()
 	shotParticle_->SetParticleScale(0.5f);
 
 	pSpriteComp_->SetTexture(TextureManager::GetInstance()->LoadTexture("./Resources/Player/star.png"));
+	HitSE_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockHit.mp3");
 }
 
 void PlayerBulletComp::Update()
 {
-	AudioManager *const audioManager = AudioManager::GetInstance();
 	// ぶつかっていたら返す
 	if (pHitMapComp_->hitNormal_ != Vector2::kZero) {
 
@@ -64,17 +64,15 @@ void PlayerBulletComp::Update()
 
 		// ステージ内なら
 		if (not BlockMap::IsOutSide(hitPos)) {
-			Audio *audio = nullptr;
 			auto &block = map->GetBlockMap()->at(hitPos.y)[hitPos.x];
 			block.AddDamage(1);
 			if (block.GetDamage() >= 3) {
-				audio = audioManager->Load("./Resources/Sounds/SE/blockHit.mp3");
-				audio->Start(0.2f, false);
+				
+				HitSE_->Start(0.2f, false);
 				gManager->BreakChainBlocks(hitPos);
 			}
 			else {
-				audio = audioManager->Load("./Resources/Sounds/SE/blockHit.mp3");
-				audio->Start(0.2f, false);
+				HitSE_->Start(0.2f, false);
 				gManager->HitChainBlocks(hitPos);
 			}
 		}
