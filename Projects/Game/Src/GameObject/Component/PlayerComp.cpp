@@ -26,6 +26,9 @@ void PlayerComp::Init()
 	//spriteComp->SetTexture("./Resources/uvChecker.png");
 	spriteComp->CalcTexUv();
 
+	damege_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/damege.mp3");
+	shot_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/shot.mp3");
+
 	isAttack_ = false;
 }
 
@@ -65,8 +68,7 @@ bool PlayerComp::InflictDamage(const Vector2 acceleration)
 		invincibleTime_ = vMaxInvincibleTime_;
 		GameManager::GetInstance()->RemovePoint(vDamageDropCount_);
 
-		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/damege.mp3");
-		audio->Start(0.2f, false);
+		damege_->Start(0.2f, false);
 	}
 	return damageFlag_.OnEnter();
 }
@@ -118,8 +120,7 @@ void PlayerComp::Input()
 	}
 
 	if (fireCoolTime_ <= 0.f and (key->Pushed(DIK_Z) or pad->Pushed(Gamepad::Button::RIGHT_SHOULDER))) {
-		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/shot.mp3");
-		audio->Start(0.2f, false);
+		shot_->Start(0.2f, false);
 		isAttack_ = true;
 		FireBullet();
 	}

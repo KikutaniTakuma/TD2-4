@@ -18,7 +18,7 @@ void GameEffectManager::Init()
 
 		i->LoadSettingDirectory("MergeSlime");
 	}
-	AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockBreak.mp3");
+	blockBreak_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockBreak.mp3");
 
 	pSpriteDrawer = DrawerManager::GetInstance()->GetTexture2D();
 
@@ -38,8 +38,7 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 	}*/
 
 	if (blockBreakPos_.first != Block::BlockType::kNone) {
-		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockBreak.mp3");
-		audio->Start(0.2f, false);
+		blockBreak_->Start(0.2f, false);
 		auto particle = blockParticles_.begin();
 		for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
 			for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {

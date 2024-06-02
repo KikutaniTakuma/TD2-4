@@ -265,4 +265,7 @@ private:
 	GameScene *pGameScene_ = nullptr;
 
 	Lamb::SafePtr<Camera> camera_;
+
+	Audio* slimeDeath_ = nullptr;
+	Audio* putBlock_ = nullptr;
 };

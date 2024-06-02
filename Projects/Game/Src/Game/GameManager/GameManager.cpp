@@ -56,8 +56,8 @@ void GameManager::Init()
 	PlayerAnimatorComp::StaticLoad();
 	PlayerBulletComp::StaticLoad();
 	PlayerComp::StaticLoad();
-	AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
-	AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
+	putBlock_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
+	slimeDeath_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
 
 	blockGauge_ = std::make_unique<BlockGauge>();
 	blockGauge_->Init();
@@ -216,8 +216,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 		// もしブロックがあったら
 		if (fallComp->IsLanding()) {
-			Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
-			audio->Start(0.2f, false);
+			putBlock_->Start(0.2f, false);
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType(), fallComp->blockDamage_);
 			fallingBlock->SetActive(false);
 			if (fallComp->hasDamage_) {
@@ -818,8 +817,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 
 	// どれか一体でも死んでたら鳴らす
 	if (not deadDwarfList.empty() or not deadDarkDwarfList.empty()) {
-		Audio *audio = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/slimeDeath.mp3");
-		audio->Start(0.2f, false);
+		slimeDeath_->Start(0.2f, false);
 	}
 
 

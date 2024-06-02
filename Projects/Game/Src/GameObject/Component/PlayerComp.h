@@ -76,4 +76,7 @@ private:
 
 	//Lamb::SafePtr<HealthComp> pHealthComp_ = nullptr;
 
+	Audio* damege_ = nullptr;
+	Audio* shot_ = nullptr;
+
 };

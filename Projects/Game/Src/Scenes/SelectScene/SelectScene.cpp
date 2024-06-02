@@ -234,7 +234,7 @@ void SelectScene::SelectMove(){
 		gameDecision_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Game);
 	}
-	if ((input_->GetKey()->Pushed(DIK_BACKSPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::B)) && !sceneManager_->GetFadeActive()) {
+	if ((input_->GetKey()->Pushed(DIK_ESCAPE) || input_->GetGamepad()->GetButton(Gamepad::Button::B)) && !sceneManager_->GetFadeActive()) {
 		cancel_->Start(0.2f, false);
 		sceneManager_->SceneChange(BaseScene::ID::Title);
 	}
