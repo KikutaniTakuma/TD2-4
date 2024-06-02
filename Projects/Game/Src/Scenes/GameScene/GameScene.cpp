@@ -281,7 +281,7 @@ void GameScene::Update() {
 		}*/
 	}
 	else {
-		if ((gamepad->Pushed(Gamepad::Button::START) or key->Pushed(DIK_ESCAPE))and not isFirstLoadFlag_) {
+		if ((gamepad->Pushed(Gamepad::Button::START) or key->Pushed(DIK_ESCAPE))) {
 			pause_->isActive_ = !pause_->isActive_;
 			if (pause_->isActive_) {
 				gameBGM_->SetAudio(0.033333f);
@@ -292,7 +292,7 @@ void GameScene::Update() {
 		}
 
 #ifndef _DEBUG
-		if (not pause_->isActive_ and not WindowFactory::GetInstance()->IsThisWindowaActive() and not isFirstLoadFlag_) {
+		if (not pause_->isActive_ and not WindowFactory::GetInstance()->IsThisWindowaActive()) {
 			pause_->isActive_ = true;
 		}
 #endif // _DEBUG
