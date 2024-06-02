@@ -295,7 +295,9 @@ void GameScene::Update() {
 			pause_->isActive_ = true;
 		}
 
-
+		if (not isFirstUpdate_ and pause_->isActive_) {
+			pause_->isActive_ = false;
+		}
 		
 
 
@@ -323,6 +325,8 @@ void GameScene::Update() {
 
 				sceneManager_->SceneChange(BaseScene::ID::StageSelect);
 			}
+
+			isFirstUpdate_ = true;
 		}
 		else {
 			pause_->ActiveUpdate();

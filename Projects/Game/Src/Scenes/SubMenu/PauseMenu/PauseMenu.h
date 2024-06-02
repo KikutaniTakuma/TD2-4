@@ -4,6 +4,12 @@
 #include "Utils/SafePtr/SafePtr.h"
 
 class PauseMenu : public SubMenu {
+	enum class State {
+		kBack,
+		kRetry,
+		kStatgeSelect
+	};
+
 public:
 	PauseMenu() = default;
 	~PauseMenu() = default;
@@ -22,6 +28,8 @@ public:
 private:
 	void Update() override;
 
+	//void Change();
+
 private:
 	Lamb::SafePtr<Texture2D> tex2D_;
 	std::unique_ptr<Tex2DState> usuGurai_;
@@ -33,6 +41,8 @@ private:
 	std::unique_ptr<Tex2DState> stageSelect_;
 
 	uint32_t gamepadUITextureID_;
+
+	//State curretnState_;
 
 	bool isRetryChoice_;
 	bool isStick_;

@@ -166,4 +166,6 @@ private:
 	float numberDistance_;
 
 	std::unique_ptr<SubMenu> pause_;
+
+	bool isFirstUpdate_ = false;
 };
