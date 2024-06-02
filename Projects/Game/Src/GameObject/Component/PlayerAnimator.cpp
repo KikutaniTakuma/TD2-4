@@ -8,6 +8,9 @@ void PlayerAnimatorComp::StaticLoad()
 	textureManager->LoadTexture("./Resources/Player/witchWait.png");
 	textureManager->LoadTexture("./Resources/Player/witchWalk.png");
 	textureManager->LoadTexture("./Resources/Player/witchPickUp.png");
+	textureManager->LoadTexture("./Resources/Player/witchHaveWalk.png");
+	textureManager->LoadTexture("./Resources/Player/witchJumpDown.png");
+	textureManager->LoadTexture("./Resources/Player/witchJumpUp.png");
 }
 
 void PlayerAnimatorComp::Init()
@@ -155,6 +158,8 @@ void PlayerAnimatorComp::SetState() {
 	isHaveBlock_ = pPlayerPickerComp_->IsPicking();
 	isUnderHave_ = pPlayerComp_->InputDown();
 	isMove_ = pPlayerComp_->GetInputVec().x != 0.0f;
+	isJumpAnimation_ = pPlayerComp_->GetInputVec().y > 0.0f;
+	isFallAnimation_ = pPlayerComp_->GetInputVec().y < 0.0f;
 
 	preState_ = currentState_;
 
@@ -223,6 +228,12 @@ void PlayerAnimatorComp::SetState() {
 		case PlayerAnimatorComp::State::kHaveMove:
 			SetHaveMove();
 			break;
+		case PlayerAnimatorComp::State::kJump:
+			SetJump();
+			break;
+		case PlayerAnimatorComp::State::kFall:
+			SetFall();
+			break;
 		default:
 			throw Lamb::Error::Code<PlayerAnimatorComp>("The condition is strange", ErrorPlace);
 			break;
@@ -264,6 +275,20 @@ void PlayerAnimatorComp::SetHaveUnder() {
 void PlayerAnimatorComp::SetHaveMove() {
 	spriteAnimator_->SetDuration(0.1f);
 	pSpriteComp_->SetTexture("./Resources/Player/witchHaveWalk.png");
+}
+
+void PlayerAnimatorComp::SetJump()
+{
+	spriteAnimator_->SetDuration(0.1f);
+	pSpriteComp_->SetTexture("./Resources/Player/witchJumpUp.png");
+	isJumpAnimation_ = true;
+}
+
+void PlayerAnimatorComp::SetFall()
+{
+	spriteAnimator_->SetDuration(0.1f);
+	pSpriteComp_->SetTexture("./Resources/Player/witchJumpDown.png");
+	isFallAnimation_ = true;
 }
 
 void PlayerAnimatorComp::AttackAnimationUpdate() {

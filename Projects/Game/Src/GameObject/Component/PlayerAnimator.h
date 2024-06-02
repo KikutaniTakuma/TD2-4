@@ -23,7 +23,9 @@ private:
 		kAttack,
 		kHave,
 		kHaveUnder,
-		kHaveMove
+		kHaveMove,
+		kJump,
+		kFall,
 	};
 
 public:
@@ -47,6 +49,8 @@ private:
 	void SetHave();
 	void SetHaveUnder();
 	void SetHaveMove();
+	void SetJump();
+	void SetFall();
 
 	void AttackAnimationUpdate();
 	void HaveAnimationUpdate();
@@ -85,4 +89,7 @@ private:
 	Lamb::Flg isUnderAnimationEnd_;
 
 	Lamb::Flg isNormalPickAnimation_;
+
+	Lamb::Flg isJumpAnimation_;
+	Lamb::Flg isFallAnimation_;
 };
