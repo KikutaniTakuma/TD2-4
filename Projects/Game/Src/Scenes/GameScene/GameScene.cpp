@@ -50,6 +50,13 @@ void GameScene::TextureInitialize() {
 	backGround_->color = 0xffffffff;
 	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/cutBackGround.png");
 
+	/*backGroundStorage_ = std::make_unique<Tex2DState>();
+	backGroundStorage_->transform.scale = { 1280,720.0f };
+	backGroundStorage_->transform.translate = { 0.0f, 10.0f ,30.0f };
+	backGroundStorage_->uvTransform.scale = { 1.0f,1.0f };
+	backGroundStorage_->color = 0xffffffff;
+	backGroundStorage_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/backGround.png");*/
+
 	objectiveBackGround_ = std::make_unique<Tex2DState>();
 	objectiveBackGround_->transform.scale = { 1280.0f,720.0f };
 	objectiveBackGround_->transform.translate = { 0.0f, 10.0f ,-40.0f };
@@ -120,7 +127,8 @@ void GameScene::Initialize() {
 	collisionManager_ = CollisionManager::GetInstance();
 
 	currentCamera_->farClip = 3000.0f;
-	currentCamera_->pos.y = 6.0f;
+	currentCamera_->pos.x = 0.7f;
+	currentCamera_->pos.y = 6.7f;
 	currentCamera_->pos.z = -70.0f;
 	currentCamera_->offset.z = -60.0f;
 	currentCamera_->offset.y = 8.0f;
@@ -346,12 +354,14 @@ void GameScene::TextureUpdate() {
 		}
 		clouds_[i]->transform.CalcMatrix();
 	}
+	//backGroundStorage_->transform.translate = backGround_->transform.translate;
 
 
 	backGround_->transform.CalcMatrix();
 	backGround_->uvTransform.CalcMatrix();
 
-	
+	/*backGroundStorage_->transform.CalcMatrix();
+	backGroundStorage_->uvTransform.CalcMatrix();*/
 
 }
 
@@ -366,6 +376,10 @@ void GameScene::CloudReset(const uint32_t cloudNumber) {
 
 
 void GameScene::Draw() {
+
+	
+	/*tex2D_->Draw(backGroundStorage_->transform.matWorld_, backGroundStorage_->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
+		, backGroundStorage_->textureID, backGroundStorage_->color, BlendType::kNormal);*/
 
 	tex2D_->Draw(backGround_->transform.matWorld_, backGround_->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, backGround_->textureID, backGround_->color, BlendType::kNormal);
