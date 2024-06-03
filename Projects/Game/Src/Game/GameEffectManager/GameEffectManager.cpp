@@ -58,28 +58,23 @@ void GameEffectManager::Update([[maybe_unused]] float deltaTime)
 	}
 
 	for (const Vector2 pos : margeDwarfPos_) {
-		auto particle = dwarfParticle_.begin() + dwarfParticleIndex_;
-		if (particle != dwarfParticle_.end()) {
-			(*particle)->ParticleStart({ ToGrobal(pos), -10.f }, Vector2::kIdentity);
-			(*particle)->SetParticleScale(0.15f);
-			++particle;
-			dwarfParticleIndex_ = std::clamp(dwarfParticleIndex_+1, 0, 19);
-		}
-		else {
+		auto particleBegin = dwarfParticle_.begin();
+		for (auto partItr = particleBegin; partItr != dwarfParticle_.end(); ++partItr) {
+			auto *const particle = partItr->get();
+			if (particle->GetIsParticleStart()) { continue; }
+
+			particle->ParticleStart({ ToGrobal(pos), -10.f }, Vector2::kIdentity);
+			particle->SetParticleScale(0.15f);
+			particleBegin = std::next(partItr);
+
 			break;
 		}
 	}
 
-	for (auto i = dwarfParticle_.begin(); i != dwarfParticle_.end();) {
+	for (auto i = dwarfParticle_.begin(); i != dwarfParticle_.end(); i++) {
 		auto &item = *i;
 		item->Update();
-		if (item->GetIsParticleStart().OnExit()) {
-			std::swap(item, dwarfParticle_.at(dwarfParticleIndex_));
-			dwarfParticleIndex_ = std::clamp(dwarfParticleIndex_-1, 0, 19);
-		}
-		else {
-			i++;
-		}
+
 	}
 
 	for (auto &i : blockParticles_) {

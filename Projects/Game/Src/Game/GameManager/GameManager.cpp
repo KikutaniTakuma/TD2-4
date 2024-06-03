@@ -1286,6 +1286,7 @@ void GameManager::MargeDwarf()
 						gameEffectManager_->margeDwarfPos_.push_back({ std::round(spawnPos.x), spawnPos.y });
 
 						AddDarkDwarf(spawnPos);
+						break;
 
 					}
 				}

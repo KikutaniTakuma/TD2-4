@@ -52,7 +52,7 @@ private:
 
 	std::vector<std::unique_ptr<Particle>> blockParticles_;
 	std::array<std::unique_ptr<Particle>, 20> dwarfParticle_;
-	int32_t dwarfParticleIndex_ = 0;
+	//int32_t dwarfParticleIndex_ = 0;
 
 	class Audio* blockBreak_ = nullptr;
 };
