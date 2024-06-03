@@ -46,7 +46,7 @@ public:
 
 	void Draw() override;
 
-	void ChangeToResult() { sceneManager_->SceneChange(BaseScene::ID::Result); }
+	void ChangeToResult();
 
 private:
 	void TextureInitialize();
@@ -103,6 +103,8 @@ private:
 
 	Audio* telop_ = nullptr;
 
+	Audio* gameSet_ = nullptr;
+
 	static const uint32_t kCloudNum_ = 8;
 
 	//雲
@@ -117,8 +119,6 @@ private:
 	//std::unique_ptr<Tex2DState> spaceTex_, keyTex_;
 
 	std::unique_ptr<Tex2DState> backGround_;
-
-	std::unique_ptr<Tex2DState> backGroundStorage_;
 
 	//目的表示のフレーム
 	std::unique_ptr<Tex2DState> objectiveFrame_;

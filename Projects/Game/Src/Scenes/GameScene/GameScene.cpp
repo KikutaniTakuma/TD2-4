@@ -27,9 +27,9 @@ void GameScene::TextureInitialize() {
 	cloudType_[1] = "cloud2.png";
 	cloudType_[2] = "cloud3.png";
 
-	cloudScale_[cloudType_[0]] = { 480,144 };
-	cloudScale_[cloudType_[1]] = { 256,144 };
-	cloudScale_[cloudType_[2]] = { 144,96 };
+	cloudScale_[cloudType_[0]] = { 360,108 };
+	cloudScale_[cloudType_[1]] = { 192,108 };
+	cloudScale_[cloudType_[2]] = { 108,72 };
 
 	for (uint32_t i = 0; i < kCloudNum_; i++) {
 		clouds_[i] = std::make_unique<Tex2DState>();
@@ -46,16 +46,9 @@ void GameScene::TextureInitialize() {
 
 	backGround_ = std::make_unique<Tex2DState>();
 	backGround_->transform.scale = { 1280.0f,720.0f };
-	backGround_->transform.translate = { -39.0f, -37.0f ,8.0f };
+	backGround_->transform.translate = { 0.0f, 0.0f ,8.0f };
 	backGround_->color = 0xffffffff;
 	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/cutBackGround.png");
-
-	backGroundStorage_ = std::make_unique<Tex2DState>();
-	backGroundStorage_->transform.scale = { 2560,1440.0f };
-	backGroundStorage_->transform.translate = { 0.0f, 10.0f ,16.0f };
-	backGroundStorage_->uvTransform.scale = { 2.0f,2.0f };
-	backGroundStorage_->color = 0xffffffff;
-	backGroundStorage_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/backGround.png");
 
 	objectiveBackGround_ = std::make_unique<Tex2DState>();
 	objectiveBackGround_->transform.scale = { 1280.0f,720.0f };
@@ -166,7 +159,7 @@ void GameScene::Initialize() {
 	telop_ = audioManager_->Load("./Resources/Sounds/SE/telop.mp3");
 	audioManager_->Load("./Resources/Sounds/SE/damege.mp3");
 	audioManager_->Load("./Resources/Sounds/SE/noSpace.mp3");
-
+	gameSet_ = audioManager_->Load("./Resources/Sounds/SE/timeUp.mp3");
 
 
 	shakePower_ = { 3.0f,3.0f };
@@ -328,13 +321,9 @@ void GameScene::Update() {
 
 			gameUIManager_->Update(deltaTime);
 
-			if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
-				
-
-				gameBGM_->Stop();
-				cancel_->Start(0.1f, false);
-
-				sceneManager_->SceneChange(BaseScene::ID::StageSelect);
+			if (gameUIManager_->GetItemGauge()->GetItemGaugeMax()){
+				gameSet_->Start(0.2f, false);
+				sceneManager_->SceneChange(BaseScene::ID::Result);
 			}
 
 			isFirstUpdate_ = true;
@@ -349,19 +338,14 @@ void GameScene::Update() {
 void GameScene::TextureUpdate() {
 	for (uint32_t i = 0; i < kCloudNum_; i++) {
 		clouds_[i]->transform.translate.x += cloudsSpeed_[i];
-		if (clouds_[i]->transform.translate.x > (700.0f) + (clouds_[i]->transform.scale.x)) {
+		if (clouds_[i]->transform.translate.x > (245.0f) + (clouds_[i]->transform.scale.x)) {
 			CloudReset(i);
 		}
 		clouds_[i]->transform.CalcMatrix();
 	}
-	backGroundStorage_->transform.translate.x = backGround_->transform.translate.x;
-	backGroundStorage_->transform.translate.y = backGround_->transform.translate.y;
 
 	backGround_->transform.CalcMatrix();
 	backGround_->uvTransform.CalcMatrix();
-
-	backGroundStorage_->transform.CalcMatrix();
-	backGroundStorage_->uvTransform.CalcMatrix();
 
 }
 
@@ -377,10 +361,6 @@ void GameScene::CloudReset(const uint32_t cloudNumber) {
 
 void GameScene::Draw() {
 
-	
-	tex2D_->Draw(backGroundStorage_->transform.matWorld_, backGroundStorage_->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
-		, backGroundStorage_->textureID, backGroundStorage_->color, BlendType::kNormal);
-
 	tex2D_->Draw(backGround_->transform.matWorld_, backGround_->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, backGround_->textureID, backGround_->color, BlendType::kNormal);
 
@@ -388,6 +368,7 @@ void GameScene::Draw() {
 		tex2D_->Draw(clouds_[i]->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, clouds_[i]->textureID, clouds_[i]->color, BlendType::kNormal);
 	}
+	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 
 	gameManager_->Draw(*currentCamera_);
 	gameUIManager_->Draw(*currentTexCamera_);
@@ -418,10 +399,6 @@ void GameScene::Draw() {
 		tex2D_->Draw(potState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, potState_->textureID, potState_->color, BlendType::kUnenableDepthNormal);
 	}
-
-
-
-	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	TextureDraw();
 #ifdef _DEBUG
 
@@ -429,6 +406,11 @@ void GameScene::Draw() {
 #endif // _DEBUG
 
 	pause_->ActiveDraw();
+}
+
+void GameScene::ChangeToResult(){
+	gameSet_->Start(0.2f, false);
+	sceneManager_->SceneChange(BaseScene::ID::Result);
 }
 
 void GameScene::TextureDraw() {

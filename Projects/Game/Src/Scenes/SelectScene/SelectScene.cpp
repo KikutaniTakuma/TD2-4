@@ -50,7 +50,7 @@ void SelectScene::Initialize() {
 		stageNumTexies_[i]->transform.scale = Vector2{ 480.0f,80.0f };
 		stageNumTexies_[i]->transform.translate = { stageNumDistance_ + (stageInterbal * i), 100.0f ,0 };
 		stageNumTexies_[i]->uvTransform.scale = { 0.1f,1.0f };
-		stageNumTexies_[i]->uvTransform.translate = { 0.1f * i,1.0f };
+		stageNumTexies_[i]->uvTransform.translate = { 0.1f * i,1.01f };
 		stageNumTexies_[i]->textureID = drawerManager_->LoadTexture("./Resources/UI/stageNumber.png");
 		startStageNumPos_[i] = stageNumTexies_[i]->transform.translate.x;
 		endStageNumPos_[i] = stageNumDistance_ + (stageInterbal * i) - (stageInterbal * selectNum_);
@@ -73,12 +73,15 @@ void SelectScene::Initialize() {
 	selectBGM_->Start(0.1f, true);
 
 	ease_.Start(false, kAddEase_, Easeing::InSine);
+	ScaleEases_.Start(true, kAddEaseScale_, Easeing::InOutSine);
 
 	for (uint32_t i = 0; i < kMaxStage_; i++){
 		LoadGameData(i);
 	}
 	
-
+	ChangeScales_[0] = frameTexies_[selectNum_]->transform.scale;
+	ChangeScales_[1] = itemTexies_[selectNum_]->transform.scale;
+	ChangeScales_[2] = stageNumTexies_[selectNum_]->transform.scale;
 }
 
 void SelectScene::Finalize(){
@@ -105,6 +108,7 @@ void SelectScene::Update(){
 
 
 	ease_.Update();
+	ScaleEases_.Update();
 
 	for (size_t i = 0; i < kMaxStage_; i++) {
 		frameTexies_[i]->color = 0xffffff88;
@@ -118,9 +122,7 @@ void SelectScene::Update(){
 
 		if (clearFlug[i]) {
 			itemTexies_[i]->uvTransform.translate.x = 0.5f;
-		}
-
-		
+		}		
 
 		frameTexies_[i]->transform.translate.x = ease_.Get(startPos_[i], endPos_[i]);
 		if (clearFlug[i]) {
@@ -132,6 +134,15 @@ void SelectScene::Update(){
 		frameTexies_[i]->uvTransform.CalcMatrix();
 		itemTexies_[i]->transform.translate.x = ease_.Get(startItemPos_[i], endItemPos_[i]);// +itemDistanceCenter_.x;
 		stageNumTexies_[i]->transform.translate.x = ease_.Get(startStageNumPos_[i], endStageNumPos_[i]);
+
+		frameTexies_[i]->transform.scale = ChangeScales_[0];
+		itemTexies_[i]->transform.scale = ChangeScales_[1];
+		stageNumTexies_[i]->transform.scale = ChangeScales_[2];
+		
+		frameTexies_[selectNum_]->transform.scale = ScaleEases_.Get(ChangeScales_[0], ChangeScales_[0] * 1.1f);
+		/*itemTexies_[selectNum_]->transform.scale = ScaleEases_.Get(ChangeScales_[1], ChangeScales_[1] * 1.1f);
+		stageNumTexies_[selectNum_]->transform.scale = ScaleEases_.Get(ChangeScales_[2], ChangeScales_[2] * 1.1f);*/
+				
 
 		//itemTexies_[i]->transform.translate.y = itemDistanceCenter_.y;
 
@@ -197,6 +208,7 @@ void SelectScene::SelectMove(){
 			selectMove_->Start(0.1f, false);
 			selectNum_--;
 			ease_.Start(false, kAddEase_, Easeing::InSine);
+			ScaleEases_.Start(true, kAddEaseScale_, Easeing::InOutSine);
 			for (size_t i = 0; i < kMaxStage_; i++){
 				startPos_[i] = frameTexies_[i]->transform.translate.x;
 				endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
@@ -207,6 +219,7 @@ void SelectScene::SelectMove(){
 				startStageNumPos_[i] = stageNumTexies_[i]->transform.translate.x;
 				endStageNumPos_[i] = stageNumDistance_ + (stageInterbal * i) - (stageInterbal * selectNum_);
 			}
+			
 		
 		}		
 	}
@@ -218,6 +231,7 @@ void SelectScene::SelectMove(){
 			selectMove_->Start(0.1f, false);
 			selectNum_++;
 			ease_.Start(false, kAddEase_, Easeing::InSine);
+			ScaleEases_.Start(true, kAddEaseScale_, Easeing::InOutSine);
 			for (size_t i = 0; i < kMaxStage_; i++) {
 				startPos_[i] = frameTexies_[i]->transform.translate.x;
 				endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
@@ -228,7 +242,8 @@ void SelectScene::SelectMove(){
 				startStageNumPos_[i] = stageNumTexies_[i]->transform.translate.x;
 				endStageNumPos_[i] = stageNumDistance_ + (stageInterbal * i) - (stageInterbal * selectNum_);
 			}
-		}		
+
+		}
 	}
 
 	if ((input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::A)) && !sceneManager_->GetFadeActive() && not ease_.GetIsActive()) {
@@ -316,6 +331,7 @@ void SelectScene::PlayerSelectNumberMove(const uint32_t PushedNumber){
 	coolTime_ = kCoolTime_;
 	selectMove_->Start(0.1f, false);
 	ease_.Start(false, kAddEase_, Easeing::InSine);
+	ScaleEases_.Start(true, kAddEaseScale_, Easeing::InOutSine);
 	for (size_t i = 0; i < kMaxStage_; i++) {
 		startPos_[i] = frameTexies_[i]->transform.translate.x;
 		endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);

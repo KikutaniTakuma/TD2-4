@@ -37,6 +37,10 @@ public:
 		return isItemReduction_;
 	}
 
+	const Lamb::Flg& GetItemGaugeMax()const {
+		return isItemGaugeMax_;
+	}
+
 	Vector3 GetGaugeRightPos()const {
 		return moveGaugeRightState_->transform.translate;
 	}
@@ -87,6 +91,9 @@ private:
 	Lamb::Flg isItemReduction_ = false;
 
 	Lamb::Flg isItemReductionNow_ = false;
+
+	Lamb::Flg isItemGaugeMax_ = false;
+
 
 	//アイテムが増加したときにtrue
 	Lamb::Flg isItemIncreaseNow_ = false;
