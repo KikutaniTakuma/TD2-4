@@ -362,6 +362,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 {
+	gameEffectManager_->Draw(camera);
+
 	blockMap_->Draw(camera);
 	if (player_) {
 		player_->Draw(camera);
@@ -387,7 +389,6 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	}
 	blockGauge_->Draw(camera);
 
-	gameEffectManager_->Draw(camera);
 
 	if (bonusPointDrawTimer_.IsActive()) {
 		DrawerManager::GetInstance()->GetTexture2D()->Draw(bonusTexTransform_.matWorld_, Mat4x4::MakeAffin({ 0.25f,1.f,1.f }, Vector3{}, { 0.25f * (itemSpawnCount_ - 1),0,0 }), camera.GetViewOthographics(), pointTex_, 0xFFFFFFFF, BlendType::kNormal);

@@ -388,6 +388,7 @@ void GameScene::Draw() {
 		tex2D_->Draw(clouds_[i]->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, clouds_[i]->textureID, clouds_[i]->color, BlendType::kNormal);
 	}
+	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 
 	gameManager_->Draw(*currentCamera_);
 	gameUIManager_->Draw(*currentTexCamera_);
@@ -418,10 +419,6 @@ void GameScene::Draw() {
 		tex2D_->Draw(potState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, potState_->textureID, potState_->color, BlendType::kUnenableDepthNormal);
 	}
-
-
-
-	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	TextureDraw();
 #ifdef _DEBUG
 
