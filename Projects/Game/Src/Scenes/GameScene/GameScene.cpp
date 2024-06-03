@@ -120,7 +120,8 @@ void GameScene::Initialize() {
 	collisionManager_ = CollisionManager::GetInstance();
 
 	currentCamera_->farClip = 3000.0f;
-	currentCamera_->pos.y = 6.0f;
+	currentCamera_->pos.x = 0.7f;
+	currentCamera_->pos.y = 6.7f;
 	currentCamera_->pos.z = -70.0f;
 	currentCamera_->offset.z = -60.0f;
 	currentCamera_->offset.y = 8.0f;

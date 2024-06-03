@@ -44,7 +44,7 @@ void World::Initialize() {
 	// シーンマネージャー初期化
 	sceneManager_ = std::make_unique<SceneManager>();
 
-	sceneManager_->Initialize(BaseScene::ID::Title, BaseScene::ID::Title);
+	sceneManager_->Initialize(BaseScene::ID::StageSelect, BaseScene::ID::Title);
 
 	ParticleEditor::Initialize();
 	particleEditor_ = ParticleEditor::GetInstance();
