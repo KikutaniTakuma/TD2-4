@@ -225,6 +225,7 @@ void GameScene::Update() {
 		}
 		if (easeCount_ > 0) {
 			if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)){
+				telop_->Start(0.2f, false);
 				ease_.Start(false, 1.0f, Easeing::InBack);
 				isFadeOut_ = true;
 				easeCount_ = -1;
