@@ -125,11 +125,12 @@ public:
 	static inline SoLib::VItem<"落下するブロックの発生係数", int32_t> vFallPosCalc_{ 2 };
 
 	static inline SoLib::VItem<"出てくるアイテムの間隔", float> vItemSpawnSpan_{ 0.25f };
-	static inline SoLib::VItem<"初期化の時の最大連結数", int32_t> vMaxChainBlockCount_{ 6 };
+	SoLib::VItem<"初期化の時の最低連結数", int32_t> vMinChainBlockCount_{ 1 };
+	SoLib::VItem<"初期化の時の最大連結数", int32_t> vMaxChainBlockCount_{ 6 };
 
 	/// @brief 調整項目
-	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallBegin_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_ };
-	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_, &GameManager::vFallPosCalc_, &GameManager::vMaxChainBlockCount_ };
+	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallBegin_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_, &GameManager::vMinChainBlockCount_, &GameManager::vMaxChainBlockCount_ };
+	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_, &GameManager::vFallPosCalc_ };
 
 	inline static constexpr SoLib::VItemList vItemStatus_ = { &vItemSpawnSpan_ };
 
@@ -137,7 +138,7 @@ public:
 
 	GameObject *GetPlayer() { return player_.get(); }
 
-	void SetGameUIManager(GameUIManager* pGameUIManager) {
+	void SetGameUIManager(GameUIManager *pGameUIManager) {
 		pGameUIManager_ = pGameUIManager;
 	}
 	/// @brief ブロック破壊時のアイテム追加
@@ -180,11 +181,11 @@ public:
 		return fallingBlocksPos_;
 	}
 
-	void SetCamera(Camera* camera) {
+	void SetCamera(Camera *camera) {
 		camera_ = camera;
 	}
 
-	const Camera* const GetCamera() const {
+	const Camera *const GetCamera() const {
 		return camera_.get();
 	}
 
@@ -199,7 +200,7 @@ private:
 
 	std::array<int32_t, 9u> LoadLevelData(int32_t levelIndex);
 
-	void RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount);
+	void RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount, const int32_t minChainCount = 1);
 
 private:
 
@@ -266,6 +267,6 @@ private:
 
 	Lamb::SafePtr<Camera> camera_;
 
-	Audio* slimeDeath_ = nullptr;
-	Audio* putBlock_ = nullptr;
+	Audio *slimeDeath_ = nullptr;
+	Audio *putBlock_ = nullptr;
 };

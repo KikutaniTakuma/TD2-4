@@ -66,6 +66,7 @@ private:
 	std::unique_ptr<Easeing> flaskParticleAppDurationEase_;
 
 	std::unique_ptr<Particle> cauldronParticle_;
+	std::unique_ptr<Particle> clearCauldronParticle_;
 	std::unique_ptr<Transform> cauldronTransform_;
 	std::unique_ptr<Tex2DAniamtor> cauldronAnimator_;
 	uint32_t cauldronTextureID_;
