@@ -118,8 +118,6 @@ private:
 
 	std::unique_ptr<Tex2DState> backGround_;
 
-	std::unique_ptr<Tex2DState> backGroundStorage_;
-
 	//目的表示のフレーム
 	std::unique_ptr<Tex2DState> objectiveFrame_;
 	//目的表示の背景の暗いやつ

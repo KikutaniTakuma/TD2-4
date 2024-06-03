@@ -78,7 +78,9 @@ void SelectScene::Initialize() {
 		LoadGameData(i);
 	}
 	
-
+	ChangeScales_[0] = frameTexies_[selectNum_]->transform.scale;
+	ChangeScales_[1] = itemTexies_[selectNum_]->transform.scale;
+	ChangeScales_[2] = stageNumTexies_[selectNum_]->transform.scale;
 }
 
 void SelectScene::Finalize(){
@@ -118,9 +120,7 @@ void SelectScene::Update(){
 
 		if (clearFlug[i]) {
 			itemTexies_[i]->uvTransform.translate.x = 0.5f;
-		}
-
-		
+		}		
 
 		frameTexies_[i]->transform.translate.x = ease_.Get(startPos_[i], endPos_[i]);
 		if (clearFlug[i]) {
@@ -207,6 +207,9 @@ void SelectScene::SelectMove(){
 				startStageNumPos_[i] = stageNumTexies_[i]->transform.translate.x;
 				endStageNumPos_[i] = stageNumDistance_ + (stageInterbal * i) - (stageInterbal * selectNum_);
 			}
+			ChangeScales_[0] = frameTexies_[selectNum_]->transform.scale;
+			ChangeScales_[1] = itemTexies_[selectNum_]->transform.scale;
+			ChangeScales_[2] = stageNumTexies_[selectNum_]->transform.scale;
 		
 		}		
 	}
@@ -228,7 +231,11 @@ void SelectScene::SelectMove(){
 				startStageNumPos_[i] = stageNumTexies_[i]->transform.translate.x;
 				endStageNumPos_[i] = stageNumDistance_ + (stageInterbal * i) - (stageInterbal * selectNum_);
 			}
-		}		
+			ChangeScales_[0] = frameTexies_[selectNum_]->transform.scale;
+			ChangeScales_[1] = itemTexies_[selectNum_]->transform.scale;
+			ChangeScales_[2] = stageNumTexies_[selectNum_]->transform.scale;
+
+		}
 	}
 
 	if ((input_->GetKey()->Pushed(DIK_SPACE) || input_->GetGamepad()->GetButton(Gamepad::Button::A)) && !sceneManager_->GetFadeActive() && not ease_.GetIsActive()) {
@@ -327,6 +334,9 @@ void SelectScene::PlayerSelectNumberMove(const uint32_t PushedNumber){
 		endStageNumPos_[i] = stageNumDistance_ + (stageInterbal * i) - (stageInterbal * selectNum_);
 	}
 
+	ChangeScales_[0] = frameTexies_[selectNum_]->transform.scale;
+	ChangeScales_[1] = itemTexies_[selectNum_]->transform.scale;
+	ChangeScales_[2] = stageNumTexies_[selectNum_]->transform.scale;
 
 }
 

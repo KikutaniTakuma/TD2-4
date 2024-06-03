@@ -95,6 +95,10 @@ private:
 	Vector2 shakePower_;
 
 	Easeing ease_;
+
+	std::array<Easeing, 3> ScaleEases_;
+
+	std::array<Vector3, 3> ChangeScales_;
 	
 	const uint32_t kCoolTime_ = 20;
 
