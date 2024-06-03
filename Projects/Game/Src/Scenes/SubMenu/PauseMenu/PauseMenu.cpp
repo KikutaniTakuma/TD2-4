@@ -224,6 +224,7 @@ void PauseMenu::SceneChange() {
 			isActive_ = false;
 			break;
 		case PauseMenu::State::kRetry:
+			SelectToGame::GetInstance()->SetRetryFlug(true);
 			sceneManager_->SceneChange(BaseScene::ID::Game);
 			break;
 		case PauseMenu::State::kStatgeSelect:
