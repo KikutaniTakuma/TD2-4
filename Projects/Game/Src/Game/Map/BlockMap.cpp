@@ -54,7 +54,7 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 				const auto &block = (*blockMap_)[yi][xi];
 				pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), block.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 
-				if (hitTimer_.IsActive() and hitMap_[yi][xi]) {
+				if (hitTimer_.IsActive() and hitMap_[yi][xi] and block and block.GetBlockType() == damageType_) {
 					Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
 
 					pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, SoLib::ColorLerp(0xFFFFFFFF, 0xFFFFFF55, hitTimer_.GetProgress()), BlendType::kNormal);
@@ -156,9 +156,9 @@ void BlockMap::TransferBoxData()
 	//}
 }
 
-void BlockMap::SetDamageColor(uint32_t color)
+void BlockMap::SetDamageType(Block::BlockType type)
 {
-	damageColor_ = color;
+	damageType_ = type;
 }
 
 void BlockMap::SetBlocks(Vector2 centerPos, Vector2 size, Block::BlockType boxType, uint32_t damage)
@@ -251,7 +251,7 @@ void BlockMap::BreakBlock(POINTS localPos)
 	if (targetBlock) {
 		targetBlock.SetDamage(0);
 		targetBlock.SetBlockType(Block::BlockType::kNone);
-		damageColor_ = 0;
+		SetDamageType(Block::BlockType::kNone);
 		blockStatesMap_->at(localPos.y).at(localPos.x).reset();
 	}
 }

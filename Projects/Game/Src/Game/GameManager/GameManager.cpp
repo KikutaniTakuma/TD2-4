@@ -98,7 +98,16 @@ void GameManager::Init()
 		}
 	}*/
 
-	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,static_cast<float>(vStartBlockHeight_) };
+	int8_t playerPos = 0;
+	for (int8_t yi = 0; yi < BlockMap::kMapY; yi++) {
+		if ((*blockMap_->GetBlockMap()).at(yi).at(1)) {
+			continue;
+		}
+		playerPos = yi;
+		break;
+	}
+
+	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,static_cast<float>(playerPos) };
 
 
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
@@ -834,7 +843,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 BlockMap::BlockBitMap &&GameManager::HitChainBlocks(POINTS localPos) {
 
 	if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
-		blockMap_->SetDamageColor(block.GetColor());
+		blockMap_->SetDamageType(block.GetBlockType());
 	}
 
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
