@@ -508,6 +508,9 @@ void ResultScene::WitchDraw() {
 }
 
 void ResultScene::GameClearEffect() {
+	cauldronTransform_->scale = cauldronScale_.first;
+	cauldronTransform_->translate = cauldronBasisPos_;
+
 	backGroundEase_->Update();
 	backGround_->transform.translate = backGroundEase_->Get(backGroundStartPos_, backGroundEndPos_);
 	backGround_->transform.CalcMatrix();
@@ -617,6 +620,9 @@ void ResultScene::GameClearDraw() {
 }
 
 void ResultScene::GameOverEffect() {
+	cauldronTransform_->scale = cauldronScale_.first;
+	cauldronTransform_->translate = cauldronBasisPos_;
+
 	backGroundEase_->Update();
 	backGround_->transform.translate = backGroundEase_->Get(backGroundStartPos_, backGroundEndPos_);
 	backGround_->transform.CalcMatrix();
