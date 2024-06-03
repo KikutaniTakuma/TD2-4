@@ -20,7 +20,7 @@ void PlayerBlockPickerComp::Init()
 
 	noSpace_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/noSpace.mp3");
 	pickUp_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/pickUp.mp3");
-	putBlock_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
+	putBlock_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockDropOff.mp3");
 }
 
 void PlayerBlockPickerComp::Update()
@@ -96,11 +96,11 @@ void PlayerBlockPickerComp::PickUp(int32_t facing)
 
 			dwarfList_ = GameManager::GetInstance()->PickUpObject(POINTS{ pos.x, static_cast<int16_t>(pos.y + 1) });
 
-			pickUp_->Start(0.1f, false);
+			pickUp_->Start(0.15f, false);
 		}
 		else {
 			dwarfList_ = GameManager::GetInstance()->PickUpObject(POINTS{ pos.x, static_cast<int16_t>(pos.y) });
-			pickUp_->Start(0.1f, false);
+			//pickUp_->Start(0.1f, false);
 		}
 
 		facing_ = facing;
