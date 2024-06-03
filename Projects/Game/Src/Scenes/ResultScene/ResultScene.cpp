@@ -313,7 +313,7 @@ void ResultScene::Draw() {
 
 	cauldronParticle_->Draw(currentCamera_->rotate, currentCamera_->GetViewOthographics());
 	if (isGameClear_) {
-		clearCauldronParticle_->Draw(currentCamera_->rotate, currentCamera_->GetViewOthographics());
+		clearCauldronParticle_->Draw(currentCamera_->rotate, currentCamera_->GetViewOthographics(), BlendType::kUnenableDepthNormal);
 	}
 }
 
