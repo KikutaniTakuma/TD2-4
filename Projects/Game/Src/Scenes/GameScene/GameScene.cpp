@@ -199,7 +199,7 @@ void GameScene::Update() {
 	Lamb::SafePtr gamepad = Input::GetInstance()->GetGamepad();
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 
-	
+
 
 	Debug();
 
@@ -212,25 +212,25 @@ void GameScene::Update() {
 	currentTexCamera_->Update();
 
 	if (not isEndObjective_ and not isFirstLoadFlag_) {
-		
+
 
 		auto itemMax = gameManager_->GetClearItemCount();
 
 		CalcUVPos(gameManager_->GetGameTimer()->GetDeltaTimer().GetGoalFlame(), timerNumberTexture_);
 		CalcUVPos(static_cast<float>(itemMax), potNumberTexture_);
 
-		
+
 
 		if (not ease_.GetIsActive() && not isFadeOut_) {
 			easeCount_ -= 1;
 		}
 		if (easeCount_ > 0) {
-			if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)){
-				if (isFirstSound_){
+			if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)) {
+				if (isFirstSound_) {
 					telop_->Start(0.2f, false);
 					isFirstSound_ = false;
 				}
-				
+
 				ease_.Start(false, 1.0f, Easeing::InBack);
 				isFadeOut_ = true;
 				easeCount_ = -1;
@@ -309,15 +309,16 @@ void GameScene::Update() {
 		if (not isFirstUpdate_ and pause_->isActive_) {
 			pause_->isActive_ = false;
 		}
-		
+
 
 
 		if (not pause_->isActive_) {
 			//enemyManager_->Update();
 			//enemyManager_->Debug();
-
-			gameManager_->InputAction();
-			gameManager_->Update(deltaTime);
+			if (not sceneManager_->GetFadeActive()) {
+				gameManager_->InputAction();
+			}
+			gameManager_->Update(not sceneManager_->GetFadeActive() ? deltaTime : 0.f);
 
 			/*gameManager_->Debug("GameManager");*/
 
@@ -328,7 +329,7 @@ void GameScene::Update() {
 
 			gameUIManager_->Update(deltaTime);
 
-			if (gameUIManager_->GetItemGauge()->GetItemGaugeMax()){
+			if (gameUIManager_->GetItemGauge()->GetItemGaugeMax()) {
 				ResultScene::SetIsGameClear(true);
 				gameSet_->Start(0.3f, false);
 				sceneManager_->SceneChange(BaseScene::ID::Result);
@@ -416,7 +417,7 @@ void GameScene::Draw() {
 	pause_->ActiveDraw();
 }
 
-void GameScene::ChangeToResult(){
+void GameScene::ChangeToResult() {
 	gameSet_->Start(0.3f, false);
 	sceneManager_->SceneChange(BaseScene::ID::Result);
 }
@@ -443,7 +444,7 @@ void GameScene::Debug() {
 #endif // _DEBUG
 }
 
-void GameScene::CalcUVPos(const float InGameData, std::array<std::unique_ptr<Tex2DState>, 3>& uvPos){
+void GameScene::CalcUVPos(const float InGameData, std::array<std::unique_ptr<Tex2DState>, 3> &uvPos) {
 
 	texUVPos_[0] = static_cast<int32_t>(InGameData) % 10;
 	texUVPos_[1] = static_cast<int32_t>(InGameData / 10.0f) % 10;

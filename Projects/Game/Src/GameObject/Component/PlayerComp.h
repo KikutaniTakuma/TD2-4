@@ -52,6 +52,7 @@ public:
 
 	Lamb::Flg GetIsFalling() const { return isFalling_; }
 
+	void Input();
 private:
 
 	float invincibleTime_ = 0.f;
@@ -60,7 +61,6 @@ private:
 
 	void FireBullet();
 
-	void Input();
 	inline static const Vector2 kGrovity_{ 0,-40.f };
 
 	Vector2 inputVec_;

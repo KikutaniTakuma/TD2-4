@@ -45,7 +45,6 @@ void PlayerComp::Update()
 
 	isJumping_ = pLocalRigidbody_->GetVelocity().y > 0;
 	isFalling_ = pLocalRigidbody_->GetVelocity().y < 0;
-	Input();
 	transform_.translate = { pLocalBodyComp_->GetGlobalPos(), -40.f };
 
 	// 無敵時間の減少
