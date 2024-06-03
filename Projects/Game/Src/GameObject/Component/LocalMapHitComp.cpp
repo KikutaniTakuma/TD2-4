@@ -47,7 +47,7 @@ void LocalMapHitComp::Update()
 	if (centorLeft.x < 0) {
 		if (not isPermeable_) {
 			pLocalBodyComp_->localPos_.x = 0 - 0.5f + pLocalBodyComp_->size_.x * 0.5f;
-		velocity.x = 0;
+			velocity.x = 0;
 		}
 		hitNormal.x = 1.f;
 	}
@@ -95,7 +95,8 @@ void LocalMapHitComp::Update()
 				hitNormal.y = 1.f;
 			}
 			else if (isHitFallBlock_) {
-				for (const Vector2 blockPos : fallingBlocks) {
+				for (const auto &[obj, blockPos] : fallingBlocks) {
+					if (obj == &object_) { continue; }
 					if (blockPos.y > yPos[kDown]) {
 						continue;
 					}

@@ -86,7 +86,7 @@ void GameManager::Init()
 	gameTimer_->TimerStart(static_cast<float>(vMaxTime_));
 
 
-	RandomStartBlockFill(mapData, vBlockTypeCount_, vMaxChainBlockCount_);
+	RandomStartBlockFill(mapData, vBlockTypeCount_, vMaxChainBlockCount_, vMinChainBlockCount_);
 	/*for (int32_t yi = 0; yi < vStartBlockHeight_; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
 			const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
@@ -229,13 +229,13 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType(), fallComp->blockDamage_);
 			fallingBlock->SetActive(false);
 			if (fallComp->hasDamage_) {
-				gameEffectManager_->fallingBlock_.reset();
+				gameEffectManager_->fallingBlock_.set(static_cast<int32_t>(blockBody->localPos_.x + 0.5f), false);
 			}
 			isLanding |= true;
 		}
 
 		if (fallingBlock->GetActive()) {
-			fallingBlocksPos_.push_back(blockBody->localPos_);
+			fallingBlocksPos_.push_back({ fallingBlock.get(), blockBody->localPos_ });
 		}
 	}
 
@@ -597,7 +597,7 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 	Lamb::SafePtr localBodyComp = addBlock->AddComponent<LocalBodyComp>();
 	Lamb::SafePtr localHitMap = addBlock->AddComponent<LocalMapHitComp>();
 
-	localHitMap->isHitFallBlock_ = false;
+	//localHitMap->isHitFallBlock_ = false;
 
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = size;
@@ -1384,7 +1384,7 @@ std::array<int32_t, 9u> GameManager::LoadLevelData(int32_t levelIndex)
 
 }
 
-void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount)
+void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount, const int32_t minChainCount)
 {
 	for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
 
@@ -1428,7 +1428,7 @@ void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const
 				if (blockSet.count() >= blockTypeCount) {
 					break;
 				}
-			} while (blockChainCount > maxChainCount);
+			} while (blockChainCount > maxChainCount or blockChainCount < minChainCount);
 		}
 	}
 }

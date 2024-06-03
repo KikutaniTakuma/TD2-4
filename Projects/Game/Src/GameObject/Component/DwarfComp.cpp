@@ -115,7 +115,7 @@ bool DwarfComp::FallDown()
 		// 落下先がブロックでない場合 なおかつ前がブロックでない場合
 		if (LocalBodyComp::pMap_->GetBlockType(downSide) == Block::BlockType::kNone and LocalBodyComp::pMap_->GetBlockType(downSide + Vector2::kXIdentity * (0.25f * facing_)) == Block::BlockType::kNone) {
 
-			for (const Vector2 pos : blocks) {
+			for (const auto& [obj, pos] : blocks) {
 				//Vector2 targetPos;
 				if (std::abs(downSide.x - (pos.x + 0.5f)) <= 0.5f and std::abs(downSide.y - (pos.y + 0.5f)) <= 0.5f) {
 					pLocalBodyComp_->localPos_.y = pos.y + 1;
