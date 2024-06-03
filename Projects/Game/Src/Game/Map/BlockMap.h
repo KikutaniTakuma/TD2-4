@@ -121,7 +121,7 @@ public:
 	/// @brief 箱のデータをモデルに転送
 	void TransferBoxData();
 
-	void SetDamageColor(uint32_t color);
+	void SetDamageType(Block::BlockType color);
 
 	/// @brief ブロックを設置する
 	/// @param centerPos 中心座標
@@ -190,7 +190,7 @@ public:
 
 	void ClearHitMap()
 	{
-		SetDamageColor(0);
+		SetDamageType(Block::BlockType::kNone);
 		for (auto &line : hitMap_) {
 			line.reset();
 		}
@@ -248,8 +248,7 @@ private:
 
 	//変数
 //攻撃を受けたかどうか
-	bool isDamege_ = false;
 
 	//ダメージを受けたブロックの色
-	uint32_t damageColor_;
+	Block::BlockType damageType_;
 };

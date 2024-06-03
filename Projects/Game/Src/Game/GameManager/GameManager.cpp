@@ -834,7 +834,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 BlockMap::BlockBitMap &&GameManager::HitChainBlocks(POINTS localPos) {
 
 	if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
-		blockMap_->SetDamageColor(block.GetColor());
+		blockMap_->SetDamageType(block.GetBlockType());
 	}
 
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
