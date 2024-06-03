@@ -170,4 +170,6 @@ private:
 	std::unique_ptr<SubMenu> pause_;
 
 	bool isFirstUpdate_ = false;
+
+	bool isFirstSound_ = true;
 };

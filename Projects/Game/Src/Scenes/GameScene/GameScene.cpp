@@ -173,6 +173,7 @@ void GameScene::Initialize() {
 	pause_->SetSceneManger(sceneManager_);
 
 	isFirstLoadFlag_ = true;
+	isFirstSound_ = true;
 
 	if (SelectToGame::GetInstance()->GetRetryFlug()) {
 		isEndObjective_ = true;
@@ -225,7 +226,11 @@ void GameScene::Update() {
 		}
 		if (easeCount_ > 0) {
 			if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)){
-				telop_->Start(0.2f, false);
+				if (isFirstSound_){
+					telop_->Start(0.2f, false);
+					isFirstSound_ = false;
+				}
+				
 				ease_.Start(false, 1.0f, Easeing::InBack);
 				isFadeOut_ = true;
 				easeCount_ = -1;
@@ -241,6 +246,7 @@ void GameScene::Update() {
 
 		if (ease_.ActiveExit() && not isFadeOut_) {
 			telop_->Start(0.2f, false);
+			isFirstSound_ = false;
 		}
 
 		if (not isFadeOut_) {
