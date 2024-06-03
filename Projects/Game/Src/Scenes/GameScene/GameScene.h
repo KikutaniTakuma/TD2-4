@@ -46,7 +46,7 @@ public:
 
 	void Draw() override;
 
-	void ChangeToResult() { sceneManager_->SceneChange(BaseScene::ID::Result); }
+	void ChangeToResult();
 
 private:
 	void TextureInitialize();
@@ -102,6 +102,8 @@ private:
 	Audio* cancel_ = nullptr;
 
 	Audio* telop_ = nullptr;
+
+	Audio* gameSet_ = nullptr;
 
 	static const uint32_t kCloudNum_ = 8;
 

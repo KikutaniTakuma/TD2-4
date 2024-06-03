@@ -159,7 +159,7 @@ void GameScene::Initialize() {
 	telop_ = audioManager_->Load("./Resources/Sounds/SE/telop.mp3");
 	audioManager_->Load("./Resources/Sounds/SE/damege.mp3");
 	audioManager_->Load("./Resources/Sounds/SE/noSpace.mp3");
-
+	gameSet_ = audioManager_->Load("./Resources/Sounds/SE/timeUp.mp3");
 
 
 	shakePower_ = { 3.0f,3.0f };
@@ -322,16 +322,8 @@ void GameScene::Update() {
 			gameUIManager_->Update(deltaTime);
 
 			if (gameUIManager_->GetItemGauge()->GetItemGaugeMax()){
+				gameSet_->Start(0.2f, false);
 				sceneManager_->SceneChange(BaseScene::ID::Result);
-			}
-
-			if (input_->GetKey()->LongPush(DIK_RETURN) && input_->GetKey()->Pushed(DIK_BACKSPACE)) {
-				
-
-				gameBGM_->Stop();
-				cancel_->Start(0.1f, false);
-
-				sceneManager_->SceneChange(BaseScene::ID::StageSelect);
 			}
 
 			isFirstUpdate_ = true;
@@ -414,6 +406,11 @@ void GameScene::Draw() {
 #endif // _DEBUG
 
 	pause_->ActiveDraw();
+}
+
+void GameScene::ChangeToResult(){
+	gameSet_->Start(0.2f, false);
+	sceneManager_->SceneChange(BaseScene::ID::Result);
 }
 
 void GameScene::TextureDraw() {
