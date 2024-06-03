@@ -102,7 +102,11 @@ void PlayerComp::Input()
 		inputVec_ = +Vector2::kXIdentity * vMoveSpeed_;
 	}
 	if (inputVec_.x == 0.f) {
-		inputVec_.x = pad->GetStick(Gamepad::Stick::LEFT_X) * vMoveSpeed_;
+		inputVec_.x = pad->GetStick(Gamepad::Stick::LEFT_X);
+		if (std::abs(inputVec_.x) < 0.2f) {
+			inputVec_.x = 0.f;
+		}
+		inputVec_.x *= vMoveSpeed_;
 	}
 
 	if (inputVec_.x != 0) {
@@ -149,5 +153,5 @@ bool PlayerComp::InputDown() const
 {
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 	Lamb::SafePtr pad = Input::GetInstance()->GetGamepad();
-	return  key->GetKey(DIK_S) or key->GetKey(DIK_DOWN) or pad->GetStick(Gamepad::Stick::LEFT_Y) < 0;
+	return  key->GetKey(DIK_S) or key->GetKey(DIK_DOWN) or pad->GetStick(Gamepad::Stick::LEFT_Y) < -0.2f;
 }
