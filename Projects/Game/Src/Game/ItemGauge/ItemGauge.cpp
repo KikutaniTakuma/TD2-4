@@ -8,14 +8,14 @@ void ItemGauge::Initialize(){
 
 	gaugeFrameState_ = std::make_unique<Tex2DState>();
 	gaugeFrameState_->color = 0xffffffff;
-	gaugeFrameState_->transform.scale = { 780.0f,72.0f };
-	gaugeFrameState_->transform.translate = { -135.0f, kGaugeYPos };
+	gaugeFrameState_->transform.scale = { 780,72.0f };
+	gaugeFrameState_->transform.translate = { -160.0f, kGaugeYPos };
 	gaugeFrameState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeFrame.png");
 
 	gaugeVoidState_ = std::make_unique<Tex2DState>();
 	gaugeVoidState_->color = 0xffffffff;
 	gaugeVoidState_->transform.scale = { 780.0f,72.0f };
-	gaugeVoidState_->transform.translate = { -135.0f, kGaugeYPos };
+	gaugeVoidState_->transform.translate = { -160.0f, kGaugeYPos };
 	gaugeVoidState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Gauge/potGaugeFrameVoid.png");
 
 	moveGaugeLeftState_ = std::make_unique<Tex2DState>();
@@ -34,7 +34,7 @@ void ItemGauge::Initialize(){
 	moveGaugeCenterState_ = std::make_unique<Tex2DState>();
 	moveGaugeCenterState_->color = gaugeColorBase_;
 	moveGaugeCenterState_->transform.scale = { 0.0f,47.0f };
-	moveGaugeCenterState_->transform.translate = { -467.0f, kGaugeYPos-1.0f };
+	moveGaugeCenterState_->transform.translate = { -492.0f, kGaugeYPos-1.0f };
 	moveGaugeCenterState_->textureID = TextureManager::GetInstance()->GetWhiteTex();
 
 	moveGaugeReduction_ = std::make_unique<Tex2DState>();

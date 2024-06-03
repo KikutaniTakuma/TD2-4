@@ -27,9 +27,9 @@ void GameScene::TextureInitialize() {
 	cloudType_[1] = "cloud2.png";
 	cloudType_[2] = "cloud3.png";
 
-	cloudScale_[cloudType_[0]] = { 480,144 };
-	cloudScale_[cloudType_[1]] = { 256,144 };
-	cloudScale_[cloudType_[2]] = { 144,96 };
+	cloudScale_[cloudType_[0]] = { 360,108 };
+	cloudScale_[cloudType_[1]] = { 192,108 };
+	cloudScale_[cloudType_[2]] = { 108,72 };
 
 	for (uint32_t i = 0; i < kCloudNum_; i++) {
 		clouds_[i] = std::make_unique<Tex2DState>();
@@ -46,7 +46,7 @@ void GameScene::TextureInitialize() {
 
 	backGround_ = std::make_unique<Tex2DState>();
 	backGround_->transform.scale = { 1280.0f,720.0f };
-	backGround_->transform.translate = { 0.0f, 10.0f ,8.0f };
+	backGround_->transform.translate = { 0.0f, 0.0f ,8.0f };
 	backGround_->color = 0xffffffff;
 	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/cutBackGround.png");
 
@@ -120,7 +120,8 @@ void GameScene::Initialize() {
 	collisionManager_ = CollisionManager::GetInstance();
 
 	currentCamera_->farClip = 3000.0f;
-	currentCamera_->pos.y = 6.0f;
+	currentCamera_->pos.x = 0.7f;
+	currentCamera_->pos.y = 6.7f;
 	currentCamera_->pos.z = -70.0f;
 	currentCamera_->offset.z = -60.0f;
 	currentCamera_->offset.y = 8.0f;
@@ -345,17 +346,14 @@ void GameScene::Update() {
 void GameScene::TextureUpdate() {
 	for (uint32_t i = 0; i < kCloudNum_; i++) {
 		clouds_[i]->transform.translate.x += cloudsSpeed_[i];
-		if (clouds_[i]->transform.translate.x > (700.0f) + (clouds_[i]->transform.scale.x)) {
+		if (clouds_[i]->transform.translate.x > (245.0f) + (clouds_[i]->transform.scale.x)) {
 			CloudReset(i);
 		}
 		clouds_[i]->transform.CalcMatrix();
 	}
 
-
 	backGround_->transform.CalcMatrix();
 	backGround_->uvTransform.CalcMatrix();
-
-	
 
 }
 
@@ -378,6 +376,7 @@ void GameScene::Draw() {
 		tex2D_->Draw(clouds_[i]->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, clouds_[i]->textureID, clouds_[i]->color, BlendType::kNormal);
 	}
+	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 
 	gameManager_->Draw(*currentCamera_);
 	gameUIManager_->Draw(*currentTexCamera_);
@@ -408,10 +407,6 @@ void GameScene::Draw() {
 		tex2D_->Draw(potState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, potState_->textureID, potState_->color, BlendType::kUnenableDepthNormal);
 	}
-
-
-
-	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 	TextureDraw();
 #ifdef _DEBUG
 

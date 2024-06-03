@@ -90,6 +90,9 @@ void ResultScene::Initialize(){
 	if (isGameClear_) {
 		cauldronParticle_->LoadSettingDirectory("ResultExplosion");
 		cauldronParticle_->SetParticleScale(1.0f / 0.0036f * 0.5f);
+		clearCauldronParticle_ = std::make_unique<Particle>();
+		clearCauldronParticle_->LoadSettingDirectory("ClearBombStar");
+		clearCauldronParticle_->SetParticleScale(1.0f / 0.0036f);
 	}
 	else {
 		cauldronParticle_->LoadSettingDirectory("Bomb");
@@ -249,11 +252,22 @@ void ResultScene::Update(){
 		cauldronParticle_->ParticleStart();
 		witchCraftExplotion_->Start(0.2f, false);
 		cauldronParticle_->emitterPos.z = currentCamera_->pos.z + 1.0f;
+
+		if (isGameClear_) {
+			clearCauldronParticle_->ParticleStart();
+			clearCauldronParticle_->emitterPos.z = currentCamera_->pos.z + 0.9f;
+		}
 	}
 
 	cauldronParticle_->Update();
+	if (isGameClear_) {
+		clearCauldronParticle_->Update();
+	}
 
 	if (cauldronParticle_->GetIsParticleStart().OnExit()) {
+		if (isGameClear_) {
+			clearCauldronParticle_->ParticleStop();
+		}
 		backGroundEase_->Start(
 			false,
 			0.8f,
@@ -265,7 +279,7 @@ void ResultScene::Update(){
 	cauldronAnimator_->Update();
 }
 
-void ResultScene::Draw(){
+void ResultScene::Draw() {
 	DrawConstantUI();
 
 	tex2D_->Draw(
@@ -276,7 +290,7 @@ void ResultScene::Draw(){
 		std::numeric_limits<uint32_t>::max(),
 		BlendType::kNormal
 	);
-	
+
 	switch (effectStatus_)
 	{
 	case ResultScene::EffectState::kFirst:
@@ -298,6 +312,9 @@ void ResultScene::Draw(){
 
 
 	cauldronParticle_->Draw(currentCamera_->rotate, currentCamera_->GetViewOthographics());
+	if (isGameClear_) {
+		clearCauldronParticle_->Draw(currentCamera_->rotate, currentCamera_->GetViewOthographics(), BlendType::kUnenableDepthNormal);
+	}
 }
 
 void ResultScene::Debug(){
@@ -491,6 +508,9 @@ void ResultScene::WitchDraw() {
 }
 
 void ResultScene::GameClearEffect() {
+	cauldronTransform_->scale = cauldronScale_.first;
+	cauldronTransform_->translate = cauldronBasisPos_;
+
 	backGroundEase_->Update();
 	backGround_->transform.translate = backGroundEase_->Get(backGroundStartPos_, backGroundEndPos_);
 	backGround_->transform.CalcMatrix();
@@ -600,6 +620,9 @@ void ResultScene::GameClearDraw() {
 }
 
 void ResultScene::GameOverEffect() {
+	cauldronTransform_->scale = cauldronScale_.first;
+	cauldronTransform_->translate = cauldronBasisPos_;
+
 	backGroundEase_->Update();
 	backGround_->transform.translate = backGroundEase_->Get(backGroundStartPos_, backGroundEndPos_);
 	backGround_->transform.CalcMatrix();

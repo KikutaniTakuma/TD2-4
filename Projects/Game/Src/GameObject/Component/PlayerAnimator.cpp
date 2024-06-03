@@ -40,6 +40,7 @@ void PlayerAnimatorComp::Init()
 	smokeParticle_->LoadSettingDirectory("Smoke");
 
 	isUnderAnimationEnd_ = true;
+	pSpriteComp_->offsetTransform_.translate.y = -0.05f;
 
 	/*damageParticleRed_ = std::make_unique<Particle>();
 	damageParticleRed_->LoadSettingDirectory("Player-Damaged-Red");
@@ -57,7 +58,7 @@ void PlayerAnimatorComp::Update()
 {
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 	Lamb::SafePtr pad = Input::GetInstance()->GetGamepad();
-	
+
 	switch (currentState_)
 	{
 	case PlayerAnimatorComp::State::kAttack:
@@ -93,7 +94,7 @@ void PlayerAnimatorComp::Update()
 	isShoting_ = isAttack_;
 	// 攻撃した瞬間
 	if (isShoting_.OnEnter()) {
-		shotParticle_->ParticleStart(transform_.translate + Vector3{ pPlayerComp_->GetFacing() * 0.5f,0.f,-50.f }, Vector2::kIdentity);
+		shotParticle_->ParticleStart(transform_.translate + Vector3{ pPlayerComp_->GetFacing() * 0.5f,0.f,-10.f }, Vector2::kIdentity);
 		shotParticle_->SetParticleScale(0.5f);
 	}
 	// 攻撃が終わった瞬間
@@ -102,17 +103,17 @@ void PlayerAnimatorComp::Update()
 	}
 	// 撃っている間のパーティクルのエミッターの場所を設定
 	if (isShoting_) {
-		shotParticle_->emitterPos = transform_.translate + Vector3{ pPlayerComp_->GetFacing() * 0.5f,0.f,-50.f };
+		shotParticle_->emitterPos = transform_.translate + Vector3{ pPlayerComp_->GetFacing() * 0.5f,0.f,-10.f };
 	}
 
 	// 着地のパーティクル
 	isLanding_ = pMapHitComp_->hitNormal_.y > 0.f;
 	if (isLanding_.OnEnter()) {
-		smokeParticle_->ParticleStart(transform_.translate + Vector3{ 0.f,-0.5f,-50.f }, Vector2::kIdentity);
+		smokeParticle_->ParticleStart(transform_.translate + Vector3{ 0.f,-0.5f,-10.f }, Vector2::kIdentity);
 		smokeParticle_->SetParticleScale(0.25f);
 	}
 	if (isLanding_) {
-		smokeParticle_->emitterPos = transform_.translate + Vector3{ 0.f,-0.5f,-50.f };
+		smokeParticle_->emitterPos = transform_.translate + Vector3{ 0.f,-0.5f,-10.f };
 	}
 
 	isDamage_ = pPlayerComp_->GetIsDamage();
@@ -186,7 +187,7 @@ void PlayerAnimatorComp::SetState() {
 		currentState_ = State::kFall;
 	}
 	// ブロックを持ってる
-	else if(isHaveBlock_) {
+	else if (isHaveBlock_) {
 		// ブロックを下から持った瞬間
 		if (isUnderHave_ or isUnderAnimation_) {
 			currentState_ = State::kHaveUnder;
@@ -205,7 +206,7 @@ void PlayerAnimatorComp::SetState() {
 		}
 	}
 	// 移動してら
-	else if(isMove_){
+	else if (isMove_) {
 		currentState_ = State::kMove;
 	}
 	// それ以外

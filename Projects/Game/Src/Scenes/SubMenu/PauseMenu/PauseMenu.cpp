@@ -212,10 +212,12 @@ void PauseMenu::SceneChange() {
 	Lamb::SafePtr gamepad = Input::GetInstance()->GetGamepad();
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 	if (gamepad->Pushed(Gamepad::Button::B)) {
+		choiceSE_->Start(0.2f, false);
 		curretnState_ = State::kBack;
 		isActive_ = false;
 	}
 	if (gamepad->Pushed(Gamepad::Button::A) or key->Pushed(DIK_SPACE)) {
+		choiceSE_->Start(0.2f, false);
 		switch (curretnState_)
 		{
 		case PauseMenu::State::kBack:

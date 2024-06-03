@@ -86,7 +86,7 @@ void GameManager::Init()
 	gameTimer_->TimerStart(static_cast<float>(vMaxTime_));
 
 
-	RandomStartBlockFill(mapData, vBlockTypeCount_, vMaxChainBlockCount_);
+	RandomStartBlockFill(mapData, vBlockTypeCount_, vMaxChainBlockCount_, vMinChainBlockCount_);
 	/*for (int32_t yi = 0; yi < vStartBlockHeight_; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
 			const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
@@ -98,7 +98,16 @@ void GameManager::Init()
 		}
 	}*/
 
-	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,static_cast<float>(vStartBlockHeight_) };
+	int8_t playerPos = 0;
+	for (int8_t yi = 0; yi < BlockMap::kMapY; yi++) {
+		if ((*blockMap_->GetBlockMap()).at(yi).at(1)) {
+			continue;
+		}
+		playerPos = yi;
+		break;
+	}
+
+	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,static_cast<float>(playerPos) };
 
 
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
@@ -220,13 +229,13 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType(), fallComp->blockDamage_);
 			fallingBlock->SetActive(false);
 			if (fallComp->hasDamage_) {
-				gameEffectManager_->fallingBlock_.reset();
+				gameEffectManager_->fallingBlock_.set(static_cast<int32_t>(blockBody->localPos_.x + 0.5f), false);
 			}
 			isLanding |= true;
 		}
 
 		if (fallingBlock->GetActive()) {
-			fallingBlocksPos_.push_back(blockBody->localPos_);
+			fallingBlocksPos_.push_back({ fallingBlock.get(), blockBody->localPos_ });
 		}
 	}
 
@@ -353,6 +362,8 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 
 void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 {
+	gameEffectManager_->Draw(camera);
+
 	blockMap_->Draw(camera);
 	if (player_) {
 		player_->Draw(camera);
@@ -378,7 +389,6 @@ void GameManager::Draw([[maybe_unused]] const Camera &camera) const
 	}
 	blockGauge_->Draw(camera);
 
-	gameEffectManager_->Draw(camera);
 
 	if (bonusPointDrawTimer_.IsActive()) {
 		DrawerManager::GetInstance()->GetTexture2D()->Draw(bonusTexTransform_.matWorld_, Mat4x4::MakeAffin({ 0.25f,1.f,1.f }, Vector3{}, { 0.25f * (itemSpawnCount_ - 1),0,0 }), camera.GetViewOthographics(), pointTex_, 0xFFFFFFFF, BlendType::kNormal);
@@ -569,6 +579,7 @@ GameObject *GameManager::AddEnemyBullet(Vector2 centerPos, Vector2 velocity)
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
 	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+	bullet->transform_.translate = localBodyComp->GetGlobalPos();
 
 	auto *const mapHit = bullet->AddComponent<LocalMapHitComp>();
 	mapHit->isHitFallBlock_ = false;
@@ -587,7 +598,7 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 	Lamb::SafePtr localBodyComp = addBlock->AddComponent<LocalBodyComp>();
 	Lamb::SafePtr localHitMap = addBlock->AddComponent<LocalMapHitComp>();
 
-	localHitMap->isHitFallBlock_ = false;
+	//localHitMap->isHitFallBlock_ = false;
 
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = size;
@@ -834,7 +845,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 BlockMap::BlockBitMap &&GameManager::HitChainBlocks(POINTS localPos) {
 
 	if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
-		blockMap_->SetDamageColor(block.GetColor());
+		blockMap_->SetDamageType(block.GetBlockType());
 	}
 
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
@@ -1255,6 +1266,7 @@ void GameManager::MargeDwarf()
 			for (decltype(dwarfList_)::iterator sItr = std::next(fItr); sItr != dwarfList_.end(); ++sItr) {
 				auto *const sDwarf = (*sItr).get();
 				// 死んでたら飛ばす
+				if (not fDwarf->GetActive()) { break; }
 				if (not sDwarf->GetActive()) { continue; }
 				Lamb::SafePtr sDwComp = sDwarf->GetComponent<DwarfComp>();
 				Lamb::SafePtr sBody = sDwarf->GetComponent<LocalBodyComp>();
@@ -1271,7 +1283,7 @@ void GameManager::MargeDwarf()
 
 						// 召喚先
 						Vector2 spawnPos = fBody->localPos_;
-						gameEffectManager_->margeDwarfPos_.push_back(spawnPos);
+						gameEffectManager_->margeDwarfPos_.push_back({ std::round(spawnPos.x), spawnPos.y });
 
 						AddDarkDwarf(spawnPos);
 
@@ -1375,7 +1387,7 @@ std::array<int32_t, 9u> GameManager::LoadLevelData(int32_t levelIndex)
 
 }
 
-void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount)
+void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount, const int32_t minChainCount)
 {
 	for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
 
@@ -1419,7 +1431,7 @@ void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const
 				if (blockSet.count() >= blockTypeCount) {
 					break;
 				}
-			} while (blockChainCount > maxChainCount);
+			} while (blockChainCount > maxChainCount or blockChainCount < minChainCount);
 		}
 	}
 }

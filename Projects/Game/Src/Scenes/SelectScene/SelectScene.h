@@ -90,11 +90,17 @@ private:
 
 	const float kAddEase_ = 0.2f;
 
+	const float kAddEaseScale_ = 0.4f;
+
 	std::unique_ptr<Tex2DState> selectTex_;
 
 	Vector2 shakePower_;
 
 	Easeing ease_;
+
+	Easeing ScaleEases_;
+
+	std::array<Vector3, 3> ChangeScales_;
 	
 	const uint32_t kCoolTime_ = 20;
 

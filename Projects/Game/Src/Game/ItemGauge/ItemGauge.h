@@ -54,8 +54,8 @@ private:
 private:
 	Texture2D* tex2D_;
 	//始点終点
-	const Vector2 kGaugePosX_ = { -454.0f,220.0f };
-	const float kGaugeLeftPosX_ = -480.0f;
+	const Vector2 kGaugePosX_ = { -479.0f,195.0f };
+	const float kGaugeLeftPosX_ = -505.0f;
 	float gaugePosLength_ = 659.0f;
 
 	uint32_t gaugeColorBase_ = 0x5ea632ff;
@@ -119,7 +119,7 @@ private:
 	//始点終点
 	const Vector2 kGaugeCenterPosX_ = { 320.0f,-38.0f };
 	float gaugePosCenterLength_ = 358.0f;
-	const float kGaugeScale_ = 675.0f;
+	const float kGaugeScale_ = 680.0f;
 
 	const float kGaugeYPos = 315.0f;
 
