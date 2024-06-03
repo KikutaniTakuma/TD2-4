@@ -323,7 +323,8 @@ void GameScene::Update() {
 			gameUIManager_->Update(deltaTime);
 
 			if (gameUIManager_->GetItemGauge()->GetItemGaugeMax()){
-				gameSet_->Start(0.2f, false);
+				ResultScene::SetIsGameClear(true);
+				gameSet_->Start(0.3f, false);
 				sceneManager_->SceneChange(BaseScene::ID::Result);
 			}
 
@@ -410,7 +411,7 @@ void GameScene::Draw() {
 }
 
 void GameScene::ChangeToResult(){
-	gameSet_->Start(0.2f, false);
+	gameSet_->Start(0.3f, false);
 	sceneManager_->SceneChange(BaseScene::ID::Result);
 }
 
