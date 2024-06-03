@@ -46,7 +46,7 @@ void GameScene::TextureInitialize() {
 
 	backGround_ = std::make_unique<Tex2DState>();
 	backGround_->transform.scale = { 1280.0f,720.0f };
-	backGround_->transform.translate = { 0.0f, 0.0f ,8.0f };
+	backGround_->transform.translate = { 0.0f, 10.0f ,8.0f };
 	backGround_->color = 0xffffffff;
 	backGround_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/cutBackGround.png");
 
