@@ -578,6 +578,7 @@ GameObject *GameManager::AddEnemyBullet(Vector2 centerPos, Vector2 velocity)
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
 	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+	bullet->transform_.translate = localBodyComp->GetGlobalPos();
 
 	auto *const mapHit = bullet->AddComponent<LocalMapHitComp>();
 	mapHit->isHitFallBlock_ = false;
