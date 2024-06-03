@@ -98,7 +98,16 @@ void GameManager::Init()
 		}
 	}*/
 
-	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,static_cast<float>(vStartBlockHeight_) };
+	int8_t playerPos = 0;
+	for (int8_t yi = 0; yi < BlockMap::kMapY; yi++) {
+		if ((*blockMap_->GetBlockMap()).at(yi).at(1)) {
+			continue;
+		}
+		playerPos = yi;
+		break;
+	}
+
+	player_->GetComponent<LocalBodyComp>()->localPos_ = { 1.f,static_cast<float>(playerPos) };
 
 
 	gameEffectManager_ = std::make_unique<GameEffectManager>();
@@ -569,6 +578,7 @@ GameObject *GameManager::AddEnemyBullet(Vector2 centerPos, Vector2 velocity)
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = Vector2::kIdentity * 0.5f;
 	bullet->AddComponent<LocalRigidbody>()->SetVelocity(velocity);
+	bullet->transform_.translate = localBodyComp->GetGlobalPos();
 
 	auto *const mapHit = bullet->AddComponent<LocalMapHitComp>();
 	mapHit->isHitFallBlock_ = false;
@@ -834,7 +844,7 @@ BlockMap::BlockBitMap &&GameManager::BreakChainBlocks(POINTS localPos)
 BlockMap::BlockBitMap &&GameManager::HitChainBlocks(POINTS localPos) {
 
 	if (auto block = Block{ blockMap_->GetBlockType(localPos) }; block) {
-		blockMap_->SetDamageColor(block.GetColor());
+		blockMap_->SetDamageType(block.GetBlockType());
 	}
 
 	auto &&chainBlockMap = blockMap_->FindChainBlocks(localPos, blockMap_->GetBlockType(localPos), GetDwarfPos());
@@ -1253,6 +1263,7 @@ void GameManager::MargeDwarf()
 			for (decltype(dwarfList_)::iterator sItr = std::next(fItr); sItr != dwarfList_.end(); ++sItr) {
 				auto *const sDwarf = (*sItr).get();
 				// 死んでたら飛ばす
+				if (not fDwarf->GetActive()) { break; }
 				if (not sDwarf->GetActive()) { continue; }
 				Lamb::SafePtr sDwComp = sDwarf->GetComponent<DwarfComp>();
 				Lamb::SafePtr sBody = sDwarf->GetComponent<LocalBodyComp>();

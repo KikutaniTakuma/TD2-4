@@ -40,6 +40,7 @@ void PlayerAnimatorComp::Init()
 	smokeParticle_->LoadSettingDirectory("Smoke");
 
 	isUnderAnimationEnd_ = true;
+	pSpriteComp_->offsetTransform_.translate.y = -0.05f;
 
 	/*damageParticleRed_ = std::make_unique<Particle>();
 	damageParticleRed_->LoadSettingDirectory("Player-Damaged-Red");
@@ -57,7 +58,7 @@ void PlayerAnimatorComp::Update()
 {
 	Lamb::SafePtr key = Input::GetInstance()->GetKey();
 	Lamb::SafePtr pad = Input::GetInstance()->GetGamepad();
-	
+
 	switch (currentState_)
 	{
 	case PlayerAnimatorComp::State::kAttack:
@@ -186,7 +187,7 @@ void PlayerAnimatorComp::SetState() {
 		currentState_ = State::kFall;
 	}
 	// ブロックを持ってる
-	else if(isHaveBlock_) {
+	else if (isHaveBlock_) {
 		// ブロックを下から持った瞬間
 		if (isUnderHave_ or isUnderAnimation_) {
 			currentState_ = State::kHaveUnder;
@@ -205,7 +206,7 @@ void PlayerAnimatorComp::SetState() {
 		}
 	}
 	// 移動してら
-	else if(isMove_){
+	else if (isMove_) {
 		currentState_ = State::kMove;
 	}
 	// それ以外

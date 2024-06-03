@@ -22,40 +22,40 @@ void GameTimerRender::Init([[maybe_unused]] GameTimer *gameTimer){
 	timerState_ = std::make_unique<Tex2DState>();
 	timerState_->color = 0xffffffff;
 	timerState_->transform.scale = { 240.0f,272.0f };
-	timerState_->transform.translate = { 450.0f, 180.0f };
+	timerState_->transform.translate = { 450.0f, 210.0f };
 	timerState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timer.png");
 
 	clockHandsState_ = std::make_unique<Tex2DState>();
 	clockHandsState_->color = 0xffffffff;
 	clockHandsState_->transform.scale = { 240.0f,272.0f };
-	clockHandsState_->transform.translate = { 450.0f, 160.0f };
+	clockHandsState_->transform.translate = { 450.0f, 190.0f };
 	clockHandsState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timerNeedle.png");
 
 	moveClockHandsState_ = std::make_unique<Tex2DState>();
 	moveClockHandsState_->color = 0xffffffff;
 	moveClockHandsState_->transform.scale = { 240.0f,272.0f };
 	moveClockHandsState_->transform.rotate = Quaternion::kIdentity;
-	moveClockHandsState_->transform.translate = { 450.0f, 160.0f };
+	moveClockHandsState_->transform.translate = { 450.0f, 190.0f };
 	moveClockHandsState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timerNeedle.png");
 
 	timeNumberState_ = std::make_unique<Tex2DState>();
 	timeNumberState_->color = 0xffffffff;
 	timeNumberState_->transform.scale = { 48.0f,60.0f };
-	timeNumberState_->transform.translate = { 500.0f, 160.0f };
+	timeNumberState_->transform.translate = { 500.0f, 190.0f };
 	timeNumberState_->uvTransform.scale = { 0.1f,1.0f };
 	timeNumberState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timeLimitNumber.png");
 
 	timeNumberTenState_ = std::make_unique<Tex2DState>();
 	timeNumberTenState_->color = 0xffffffff;
 	timeNumberTenState_->transform.scale = { 48.0f,60.0f };
-	timeNumberTenState_->transform.translate = { 450.0f, 160.0f };
+	timeNumberTenState_->transform.translate = { 450.0f, 190.0f };
 	timeNumberTenState_->uvTransform.scale = { 0.1f,1.0f };
 	timeNumberTenState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timeLimitNumber.png");
 
 	timeNumberHundredState_ = std::make_unique<Tex2DState>();
 	timeNumberHundredState_->color = 0xffffffff;
 	timeNumberHundredState_->transform.scale = { 48.0f,60.0f };
-	timeNumberHundredState_->transform.translate = { 400.0f, 160.0f };
+	timeNumberHundredState_->transform.translate = { 400.0f, 190.0f };
 	timeNumberHundredState_->uvTransform.scale = { 0.1f,1.0f };
 	timeNumberHundredState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timeLimitNumber.png");
 
