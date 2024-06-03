@@ -64,6 +64,8 @@ private:
 
 	Texture2D* tex2D_;
 
+	Audio* putBlock_ = nullptr;
+
 	std::unique_ptr<SimpleFade> fade_;
 
 	std::unique_ptr<CatmullRomEditor> catmullRom_;

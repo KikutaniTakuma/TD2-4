@@ -43,7 +43,14 @@ private:
 	//Jsonファイルから必要な情報を読み込む
 	void LoadGameData(const uint32_t stageNumber);
 
-	//void CalcUVPos(const float InGameData, std::array<std::unique_ptr<Tex2DState>, 3>& uvPos);
+	//数字によるショートカット
+	void NumberShortcuts();
+	
+	/// <summary>
+	/// 入力した値に応じて移動する関数
+	/// </summary>
+	/// <param name="PushedNumber">プレイヤーが選択した番号DIK～</param>
+	void PlayerSelectNumberMove(const uint32_t PushedNumber);
 
 private:
 	//アイテムのファイルパス

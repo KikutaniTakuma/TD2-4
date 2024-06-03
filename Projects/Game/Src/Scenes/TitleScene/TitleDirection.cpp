@@ -14,6 +14,9 @@ void TitleDirection::Initialize(SceneManager* sceneManager){
 	ControlPoints_ = catmullRom_->GetControlPoints();
 	moveSpeeds_ = catmullRom_->GetMoveSpeeds();
 
+	putBlock_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/putBlock.mp3");
+
+
 	fade_ = std::make_unique<SimpleFade>();
 	fade_->SetTransZ(-0.2f);
 	fade_->SetInOutColor(0x00, 0xffffffff);
@@ -163,6 +166,10 @@ void TitleDirection::Update(Input* input){
 
 	if (e_Status_.easing->ActiveExit()) {
 		isMoveTex_others_ = true;
+	}
+
+	if (ti_Status_.easing->ActiveExit() || i_Status_.easing->ActiveExit() || n_Status_.easing->ActiveExit()) {
+		putBlock_->Start(0.2f, false);
 	}
 
 	if (n_Status_.easing->ActiveExit() && not isDirectionSkep_) {

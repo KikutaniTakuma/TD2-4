@@ -187,6 +187,8 @@ void SelectScene::Debug(){
 
 void SelectScene::SelectMove(){
 	float stick = input_->GetGamepad()->GetStick(Gamepad::Stick::LEFT_X, 0.5f);
+	
+	NumberShortcuts();
 
 	if (input_->GetKey()->LongPush(DIK_A) || input_->GetKey()->LongPush(DIK_LEFT)
 		|| input_->GetGamepad()->GetButton(Gamepad::Button::LEFT) || 0.0f > stick) {
@@ -274,6 +276,57 @@ void SelectScene::LoadGameData(const uint32_t stageNumber){
 //	MessageBoxA(WindowFactory::GetInstance()->GetHwnd(), message.c_str(), "Object", 0);
 //
 //#endif // _DEBUG
+
+}
+
+void SelectScene::NumberShortcuts(){
+	const auto key = input_->GetKey();
+
+	if (key->Pushed(DIK_1)) {
+		PlayerSelectNumberMove(DIK_1);
+	}
+	else if (key->Pushed(DIK_2)) {
+		PlayerSelectNumberMove(DIK_2);
+	}
+	else if (key->Pushed(DIK_3)) {
+		PlayerSelectNumberMove(DIK_3);
+	}
+	else if (key->Pushed(DIK_4)) {
+		PlayerSelectNumberMove(DIK_4);
+	}
+	else if (key->Pushed(DIK_5)) {
+		PlayerSelectNumberMove(DIK_5);
+	}
+	else if (key->Pushed(DIK_6)) {
+		PlayerSelectNumberMove(DIK_6);
+	}
+	else if (key->Pushed(DIK_7)) {
+		PlayerSelectNumberMove(DIK_7);
+	}
+	else if (key->Pushed(DIK_8)) {
+		PlayerSelectNumberMove(DIK_8);
+	}
+}
+
+void SelectScene::PlayerSelectNumberMove(const uint32_t PushedNumber){
+	if (PushedNumber < 2 || PushedNumber > 9) {
+		return;
+	}
+	selectNum_ = PushedNumber - 2;
+	coolTime_ = kCoolTime_;
+	selectMove_->Start(0.1f, false);
+	ease_.Start(false, kAddEase_, Easeing::InSine);
+	for (size_t i = 0; i < kMaxStage_; i++) {
+		startPos_[i] = frameTexies_[i]->transform.translate.x;
+		endPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
+
+		startItemPos_[i] = frameTexies_[i]->transform.translate.x;
+		endItemPos_[i] = (stageInterbal * i) - (stageInterbal * selectNum_);
+
+		startStageNumPos_[i] = stageNumTexies_[i]->transform.translate.x;
+		endStageNumPos_[i] = stageNumDistance_ + (stageInterbal * i) - (stageInterbal * selectNum_);
+	}
+
 
 }
 
