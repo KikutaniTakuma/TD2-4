@@ -47,9 +47,9 @@ private:
 	std::unique_ptr<Tex2DState> retryUI_;
 	std::unique_ptr<Tex2DState> stageSelectUI_;
 
-	State curretnState_;
+	State curretnState_ = State::kBack;
 
-	bool isStick_;
+	bool isStick_ = false;
 
 	class Audio* modoruSE_ = nullptr;
 	class Audio* selectSE_ = nullptr;
