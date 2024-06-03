@@ -229,13 +229,13 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 			blockMap_->SetBlocks(blockBody->localPos_, blockBody->size_, fallComp->blockType_.GetBlockType(), fallComp->blockDamage_);
 			fallingBlock->SetActive(false);
 			if (fallComp->hasDamage_) {
-				gameEffectManager_->fallingBlock_.reset();
+				gameEffectManager_->fallingBlock_.set(static_cast<int32_t>(blockBody->localPos_.x + 0.5f), false);
 			}
 			isLanding |= true;
 		}
 
 		if (fallingBlock->GetActive()) {
-			fallingBlocksPos_.push_back(blockBody->localPos_);
+			fallingBlocksPos_.push_back({ fallingBlock.get(), blockBody->localPos_ });
 		}
 	}
 
@@ -597,7 +597,7 @@ GameObject *GameManager::AddFallingBlock(Vector2 centerPos, Vector2 size, Block:
 	Lamb::SafePtr localBodyComp = addBlock->AddComponent<LocalBodyComp>();
 	Lamb::SafePtr localHitMap = addBlock->AddComponent<LocalMapHitComp>();
 
-	localHitMap->isHitFallBlock_ = false;
+	//localHitMap->isHitFallBlock_ = false;
 
 	localBodyComp->localPos_ = centerPos;
 	localBodyComp->size_ = size;
