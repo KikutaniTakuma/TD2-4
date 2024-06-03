@@ -147,7 +147,7 @@ void GameManager::Update([[maybe_unused]] const float deltaTime)
 	blockMap_->Update(fixDeltaTime);
 	blockBreakTimer_.Update(fixDeltaTime);
 
-	float localDeltaTime = fixDeltaTime;
+	float localDeltaTime = gameTimer_->IsFinish() ? 0.f : fixDeltaTime;
 
 	if (blockBreakTimer_.IsActive()) {
 		localDeltaTime = fixDeltaTime * std::lerp(0.3f, 0.8f, blockBreakTimer_.GetProgress());
@@ -1301,11 +1301,11 @@ void GameManager::ClearCheck()
 		ResultScene::SetIsGameClear(false);
 		pGameScene_->ChangeToResult();
 	}
-	if (vClearItemCount_ < itemCount_) {
+	else if (vClearItemCount_ < itemCount_) {
 		ResultScene::SetIsGameClear(true);
-		//pGameScene_->ChangeToResult();
+		pGameScene_->ChangeToResult();
 	}
-	if (gameTimer_->IsFinish()) {
+	else if (gameTimer_->IsFinish() and this->itemList_.empty()) {
 		ResultScene::SetIsGameClear(false);
 		pGameScene_->ChangeToResult();
 	}
