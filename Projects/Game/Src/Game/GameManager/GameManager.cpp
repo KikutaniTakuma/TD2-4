@@ -86,7 +86,7 @@ void GameManager::Init()
 	gameTimer_->TimerStart(static_cast<float>(vMaxTime_));
 
 
-	RandomStartBlockFill(mapData, vBlockTypeCount_, vMaxChainBlockCount_);
+	RandomStartBlockFill(mapData, vBlockTypeCount_, vMaxChainBlockCount_, vMinChainBlockCount_);
 	/*for (int32_t yi = 0; yi < vStartBlockHeight_; yi++) {
 		for (int32_t xi = 0; xi < BlockMap::kMapX; xi++) {
 			const Vector2 pos = { static_cast<float>(xi), static_cast<float>(yi) };
@@ -1384,7 +1384,7 @@ std::array<int32_t, 9u> GameManager::LoadLevelData(int32_t levelIndex)
 
 }
 
-void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount)
+void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const int32_t blockTypeCount, const int32_t maxChainCount, const int32_t minChainCount)
 {
 	for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
 
@@ -1428,7 +1428,7 @@ void GameManager::RandomStartBlockFill(const std::array<int32_t, 9u> &map, const
 				if (blockSet.count() >= blockTypeCount) {
 					break;
 				}
-			} while (blockChainCount > maxChainCount);
+			} while (blockChainCount > maxChainCount or blockChainCount < minChainCount);
 		}
 	}
 }
