@@ -26,8 +26,9 @@ void GameUIManager::Init(GameManager *pGameManager)
 	dangerTex_->transform.translate.z = -69.0f;
 	dangerTex_->transform.CalcMatrix();
 	dangerTex_->uvTransform.CalcMatrix();
-	// 危ない演出を行う時間、今は30秒
-	dangerTime_ = 30.0f;
+	// 危ない演出を行う時間
+	float goalTime = pGameManager_->GetGameTimer()->GetDeltaTimer().GetGoalFlame();
+	dangerTime_ = goalTime * 0.2f;
 
 	dangerColorEase_ = std::make_unique<Easeing>();
 
