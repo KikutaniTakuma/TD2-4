@@ -1190,6 +1190,7 @@ void GameManager::RemovePoint(const int32_t count)
 void GameManager::InputAction()
 {
 	{
+		player_->GetComponent<PlayerComp>()->Input();
 		// スポナーのコンポーネント
 		//Lamb::SafePtr spawnerComp = spawner_->GetComponent<FallingBlockSpawnerComp>();
 		//Lamb::SafePtr key = input_->GetKey();
