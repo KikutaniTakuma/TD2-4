@@ -1304,7 +1304,7 @@ void GameManager::ClearCheck()
 	}
 	else if (vClearItemCount_ < itemCount_) {
 		ResultScene::SetIsGameClear(true);
-		pGameScene_->ChangeToResult();
+		//pGameScene_->ChangeToResult();
 	}
 	else if (gameTimer_->IsFinish() and this->itemList_.empty()) {
 		ResultScene::SetIsGameClear(false);
