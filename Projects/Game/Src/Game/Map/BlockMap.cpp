@@ -299,3 +299,47 @@ BlockMap::BlockBitMap &&BlockMap::FindChainBlocks(POINTS localPos, const Block::
 
 	return std::move(result);
 }
+
+BlockMap::BlockGroupMap &&BlockMap::ChainBlockList(BlockGroupMap &&result) const
+{
+	static constexpr std::array<POINTS, 4u> kMoveDir{
+		   {{-1, 0},
+			{1, 0},
+			{0, -1},
+			{0, 1}}
+	};
+	int groupId = 1;
+
+	for (int16_t yi = 0; yi < kMapY; yi++) {
+		for (int16_t xj = 0; xj < kMapX; xj++) {
+			if (result[yi][xj] == 0) {
+				result = DfsChainBlock(POINTS{ xj,yi }, groupId++, std::move(result));
+			}
+		}
+	}
+
+	return std::move(result);
+}
+
+BlockMap::BlockGroupMap &&BlockMap::DfsChainBlock(POINTS pos, uint32_t groupId, BlockGroupMap &&result) const
+{
+	static constexpr std::array<POINTS, 4u> kMoveDir{
+		   {{-1, 0},
+			{1, 0},
+			{0, -1},
+			{0, 1}}
+	};
+
+	auto localType = GetBlockType(pos);
+
+	for (const auto &[dx, dy] : kMoveDir) {
+		POINTS newPos = { pos.x + dx, pos.y + dy };
+
+		if (newPos.x >= 0 && newPos.x < kMapX && newPos.y >= 0 && newPos.y < kMapY &&
+			result[newPos.y][newPos.x] == 0 && (*blockMap_)[newPos.y][newPos.x].GetBlockType() == localType) {
+			result = DfsChainBlock(newPos, groupId, std::move(result));
+		}
+	}
+
+	return std::move(result);
+}

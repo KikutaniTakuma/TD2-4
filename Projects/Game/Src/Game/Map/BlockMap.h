@@ -95,6 +95,8 @@ public:
 
 	using BlockBitMap = std::array<std::bitset<kMapX>, kMapY>;
 
+	using BlockGroupMap = Map2dMap<uint32_t>;
+
 	static inline std::array<uint32_t, 4u> kBreakColor_{
 		0x5555FFFF,
 		0x33FF33FF,
@@ -175,6 +177,7 @@ public:
 	}
 
 	BlockBitMap &&FindChainBlocks(POINTS localPos, const Block::BlockType originType, const std::unordered_set<POINTS> &set, BlockBitMap &&result = {}) const;
+	BlockGroupMap &&ChainBlockList(BlockGroupMap &&result = {}) const;
 
 	void SetBreakMap(const BlockBitMap &map) { breakMap_ = map; }
 	const BlockBitMap &GetBreakMap() const { return breakMap_; }
@@ -205,6 +208,10 @@ public:
 	const auto &GetTimer() const {
 		return hitTimer_;
 	}
+
+private:
+
+	BlockGroupMap &&DfsChainBlock(POINTS pos, uint32_t groupId, BlockGroupMap &&result = {}) const;
 
 private:
 
