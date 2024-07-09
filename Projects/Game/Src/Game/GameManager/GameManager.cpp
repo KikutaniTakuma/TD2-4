@@ -916,14 +916,10 @@ void GameManager::RandomFallBlockSpawn()
 {
 	if (not fallBlockSpawnTimer_.IsActive()) {
 		fallBlockSpawnTimer_.Start(vFallSpan_);
-		/*	std::vector<uint8_t> vec;
-			vec.reserve(BlockMap::kMapX - gameEffectManager_->fallingBlock_.count());
-			for (uint8_t i = 0; i < BlockMap::kMapX; i++) {
-				if (not gameEffectManager_->fallingBlock_.test(i)) {
-					vec.push_back(i);
-				}
-			}
-		*/
+		// 生成するパターンの数
+		constexpr uint32_t kSpawnType = 2u;
+		// 生成のパターン
+		uint32_t spawnType = Lamb::Random(0u, kSpawnType - 1u);
 
 		// 高い場所をもとに割合を出す
 		std::vector<uint8_t> randVec;
@@ -958,10 +954,48 @@ void GameManager::RandomFallBlockSpawn()
 		}
 
 
-
 		const int32_t spawnPos = targets[Lamb::Random(0, static_cast<int32_t>(targets.size() - 1))];
-		const uint32_t blockType = std::clamp(Lamb::Random(1, *vBlockTypeCount_), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1);
+		uint32_t blockType{};
 
+		constexpr std::array<POINTS, 3u> kMovingFacing{ {{1,0}, {-1,0}, {0,-1}} };
+		switch (spawnType) {
+		case 0:
+		{
+			// 落下時に落ちるであろう場所
+			int32_t targetHeight = 0;
+			// 落下予定地点の近くのブロックデータを取得する
+			for (int32_t yi = 0; yi < BlockMap::kMapY; yi++) {
+				// ブロックがなかったらそこに落ちる
+				if (auto block = (*blockMap_->GetBlockMap())[yi][spawnPos]; not block) {
+					targetHeight = yi;
+					break;
+				}
+			}
+
+			// 下左右に最も数の多いブロックを返す
+			std::array<uint32_t, static_cast<int32_t>(Block::BlockType::kMax) - 1> targetBlockType{};
+
+			// ブロックの検索
+			POINTS findPos = { static_cast<int16_t>(spawnPos), static_cast<int16_t>(targetHeight) };
+			for (const POINTS facing : kMovingFacing) {
+				POINTS movePos = findPos + facing;
+				auto targetType = blockMap_->GetBlockType(movePos);
+				if (targetType == Block::BlockType::kNone) { continue; }
+				auto &&chainMap = blockMap_->FindChainBlocks(movePos, targetType, {});
+
+				for (const auto &line : chainMap) {
+					targetBlockType[static_cast<uint32_t>(targetType) - 1] += static_cast<uint32_t>(line.count());
+				}
+			}
+
+			blockType = static_cast<uint32_t>(std::distance(targetBlockType.begin(), std::max_element(targetBlockType.begin(), targetBlockType.end())) + 1);
+		}
+
+		break;
+		case 1:
+			blockType = std::clamp(Lamb::Random(1, *vBlockTypeCount_), 1, static_cast<int32_t>(Block::BlockType::kMax) - 1);
+			break;
+		}
 		gameEffectManager_->fallingBlock_.set(spawnPos);
 
 		AddFallingBlock(Vector2{ static_cast<float>(spawnPos), static_cast<float>(BlockMap::kMapY) }, Vector2::kIdentity, static_cast<Block::BlockType>(blockType), Vector2::kYIdentity * -5, Vector2::kZero)->GetComponent<FallingBlockComp>()->stopTimer_ = FallingBlockComp::vSpawnFallBlockStop_;
