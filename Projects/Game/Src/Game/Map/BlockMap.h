@@ -177,7 +177,8 @@ public:
 	}
 
 	BlockBitMap &&FindChainBlocks(POINTS localPos, const Block::BlockType originType, const std::unordered_set<POINTS> &set, BlockBitMap &&result = {}) const;
-	BlockGroupMap &&ChainBlockList(BlockGroupMap &&result = {}) const;
+	BlockGroupMap &&ChainBlockMap(BlockGroupMap &&result = {}) const;
+	std::vector<std::pair<Block::BlockType, uint32_t>> GetChainBlockList() const;
 
 	void SetBreakMap(const BlockBitMap &map) { breakMap_ = map; }
 	const BlockBitMap &GetBreakMap() const { return breakMap_; }

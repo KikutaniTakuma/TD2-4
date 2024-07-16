@@ -918,8 +918,33 @@ void GameManager::RandomFallBlockSpawn()
 		fallBlockSpawnTimer_.Start(vFallSpan_);
 		// 生成するパターンの数
 		constexpr uint32_t kSpawnType = 2u;
+
+		// ブロックのデータ群の取得
+		const auto &chainBlockList = blockMap_->GetChainBlockList();
+
+		uint32_t sixBlocks{};
+		uint32_t fourBlocks{};
+
+		for (const auto &[blockType, count] : chainBlockList) {
+			if (count >= 4) {
+				fourBlocks++;
+				if (count >= 6) {
+					sixBlocks++;
+				}
+			}
+		}
+
 		// 生成のパターン
-		uint32_t spawnType = Lamb::Random(0u, kSpawnType - 1u);
+		uint32_t spawnType{};
+		if (fourBlocks < 4) {
+			spawnType = (Lamb::Random(0u, kSpawnType)) / 2u;
+		}
+		else if (sixBlocks >= 4) {
+			spawnType = std::clamp(Lamb::Random(0u, kSpawnType), 0u, 1u);
+		}
+		else {
+			spawnType = Lamb::Random(0u, kSpawnType - 1u);
+		}
 
 		// 高い場所をもとに割合を出す
 		std::vector<uint8_t> randVec;

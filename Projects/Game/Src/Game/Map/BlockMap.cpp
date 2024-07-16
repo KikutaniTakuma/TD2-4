@@ -300,25 +300,49 @@ BlockMap::BlockBitMap &&BlockMap::FindChainBlocks(POINTS localPos, const Block::
 	return std::move(result);
 }
 
-BlockMap::BlockGroupMap &&BlockMap::ChainBlockList(BlockGroupMap &&result) const
+BlockMap::BlockGroupMap &&BlockMap::ChainBlockMap(BlockGroupMap &&result) const
 {
-	static constexpr std::array<POINTS, 4u> kMoveDir{
-		   {{-1, 0},
-			{1, 0},
-			{0, -1},
-			{0, 1}}
-	};
 	int groupId = 1;
 
 	for (int16_t yi = 0; yi < kMapY; yi++) {
 		for (int16_t xj = 0; xj < kMapX; xj++) {
 			if (result[yi][xj] == 0) {
+				result[yi][xj] = groupId;
 				result = DfsChainBlock(POINTS{ xj,yi }, groupId++, std::move(result));
 			}
 		}
 	}
 
 	return std::move(result);
+}
+
+std::vector<std::pair<Block::BlockType, uint32_t>> BlockMap::GetChainBlockList() const
+{
+	std::vector<std::pair<Block::BlockType, uint32_t>> result;
+	// マップの情報を取ってくる
+	const auto &groupMap = ChainBlockMap();
+
+	for (int16_t yi = 0; yi < kMapY; yi++) {
+		for (int16_t xj = 0; xj < kMapX; xj++) {
+			// マップのID
+			const uint32_t id = groupMap[yi][xj];
+			// もし0なら飛ばす
+			if (id == 0) { continue; }
+			// もしそのIDの割当先がなかったら追加する
+			if (result.size() < id) { result.resize(id); }
+			// 書き込み先
+			auto &target = result.at(id - 1);
+			// データを1つ追加
+			target.second++;
+			// もしブロックのデータが無ければデータを渡す
+			if (target.first == Block::BlockType::kNone) {
+				target.first = (*blockMap_)[yi][xj].GetBlockType();
+			}
+
+		}
+	}
+
+	return result;
 }
 
 BlockMap::BlockGroupMap &&BlockMap::DfsChainBlock(POINTS pos, uint32_t groupId, BlockGroupMap &&result) const
@@ -337,6 +361,7 @@ BlockMap::BlockGroupMap &&BlockMap::DfsChainBlock(POINTS pos, uint32_t groupId, 
 
 		if (newPos.x >= 0 && newPos.x < kMapX && newPos.y >= 0 && newPos.y < kMapY &&
 			result[newPos.y][newPos.x] == 0 && (*blockMap_)[newPos.y][newPos.x].GetBlockType() == localType) {
+			result[newPos.y][newPos.x] = groupId;
 			result = DfsChainBlock(newPos, groupId, std::move(result));
 		}
 	}
