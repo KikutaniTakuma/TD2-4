@@ -922,24 +922,24 @@ void GameManager::RandomFallBlockSpawn()
 		// ブロックのデータ群の取得
 		const auto &chainBlockList = blockMap_->GetChainBlockList();
 
-		uint32_t sixBlocks{};
-		uint32_t fourBlocks{};
+		uint32_t upperCount{};
+		uint32_t lowerCount{};
 
 		for (const auto &[blockType, count] : chainBlockList) {
-			if (count >= 4) {
-				fourBlocks++;
-				if (count >= 6) {
-					sixBlocks++;
+			if (count >= static_cast<uint32_t>(vLowerChainCount_.item)) {
+				lowerCount++;
+				if (count >= static_cast<uint32_t>(vUpperChainCount_.item)) {
+					upperCount++;
 				}
 			}
 		}
 
 		// 生成のパターン
 		uint32_t spawnType{};
-		if (fourBlocks < 4) {
+		if (lowerCount < static_cast<uint32_t>(vLowerNeedCount_.item)) {
 			spawnType = (Lamb::Random(0u, kSpawnType)) / 2u;
 		}
-		else if (sixBlocks >= 4) {
+		else if (upperCount >= static_cast<uint32_t>(vUpperNeedCount_.item)) {
 			spawnType = std::clamp(Lamb::Random(0u, kSpawnType), 0u, 1u);
 		}
 		else {

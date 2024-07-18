@@ -128,8 +128,13 @@ public:
 	SoLib::VItem<"初期化の時の最低連結数", int32_t> vMinChainBlockCount_{ 1 };
 	SoLib::VItem<"初期化の時の最大連結数", int32_t> vMaxChainBlockCount_{ 6 };
 
+	SoLib::VItem<"下限となる結合数", int32_t> vLowerChainCount_{ 4 };
+	SoLib::VItem<"下限以下と扱われるグループ数", int32_t> vLowerNeedCount_{ 4 };
+	SoLib::VItem<"上限となる結合数", int32_t> vUpperChainCount_{ 6 };
+	SoLib::VItem<"上限以上と扱われるグループ数", int32_t> vUpperNeedCount_{ 4 };
+
 	/// @brief 調整項目
-	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallBegin_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_, &GameManager::vMinChainBlockCount_, &GameManager::vMaxChainBlockCount_ };
+	inline static constexpr SoLib::VItemList vGameManagerItems_{ &GameManager::vBreakStopTime_, &GameManager::vFallBegin_, &GameManager::vFallSpan_, &GameManager::vSpawnSpan_, &GameManager::vClearItemCount_, &GameManager::vMaxTime_, &GameManager::vBlockTypeCount_, &GameManager::vStartBlockHeight_, &GameManager::vMinChainBlockCount_, &GameManager::vMaxChainBlockCount_, &GameManager::vLowerChainCount_, &GameManager::vLowerNeedCount_, &GameManager::vUpperChainCount_, &GameManager::vUpperNeedCount_ };
 	inline static constexpr SoLib::VItemList vBlockMapItems_ = { &BlockMap::vCenterDiff_, &GameManager::vFallPosCalc_ };
 
 	inline static constexpr SoLib::VItemList vItemStatus_ = { &vItemSpawnSpan_ };
