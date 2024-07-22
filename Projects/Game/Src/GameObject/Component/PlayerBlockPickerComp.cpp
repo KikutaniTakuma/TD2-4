@@ -12,12 +12,15 @@ void PlayerBlockPickerComp::Init()
 
 	targetFlameTex_ = TextureManager::GetInstance()->LoadTexture("./Resources/Player/pressPositionFram.png");
 
+	pModel_ = DrawerManager::GetInstance()->GetModel("Resources/Cube.obj");
+
 	if (not pTexture_) [[unlikely]]
 		{
 			pTexture_ = DrawerManager::GetInstance()->GetTexture2D();
 			texID_ = TextureManager::GetInstance()->GetWhiteTex();
-	}
+	};
 
+		
 	noSpace_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/noSpace.mp3");
 	pickUp_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/pickUp.mp3");
 	putBlock_ = AudioManager::GetInstance()->Load("./Resources/Sounds/SE/blockDropOff.mp3");
@@ -25,7 +28,7 @@ void PlayerBlockPickerComp::Init()
 
 void PlayerBlockPickerComp::Update()
 {
-	affine_ = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { pLocalBodyComp_->GetGlobalPos() + Vector2::kYIdentity, -5.f });
+	affine_ = SoLib::Math::Affine(Vector3::kIdentity * 0.5f, Vector3::kZero, { pLocalBodyComp_->GetGlobalPos() + Vector2::kYIdentity, -1.f });
 
 	Lamb::SafePtr playerComp = object_.GetComponent<PlayerComp>();
 	Vector2 targetPos = pLocalBodyComp_->localPos_ + Vector2::kXIdentity * static_cast<float>(playerComp->GetFacing()) + Vector2::kIdentity * 0.5f;
@@ -66,7 +69,8 @@ void PlayerBlockPickerComp::Draw([[maybe_unused]] const Camera &camera) const
 
 	// もしブロックを持っていたら
 	if (pickingBlock_) {
-		pTexture_->Draw(affine_, pickingBlock_.GetDamageUv(), camera.GetViewOthographics(), pickingBlock_.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
+		pModel_->Draw(affine_, camera.GetViewProjection(), pickingBlock_.GetColor(), BlendType::kNormal, false);
+		//pTexture_->Draw(affine_, pickingBlock_.GetDamageUv(), camera.GetViewOthographics(), pickingBlock_.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 
 	}
 	for (const auto &dwarf : dwarfList_) {

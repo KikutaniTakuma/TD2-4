@@ -232,29 +232,6 @@
                 ]
             },
             {
-                "TextureFullPath": "./Resources/UI/GameMain\\gameBackGround.png",
-                "TextureName": "gameBackGround",
-                "UVScale": [
-                    1.0,
-                    1.0
-                ],
-                "UVTranslate": [
-                    0.0,
-                    0.0
-                ],
-                "color": 4294967295,
-                "scale": [
-                    840.0,
-                    575.0,
-                    1.0
-                ],
-                "translate": [
-                    -182.0,
-                    -33.0,
-                    12.0
-                ]
-            },
-            {
                 "TextureFullPath": "./Resources/UI/GameMain\\Control\\pauseButton.png",
                 "TextureName": "pauseButton",
                 "UVScale": [
@@ -303,3 +280,5 @@
         ]
     }
 }
+
+

@@ -35,8 +35,8 @@ void FallingBlockComp::Update()
 
 void FallingBlockComp::Draw(const Camera &camera) const
 {
-	Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { pLocalPos_->GetGlobalPos(), -5.f });
-	DrawerManager::GetInstance()->GetTexture2D()->Draw(affine, Block::kUvMatrix_[blockDamage_], camera.GetViewOthographics(), blockType_.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
+	Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity * 0.5f, Vector3::kZero, { pLocalPos_->GetGlobalPos(), -1.f });
+	DrawerManager::GetInstance()->GetModel("Resources/Cube.obj")->Draw(affine, camera.GetViewProjection(), blockType_.GetColor(), BlendType::kNormal, false);
 }
 
 void FallingBlockComp::OnCollision(GameObject *other)

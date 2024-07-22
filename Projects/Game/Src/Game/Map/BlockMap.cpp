@@ -37,13 +37,14 @@ void BlockMap::Update([[maybe_unused]] const float deltaTime)
 void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 {
 	Lamb::SafePtr texManager = TextureManager::GetInstance();
-	const uint32_t whiteTex = texManager->GetWhiteTex();
+	//const uint32_t whiteTex = texManager->GetWhiteTex();
 	//uint32_t blockTex = 0;
+	
 
 	const auto &breakTimer = GameManager::GetInstance()->GetBreakTimer();
 	bool isBreakDraw = std::fmodf(breakTimer.GetProgress(), 0.2f) > 0.1f;
 
-	const uint32_t breakIndex = GameManager::GetInstance()->GetItemSpawnCount() - 1;
+	//const uint32_t breakIndex = GameManager::GetInstance()->GetItemSpawnCount() - 1;
 
 	int32_t yi = 0;
 	for (const auto &modelStateArr : modelStateMap_) {
@@ -52,22 +53,29 @@ void BlockMap::Draw([[maybe_unused]] const Camera &camera) const
 			if (modelState) {
 
 				const auto &block = (*blockMap_)[yi][xi];
-				pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), block.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
+
+			
+
+				//pTexture2d_->Draw(modelState->transMat, block.GetDamageUv(), camera.GetViewOthographics(), block.GetTexture(), 0xFFFFFFFF, BlendType::kNone);
 
 				if (hitTimer_.IsActive() and hitMap_[yi][xi] and block and block.GetBlockType() == damageType_) {
-					Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
+					Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity * 0.5f, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -1.f });
 
-					pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, SoLib::ColorLerp(0xFFFFFFFF, 0xFFFFFF55, hitTimer_.GetProgress()), BlendType::kNormal);
+					model_->Draw(affine, camera.GetViewProjection(), SoLib::ColorLerp(0xFFFFFFFF, 0xFFFFFF55, hitTimer_.GetProgress()), BlendType::kNormal, false);
+					//pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, SoLib::ColorLerp(0xFFFFFFFF, 0xFFFFFF55, hitTimer_.GetProgress()), BlendType::kNormal);
 
+				}
+				else {
+					model_->Draw(modelState->transMat, camera.GetViewProjection(), modelState->color, BlendType::kNormal, false);
 				}
 
 			}
 
 			// 破壊フラグが立っていたら
 			if (isBreakDraw and breakBlockMap_[yi][xi]) {
-				Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -6.f });
+				Mat4x4 affine = SoLib::Math::Affine(Vector3::kIdentity * 0.5f, Vector3::kZero, Vector3{ GetGlobalPos(Vector2{static_cast<float>(xi), static_cast<float>(yi)}), -1.f });
 
-				pTexture2d_->Draw(affine, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex, kBreakColor_[breakIndex], BlendType::kNone);
+				model_->Draw(affine, camera.GetViewProjection(), SoLib::ColorLerp(0xFFFFFFFF, 0xFFFFFF55, hitTimer_.GetProgress()), BlendType::kNormal, false);
 
 			}
 
@@ -132,7 +140,7 @@ void BlockMap::TransferBoxData()
 				}
 				// 描画先の座標
 				const Vector2 drawPos = GetGlobalPos(Vector2{ static_cast<float>(xi), static_cast<float>(yi) } /*+ (*blockStatesMap_)[yi][xi]->drawOffset_*/);
-				modelState->transMat = SoLib::Math::Affine(Vector3::kIdentity, Vector3::kZero, { drawPos, -1.f });
+				modelState->transMat = SoLib::Math::Affine(Vector3::kIdentity * 0.5f, Vector3::kZero, { drawPos, -1.f });
 				// 色を指定する
 				modelState->color = box.GetColor();
 

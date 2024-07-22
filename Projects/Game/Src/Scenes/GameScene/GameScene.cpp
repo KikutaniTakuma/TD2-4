@@ -120,9 +120,9 @@ void GameScene::Initialize() {
 	collisionManager_ = CollisionManager::GetInstance();
 
 	currentCamera_->farClip = 3000.0f;
-	currentCamera_->pos.x = 0.7f;
+	currentCamera_->pos.x = 0.660f;
 	currentCamera_->pos.y = 6.7f;
-	currentCamera_->pos.z = -70.0f;
+	currentCamera_->pos.z = -58.0f;
 	currentCamera_->offset.z = -60.0f;
 	currentCamera_->offset.y = 8.0f;
 	currentCamera_->rotate.x = 0_deg;
@@ -373,18 +373,33 @@ void GameScene::Draw() {
 	tex2D_->Draw(backGround_->transform.matWorld_, backGround_->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
 		, backGround_->textureID, backGround_->color, BlendType::kNormal);
 
-	for (uint32_t i = 0; i < kCloudNum_; i++) {
+	/*for (uint32_t i = 0; i < kCloudNum_; i++) {
 		tex2D_->Draw(clouds_[i]->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, clouds_[i]->textureID, clouds_[i]->color, BlendType::kNormal);
-	}
+	}*/
 	UIEditor::GetInstance()->Draw(currentTexCamera_->GetViewOthographics(), sceneManager_->GetCurrentSceneID());
 
 	gameManager_->Draw(*currentCamera_);
 	gameUIManager_->Draw(*currentTexCamera_);
+	
+	TextureDraw();
+#ifdef _DEBUG
 
+	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
+#endif // _DEBUG
+
+	pause_->ActiveDraw();
+}
+
+void GameScene::ChangeToResult() {
+	gameSet_->Start(0.3f, false);
+	sceneManager_->SceneChange(BaseScene::ID::Result);
+}
+
+void GameScene::TextureDraw() {
 	if (not isEndObjective_) {
-		tex2D_->Draw(objectiveBackGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kUnenableDepthNormal);
+		/*tex2D_->Draw(objectiveBackGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kUnenableDepthNormal);*/
 
 		tex2D_->Draw(objectiveFrame_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, objectiveFrame_->textureID, objectiveFrame_->color, BlendType::kUnenableDepthNormal);
@@ -408,22 +423,6 @@ void GameScene::Draw() {
 		tex2D_->Draw(potState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, potState_->textureID, potState_->color, BlendType::kUnenableDepthNormal);
 	}
-	TextureDraw();
-#ifdef _DEBUG
-
-	UIEditor::GetInstance()->PutDraw(currentTexCamera_->GetViewOthographics());
-#endif // _DEBUG
-
-	pause_->ActiveDraw();
-}
-
-void GameScene::ChangeToResult() {
-	gameSet_->Start(0.3f, false);
-	sceneManager_->SceneChange(BaseScene::ID::Result);
-}
-
-void GameScene::TextureDraw() {
-
 }
 
 void GameScene::Debug() {
