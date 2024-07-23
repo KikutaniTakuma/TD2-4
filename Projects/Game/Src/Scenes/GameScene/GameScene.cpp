@@ -149,7 +149,9 @@ void GameScene::Initialize() {
 
 	//aabb_ = AABB::Create({ 0.0f,-0.5f,0.0f }, { 20.0f,1.0f,20.0f });
 
-	tex2D_ = DrawerManager::GetInstance()->GetTexture2D();
+	tex2D_ = drawerManager_->GetTexture2D();
+
+	shadowModel_ = drawerManager_->GetModel("Resources/Cube.obj");
 
 
 	TextureInitialize();
@@ -399,29 +401,29 @@ void GameScene::ChangeToResult() {
 void GameScene::TextureDraw() {
 	if (not isEndObjective_) {
 		/*tex2D_->Draw(objectiveBackGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kUnenableDepthNormal);*/
+			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kNormal);*/
 
 		tex2D_->Draw(objectiveFrame_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, objectiveFrame_->textureID, objectiveFrame_->color, BlendType::kUnenableDepthNormal);
+			, objectiveFrame_->textureID, objectiveFrame_->color, BlendType::kNormal);
 
 		for (size_t i = 0; i < 3; i++) {
 
 			tex2D_->Draw(potNumberTexture_[i]->transform.matWorld_, potNumberTexture_[i]->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
-				, potNumberTexture_[i]->textureID, potNumberTexture_[i]->color, BlendType::kUnenableDepthNormal);
+				, potNumberTexture_[i]->textureID, potNumberTexture_[i]->color, BlendType::kNormal);
 
 			tex2D_->Draw(timerNumberTexture_[i]->transform.matWorld_, timerNumberTexture_[i]->uvTransform.matWorld_, currentTexCamera_->GetViewOthographics()
-				, timerNumberTexture_[i]->textureID, timerNumberTexture_[i]->color, BlendType::kUnenableDepthNormal);
+				, timerNumberTexture_[i]->textureID, timerNumberTexture_[i]->color, BlendType::kNormal);
 		}
 
 		tex2D_->Draw(timerState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, timerState_->textureID, timerState_->color, BlendType::kUnenableDepthNormal);
+			, timerState_->textureID, timerState_->color, BlendType::kNormal);
 
 
 		tex2D_->Draw(clockHandsState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, clockHandsState_->textureID, clockHandsState_->color, BlendType::kUnenableDepthNormal);
+			, clockHandsState_->textureID, clockHandsState_->color, BlendType::kNormal);
 
 		tex2D_->Draw(potState_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, potState_->textureID, potState_->color, BlendType::kUnenableDepthNormal);
+			, potState_->textureID, potState_->color, BlendType::kNormal);
 	}
 }
 

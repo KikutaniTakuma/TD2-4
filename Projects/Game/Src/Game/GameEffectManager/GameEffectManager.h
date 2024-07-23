@@ -32,6 +32,8 @@ private:
 
 	Texture2D *pSpriteDrawer = nullptr;
 
+	Model* pModel_ = nullptr;
+
 	uint32_t whiteTex_;
 
 	static Vector2 ToGrobal(const Vector2 localPos) noexcept { return BlockMap::GetGlobalPos(localPos); }

@@ -22,6 +22,8 @@ void GameEffectManager::Init()
 
 	pSpriteDrawer = DrawerManager::GetInstance()->GetTexture2D();
 
+	pModel_ = DrawerManager::GetInstance()->GetModel("./Resources/Cube.obj");
+
 	whiteTex_ = TextureManager::GetInstance()->GetWhiteTex();
 
 }
@@ -107,11 +109,12 @@ void GameEffectManager::Draw([[maybe_unused]] const Camera &camera) const
 			// グローバル座標に変換
 			centerPos = ToGrobal(centerPos);
 
-			Mat4x4 affineMat = Mat4x4::MakeScalar(Vector3{ 1.f,static_cast<float>(BlockMap::kMapY + 1),1.f });
+			Mat4x4 affineMat = Mat4x4::MakeScalar(Vector3{ 0.5f,static_cast<float>(BlockMap::kMapY + 1) * 0.5f,0.5f });
 			reinterpret_cast<Vector2 &>(affineMat.at(3)) = centerPos;	// x,y座標
-			affineMat.at(3).at(2) = -1.f;						// z座標
+			affineMat.at(3).at(2) = -0.9f;						// z座標
 
-			pSpriteDrawer->Draw(affineMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex_, 0x55005555, BlendType::kNormal);
+			pModel_->Draw(affineMat, camera.GetViewProjection(), 0x55005555, BlendType::kNormal, false);
+			//pSpriteDrawer->Draw(affineMat, Mat4x4::kIdentity, camera.GetViewOthographics(), whiteTex_, 0x55005555, BlendType::kNormal);
 		}
 	}
 

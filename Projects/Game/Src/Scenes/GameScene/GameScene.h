@@ -97,6 +97,8 @@ private:
 
 	Texture2D* tex2D_ = nullptr;
 
+	Model* shadowModel_ = nullptr;
+
 	Audio* gameBGM_ = nullptr;
 
 	Audio* cancel_ = nullptr;
@@ -172,4 +174,6 @@ private:
 	bool isFirstUpdate_ = false;
 
 	bool isFirstSound_ = true;
+
+	//
 };
