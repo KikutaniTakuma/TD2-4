@@ -52,27 +52,32 @@ void GameScene::TextureInitialize() {
 
 	objectiveBackGround_ = std::make_unique<Tex2DState>();
 	objectiveBackGround_->transform.scale = { 1280.0f,720.0f };
-	objectiveBackGround_->transform.translate = { 0.0f, 10.0f ,-40.0f };
+	objectiveBackGround_->transform.translate = { 0.0f, 10.0f ,-30.0f };
 	objectiveBackGround_->color = 0x000000aa;/*C:\Users\aoaomidori\Desktop\TD2-4\Solustion\Projects\Game\Resources\GameObjective*/
-	objectiveBackGround_->textureID = TextureManager::GetInstance()->GetWhiteTex();
+	objectiveBackGround_->textureID = TextureManager::GetInstance()->LoadTexture("./Resources/UI/cutBackGroundWhite.png");
+
+	shadowState_ = std::make_unique<Tex2DState>();
+	shadowState_->transform.scale = { 1.0f,1.0f,1.0f };
+	shadowState_->transform.translate = { 0.30f, 6.5f ,-50.0f };
+	shadowState_->color = 0x00000088;
 
 	objectiveFrame_ = std::make_unique<Tex2DState>();
 	objectiveFrame_->transform.scale = { 768.0f,512.0f };
-	objectiveFrame_->transform.translate = { 0.0f, 10.0f ,-41.0f };
-	objectiveFrame_->color = 0xffffffff;/*C:\Users\aoaomidori\Desktop\TD2-4\Solustion\Projects\Game\Resources\GameObjective*/
+	objectiveFrame_->transform.translate = { 0.0f, 10.0f ,-51.0f };
+	objectiveFrame_->color = 0xffffffff;
 	objectiveFrame_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/GameObjective/goalFramSet.png");
 
 	for (uint32_t i = 0; i < 3; i++) {
 		potNumberTexture_[i] = std::make_unique<Tex2DState>();
 		potNumberTexture_[i]->transform.scale = { 80.0f,80.0f };
-		potNumberTexture_[i]->transform.translate = { 70.0f * i,-300.0f ,-41.0f };
+		potNumberTexture_[i]->transform.translate = { 70.0f * i,-300.0f ,-51.0f };
 		potNumberTexture_[i]->uvTransform.scale = { 0.1f,1.0f };
 		potNumberTexture_[i]->color = 0xffffffff;
 		potNumberTexture_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/Timer/timeLimitNumber.png");
 
 		timerNumberTexture_[i] = std::make_unique<Tex2DState>();
 		timerNumberTexture_[i]->transform.scale = { 80.0f,80.0f };
-		timerNumberTexture_[i]->transform.translate = { 70.0f * i,-227.0f ,-41.0f };
+		timerNumberTexture_[i]->transform.translate = { 70.0f * i,-227.0f ,-51.0f };
 		timerNumberTexture_[i]->uvTransform.scale = { 0.1f,1.0f };
 		timerNumberTexture_[i]->color = 0xffffffff;
 		timerNumberTexture_[i]->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/Timer/timeLimitNumber.png");
@@ -82,27 +87,27 @@ void GameScene::TextureInitialize() {
 	timerState_ = std::make_unique<Tex2DState>();
 	timerState_->color = 0xffffffff;
 	timerState_->transform.scale = { 90.0f,102.0f };//136
-	timerState_->transform.translate = { -170.0f, -43.0f ,-41.0f };
+	timerState_->transform.translate = { -170.0f, -43.0f ,-51.0f };
 	timerState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timer.png");
 
 	clockHandsState_ = std::make_unique<Tex2DState>();
 	clockHandsState_->color = 0xffffffff;
 	clockHandsState_->transform.scale = { 90.0f,102.0f };
-	clockHandsState_->transform.translate = { -170.0f, -46.0f ,-41.0f };
+	clockHandsState_->transform.translate = { -170.0f, -46.0f ,-51.0f };
 	clockHandsState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/Timer/timerNeedle.png");
 
 	potState_ = std::make_unique<Tex2DState>();
 	potState_->color = 0xffffffff;
 	potState_->transform.scale = { 90.0f,102.0f };
-	potState_->transform.translate = { -170.0f, -170.0f ,-41.0f };
+	potState_->transform.translate = { -170.0f, -170.0f ,-51.0f };
 	potState_->textureID = DrawerManager::GetInstance()->LoadTexture("./Resources/UI/pot.png");
 
 	clockNumberPos_ = { -55.0f,-43.0f };
 	potNumberPos_ = { -55.0f,-166.0f };
 
-	timerPos_ = { -170.0f, -43.0f ,-25.0f };
-	clockHandsPos_ = { -170.0f, -46.0f ,-25.0f };
-	potPos_ = { -170.0f, -170.0f ,-25.0f };
+	timerPos_ = { -170.0f, -43.0f ,0.0f };
+	clockHandsPos_ = { -170.0f, -46.0f ,0.0f };
+	potPos_ = { -170.0f, -170.0f ,0.0f };
 
 	numberDistance_ = 105.0f;
 
@@ -259,8 +264,8 @@ void GameScene::Update() {
 		}
 
 		for (uint32_t i = 0; i < 3; i++) {
-			potNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + potNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + potNumberPos_.y ,-41.0f };
-			timerNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + clockNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + clockNumberPos_.y ,-41.0f };
+			potNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + potNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + potNumberPos_.y ,-51.0f };
+			timerNumberTexture_[i]->transform.translate = { objectiveFrame_->transform.translate.x + clockNumberPos_.x + numberDistance_ * i,objectiveFrame_->transform.translate.y + clockNumberPos_.y ,-51.0f };
 
 			timerNumberTexture_[i]->transform.CalcMatrix();
 			timerNumberTexture_[i]->uvTransform.CalcMatrix();
@@ -283,6 +288,8 @@ void GameScene::Update() {
 
 		objectiveBackGround_->transform.CalcMatrix();
 		objectiveFrame_->transform.CalcMatrix();
+
+		shadowState_->transform.CalcMatrix();
 
 
 		/*if (gamepad->Pushed(Gamepad::Button::A) || key->Pushed(DIK_SPACE)) {
@@ -400,8 +407,10 @@ void GameScene::ChangeToResult() {
 
 void GameScene::TextureDraw() {
 	if (not isEndObjective_) {
-		/*tex2D_->Draw(objectiveBackGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
-			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kNormal);*/
+		tex2D_->Draw(objectiveBackGround_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
+			, objectiveBackGround_->textureID, objectiveBackGround_->color, BlendType::kNormal);
+
+		shadowModel_->Draw(shadowState_->transform.matWorld_, currentCamera_->GetViewProjection(), shadowState_->color, BlendType::kNormal, false);
 
 		tex2D_->Draw(objectiveFrame_->transform.matWorld_, Mat4x4::kIdentity, currentTexCamera_->GetViewOthographics()
 			, objectiveFrame_->textureID, objectiveFrame_->color, BlendType::kNormal);
@@ -440,6 +449,8 @@ void GameScene::Debug() {
 	ImGui::DragFloat("数字の間隔", &numberDistance_, 1.0f);
 
 	ImGui::DragFloat3("カットした背景", backGround_->transform.translate.data(), 1.0f);
+
+	ImGui::DragFloat3("黒いやつの座標", &shadowState_->transform.translate.x, 0.1f);
 
 	ImGui::End();
 #endif // _DEBUG

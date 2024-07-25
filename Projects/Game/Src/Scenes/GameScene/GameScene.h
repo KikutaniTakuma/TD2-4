@@ -176,4 +176,6 @@ private:
 	bool isFirstSound_ = true;
 
 	//
+
+	std::unique_ptr<Tex2DState> shadowState_;
 };
